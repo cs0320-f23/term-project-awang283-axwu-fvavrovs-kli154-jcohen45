@@ -40,20 +40,19 @@
     </dependency>
 
     <!-- SLF4J API -->
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>1.7.32</version>
-    </dependency>
-
+    <!--    <dependency>-->
+    <!--      <groupId>org.slf4j</groupId>-->
+    <!--      <artifactId>slf4j-api</artifactId>-->
+    <!--      <version>1.7.32</version>-->
+    <!--    </dependency>-->
 
     <!-- SLF4J binding: Logback -->
-<!--    <dependency>-->
-<!--      <groupId>ch.qos.logback</groupId>-->
-<!--      <artifactId>logback-classic</artifactId>-->
-<!--      <version>1.2.3</version> &lt;!&ndash; use the version compatible with your SLF4J version &ndash;&gt;-->
-<!--    </dependency>-->
-
+    <!--    <dependency>-->
+    <!--      <groupId>ch.qos.logback</groupId>-->
+    <!--      <artifactId>logback-classic</artifactId>-->
+    <!--&lt;!&ndash;      <version>1.2.3</version>&ndash;&gt;-->
+    <!--      &lt;!&ndash; use the version compatible with your SLF4J version &ndash;&gt;-->
+    <!--    </dependency>-->
 
     <!--
            We use Moshi for serialization/deserialization of JSON data.
@@ -82,7 +81,14 @@
       <groupId>com.sparkjava</groupId>
       <artifactId>spark-core</artifactId>
       <version>2.9.4</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
+
 
     <!--
            TestNG builds useful functionality on top of JUnit, such as method annotations.
@@ -90,7 +96,19 @@
     <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>
-      <version>RELEASE</version>
+      <version>7.8.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>32.1.2-jre</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <version>5.10.0</version>
       <scope>compile</scope>
     </dependency>
 
@@ -103,18 +121,6 @@
       <version>5.4.0</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>32.1.2-jre</version>
-      <scope>compile</scope>
-    </dependency>
-      <dependency>
-          <groupId>org.junit.jupiter</groupId>
-          <artifactId>junit-jupiter-api</artifactId>
-          <version>5.10.0</version>
-          <scope>compile</scope>
-      </dependency>
     <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>

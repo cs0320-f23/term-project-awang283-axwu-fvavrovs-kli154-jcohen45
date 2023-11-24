@@ -1,5 +1,0 @@
-spring:
-  data:
-    mongodb:
-      uri: mongodb+srv://posterProj:cWcc6JGnf8UlUtOe@postersatbrown.dtqiuai.mongodb.net/
-      database: PostersAtBrown
