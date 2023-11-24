@@ -8,7 +8,7 @@ public class ServiceResponse<T> {
 
     public ServiceResponse(Poster poster, String message) {
         this.message = message;
-        System.out.println(message + poster.getTitle());
+        System.out.println(message + ": " + poster.getTitle());
 
     }
 

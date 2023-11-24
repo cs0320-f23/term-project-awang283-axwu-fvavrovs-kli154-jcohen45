@@ -34,6 +34,13 @@ public class Poster {
         this.content = content;
     }
 
+    /**
+     * a no argument constructor so that Jackson can deserialize the json
+     */
+    public Poster() {
+        this.id = UUID.randomUUID();
+    }
+
     public String getID() {
         return this.id.toString();
     }
@@ -54,7 +61,7 @@ public class Poster {
      * Allows user to change title of the poster
      * @param newTitle the new title to set the title to
      */
-    public void editTitle(String newTitle) {
+    public void setTitle(String newTitle) {
         this.title = newTitle;
     }
 
@@ -62,8 +69,12 @@ public class Poster {
      * Allows user to change image of the poster
      * @param newContent the new title to set the title to
      */
-    public void editContent(String newContent) {
+    public void setContent(String newContent) {
         this.content = newContent;
+    }
+
+    public String getContent() {
+        return this.content;
     }
 
 
@@ -73,7 +84,11 @@ public class Poster {
      * Allows user to edit description of the poster
      * @param newDesc the new title to set the title to
      */
-    public void editDescription(String newDesc) {
+    public void setDescription(String newDesc) {
         this.description = newDesc;
+    }
+
+    public String getDescription() {
+        return this.description;
     }
 }
