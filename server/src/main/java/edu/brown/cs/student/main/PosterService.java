@@ -8,6 +8,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -49,5 +50,18 @@ public class PosterService {
     @Async
     public CompletableFuture<List<Poster>> getPosters() {
         return CompletableFuture.completedFuture(posterRepository.findAll());
+    }
+
+    @Async
+    public CompletableFuture<ServiceResponse<Poster>> getPosterById(Poster poster) {
+        ServiceResponse<Poster> response;
+       Optional<Poster> found = this.posterRepository.findById(poster.getID());
+       if (!found.isEmpty()) {
+           response = new ServiceResponse<>(poster, "found id");
+       } else {
+           response = new ServiceResponse<>(poster, "id not found");
+       }
+
+        return CompletableFuture.completedFuture(response);
     }
 }

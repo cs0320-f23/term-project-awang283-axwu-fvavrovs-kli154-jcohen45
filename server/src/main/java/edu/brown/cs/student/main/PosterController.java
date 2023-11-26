@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @RestController
-@RequestMapping("/poster") // maps the controller to the "/poster" endpoint.
+@RequestMapping("/posters") // maps the controller to the "/posters" endpoint.
 public class PosterController {
     private final PosterService posterService;
 
@@ -19,8 +19,15 @@ public class PosterController {
     }
 
     @GetMapping("/")
-    public CompletableFuture<ResponseEntity<List<Poster>>> getPosters() {
+    public CompletableFuture<ResponseEntity<List<Poster>>> getAllPosters() {
         return posterService.getPosters()
+                .thenApply(ResponseEntity::ok)
+                .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+    }
+
+    @GetMapping("/:id")
+    public CompletableFuture<ResponseEntity<ServiceResponse<Poster>>> getPosterById(@RequestBody Poster poster) {
+        return posterService.getPosterById(poster)
                 .thenApply(ResponseEntity::ok)
                 .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
     }
