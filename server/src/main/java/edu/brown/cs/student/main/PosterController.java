@@ -26,8 +26,8 @@ public class PosterController {
     }
 
     @GetMapping("/:id")
-    public CompletableFuture<ResponseEntity<ServiceResponse<Poster>>> getPosterById(@RequestBody Poster poster) {
-        return posterService.getPosterById(poster)
+    public CompletableFuture<ResponseEntity<ServiceResponse<Object>>> getPosterById(@RequestBody String id) {
+        return posterService.getPosterById(id)
                 .thenApply(ResponseEntity::ok)
                 .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
     }
