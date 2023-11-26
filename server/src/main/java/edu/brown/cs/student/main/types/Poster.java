@@ -9,7 +9,7 @@ import java.util.UUID;
  * The Poster model defines the necessary set of properties for a poster object and
  *  contains getters and setters used to validate and change data
  */
-@Document
+@Document(collection = "poster")
 public class Poster {
 
     @Id

@@ -11,6 +11,11 @@ public class ServiceResponse<T> {
         System.out.println(message + ": " + poster.getTitle());
 
     }
+    public ServiceResponse(String message) {
+        this.message = message;
+        System.out.println(message);
+
+    }
 
 
 }

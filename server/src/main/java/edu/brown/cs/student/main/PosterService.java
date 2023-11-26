@@ -59,7 +59,7 @@ public class PosterService {
                                 .filter(poster -> id.equals(poster.getID()))
                                 .findFirst()
                                 .map(poster -> CompletableFuture.completedFuture(new ServiceResponse<>(poster, "poster with id found")))
-                                .orElseGet(() -> CompletableFuture.completedFuture(new ServiceResponse<>(null, "Poster not found")))
+                                .orElseGet(() -> CompletableFuture.completedFuture(new ServiceResponse<>("Poster not found")))
                 );
     }
 }

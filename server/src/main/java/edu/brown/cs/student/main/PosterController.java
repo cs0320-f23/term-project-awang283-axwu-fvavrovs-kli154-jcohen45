@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @RestController
-@RequestMapping("/posters") // maps the controller to the "/posters" endpoint.
+@RequestMapping(value="/posters") // maps the controller to the "/posters" endpoint.
 public class PosterController {
     private final PosterService posterService;
 
@@ -18,14 +18,14 @@ public class PosterController {
         this.posterService = posterService;
     }
 
-    @GetMapping("/")
+    @GetMapping("/" )
     public CompletableFuture<ResponseEntity<List<Poster>>> getAllPosters() {
         return posterService.getPosters()
                 .thenApply(ResponseEntity::ok)
                 .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
     }
 
-    @GetMapping("/:id")
+    @GetMapping("/{id}") //is this the correct way to be able to type in an id idk
     public CompletableFuture<ResponseEntity<ServiceResponse<Object>>> getPosterById(@RequestBody String id) {
         return posterService.getPosterById(id)
                 .thenApply(ResponseEntity::ok)
