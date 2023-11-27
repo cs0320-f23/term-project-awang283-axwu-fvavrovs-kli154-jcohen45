@@ -14,6 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "poster")
 public class Poster {
 
+  //TODO: should probably update fields to include support for tags?
   @Id private String id; // or some identifier
   private String title;
   private String content; // url or image path
@@ -21,14 +22,13 @@ public class Poster {
 
   @JsonPropertyOrder({"id", "title", "description"})
   public Poster(String title, String content, String description) {
-    // i turned ID to a string to make it easier to test the GET by ID endpoint (it's not working
-    // btw)
+    // i turned ID to a string
     this.id = UUID.randomUUID().toString(); // so that IDs are randomly generated and unique
     this.title = title;
     this.content = content;
     this.description = description;
   }
-  /*
+  /**
   Allows user to create poster w/o description of event
    */
   public Poster(String title, String content) {
@@ -51,7 +51,7 @@ public class Poster {
     this.id = newID;
   }
 
-  /*
+  /**
   validates necessary fields
    */
   public Boolean isPoster() {

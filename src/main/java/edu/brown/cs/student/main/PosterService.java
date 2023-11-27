@@ -12,13 +12,13 @@ import org.springframework.stereotype.Service;
 
 /**
  * This class handles the logic of creating a poster. This involves validating the input data and
- * interacting with the database to persist the Poster object.
+ * interacting with the database to persist the Poster object. Used by PosterController
  */
 @Service
 public class PosterService {
   private final PosterRepository posterRepository;
 
-  @Autowired
+  @Autowired // annotation so Spring will automatically wire (inject) into dependent objects, in this case PosterController
   public PosterService(PosterRepository posterRepository) {
     this.posterRepository = posterRepository;
   }
