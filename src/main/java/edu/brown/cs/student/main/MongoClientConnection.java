@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class MongoClientConnection {
     public static void main(String[] args) {
-        String connectionString = "mongodb+srv://posterProj:cWcc6JGnf8UlUtOe@postersatbrown.dtqiuai.mongodb.net/?retryWrites=true&w=majority";
+        String connectionString = "mongodb+srv://posterProj:ilovecs32@postersatbrown.dtqiuai.mongodb.net/?retryWrites=true&w=majority";
 
         ServerApi serverApi = ServerApi.builder()
                 .version(ServerApiVersion.V1)
