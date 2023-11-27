@@ -47,6 +47,18 @@ public class PosterService {
   }
 
   @Async
+  public CompletableFuture<ServiceResponse<Poster>> updatePoster(Poster updatedPoster) {
+
+    Poster updated = posterRepository.save(updatedPoster);
+
+    if (updated != null) {
+      return CompletableFuture.completedFuture(new ServiceResponse<>(updated, "Poster updated"));
+    } else {
+      return CompletableFuture.completedFuture(new ServiceResponse<>("Failed to update poster"));
+    }
+  }
+
+  @Async
   public CompletableFuture<List<Poster>> getPosters() {
     return CompletableFuture.completedFuture(posterRepository.findAll());
   }
@@ -61,5 +73,17 @@ public class PosterService {
                             .map(poster -> CompletableFuture.completedFuture(new ServiceResponse<Poster>(poster, "poster with id found")))
                             .orElseGet(() -> CompletableFuture.completedFuture(new ServiceResponse<Poster>("Poster not found")))
             );
+  }
+
+  @Async
+  public CompletableFuture<ServiceResponse<String>> deletePosterById(String id) {
+    Optional<Poster> posterToDelete = posterRepository.findById(id);
+
+    if (posterToDelete.isPresent()) {
+      posterRepository.deleteById(id);
+      return CompletableFuture.completedFuture(new ServiceResponse<>("Poster deleted"));
+    } else {
+      return CompletableFuture.completedFuture(new ServiceResponse<>("Poster not found"));
+    }
   }
 }

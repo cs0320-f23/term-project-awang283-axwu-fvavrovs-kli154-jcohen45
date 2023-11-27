@@ -47,6 +47,10 @@ public class Poster {
     return this.id;
   }
 
+  public void setID(String newID){
+    this.id = newID;
+  }
+
   /*
   validates necessary fields
    */
