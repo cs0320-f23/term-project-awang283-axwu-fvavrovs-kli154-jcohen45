@@ -13,13 +13,14 @@ import java.util.UUID;
 public class Poster {
 
     @Id
-    private UUID id; // or some identifier
+    private String id; // or some identifier
     private String title;
     private String content; //url or image path
     private String description;
 
     public Poster(String title, String content, String description) {
-        this.id = UUID.randomUUID(); //so that IDs are randomly generated and unique
+        //i turned ID to a string to make it easier to test the GET by ID endpoint (it's not working btw)
+        this.id = UUID.randomUUID().toString(); //so that IDs are randomly generated and unique
         this.title = title;
         this.content = content;
         this.description = description;
@@ -29,7 +30,7 @@ public class Poster {
     Allows user to create poster w/o description of event
      */
     public Poster(String title, String content) {
-        this.id = UUID.randomUUID(); //so that IDs are randomly generated and unique
+        this.id = UUID.randomUUID().toString(); //so that IDs are randomly generated and unique
         this.title = title;
         this.content = content;
     }
@@ -38,7 +39,7 @@ public class Poster {
      * a no argument constructor so that Jackson can deserialize the json
      */
     public Poster() {
-        this.id = UUID.randomUUID();
+        this.id = UUID.randomUUID().toString();
     }
 
     public String getID() {

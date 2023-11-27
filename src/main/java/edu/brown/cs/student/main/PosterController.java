@@ -25,7 +25,7 @@ public class PosterController {
                 .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
     }
 
-    @GetMapping("/{id}") //is this the correct way to be able to type in an id idk
+    @GetMapping("/id") //is this the correct way to be able to type in an id idk
     public CompletableFuture<ResponseEntity<ServiceResponse<Object>>> getPosterById(@RequestBody String id) {
         return posterService.getPosterById(id)
                 .thenApply(ResponseEntity::ok)
