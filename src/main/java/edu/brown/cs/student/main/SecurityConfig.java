@@ -1,4 +1,5 @@
 package edu.brown.cs.student.main;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -10,16 +11,17 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable) // Disable CSRF protection for simplicity in this example
-                .authorizeRequests(auth -> auth
-                        .anyRequest().permitAll() // Allow all requests without authentication
-                )
-                .httpBasic(AbstractHttpConfigurer::disable) // Disable HTTP Basic authentication
-                .formLogin(AbstractHttpConfigurer::disable); // Disable form login
+  @Bean
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http.csrf(
+            AbstractHttpConfigurer
+                ::disable) // Disable CSRF protection for simplicity in this example
+        .authorizeRequests(
+            auth -> auth.anyRequest().permitAll() // Allow all requests without authentication
+            )
+        .httpBasic(AbstractHttpConfigurer::disable) // Disable HTTP Basic authentication
+        .formLogin(AbstractHttpConfigurer::disable); // Disable form login
 
-        return http.build();
-    }
+    return http.build();
+  }
 }
