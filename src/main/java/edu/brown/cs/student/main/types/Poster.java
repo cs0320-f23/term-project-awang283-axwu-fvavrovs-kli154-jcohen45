@@ -1,11 +1,13 @@
 package edu.brown.cs.student.main.types;
 
-import java.util.UUID;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import org.joda.time.DateTime;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.HashSet;
+import java.util.UUID;
 
 /**
  * The Poster model defines the necessary set of properties for a poster object and contains getters
@@ -15,9 +17,17 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Poster {
 
   @Id private String id; // or some identifier
-  private String title;
+  private String title; //req
   private String content; // url or image path
   private String description;
+  private HashSet<String> tags;
+  private DateTime createdAt;
+  private DateTime startDate;
+  private DateTime endDate;
+  private boolean isRecurring;
+  private String organization;
+ // private User user;
+
 
   @JsonPropertyOrder({"id", "title", "description"})
   public Poster(String title, String content, String description) {
@@ -27,6 +37,7 @@ public class Poster {
     this.title = title;
     this.content = content;
     this.description = description;
+    this.tags = new HashSet<>();
   }
   /*
   Allows user to create poster w/o description of event
@@ -40,6 +51,8 @@ public class Poster {
   /** a no argument constructor so that Jackson can deserialize the json */
   public Poster() {
     this.id = UUID.randomUUID().toString();
+    this.tags = new HashSet<>();
+    this.createdAt = new DateTime();
   }
 
   @JsonProperty("id")
@@ -55,7 +68,7 @@ public class Poster {
   validates necessary fields
    */
   public Boolean isPoster() {
-    return this.id != null && this.title != null && this.content != null;
+    return this.id != null && this.title != null ;
   }
 
   @JsonProperty("title")
@@ -100,5 +113,61 @@ public class Poster {
   @JsonProperty("description")
   public String getDescription() {
     return this.description;
+  }
+
+  public HashSet<String> getTags() {
+    return tags;
+  }
+
+  public void setTags(HashSet<String> tags) {
+    this.tags = tags;
+  }
+
+  public void setTag(String tag) {
+    this.tags.add(tag);
+  }
+
+  public void deleteTag(String tag) {
+    this.tags.remove(tag);
+  }
+
+  public boolean isRecurring() {
+    return isRecurring;
+  }
+
+  public void setRecurring(boolean recurring) {
+    isRecurring = recurring;
+  }
+
+  public String getOrganization() {
+    return organization;
+  }
+
+  public void setOrganization(String organization) {
+    this.organization = organization;
+  }
+
+  public DateTime getCreatedAt() {
+    return createdAt;
+  }
+
+  public void setCreatedAt(DateTime createdAt) {
+    this.createdAt = createdAt;
+  }
+
+  public DateTime getStartDate() {
+    return startDate;
+  }
+
+  public void setStartDate(DateTime startDate) {
+    this.startDate = startDate;
+  }
+
+  public DateTime getEndDate() {
+    return endDate;
+  }
+
+  public void setEndDate(DateTime endDate) {
+    this.endDate = endDate;
   }
 }
