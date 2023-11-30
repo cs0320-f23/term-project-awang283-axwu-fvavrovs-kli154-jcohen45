@@ -6,4 +6,3 @@ edu/brown/cs/student/main/App.class
 edu/brown/cs/student/main/MediaConverterConfiguration.class
 edu/brown/cs/student/main/types/Poster.class
 edu/brown/cs/student/main/types/PosterRepository.class
-edu/brown/cs/student/main/MongoClientConnection.class

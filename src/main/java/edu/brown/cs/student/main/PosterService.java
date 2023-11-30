@@ -18,7 +18,8 @@ import org.springframework.stereotype.Service;
 public class PosterService {
   private final PosterRepository posterRepository;
 
-  @Autowired // annotation so Spring will automatically wire (inject) into dependent objects, in this case PosterController
+  @Autowired // annotation so Spring will automatically wire (inject) into dependent objects, in
+  // this case PosterController
   public PosterService(PosterRepository posterRepository) {
     this.posterRepository = posterRepository;
   }
@@ -66,13 +67,19 @@ public class PosterService {
   @Async
   public CompletableFuture<ServiceResponse<Poster>> getPosterById(String id) {
     return this.getPosters()
-            .thenCompose(posters ->
-                    posters.stream()
-                            .filter(poster -> id.equals(poster.getID()))
-                            .findFirst()
-                            .map(poster -> CompletableFuture.completedFuture(new ServiceResponse<Poster>(poster, "poster with id found")))
-                            .orElseGet(() -> CompletableFuture.completedFuture(new ServiceResponse<Poster>("Poster not found")))
-            );
+        .thenCompose(
+            posters ->
+                posters.stream()
+                    .filter(poster -> id.equals(poster.getID()))
+                    .findFirst()
+                    .map(
+                        poster ->
+                            CompletableFuture.completedFuture(
+                                new ServiceResponse<Poster>(poster, "poster with id found")))
+                    .orElseGet(
+                        () ->
+                            CompletableFuture.completedFuture(
+                                new ServiceResponse<Poster>("Poster not found"))));
   }
 
   @Async

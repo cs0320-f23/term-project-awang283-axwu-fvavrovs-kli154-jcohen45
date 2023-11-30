@@ -2,12 +2,11 @@ package edu.brown.cs.student.main.types;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import java.util.HashSet;
+import java.util.UUID;
 import org.joda.time.DateTime;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.util.HashSet;
-import java.util.UUID;
 
 /**
  * The Poster model defines the necessary set of properties for a poster object and contains getters
@@ -16,9 +15,9 @@ import java.util.UUID;
 @Document(collection = "poster")
 public class Poster {
 
-  //TODO: should probably update fields to include support for tags?
+  // TODO: should probably update fields to include support for tags?
   @Id private String id; // or some identifier
-  private String title; //req
+  private String title; // req
   private String content; // url or image path
   private String description;
   private HashSet<String> tags;
@@ -27,8 +26,7 @@ public class Poster {
   private DateTime endDate;
   private boolean isRecurring;
   private String organization;
- // private User user;
-
+  // private User user;
 
   @JsonPropertyOrder({"id", "title", "description"})
   public Poster(String title, String content, String description) {
@@ -39,9 +37,7 @@ public class Poster {
     this.description = description;
     this.tags = new HashSet<>();
   }
-  /**
-  Allows user to create poster w/o description of event
-   */
+  /** Allows user to create poster w/o description of event */
   public Poster(String title, String content) {
     this.id = UUID.randomUUID().toString(); // so that IDs are randomly generated and unique
     this.title = title;
@@ -60,15 +56,13 @@ public class Poster {
     return this.id;
   }
 
-  public void setID(String newID){
+  public void setID(String newID) {
     this.id = newID;
   }
 
-  /**
-  validates necessary fields
-   */
+  /** validates necessary fields */
   public Boolean isPoster() {
-    return this.id != null && this.title != null ;
+    return this.id != null && this.title != null;
   }
 
   @JsonProperty("title")
