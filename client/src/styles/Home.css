@@ -50,14 +50,15 @@
   font-family: "Quicksand-SemiBold", Helvetica;
   font-size: 28px;
   font-weight: 600;
-  height: 65px;
+  height: 4rem;
   letter-spacing: 0;
   line-height: normal;
   overflow: hidden;
   padding: 0;
   padding-left: 36px;
   position: relative;
-  width: 1105px;
+  width: 80%;
+  background-color: white;
 }
 
 /*
