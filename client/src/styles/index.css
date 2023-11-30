@@ -1,21 +1,59 @@
-:root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+#root {
+  font-family: "pacifico", sans-serif;
+  font-weight: 700;
+  font-style: normal;
   line-height: 1.5;
-  font-weight: 400;
+  min-height: 100vh;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color: var(--dark-purple100);
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  min-width: 100vw;
+  /* max-height: 92vh; */
+  top: 50px;
+  margin: 0 auto;
+  text-align: center;
+
+  /* font-synthesis: none; */
+  /* text-rendering: optimizeLegibility; */
+  /* -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale; */
+
+  --dark-purple100: rgba(63, 49, 94, 1);
+  --dark-purple70: rgba(121, 111, 142, 1);
+  --drop-shadow: 0px 4px 10px 5px rgba(0, 0, 0, 0.25);
+  --light-blue: rgba(202, 226, 255, 1);
+  --light-purple: rgba(249, 238, 255, 1);
+  --tag-shadow: 0px 1px 9px 0px rgba(0, 0, 0, 0.15);
+  --tagsdark-blue: rgba(78, 70, 137, 1);
+  --tagsdark-green: rgba(0, 108, 69, 1);
+  --tagsdark-magenta: rgba(127, 42, 118, 1);
+  --tagslight-blue: rgba(213, 225, 255, 1);
+  --tagslight-green: rgba(213, 240, 222, 1);
+  --tagslight-magenta: rgba(239, 218, 250, 1);
+  --white: rgba(255, 255, 255, 1);
+
+  background: var(--light-purple);
+  background: -moz-linear-gradient(
+    top,
+    var(--light-purple) 0%,
+    var(--light-blue) 100%
+  );
+  background: -webkit-linear-gradient(
+    top,
+    var(--light-purple) 0%,
+    #a9d3ff 100%
+  );
+  background: linear-gradient(
+    to bottom,
+    var(--light-purple) 0%,
+    var(--light-blue) 100%
+  );
 }
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: var(--dark-purple100);
   text-decoration: inherit;
 }
 a:hover {
@@ -26,7 +64,6 @@ body {
   margin: 0;
   display: flex;
   place-items: center;
-  min-width: 320px;
   min-height: 100vh;
 }
 
@@ -41,8 +78,7 @@ button {
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
+  font-family: "Quicksand-SemiBold", Helvetica;
   cursor: pointer;
   transition: border-color 0.25s;
 }
@@ -57,7 +93,6 @@ button:focus-visible {
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
-    background-color: #ffffff;
   }
   a:hover {
     color: #747bff;

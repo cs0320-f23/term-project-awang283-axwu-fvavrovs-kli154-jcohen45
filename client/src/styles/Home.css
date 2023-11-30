@@ -1,0 +1,93 @@
+.posters .div {
+  align-items: flex-start;
+  display: flex;
+  gap: 50px;
+  left: 67px;
+  position: relative;
+}
+
+.posters .frame {
+  align-items: flex-start;
+  background-color: #ffffff;
+  border-radius: 20px;
+  display: inline-flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  gap: 10px;
+  padding: 15px;
+  position: relative;
+  width: 100%;
+}
+
+.label .text-wrapper {
+  display: block;
+  width: 100%;
+  display: block;
+  color: var(--dark-purple100);
+  font-size: 110px;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: normal;
+  top: 50px;
+}
+
+.left-links > a,
+.home-content {
+  font-family: "Quicksand-SemiBold", Helvetica;
+}
+
+#logo {
+  font-family: "pacifico", sans-serif;
+  transform: translateY(-8%);
+}
+
+.input {
+  background-color: var(--bw-0);
+  border: none;
+  border-radius: 15px;
+  box-shadow: var(--drop-shadow);
+  color: #3f305eb2;
+  font-family: "Quicksand-SemiBold", Helvetica;
+  font-size: 28px;
+  font-weight: 600;
+  height: 65px;
+  letter-spacing: 0;
+  line-height: normal;
+  overflow: hidden;
+  padding: 0;
+  padding-left: 36px;
+  position: relative;
+  width: 1105px;
+}
+
+/*
+.posters .image {
+  height: 423.82px;
+  object-fit: cover;
+  position: relative;
+  width: 390px;
+}
+
+.posters .img {
+  height: 491.14px;
+  position: relative;
+  width: 380px;
+}
+
+.posters .poster-frame {
+  align-items: flex-start;
+  background-color: #ffffff;
+  border-radius: 20px;
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: 10px;
+  padding: 15px;
+  position: relative;
+}
+
+.posters .visions-release {
+  height: 458.76px;
+  object-fit: cover;
+  position: relative;
+  width: 390px;
+} */

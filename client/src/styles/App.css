@@ -1,9 +1,3 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
 nav {
   position: fixed;
   display: flex;
@@ -15,6 +9,9 @@ nav {
   width: 96vw;
 }
 
+article {
+  height: 100vh;
+}
 .left-links,
 .right-links {
   display: flex;
@@ -23,4 +20,10 @@ nav {
 a,
 button {
   margin-left: 10%;
+}
+
+main {
+  height: 100vh;
+  flex-grow: 1; /* Allow the main content to expand and fill the remaining space */
+  /* padding-top: 50px; Adjust this value to provide space below the fixed header */
 }
