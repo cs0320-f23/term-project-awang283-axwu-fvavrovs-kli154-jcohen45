@@ -1,0 +1,26 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+nav {
+  position: fixed;
+  display: flex;
+  justify-content: space-between;
+  top: 0;
+  left: 0;
+  right: 10px;
+  margin: 2%;
+  width: 96vw;
+}
+
+.left-links,
+.right-links {
+  display: flex;
+  justify-content: space-between;
+}
+a,
+button {
+  margin-left: 10%;
+}
