@@ -1,6 +1,4 @@
 package edu.brown.cs.student.test;
-
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertNotNull;
 
@@ -27,25 +25,25 @@ class PosterManagementUnitTest {
 
     @Test
     public void testUpdatePoster() {
-      // Mock data
-      String id = "123";
-      Poster updatedPoster = new Poster("id", "title", "description");
+        // Mock data
+        String id = "123";
+        Poster updatedPoster = new Poster("id", "title", "description");
 
-      // Mock behavior
-      when(posterService.getPosterById(id))
-          .thenReturn(
-              CompletableFuture.completedFuture(
-                  new ServiceResponse<>(updatedPoster, "add updated vals")));
-      when(posterService.updatePoster(updatedPoster))
-          .thenReturn(
-              CompletableFuture.completedFuture(
-                  new ServiceResponse<>(updatedPoster, "Poster updated")));
+        // Mock behavior
+        when(posterService.getPosterById(id))
+                .thenReturn(
+                        CompletableFuture.completedFuture(
+                                new ServiceResponse<>(updatedPoster, "add updated vals")));
+        when(posterService.updatePoster(updatedPoster))
+                .thenReturn(
+                        CompletableFuture.completedFuture(
+                                new ServiceResponse<>(updatedPoster, "Poster updated")));
 
-      // Perform test (relies on mock behavior)
-      CompletableFuture<ResponseEntity<ServiceResponse<Poster>>> result =
-          posterController.updatePoster(id, updatedPoster);
+        // Perform test (relies on mock behavior)
+        CompletableFuture<ResponseEntity<ServiceResponse<Poster>>> result =
+                posterController.updatePoster(id, updatedPoster);
 
-      assertNotNull(result);
+        assertNotNull(result);
     }
 
     @Test
@@ -64,10 +62,10 @@ class PosterManagementUnitTest {
                 posterController.getPosterById(id);
 
         assertNotNull(result);
-        assertDoesNotThrow(() -> {
-            ResponseEntity<ServiceResponse<Poster>> body = result.join();
-            assertNotNull(body);
-        });
+//        assertDoesNotThrow(() -> {
+//            ResponseEntity<ServiceResponse<Poster>> body = result.join();
+//            assertNotNull(body);
+//        });
 
         // can write further assertions about body (ResponseEntity object) if desired
         ResponseEntity<ServiceResponse<Poster>> body = result.join();
