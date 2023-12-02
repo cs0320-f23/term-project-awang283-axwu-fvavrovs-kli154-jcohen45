@@ -7,6 +7,7 @@ nav {
   right: 10px;
   margin: 2%;
   width: 96vw;
+  z-index: 2;
 }
 
 article {
