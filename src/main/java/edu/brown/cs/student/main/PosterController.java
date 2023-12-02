@@ -50,6 +50,28 @@ public class PosterController {
   }
 
   /**
+   * sends a GET request to filter by tag(s)
+   * @param tags
+   * @return
+   */
+  @GetMapping("/tag")
+  public CompletableFuture<ResponseEntity<List<Poster>>> getPosterByTag(@RequestParam String[] tags) {
+    if (tags.length == 1) {
+      // If there is only one tag, use the searchByTag method
+      return posterService
+              .searchByTag(tags[0])
+              .thenApply(ResponseEntity::ok)
+              .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+    } else {
+      // If there are multiple tags, use the searchByMultipleTags method
+      return posterService
+              .searchByMultipleTags(tags)
+              .thenApply(ResponseEntity::ok)
+              .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+    }
+  }
+
+  /**
    * sends a POST request to the mapping /poster/create
    *
    * @param poster a poster (see fields expected in Poster class) expected in JSON format in the
