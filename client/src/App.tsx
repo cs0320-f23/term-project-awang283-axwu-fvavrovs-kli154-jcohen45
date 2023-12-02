@@ -1,15 +1,22 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Routes, Route, Link } from "react-router-dom";
 import Home from "./components/Home";
 import Happenings from "./components/Happenings";
 import Archive from "./components/Archive";
 import About from "./components/About";
 import "./styles/App.css";
-// import { Button } from "./components/Button";
-
 import { Button } from "@chakra-ui/react";
+import CreateImageModal from "./components/CreateImageModal";
+
 export default function App() {
-  const [loggedIn] = useState<boolean>(false);
+  const [loggedIn] = useState<boolean>(true);
+  const [createImageModal, setCreateImageModalOpen] = useState(false);
+
+  const handleCreatePoster = useCallback(() => {
+    // Toggle the state to open/close the modal
+    setCreateImageModalOpen((prev) => !prev);
+  }, []);
+
   return (
     <>
       <article>
@@ -26,8 +33,8 @@ export default function App() {
             <div className="right-links">
               {loggedIn ? (
                 <>
-                  <button>+</button>
-                  <button>User Profile</button>
+                  <Button onClick={handleCreatePoster}>+</Button>
+                  <Button>User Profile</Button>
                 </>
               ) : (
                 <>
@@ -46,6 +53,7 @@ export default function App() {
             <Route path="/archive" element={<Archive />} />
             <Route path="/about" element={<About />} />
           </Routes>
+          {createImageModal && <CreateImageModal />}
         </main>
       </article>
     </>
