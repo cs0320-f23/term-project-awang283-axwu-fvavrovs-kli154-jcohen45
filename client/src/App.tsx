@@ -33,8 +33,10 @@ export default function App() {
             <div className="right-links">
               {loggedIn ? (
                 <>
-                  <Button onClick={handleCreatePoster}>+</Button>
-                  <Button>User Profile</Button>
+                  <Button id="create" onClick={handleCreatePoster}>
+                    +
+                  </Button>
+                  <Button id="profile">User Profile</Button>
                 </>
               ) : (
                 <>
@@ -49,6 +51,7 @@ export default function App() {
         <main>
           <Routes>
             <Route path="/home" element={<Home />} />
+            <Route path="/" element={<Home />} />
             <Route path="/happenings" element={<Happenings />} />
             <Route path="/archive" element={<Archive />} />
             <Route path="/about" element={<About />} />
