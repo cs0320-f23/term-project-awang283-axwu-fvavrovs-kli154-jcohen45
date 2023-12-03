@@ -1,7 +1,6 @@
 package edu.brown.cs.student.main.responses;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import edu.brown.cs.student.main.types.Poster;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ServiceResponse<T> {
