@@ -21,9 +21,9 @@ public class Poster {
   private String content; // url or image path
   private String description;
   private HashSet<String> tags;
-  private DateTime createdAt;
-  private DateTime startDate;
-  private DateTime endDate;
+//  private DateTime createdAt;
+//  private DateTime startDate;
+//  private DateTime endDate;
   private boolean isRecurring;
   private String organization;
   // private User user;
@@ -37,6 +37,20 @@ public class Poster {
     this.description = description;
     this.tags = new HashSet<>();
   }
+
+  /**
+   * allows user to input tags, which i'm using to test search by tags
+   */
+  @JsonPropertyOrder({"id", "title", "description","tags"})
+
+  public Poster(String title, String content, String description, HashSet<String> tags) {
+    // i turned ID to a string
+    this.id = UUID.randomUUID().toString(); // so that IDs are randomly generated and unique
+    this.title = title;
+    this.content = content;
+    this.description = description;
+    this.tags = tags;
+  }
   /** Allows user to create poster w/o description of event */
   public Poster(String title, String content) {
     this.id = UUID.randomUUID().toString(); // so that IDs are randomly generated and unique
@@ -48,7 +62,7 @@ public class Poster {
   public Poster() {
     this.id = UUID.randomUUID().toString();
     this.tags = new HashSet<>();
-    this.createdAt = new DateTime();
+//    this.createdAt = new DateTime();
   }
 
   @JsonProperty("id")
@@ -141,27 +155,27 @@ public class Poster {
     this.organization = organization;
   }
 
-  public DateTime getCreatedAt() {
-    return createdAt;
-  }
-
-  public void setCreatedAt(DateTime createdAt) {
-    this.createdAt = createdAt;
-  }
-
-  public DateTime getStartDate() {
-    return startDate;
-  }
-
-  public void setStartDate(DateTime startDate) {
-    this.startDate = startDate;
-  }
-
-  public DateTime getEndDate() {
-    return endDate;
-  }
-
-  public void setEndDate(DateTime endDate) {
-    this.endDate = endDate;
-  }
+//  public DateTime getCreatedAt() {
+//    return createdAt;
+//  }
+//
+//  public void setCreatedAt(DateTime createdAt) {
+//    this.createdAt = createdAt;
+//  }
+//
+//  public DateTime getStartDate() {
+//    return startDate;
+//  }
+//
+//  public void setStartDate(DateTime startDate) {
+//    this.startDate = startDate;
+//  }
+//
+//  public DateTime getEndDate() {
+//    return endDate;
+//  }
+//
+//  public void setEndDate(DateTime endDate) {
+//    this.endDate = endDate;
+//  }
 }
