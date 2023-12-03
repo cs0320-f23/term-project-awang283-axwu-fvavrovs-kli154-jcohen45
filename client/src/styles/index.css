@@ -12,7 +12,6 @@
   /* max-height: 92vh; */
   top: 50px;
   margin: 0 auto;
-  text-align: center;
 
   /* font-synthesis: none; */
   /* text-rendering: optimizeLegibility; */
@@ -21,10 +20,11 @@
 
   --dark-purple100: rgba(63, 49, 94, 1);
   --dark-purple70: rgba(121, 111, 142, 1);
-  --drop-shadow: 0px 4px 10px 5px rgba(0, 0, 0, 0.25);
+  --drop-shadow: 0px 4px 10px 5px rgba(63, 49, 94, 0.25);
+  --modal-shadow: 0px 3px 10px 4px rgba(63, 49, 94, 0.15);
   --light-blue: rgba(202, 226, 255, 1);
   --light-purple: rgba(249, 238, 255, 1);
-  --tag-shadow: 0px 1px 9px 0px rgba(0, 0, 0, 0.15);
+  --tag-shadow: 0px 1px 9px 0px rgba(63, 49, 94, 0.2);
   --tagsdark-blue: rgba(78, 70, 137, 1);
   --tagsdark-green: rgba(0, 108, 69, 1);
   --tagsdark-magenta: rgba(127, 42, 118, 1);
@@ -32,23 +32,6 @@
   --tagslight-green: rgba(213, 240, 222, 1);
   --tagslight-magenta: rgba(239, 218, 250, 1);
   --white: rgba(255, 255, 255, 1);
-
-  background: var(--light-purple);
-  background: -moz-linear-gradient(
-    top,
-    var(--light-purple) 0%,
-    var(--light-blue) 100%
-  );
-  background: -webkit-linear-gradient(
-    top,
-    var(--light-purple) 0%,
-    #a9d3ff 100%
-  );
-  background: linear-gradient(
-    to bottom,
-    var(--light-purple) 0%,
-    var(--light-blue) 100%
-  );
 }
 
 a {
@@ -57,10 +40,20 @@ a {
   text-decoration: inherit;
 }
 a:hover {
-  color: #535bf2;
+  color: var(--dark-purple70);
 }
 
 body {
+  background: linear-gradient(
+    180deg,
+    #f9eeff 0%,
+    #f9eeff 42.19%,
+    #c9e2ff 100%
+  ) !important;
+  height: 100%;
+  background-repeat: repeat-x !important;
+  background-position: center;
+  background-attachment: fixed !important;
   margin: 0;
   display: flex;
   place-items: center;
@@ -73,21 +66,22 @@ h1 {
 }
 
 button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: "Quicksand-SemiBold", Helvetica;
+  background-color: var(--dark-purple100) !important;
+  border-radius: 12px;
+  font-family: "quicksand", sans-serif;
   cursor: pointer;
-  transition: border-color 0.25s;
 }
-p {
-  font-family: "Quicksand-SemiBold", Helvetica;
-}
+
 button:hover {
-  border-color: #646cff;
+  background-color: var(--dark-purple70) !important;
+  transform: scale(1.03) !important;
+  transition: 0.3s;
 }
+
+p {
+  font-family: "quicksand", sans-serif;
+}
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
@@ -98,7 +92,7 @@ button:focus-visible {
     color: #213547;
   }
   a:hover {
-    color: #747bff;
+    color: var(--dark-purple70);
   }
   button {
     background-color: #f9f9f9;
