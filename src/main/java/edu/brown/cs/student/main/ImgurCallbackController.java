@@ -10,8 +10,8 @@ import java.util.Map;
 
 @RestController
 public class ImgurCallbackController {
-    private final String clientId = "YOUR_IMGUR_CLIENT_ID";
-    private final String clientSecret = "YOUR_IMGUR_CLIENT_SECRET";
+    private final String clientId = "64d54d2c2fc9bcd";
+    private final String clientSecret = "dee8f3cd21914e2b0c197904a4bfbb4c633cfe8f";
     private final String redirectUri = "http://localhost:8080/oauth2/callback"; // Should match the one registered with Imgur
 
     @GetMapping("/oauth2/callback")
