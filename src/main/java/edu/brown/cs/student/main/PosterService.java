@@ -116,9 +116,32 @@ public class PosterService {
                             .collect(Collectors.toList()));
   }
 
+  @Async
+  public CompletableFuture<List<Poster>> searchByOrganization(String org) {
+    return this.getPosters()
+            .thenApply(posters ->
+                    posters.stream()
+                            .filter(poster -> poster.getOrganization().equalsIgnoreCase(org))
+                            .collect(Collectors.toList()));
+  }
+  @Async
+  public CompletableFuture<List<Poster>> searchByTerm(String term) {
+    return this.getPosters()
+            .thenApply(posters ->
+                    posters.stream()
+                            .filter(poster -> this.searchTermHelper(poster, term))
+                            .collect(Collectors.toList()));
+  }
+
   private boolean containsAllTags(Poster poster, String[] tags) {
     HashSet<String> posterTags = poster.getTags();
     return posterTags.containsAll(Arrays.asList(tags));
+  }
+
+  private boolean searchTermHelper(Poster poster, String term){
+    String haystack = poster.getHaystack();
+    BMSearch searcher = new BMSearch(term, haystack);
+    return searcher.getSearchResult();
   }
 
 

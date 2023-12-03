@@ -21,9 +21,9 @@ public class Poster {
   private String content; // url or image path
   private String description;
   private HashSet<String> tags;
-//  private DateTime createdAt;
-//  private DateTime startDate;
-//  private DateTime endDate;
+  private DateTime createdAt;
+  private DateTime startDate;
+  private DateTime endDate;
   private boolean isRecurring;
   private String organization;
   // private User user;
@@ -36,33 +36,38 @@ public class Poster {
     this.content = content;
     this.description = description;
     this.tags = new HashSet<>();
+    this.organization = "";
   }
 
   /**
-   * allows user to input tags, which i'm using to test search by tags
+   * allows user to input tags and organization, which i'm using to test search
    */
-  @JsonPropertyOrder({"id", "title", "description","tags"})
+  @JsonPropertyOrder({"id", "title", "description","tags","org"})
 
-  public Poster(String title, String content, String description, HashSet<String> tags) {
+  public Poster(String title, String content, String description, HashSet<String> tags, String org) {
     // i turned ID to a string
     this.id = UUID.randomUUID().toString(); // so that IDs are randomly generated and unique
     this.title = title;
     this.content = content;
     this.description = description;
     this.tags = tags;
+    this.organization = org;
   }
   /** Allows user to create poster w/o description of event */
   public Poster(String title, String content) {
     this.id = UUID.randomUUID().toString(); // so that IDs are randomly generated and unique
     this.title = title;
     this.content = content;
+    this.tags = new HashSet<>();
+    this.organization = "";
   }
 
   /** a no argument constructor so that Jackson can deserialize the json */
   public Poster() {
     this.id = UUID.randomUUID().toString();
     this.tags = new HashSet<>();
-//    this.createdAt = new DateTime();
+    this.organization = "";
+    this.createdAt = new DateTime();
   }
 
   @JsonProperty("id")
@@ -155,27 +160,43 @@ public class Poster {
     this.organization = organization;
   }
 
-//  public DateTime getCreatedAt() {
-//    return createdAt;
-//  }
-//
-//  public void setCreatedAt(DateTime createdAt) {
-//    this.createdAt = createdAt;
-//  }
-//
-//  public DateTime getStartDate() {
-//    return startDate;
-//  }
-//
-//  public void setStartDate(DateTime startDate) {
-//    this.startDate = startDate;
-//  }
-//
-//  public DateTime getEndDate() {
-//    return endDate;
-//  }
-//
-//  public void setEndDate(DateTime endDate) {
-//    this.endDate = endDate;
-//  }
+  public String getHaystack(){
+    StringBuilder haystack = new StringBuilder(this.title);
+    if (this.description != ""){
+      haystack.append(this.description);
+    }
+    if (!this.tags.isEmpty()){
+      for (String tag: this.tags){
+        haystack.append(tag);
+      }
+    }
+    if (this.organization != "") {
+      haystack.append(this.organization);
+    }
+    return haystack.toString();
+  }
+
+  public DateTime getCreatedAt() {
+    return createdAt;
+  }
+
+  public void setCreatedAt(DateTime createdAt) {
+    this.createdAt = createdAt;
+  }
+
+  public DateTime getStartDate() {
+    return startDate;
+  }
+
+  public void setStartDate(DateTime startDate) {
+    this.startDate = startDate;
+  }
+
+  public DateTime getEndDate() {
+    return endDate;
+  }
+
+  public void setEndDate(DateTime endDate) {
+    this.endDate = endDate;
+  }
 }
