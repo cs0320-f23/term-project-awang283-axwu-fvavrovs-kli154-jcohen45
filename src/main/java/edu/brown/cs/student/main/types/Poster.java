@@ -36,18 +36,37 @@ public class Poster {
     this.content = content;
     this.description = description;
     this.tags = new HashSet<>();
+    this.organization = "";
+  }
+
+  /**
+   * allows user to input tags and organization, which i'm using to test search
+   */
+  @JsonPropertyOrder({"id", "title", "description","tags","org"})
+
+  public Poster(String title, String content, String description, HashSet<String> tags, String org) {
+    // i turned ID to a string
+    this.id = UUID.randomUUID().toString(); // so that IDs are randomly generated and unique
+    this.title = title;
+    this.content = content;
+    this.description = description;
+    this.tags = tags;
+    this.organization = org;
   }
   /** Allows user to create poster w/o description of event */
   public Poster(String title, String content) {
     this.id = UUID.randomUUID().toString(); // so that IDs are randomly generated and unique
     this.title = title;
     this.content = content;
+    this.tags = new HashSet<>();
+    this.organization = "";
   }
 
   /** a no argument constructor so that Jackson can deserialize the json */
   public Poster() {
     this.id = UUID.randomUUID().toString();
     this.tags = new HashSet<>();
+    this.organization = "";
     this.createdAt = new DateTime();
   }
 
@@ -139,6 +158,22 @@ public class Poster {
 
   public void setOrganization(String organization) {
     this.organization = organization;
+  }
+
+  public String getHaystack(){
+    StringBuilder haystack = new StringBuilder(this.title);
+    if (this.description != ""){
+      haystack.append(this.description);
+    }
+    if (!this.tags.isEmpty()){
+      for (String tag: this.tags){
+        haystack.append(tag);
+      }
+    }
+    if (this.organization != "") {
+      haystack.append(this.organization);
+    }
+    return haystack.toString();
   }
 
   public DateTime getCreatedAt() {
