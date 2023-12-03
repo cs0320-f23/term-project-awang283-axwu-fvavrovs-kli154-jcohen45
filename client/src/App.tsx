@@ -53,7 +53,9 @@ export default function App() {
             <Route path="/archive" element={<Archive />} />
             <Route path="/about" element={<About />} />
           </Routes>
-          {createImageModal && <CreateImageModal />}
+          {createImageModal && (
+            <CreateImageModal onClose={() => setCreateImageModalOpen(false)} />
+          )}
         </main>
       </article>
     </>

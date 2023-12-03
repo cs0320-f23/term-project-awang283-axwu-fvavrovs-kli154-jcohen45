@@ -1,0 +1,18 @@
+.location-date,
+.location-date-titles {
+  display: flex;
+  justify-content: space-between;
+}
+
+.image-container {
+  width: 50%;
+}
+
+.input-fields {
+  width: 50%;
+}
+
+.image-upload-content {
+  display: flex;
+  margin-bottom: 2%;
+}
