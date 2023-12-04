@@ -2,9 +2,9 @@ package edu.brown.cs.student.main.types;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.UUID;
-import org.joda.time.DateTime;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -21,9 +21,15 @@ public class Poster {
   private String content; // url or image path
   private String description;
   private HashSet<String> tags;
-  private DateTime createdAt;
-  private DateTime startDate;
-  private DateTime endDate;
+
+
+  private LocalDateTime createdAt;
+
+
+  private LocalDateTime startDate;
+
+  private LocalDateTime endDate;
+
   private boolean isRecurring;
   private String organization;
   // private User user;
@@ -48,7 +54,7 @@ public class Poster {
   public Poster() {
     this.id = UUID.randomUUID().toString();
     this.tags = new HashSet<>();
-    this.createdAt = new DateTime();
+    this.createdAt = LocalDateTime.now();
   }
 
   @JsonProperty("id")
@@ -125,11 +131,11 @@ public class Poster {
     this.tags.remove(tag);
   }
 
-  public boolean isRecurring() {
+  public boolean getIsRecurring() {
     return isRecurring;
   }
 
-  public void setRecurring(boolean recurring) {
+  public void setIsRecurring(boolean recurring) {
     isRecurring = recurring;
   }
 
@@ -141,27 +147,27 @@ public class Poster {
     this.organization = organization;
   }
 
-  public DateTime getCreatedAt() {
+  public LocalDateTime getCreatedAt() {
     return createdAt;
   }
 
-  public void setCreatedAt(DateTime createdAt) {
+  public void setCreatedAt(LocalDateTime createdAt) {
     this.createdAt = createdAt;
   }
 
-  public DateTime getStartDate() {
+  public LocalDateTime getStartDate() {
     return startDate;
   }
 
-  public void setStartDate(DateTime startDate) {
+  public void setStartDate(LocalDateTime startDate) {
     this.startDate = startDate;
   }
 
-  public DateTime getEndDate() {
+  public LocalDateTime getEndDate() {
     return endDate;
   }
 
-  public void setEndDate(DateTime endDate) {
+  public void setEndDate(LocalDateTime endDate) {
     this.endDate = endDate;
   }
 }

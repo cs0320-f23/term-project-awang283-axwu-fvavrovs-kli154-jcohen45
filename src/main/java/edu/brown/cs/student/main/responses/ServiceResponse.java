@@ -1,8 +1,10 @@
 package edu.brown.cs.student.main.responses;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ServiceResponse<T> {
   /** This class handles responses to API requests */
   private String message;
