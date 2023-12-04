@@ -3,6 +3,15 @@ import { Box, Select } from "@chakra-ui/react";
 import { Search2Icon } from "@chakra-ui/icons";
 import "../styles/Home.css";
 
+const images = [
+  { id: "1", path: "./posters/poster1.png" },
+  { id: "2", path: "./posters/poster2.png" },
+  { id: "3", path: "./posters/poster3.png" },
+  { id: "4", path: "./posters/poster4.png" },
+  { id: "5", path: "./posters/poster5.png" },
+  { id: "6", path: "./posters/poster6.png" },
+];
+
 export default function Home() {
   return (
     <main className="posters">
@@ -11,10 +20,11 @@ export default function Home() {
           <div className="text-wrapper">Posters @ Brown</div>
         </label>
         <div className="search-bar">
-          <Search2Icon id="search-icon" width={16} />
+          <Search2Icon id="search-icon" boxSize={5} width={14} />
           <input placeholder="Search" type="text" />
           <Box w="12vw">
             <Select
+              marginLeft="1vw"
               className="tag-select"
               fontSize="20px"
               height="7vh"
@@ -40,7 +50,17 @@ export default function Home() {
         </div>
         {/* map each poster to an img w/in a div  */}
       </div>
-      <div className="happenings-label">Happenings Today</div>
+      <div className="happenings">
+        <div className="happenings-label">Happenings Today</div>
+        <div className="gallery">
+          {images.map((item, index) => (
+            <div className="pic" id={"pic" + JSON.stringify(index)} key={index}>
+              <img src={item.path}></img>
+            </div>
+          ))}
+        </div>
+      </div>
+      <span></span>
     </main>
   );
 }

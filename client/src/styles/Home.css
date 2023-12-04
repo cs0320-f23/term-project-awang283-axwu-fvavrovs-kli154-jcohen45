@@ -136,15 +136,41 @@ input::placeholder {
   background-color: var(--tagslight-blue);
 }
 
+.happenings {
+  padding-bottom: 3vh;
+}
+
 .happenings-label {
   font-size: 6vh;
   margin-top: 7vh;
-  margin-left: 4vw;
+  margin-bottom: 3vh;
+  margin-left: 4.5vw;
 }
 
-#logo {
-  font-family: "pacifico", sans-serif;
-  transform: translateY(-8%);
+.gallery {
+  padding: 1vw;
+  display: flex;
+  flex-flow: row;
+  overflow-x: auto;
+  gap: 2vw;
+}
+
+.pic {
+  width: 26vw;
+  flex: 0 0 auto;
+}
+
+img {
+  box-shadow: var(--drop-shadow);
+  border-radius: 15px;
+}
+
+#pic0 {
+  margin-left: 3vw;
+}
+
+#pic5 {
+  margin-right: 3vw;
 }
 
 @media (max-width: 780px) {
