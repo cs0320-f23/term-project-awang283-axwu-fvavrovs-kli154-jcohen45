@@ -13,7 +13,7 @@ import {
 } from "@chakra-ui/react";
 import "../styles/Modal.css";
 
-export default function CreateImageModal({ onClose }) {
+export default function CreateImageModal(onClose) {
   return (
     <>
       <Modal isOpen={true} onClose={onClose}>

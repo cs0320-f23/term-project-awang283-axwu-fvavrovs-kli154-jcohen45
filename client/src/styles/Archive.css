@@ -3,8 +3,8 @@ main {
   top: 2vh;
 }
 
-h1 {
-  margin-bottom: 5%;
+#year {
   font-size: 6vh;
-  text-align: center;
+  margin-left: 4vw;
+  text-align: left;
 }

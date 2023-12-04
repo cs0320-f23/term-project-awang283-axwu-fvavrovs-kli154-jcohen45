@@ -1,7 +1,8 @@
 // import React from "react";
-import { Box, Select } from "@chakra-ui/react";
+import { Box, HStack, Select, SimpleGrid, Stack } from "@chakra-ui/react";
 import { Search2Icon } from "@chakra-ui/icons";
 import "../styles/Home.css";
+import { ImageCard } from "./Happenings";
 
 export const images = [
   {
@@ -89,11 +90,17 @@ export default function Home() {
       <div className="happenings">
         <div className="happenings-label">Happenings Today</div>
         <div className="gallery">
-          {images.map((item, index) => (
-            <div className="pic" id={"pic" + JSON.stringify(index)} key={index}>
-              <img src={item.path}></img>
-            </div>
-          ))}
+          <HStack spacing="3vw" alignItems="flex-start">
+            {images.map((item) =>
+              ImageCard(
+                item.title,
+                item.path,
+                item.date,
+                item.time,
+                item.location
+              )
+            )}
+          </HStack>
         </div>
       </div>
     </main>

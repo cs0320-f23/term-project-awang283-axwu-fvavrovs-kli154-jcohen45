@@ -58,6 +58,7 @@
   font-family: "quicksand", sans-serif;
   font-weight: 500;
   border-radius: 0px 15px 15px 0px !important;
+  box-shadow: 0px 3px 10px 3px rgba(0, 0, 0, 0.15);
 }
 
 .tag-select:hover {
@@ -74,6 +75,9 @@ input {
   line-height: normal;
   overflow: hidden;
   padding: 0;
+  font-family: "quicksand", sans-serif;
+  font-weight: 600;
+  font-size: 22px;
 }
 
 input::placeholder {
@@ -136,10 +140,6 @@ input::placeholder {
   background-color: var(--tagslight-blue);
 }
 
-.happenings {
-  padding-bottom: 3vh;
-}
-
 .happenings-label {
   font-size: 6vh;
   margin-top: 7vh;
@@ -148,18 +148,9 @@ input::placeholder {
 }
 
 .gallery {
-  padding: 0vh 4vw;
-  display: flex;
-  flex-flow: row;
+  padding: 1vh 4vw;
   overflow-x: auto;
   gap: 3vw;
-}
-
-.pic {
-  width: 27vw;
-  flex: 0 0 auto;
-  padding-top: 1vh;
-  padding-bottom: 2vh;
 }
 
 img {
