@@ -147,12 +147,6 @@ input::placeholder {
   margin-left: 4.5vw;
 }
 
-.gallery {
-  padding: 1vh 4vw;
-  overflow-x: auto;
-  gap: 3vw;
-}
-
 img {
   border-radius: 15px;
 }

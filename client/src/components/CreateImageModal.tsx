@@ -18,9 +18,14 @@ export default function CreateImageModal(onClose) {
     <>
       <Modal isOpen={true} onClose={onClose}>
         <div className="modal-font">
-          <ModalOverlay />
-          <ModalContent minW={"70%"} minH={"80%"}>
-            <ModalHeader display={"flex"} justifyContent={"space-around"}>
+          <ModalOverlay className="modal-overlay" />
+          <ModalContent minW={"70%"} minH={"80%"} borderRadius="20px">
+            <ModalHeader
+              className="modal-header"
+              fontSize="6vh"
+              display={"flex"}
+              justifyContent={"space-around"}
+            >
               Upload a Poster
             </ModalHeader>
             <ModalCloseButton />

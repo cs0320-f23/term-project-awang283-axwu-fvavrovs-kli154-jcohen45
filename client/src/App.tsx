@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { Routes, Route, Link } from "react-router-dom";
+import { Routes, Route, Link, NavLink } from "react-router-dom";
 import Home from "./components/Home";
 import Happenings from "./components/Happenings";
 import Archive from "./components/Archive";
@@ -23,12 +23,12 @@ export default function App() {
         <header>
           <nav>
             <div className="left-links">
-              <Link to="/home" id="logo">
+              <NavLink to="/home" id="logo">
                 P@B
-              </Link>
-              <Link to="/happenings">Happenings</Link>
-              <Link to="/archive">Archive</Link>
-              <Link to="/about">About</Link>
+              </NavLink>
+              <NavLink to="/happenings">Happenings</NavLink>
+              <NavLink to="/archive">Archive</NavLink>
+              <NavLink to="/about">About</NavLink>
             </div>
             <div className="right-links">
               {loggedIn ? (
