@@ -3,9 +3,14 @@ package edu.brown.cs.student.main;
 import edu.brown.cs.student.main.responses.ServiceResponse;
 import edu.brown.cs.student.main.types.Poster;
 import edu.brown.cs.student.main.types.PosterRepository;
+
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -93,4 +98,51 @@ public class PosterService {
       return CompletableFuture.completedFuture(new ServiceResponse<>("Poster not found"));
     }
   }
+  @Async
+  public CompletableFuture<List<Poster>> searchByTag(String tag) {
+    return this.getPosters()
+            .thenApply(posters ->
+                    posters.stream()
+                            .filter(poster -> poster.getTags().contains(tag))
+                            .collect(Collectors.toList()));
+  }
+
+  @Async
+  public CompletableFuture<List<Poster>> searchByMultipleTags(String[] tags) {
+    return this.getPosters()
+            .thenApply(posters ->
+                    posters.stream()
+                            .filter(poster -> this.containsAllTags(poster, tags))
+                            .collect(Collectors.toList()));
+  }
+
+  @Async
+  public CompletableFuture<List<Poster>> searchByOrganization(String org) {
+    return this.getPosters()
+            .thenApply(posters ->
+                    posters.stream()
+                            .filter(poster -> poster.getOrganization().equalsIgnoreCase(org))
+                            .collect(Collectors.toList()));
+  }
+  @Async
+  public CompletableFuture<List<Poster>> searchByTerm(String term) {
+    return this.getPosters()
+            .thenApply(posters ->
+                    posters.stream()
+                            .filter(poster -> this.searchTermHelper(poster, term))
+                            .collect(Collectors.toList()));
+  }
+
+  private boolean containsAllTags(Poster poster, String[] tags) {
+    HashSet<String> posterTags = poster.getTags();
+    return posterTags.containsAll(Arrays.asList(tags));
+  }
+
+  private boolean searchTermHelper(Poster poster, String term){
+    String haystack = poster.getHaystack();
+    BMSearch searcher = new BMSearch(term, haystack);
+    return searcher.getSearchResult();
+  }
+
+
 }
