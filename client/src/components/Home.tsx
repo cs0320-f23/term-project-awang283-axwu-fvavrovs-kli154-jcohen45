@@ -3,13 +3,49 @@ import { Box, Select } from "@chakra-ui/react";
 import { Search2Icon } from "@chakra-ui/icons";
 import "../styles/Home.css";
 
-const images = [
-  { id: "1", path: "./posters/poster1.png" },
-  { id: "2", path: "./posters/poster2.png" },
-  { id: "3", path: "./posters/poster3.png" },
-  { id: "4", path: "./posters/poster4.png" },
-  { id: "5", path: "./posters/poster5.png" },
-  { id: "6", path: "./posters/poster6.png" },
+export const images = [
+  {
+    path: "./posters/poster1.png",
+    title: "Boba with SASE",
+    date: "Thursday Nov 30",
+    time: "5:30 PM",
+    location: "B&H 165",
+  },
+  {
+    path: "./posters/poster2.png",
+    title: "BWxD Committee Applications Open",
+    date: "Thursday Nov 30",
+    time: "5-6 PM",
+    location: "Salomon 003",
+  },
+  {
+    path: "./posters/poster3.png",
+    title: "VISIONS Release Party",
+    date: "Friday Dec 1",
+    time: "6:30-8 PM",
+    location: "The Underground",
+  },
+  {
+    path: "./posters/poster4.png",
+    title: "CSA x KASA Devils in Davol",
+    date: "Friday Dec 1",
+    time: "10 PM-1 AM",
+    location: "Seoul Providence",
+  },
+  {
+    path: "./posters/poster5.png",
+    title: "Submit to VISIONS",
+    date: "Saturday Dec 2",
+    time: null,
+    location: null,
+  },
+  {
+    path: "./posters/poster6.png",
+    title: "Innovation and Medical Product Development with Dr. Weiss",
+    date: "Saturday Dec 2",
+    time: "6:30 PM",
+    location: "B&H 159",
+  },
 ];
 
 export default function Home() {
@@ -60,7 +96,6 @@ export default function Home() {
           ))}
         </div>
       </div>
-      <span></span>
     </main>
   );
 }

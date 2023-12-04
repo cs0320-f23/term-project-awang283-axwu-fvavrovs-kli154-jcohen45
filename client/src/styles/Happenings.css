@@ -1,0 +1,99 @@
+main {
+  width: 100%;
+}
+
+h1 {
+  font-size: 6vh;
+  margin-top: 4vh;
+  text-align: center;
+}
+
+.grid {
+  margin-left: 3vw;
+  margin-right: 3vw;
+}
+
+.image-card {
+  position: relative;
+  margin-bottom: 3vw;
+  display: flex;
+  justify-content: center;
+}
+
+.image-overlay {
+  position: absolute;
+  background-color: rgba(63, 49, 94, 0.75);
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  padding: 2vw;
+  color: white;
+  font-family: "quicksand", sans-serif;
+}
+
+.top-info {
+  display: flex;
+  flex-flow: row;
+  gap: 1.5vw;
+}
+
+.month-date {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  width: 7vw;
+  height: 7vw;
+  color: var(--dark-purple100);
+  padding: 1vw;
+  border-radius: 15px;
+}
+#month {
+  font-family: "pacifico", sans-serif;
+  font-size: 3.3vw;
+  transform: translateY(10%);
+}
+#day {
+  font-family: "pacifico", sans-serif;
+  font-size: 3.3vw;
+  transform: translateY(-40%);
+}
+
+.weekday-time {
+  height: 7vw;
+  display: flex;
+  flex-flow: column;
+  transform: translateY(7%);
+}
+#weekday {
+  font-size: 2.3vw;
+  align-items: center;
+}
+#time {
+  font-size: 1.5vw;
+  font-weight: 450;
+  align-items: center;
+}
+
+.title-location {
+  position: absolute;
+  bottom: 0;
+  margin-bottom: 2vw;
+}
+#title {
+  font-size: 2.3vw;
+}
+#location {
+  font-size: 1.5vw;
+  font-weight: 450;
+}
+
+.card-backing {
+  background-color: white;
+  width: 28.5vw;
+  flex: 0 0 auto;
+  padding: 1vw;
+  border-radius: 20px;
+  box-shadow: var(--drop-shadow);
+}

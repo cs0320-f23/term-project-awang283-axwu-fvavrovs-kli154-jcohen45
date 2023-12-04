@@ -6,8 +6,9 @@ nav {
   top: 0;
   padding-top: 2vh;
   padding-left: 2vw;
+  padding-right: 4vw;
   /* margin: 2%; */
-  width: 96vw;
+  width: 100%;
   z-index: 3;
   background: rgba(249, 238, 255, 0.85);
   height: 10vh;
@@ -35,6 +36,7 @@ article {
   border-radius: 12px;
   color: white;
   transform: translateY(-15%);
+  outline: none;
 }
 
 #create {

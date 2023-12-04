@@ -143,34 +143,27 @@ input::placeholder {
 .happenings-label {
   font-size: 6vh;
   margin-top: 7vh;
-  margin-bottom: 3vh;
+  margin-bottom: 2vh;
   margin-left: 4.5vw;
 }
 
 .gallery {
-  padding: 1vw;
+  padding: 0vh 4vw;
   display: flex;
   flex-flow: row;
   overflow-x: auto;
-  gap: 2vw;
+  gap: 3vw;
 }
 
 .pic {
-  width: 26vw;
+  width: 27vw;
   flex: 0 0 auto;
+  padding-top: 1vh;
+  padding-bottom: 2vh;
 }
 
 img {
-  box-shadow: var(--drop-shadow);
   border-radius: 15px;
-}
-
-#pic0 {
-  margin-left: 3vw;
-}
-
-#pic5 {
-  margin-right: 3vw;
 }
 
 @media (max-width: 780px) {
