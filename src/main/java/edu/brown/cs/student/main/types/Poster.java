@@ -2,9 +2,9 @@ package edu.brown.cs.student.main.types;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.UUID;
-import org.joda.time.DateTime;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -21,22 +21,26 @@ public class Poster {
   private String content; // url or image path
   private String description;
   private HashSet<String> tags;
-  private DateTime createdAt;
-  private DateTime startDate;
-  private DateTime endDate;
+
+
+  private LocalDateTime createdAt;
+
+
+  private LocalDateTime startDate;
+
+  private LocalDateTime endDate;
+
   private boolean isRecurring;
   private String organization;
   // private User user;
 
   @JsonPropertyOrder({"id", "title", "description"})
   public Poster(String title, String content, String description) {
-    // i turned ID to a string
     this.id = UUID.randomUUID().toString(); // so that IDs are randomly generated and unique
     this.title = title;
     this.content = content;
     this.description = description;
     this.tags = new HashSet<>();
-    this.organization = "";
   }
 
   /**
@@ -66,8 +70,7 @@ public class Poster {
   public Poster() {
     this.id = UUID.randomUUID().toString();
     this.tags = new HashSet<>();
-    this.organization = "";
-    this.createdAt = new DateTime();
+    this.createdAt = LocalDateTime.now();
   }
 
   @JsonProperty("id")
@@ -144,11 +147,11 @@ public class Poster {
     this.tags.remove(tag);
   }
 
-  public boolean isRecurring() {
+  public boolean getIsRecurring() {
     return isRecurring;
   }
 
-  public void setRecurring(boolean recurring) {
+  public void setIsRecurring(boolean recurring) {
     isRecurring = recurring;
   }
 
@@ -158,6 +161,32 @@ public class Poster {
 
   public void setOrganization(String organization) {
     this.organization = organization;
+  }
+
+
+  public LocalDateTime getCreatedAt() {
+
+    return createdAt;
+  }
+
+  public void setCreatedAt(LocalDateTime createdAt) {
+    this.createdAt = createdAt;
+  }
+
+  public LocalDateTime getStartDate() {
+    return startDate;
+  }
+
+  public void setStartDate(LocalDateTime startDate) {
+    this.startDate = startDate;
+  }
+
+  public LocalDateTime getEndDate() {
+    return this.endDate;
+  }
+
+  public void setEndDate(LocalDateTime endDate) {
+    this.endDate = endDate;
   }
 
   public String getHaystack(){
@@ -174,29 +203,5 @@ public class Poster {
       haystack.append(this.organization);
     }
     return haystack.toString();
-  }
-
-  public DateTime getCreatedAt() {
-    return createdAt;
-  }
-
-  public void setCreatedAt(DateTime createdAt) {
-    this.createdAt = createdAt;
-  }
-
-  public DateTime getStartDate() {
-    return startDate;
-  }
-
-  public void setStartDate(DateTime startDate) {
-    this.startDate = startDate;
-  }
-
-  public DateTime getEndDate() {
-    return endDate;
-  }
-
-  public void setEndDate(DateTime endDate) {
-    this.endDate = endDate;
   }
 }
