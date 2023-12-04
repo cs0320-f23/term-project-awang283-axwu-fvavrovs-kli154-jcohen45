@@ -74,17 +74,12 @@ button {
 
 button:hover {
   background-color: var(--dark-purple70) !important;
-  transform: scale(1.03) !important;
+  transform: scale(1.01) !important;
   transition: 0.3s;
 }
 
 p {
   font-family: "quicksand", sans-serif;
-}
-
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
 }
 
 @media (prefers-color-scheme: light) {

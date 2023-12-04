@@ -36,12 +36,23 @@ h1 {
   height: 6vh;
 }
 
+.browse-search-bar:hover {
+  transform: scale(1.01);
+  transition: 0.3s;
+  background: #fbf8ff;
+}
+
 .browse-select {
   background-color: var(--dark-purple100) !important;
   font-family: "quicksand", sans-serif;
   font-weight: 500;
   border-radius: 0px 15px 15px 0px !important;
   box-shadow: 0px 3px 10px 3px rgba(0, 0, 0, 0.15);
+}
+
+.browse-select:hover {
+  background-color: var(--dark-purple70) !important;
+  transition: 0.3s;
 }
 
 .browse-input {

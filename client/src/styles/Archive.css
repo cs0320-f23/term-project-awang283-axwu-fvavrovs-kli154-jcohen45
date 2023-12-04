@@ -4,7 +4,13 @@ main {
 }
 
 #year {
+  margin-top: 6vh;
   font-size: 6vh;
   margin-left: 4vw;
   text-align: left;
+}
+
+.archive-grid {
+  transform: translateY(-4.7%);
+  margin: 0vh 3vw;
 }

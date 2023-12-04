@@ -9,7 +9,7 @@ export default function Archive() {
     <main className="happenings">
       <h1 id="year">2023</h1>
       <Box
-        className="grid"
+        className="archive-grid"
         padding={4}
         sx={{ columnCount: [1, 2, 3], columnGap: "3vw" }}
       >
@@ -18,6 +18,15 @@ export default function Archive() {
         )}
       </Box>
       <h1 id="year">2022</h1>
+      <Box
+        className="archive-grid"
+        padding={4}
+        sx={{ columnCount: [1, 2, 3], columnGap: "3vw" }}
+      >
+        {images.map((item) =>
+          ImageCard(item.title, item.path, item.date, item.time, item.location)
+        )}
+      </Box>
     </main>
   );
 }
