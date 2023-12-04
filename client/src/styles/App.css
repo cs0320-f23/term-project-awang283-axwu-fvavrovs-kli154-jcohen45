@@ -22,6 +22,8 @@ article {
   font-size: 28px;
   transform: translateY(-30%);
   font-family: "pacifico", sans-serif;
+  color: var(--dark-purple100);
+  font-weight: 600;
 }
 
 .left-links,
@@ -29,6 +31,25 @@ article {
   display: flex;
   justify-content: space-between;
   font-size: 18px;
+}
+
+.left-links {
+  color: var(--dark-purple70);
+}
+
+.happenings-link.active {
+  color: var(--dark-purple100);
+  font-weight: 600;
+}
+
+.archive-link.active {
+  color: var(--dark-purple100);
+  font-weight: 600;
+}
+
+.about-link.active {
+  color: var(--dark-purple100);
+  font-weight: 600;
 }
 
 #create,

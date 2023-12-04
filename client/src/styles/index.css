@@ -34,13 +34,9 @@
   --white: rgba(255, 255, 255, 1);
 }
 
-a {
-  font-weight: 500;
-  color: var(--dark-purple100);
-  text-decoration: inherit;
-}
 a:hover {
-  color: var(--dark-purple70);
+  color: var(--dark-purple100);
+  transition: 0.3s;
 }
 
 body {
