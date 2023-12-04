@@ -34,11 +34,6 @@
   --white: rgba(255, 255, 255, 1);
 }
 
-a:hover {
-  color: var(--dark-purple100);
-  transition: 0.3s;
-}
-
 body {
   background: linear-gradient(
     180deg,
@@ -66,12 +61,6 @@ button {
   border-radius: 12px;
   font-family: "quicksand", sans-serif;
   cursor: pointer;
-}
-
-button:hover {
-  background-color: var(--dark-purple70) !important;
-  transform: scale(1.01) !important;
-  transition: 0.3s;
 }
 
 p {

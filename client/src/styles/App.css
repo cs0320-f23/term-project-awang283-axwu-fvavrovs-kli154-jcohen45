@@ -22,8 +22,36 @@ article {
   font-size: 28px;
   transform: translateY(-30%);
   font-family: "pacifico", sans-serif;
-  color: var(--dark-purple100);
   font-weight: 600;
+}
+
+.nav-link {
+  color: var(--dark-purple100);
+  position: relative;
+}
+
+.nav-link:hover {
+  transition: 0.3s;
+}
+
+.nav-link::after {
+  content: "";
+  height: 2.5px;
+  width: 0%;
+  background-color: var(--dark-purple100);
+  position: absolute;
+  left: 0;
+  bottom: 1.3vh;
+  border-radius: 10px;
+  opacity: 0;
+  transition: all 0.3s;
+  pointer-events: none;
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+  opacity: 1;
+  width: 100%;
 }
 
 .left-links,
@@ -33,25 +61,7 @@ article {
   font-size: 18px;
 }
 
-.left-links {
-  color: var(--dark-purple70);
-}
-
-.happenings-link.active {
-  color: var(--dark-purple100);
-  font-weight: 600;
-}
-
-.archive-link.active {
-  color: var(--dark-purple100);
-  font-weight: 600;
-}
-
-.about-link.active {
-  color: var(--dark-purple100);
-  font-weight: 600;
-}
-
+#sign-up,
 #create,
 #profile {
   border-radius: 12px;
@@ -60,12 +70,33 @@ article {
   outline: none;
 }
 
+#sign-up:hover,
+#create:hover,
+#profile:hover {
+  background-color: var(--dark-purple100) !important;
+  transform: scale(1.01) !important;
+  transition: 0.3s;
+}
+
+#login {
+  background-color: transparent !important;
+  font-size: 18px;
+  transform: translateY(-15%);
+}
+
+#login:hover {
+  color: var(--dark-purple70);
+  transition: 0.3s;
+  border-bottom: 3px;
+}
+
 #create {
   padding: 12px 15px 18px;
   font-size: 26px;
   font-weight: 500;
 }
 
+#sign-up,
 #profile {
   padding: 14px 36px 16px;
   font-size: 18px;

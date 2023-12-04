@@ -26,13 +26,13 @@ export default function App() {
               <NavLink to="/home" id="logo">
                 P@B
               </NavLink>
-              <NavLink to="/happenings" className="happenings-link">
+              <NavLink to="/happenings" className="nav-link">
                 Happenings
               </NavLink>
-              <NavLink to="/archive" className="archive-link">
+              <NavLink to="/archive" className="nav-link">
                 Archive
               </NavLink>
-              <NavLink to="/about" className="about-link">
+              <NavLink to="/about" className="nav-link">
                 About
               </NavLink>
             </div>
@@ -47,8 +47,8 @@ export default function App() {
               ) : (
                 <>
                   {" "}
-                  <Button> Login </Button>
-                  <Button>Sign up</Button>
+                  <Button id="login">Login</Button>
+                  <Button id="sign-up">Sign Up</Button>
                 </>
               )}
             </div>
