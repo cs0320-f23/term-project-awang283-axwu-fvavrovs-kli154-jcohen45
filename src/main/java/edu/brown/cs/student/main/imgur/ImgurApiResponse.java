@@ -1,7 +1,5 @@
 package edu.brown.cs.student.main.imgur;
 
-import edu.brown.cs.student.main.imgur.ImgurData;
-
 public class ImgurApiResponse {
     private ImgurData data;
 
