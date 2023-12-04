@@ -2,20 +2,27 @@
 import { Box } from "@chakra-ui/react";
 import "../styles/Happenings.css";
 import { images } from "./Home";
+import { useState } from "react";
 
 export const ImageCard = (
   title: string,
   path: string,
   date: string,
-  time: string,
-  location: string
+  time: string | null,
+  location: string | null
 ) => {
+  const [showOverlay, setShowOverlay] = useState(false);
   const [weekday, month, day] = date.split(" ");
   return (
-    <div className="image-card">
+    <div
+      className="image-card"
+      onMouseEnter={() => setShowOverlay(true)}
+      onMouseLeave={() => setShowOverlay(false)}
+    >
       <div className="card-backing">
         <img src={path} alt={title}></img>
       </div>
+      {/* {showOverlay && ( */}
       <div className="image-overlay">
         <div className="top-info">
           <div className="month-date">
@@ -32,6 +39,7 @@ export const ImageCard = (
           <p id="location">{location}</p>
         </div>
       </div>
+      {/* )} */}
     </div>
   );
 };
@@ -39,7 +47,7 @@ export const ImageCard = (
 export default function Happenings() {
   return (
     <main className="happenings">
-      <h1>Happenings</h1>
+      {/* <h1>Happenings</h1> */}
       <Box
         className="grid"
         padding={4}
