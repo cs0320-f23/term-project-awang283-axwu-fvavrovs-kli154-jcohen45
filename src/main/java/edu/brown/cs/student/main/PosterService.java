@@ -117,6 +117,40 @@ public class PosterService {
   }
 
   @Async
+  public CompletableFuture<HashSet<Object>> getAllFields(String field) {
+    return this.getPosters().thenApply(posters -> {
+      switch (field) {
+        case "tags":
+          return posters.stream()
+                  .flatMap(poster -> poster.getTags().stream())
+                  .collect(Collectors.toCollection(HashSet::new));
+        case "organization":
+          return posters.stream()
+                  .map(Poster::getOrganization)
+                  .collect(Collectors.toCollection(HashSet::new));
+        case "title":
+          return posters.stream()
+                  .map(Poster::getTitle)
+                  .collect(Collectors.toCollection(HashSet::new));
+//        case "createdAt":
+//          return posters.stream()
+//                  .map(poster -> poster.getCreatedAt().toString())
+//                  .collect(Collectors.toCollection(HashSet::new));
+//        case "startDate":
+//          return posters.stream()
+//                  .map(poster -> poster.getStartDate().toString())
+//                  .collect(Collectors.toCollection(HashSet::new));
+//        case "endDate":
+//          return posters.stream()
+//                  .map(poster -> poster.getEndDate().toString())
+//                  .collect(Collectors.toCollection(HashSet::new));
+        default:
+          return new HashSet<>();
+      }
+    });
+  }
+
+  @Async
   public CompletableFuture<List<Poster>> searchByOrganization(String org) {
     return this.getPosters()
             .thenApply(posters ->
@@ -125,12 +159,22 @@ public class PosterService {
                             .collect(Collectors.toList()));
   }
   @Async
-  public CompletableFuture<List<Poster>> searchByTerm(String term) {
-    return this.getPosters()
-            .thenApply(posters ->
-                    posters.stream()
-                            .filter(poster -> this.searchTermHelper(poster, term))
-                            .collect(Collectors.toList()));
+  public CompletableFuture<List<Poster>> searchByTerm(String term, String[] tags) {
+    if (tags.length == 0){
+      return this.getPosters()
+              .thenApply(posters ->
+                      posters.stream()
+                              .filter(poster -> this.searchTermHelper(poster, term))
+                              .collect(Collectors.toList()));
+    }
+    else {
+      return this.getPosters()
+              .thenApply(posters ->
+                      posters.stream()
+                              .filter(poster -> this.containsAllTags(poster, tags))
+                              .filter(poster -> this.searchTermHelper(poster, term))
+                              .collect(Collectors.toList()));
+    }
   }
 
   private boolean containsAllTags(Poster poster, String[] tags) {

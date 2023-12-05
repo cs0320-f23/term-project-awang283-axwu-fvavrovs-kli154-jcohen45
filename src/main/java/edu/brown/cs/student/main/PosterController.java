@@ -3,6 +3,8 @@ package edu.brown.cs.student.main;
 import edu.brown.cs.student.main.imgur.ImgurService;
 import edu.brown.cs.student.main.responses.ServiceResponse;
 import edu.brown.cs.student.main.types.Poster;
+
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import org.springframework.http.HttpStatus;
@@ -87,10 +89,18 @@ public class PosterController {
             .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
   }
 
-  @GetMapping("/term/{term}")
-  public CompletableFuture<ResponseEntity<List<Poster>>> getPosterByTerm(@PathVariable String term){
+  @GetMapping("/term")
+  public CompletableFuture<ResponseEntity<List<Poster>>> getPosterByTerm(@RequestParam String term, @RequestParam(required = false) String[] tags){
     return posterService
-            .searchByTerm(term)
+            .searchByTerm(term,tags)
+            .thenApply(ResponseEntity::ok)
+            .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+  }
+
+  @GetMapping("/all")
+  public CompletableFuture<ResponseEntity<HashSet<Object>>> getPosterByTerm(@RequestParam String field){
+    return posterService
+            .getAllFields(field)
             .thenApply(ResponseEntity::ok)
             .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
   }
