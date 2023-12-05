@@ -125,12 +125,22 @@ public class PosterService {
                             .collect(Collectors.toList()));
   }
   @Async
-  public CompletableFuture<List<Poster>> searchByTerm(String term) {
-    return this.getPosters()
-            .thenApply(posters ->
-                    posters.stream()
-                            .filter(poster -> this.searchTermHelper(poster, term))
-                            .collect(Collectors.toList()));
+  public CompletableFuture<List<Poster>> searchByTerm(String term, String[] tags) {
+    if (tags.length == 0){
+      return this.getPosters()
+              .thenApply(posters ->
+                      posters.stream()
+                              .filter(poster -> this.searchTermHelper(poster, term))
+                              .collect(Collectors.toList()));
+    }
+    else {
+      return this.getPosters()
+              .thenApply(posters ->
+                      posters.stream()
+                              .filter(poster -> this.containsAllTags(poster, tags))
+                              .filter(poster -> this.searchTermHelper(poster, term))
+                              .collect(Collectors.toList()));
+    }
   }
 
   private boolean containsAllTags(Poster poster, String[] tags) {

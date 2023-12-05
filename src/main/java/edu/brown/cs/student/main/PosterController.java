@@ -84,10 +84,10 @@ public class PosterController {
             .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
   }
 
-  @GetMapping("/term/{term}")
-  public CompletableFuture<ResponseEntity<List<Poster>>> getPosterByTerm(@PathVariable String term){
+  @GetMapping("/term")
+  public CompletableFuture<ResponseEntity<List<Poster>>> getPosterByTerm(@RequestParam String term, @RequestParam(required = false) String[] tags){
     return posterService
-            .searchByTerm(term)
+            .searchByTerm(term,tags)
             .thenApply(ResponseEntity::ok)
             .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
   }
