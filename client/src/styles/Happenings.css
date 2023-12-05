@@ -14,6 +14,7 @@ h1 {
 }
 
 .search-filter-fixed {
+  top: 4%;
   padding-right: 5.1vw;
   padding-top: 1vh;
   display: flex;
