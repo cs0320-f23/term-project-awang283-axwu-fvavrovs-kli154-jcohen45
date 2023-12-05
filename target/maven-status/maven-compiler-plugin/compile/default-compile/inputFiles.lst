@@ -1,8 +1,10 @@
 /Users/katieli/Desktop/cs32/term-project-awang283-axwu-fvavrovs-kli154-jcohen45/src/main/java/edu/brown/cs/student/main/PosterController.java
 /Users/katieli/Desktop/cs32/term-project-awang283-axwu-fvavrovs-kli154-jcohen45/src/main/java/edu/brown/cs/student/main/responses/ServiceResponse.java
 /Users/katieli/Desktop/cs32/term-project-awang283-axwu-fvavrovs-kli154-jcohen45/src/main/java/edu/brown/cs/student/main/SecurityConfig.java
+/Users/katieli/Desktop/cs32/term-project-awang283-axwu-fvavrovs-kli154-jcohen45/src/main/java/edu/brown/cs/student/main/types/DateTimeDeserializer.java
 /Users/katieli/Desktop/cs32/term-project-awang283-axwu-fvavrovs-kli154-jcohen45/src/main/java/edu/brown/cs/student/main/App.java
 /Users/katieli/Desktop/cs32/term-project-awang283-axwu-fvavrovs-kli154-jcohen45/src/main/java/edu/brown/cs/student/main/types/Poster.java
 /Users/katieli/Desktop/cs32/term-project-awang283-axwu-fvavrovs-kli154-jcohen45/src/main/java/edu/brown/cs/student/main/types/PosterRepository.java
+/Users/katieli/Desktop/cs32/term-project-awang283-axwu-fvavrovs-kli154-jcohen45/src/main/java/JacksonConfig.java
 /Users/katieli/Desktop/cs32/term-project-awang283-axwu-fvavrovs-kli154-jcohen45/src/main/java/edu/brown/cs/student/main/MediaConverterConfiguration.java
 /Users/katieli/Desktop/cs32/term-project-awang283-axwu-fvavrovs-kli154-jcohen45/src/main/java/edu/brown/cs/student/main/PosterService.java
