@@ -14,9 +14,10 @@ h1 {
 }
 
 .search-filter-fixed {
+  padding-right: 5.1vw;
   padding-top: 1vh;
   display: flex;
-  justify-content: left;
+  justify-content: space-between;
   margin-top: 6vh;
   position: fixed;
   width: 100%;
@@ -74,6 +75,12 @@ h1 {
   font-family: "quicksand", sans-serif;
   font-size: 18px;
   font-weight: 550;
+}
+
+.sort-select {
+  color: var(--dark-purple100);
+  font-family: "quicksand", sans-serif;
+  font-weight: 600;
 }
 
 .grid {

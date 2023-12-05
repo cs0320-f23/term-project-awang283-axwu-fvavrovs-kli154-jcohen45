@@ -2,7 +2,6 @@
 import { Box, Select } from "@chakra-ui/react";
 import "../styles/Happenings.css";
 import { images } from "./Home";
-import { useState } from "react";
 import { Search2Icon } from "@chakra-ui/icons";
 
 export const ImageCard = (
@@ -12,18 +11,12 @@ export const ImageCard = (
   time: string | null,
   location: string | null
 ) => {
-  // const [showOverlay, setShowOverlay] = useState(false);
   const [weekday, month, day] = date.split(" ");
   return (
-    <div
-      className="image-card"
-      // onMouseEnter={() => setShowOverlay(true)}
-      // onMouseLeave={() => setShowOverlay(false)}
-    >
+    <div className="image-card">
       <div className="card-backing">
         <img src={path} alt={title}></img>
       </div>
-      {/* {showOverlay && ( */}
       <div className="image-overlay">
         <div className="top-info">
           <div className="month-date">
@@ -48,7 +41,6 @@ export const ImageCard = (
 export default function Happenings() {
   return (
     <main className="happenings">
-      {/* <h1>Happenings</h1> */}
       <div className="search-filter-fixed">
         <div className="browse-search-bar">
           <Search2Icon boxSize={5} width={14} />
@@ -60,7 +52,7 @@ export default function Happenings() {
               fontSize="18px"
               height="6vh"
               color="white"
-              placeholder="tags"
+              placeholder="Tags"
               alignItems="center"
               border="none"
             >
@@ -70,15 +62,39 @@ export default function Happenings() {
             </Select>
           </Box>
         </div>
+        <Box w="8.1vw">
+          <Select
+            marginLeft="1vw"
+            className="sort-select"
+            fontSize="18px"
+            height="6vh"
+            placeholder="Sort"
+            alignItems="center"
+            border="none"
+            textAlign="right"
+          >
+            <option value="option1">Soonest</option>
+            <option value="option2">A-Z</option>
+            <option value="option3">Newest</option>
+          </Select>
+        </Box>
       </div>
       <Box
         className="grid"
         padding={4}
         sx={{ columnCount: [1, 2, 3], columnGap: "3vw" }}
       >
-        {images.map((item) =>
-          ImageCard(item.title, item.path, item.date, item.time, item.location)
-        )}
+        {images.map((item, index) => (
+          <Box key={index}>
+            {ImageCard(
+              item.title,
+              item.path,
+              item.date,
+              item.time,
+              item.location
+            )}
+          </Box>
+        ))}
       </Box>
     </main>
   );

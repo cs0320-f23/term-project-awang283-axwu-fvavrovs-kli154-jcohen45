@@ -1,5 +1,12 @@
 // import React from "react";
-import { Box, HStack, Select, SimpleGrid, Stack } from "@chakra-ui/react";
+import {
+  Box,
+  HStack,
+  Select,
+  SimpleGrid,
+  Spacer,
+  Stack,
+} from "@chakra-ui/react";
 import { Search2Icon } from "@chakra-ui/icons";
 import "../styles/Home.css";
 import { ImageCard } from "./Happenings";
@@ -66,7 +73,7 @@ export default function Home() {
               fontSize="20px"
               height="7vh"
               color="white"
-              placeholder="tags"
+              placeholder="Tags"
               alignItems="center"
               border="none"
             >
@@ -89,19 +96,24 @@ export default function Home() {
       </div>
       <div className="happenings">
         <div className="happenings-label">Happenings Today</div>
-        <div className="gallery">
-          <HStack spacing="3vw" alignItems="flex-start">
-            {images.map((item) =>
-              ImageCard(
+        <HStack
+          spacing="3vw"
+          alignItems="flex-start"
+          overflowX="auto"
+          padding="1vh 4vw"
+        >
+          {images.map((item, index) => (
+            <Box key={index}>
+              {ImageCard(
                 item.title,
                 item.path,
                 item.date,
                 item.time,
                 item.location
-              )
-            )}
-          </HStack>
-        </div>
+              )}
+            </Box>
+          ))}
+        </HStack>
       </div>
     </main>
   );

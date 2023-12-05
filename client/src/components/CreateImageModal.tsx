@@ -22,16 +22,13 @@ export default function CreateImageModal({ onClose, setModalState }) {
     <>
       <Modal isOpen={true} onClose={onClose}>
         <div className="modal-font">
-          <ModalOverlay />
-          <ModalContent
-            minW={"70%"}
-            minH={"85%"}
-            fontFamily={"quicksand, sans-serif"}
-          >
+          <ModalOverlay className="modal-overlay" />
+          <ModalContent minW={"70%"} minH={"80%"} borderRadius="20px">
             <ModalHeader
+              className="modal-header"
+              fontSize="6vh"
               display={"flex"}
               justifyContent={"space-around"}
-              color={"var(--chakra-colors-purple-800)"}
             >
               Upload a Poster
             </ModalHeader>

@@ -4,12 +4,28 @@
   justify-content: space-between;
 }
 
+.modal-overlay {
+  color: var(--dark-purple70) !important;
+}
+
+.modal-header {
+  font-family: "pacifico", sans-serif !important;
+  color: #3f315e !important;
+  transform: translateY(-15%);
+}
+
 .image-container {
   width: 50%;
 }
 
+<<<<<<< HEAD
 .input-fields,
 .tags-container {
+=======
+.input-fields {
+  font-family: "quicksand", sans-serif;
+  font-weight: 500;
+>>>>>>> 7dd4e7d17a68d4bc36d956f3633d5d2acac58e9f
   width: 50%;
 }
 

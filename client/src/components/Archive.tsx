@@ -13,9 +13,17 @@ export default function Archive() {
         padding={4}
         sx={{ columnCount: [1, 2, 3], columnGap: "3vw" }}
       >
-        {images.map((item) =>
-          ImageCard(item.title, item.path, item.date, item.time, item.location)
-        )}
+        {images.map((item, index) => (
+          <Box key={index}>
+            {ImageCard(
+              item.title,
+              item.path,
+              item.date,
+              item.time,
+              item.location
+            )}
+          </Box>
+        ))}
       </Box>
       <h1 id="year">2022</h1>
       <Box
@@ -23,9 +31,17 @@ export default function Archive() {
         padding={4}
         sx={{ columnCount: [1, 2, 3], columnGap: "3vw" }}
       >
-        {images.map((item) =>
-          ImageCard(item.title, item.path, item.date, item.time, item.location)
-        )}
+        {images.map((item, index) => (
+          <Box key={index}>
+            {ImageCard(
+              item.title,
+              item.path,
+              item.date,
+              item.time,
+              item.location
+            )}
+          </Box>
+        ))}
       </Box>
     </main>
   );
