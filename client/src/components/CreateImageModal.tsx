@@ -23,7 +23,7 @@ export default function CreateImageModal({ onClose, setModalState }) {
       <Modal isOpen={true} onClose={onClose}>
         <div className="modal-font">
           <ModalOverlay className="modal-overlay" />
-          <ModalContent minW={"70%"} minH={"80%"} borderRadius="20px">
+          <ModalContent minW={"70%"} minH={"90%"} borderRadius="20px">
             <ModalHeader
               className="modal-header"
               fontSize="6vh"

@@ -64,15 +64,12 @@ button {
   cursor: pointer;
 }
 
-<<<<<<< HEAD
 button:hover {
   background-color: var(--dark-purple70) !important;
   transform: scale(1.03) !important;
   transition: 0.3s;
 }
 
-=======
->>>>>>> 7dd4e7d17a68d4bc36d956f3633d5d2acac58e9f
 p {
   font-family: "quicksand", sans-serif;
 }
