@@ -125,6 +125,11 @@ input::placeholder {
   white-space: nowrap;
 }
 
+.tag-holder:hover {
+  transform: scale(1.01);
+  transition: 0.3s;
+}
+
 .magenta-tag {
   color: var(--tagsdark-magenta);
   background-color: var(--tagslight-magenta);

@@ -1,4 +1,5 @@
-#root {
+#root,
+body {
   font-family: "pacifico", sans-serif;
   font-weight: 700;
   font-style: normal;
@@ -10,7 +11,7 @@
 
   min-width: 100vw;
   /* max-height: 92vh; */
-  top: 50px;
+  /* top: 50px; */
   margin: 0 auto;
 
   /* font-synthesis: none; */
@@ -74,7 +75,7 @@ button {
 
 button:hover {
   background-color: var(--dark-purple70) !important;
-  transform: scale(1.01) !important;
+  transform: scale(1.03) !important;
   transition: 0.3s;
 }
 

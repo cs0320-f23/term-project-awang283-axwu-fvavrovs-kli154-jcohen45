@@ -1,4 +1,4 @@
-// import React, { useState } from "react";
+import React from "react";
 
 import {
   Button,
@@ -13,18 +13,33 @@ import {
 } from "@chakra-ui/react";
 import "../styles/Modal.css";
 
-export default function CreateImageModal(onClose) {
+export default function CreateImageModal({ onClose, setModalState }) {
+  const onNext = () => {
+    setModalState("addTags"); //TODO nicer transition
+  };
+
   return (
     <>
       <Modal isOpen={true} onClose={onClose}>
         <div className="modal-font">
           <ModalOverlay />
-          <ModalContent minW={"70%"} minH={"80%"}>
-            <ModalHeader display={"flex"} justifyContent={"space-around"}>
+          <ModalContent
+            minW={"70%"}
+            minH={"85%"}
+            fontFamily={"quicksand, sans-serif"}
+          >
+            <ModalHeader
+              display={"flex"}
+              justifyContent={"space-around"}
+              color={"var(--chakra-colors-purple-800)"}
+            >
               Upload a Poster
             </ModalHeader>
-            <ModalCloseButton />
-            <ModalBody display={"flex"}>
+            <ModalCloseButton onClick={onClose} color={"white"} />
+            <ModalBody
+              display={"flex"}
+              color={"var(--chakra-colors-purple-800)"}
+            >
               <div className="image-container"></div>
               <div className="input-fields">
                 <h3>Image</h3>
@@ -32,7 +47,7 @@ export default function CreateImageModal(onClose) {
                   <Input placeholder="Image URL"></Input>
                   <Button
                     bgColor={"var(--chakra-colors-purple-800)"}
-                    color={"var(--chakra-colors-purple-200)"}
+                    color={"white"}
                   >
                     Upload
                   </Button>
@@ -69,6 +84,11 @@ export default function CreateImageModal(onClose) {
                 </div>
                 <h3>Description</h3>
                 <Input minH={"35%"} />
+                <div className="save-btn">
+                  <Button color={"white"} onClick={onNext} margin={"2%"}>
+                    Save and Select Tags {"-> "}
+                  </Button>
+                </div>
               </div>
             </ModalBody>
           </ModalContent>

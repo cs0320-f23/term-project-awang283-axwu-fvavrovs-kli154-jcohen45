@@ -7,14 +7,15 @@ import About from "./components/About";
 import "./styles/App.css";
 import { Button } from "@chakra-ui/react";
 import CreateImageModal from "./components/CreateImageModal";
+import TagsModal from "./components/TagsModal";
 
 export default function App() {
   const [loggedIn] = useState<boolean>(true);
-  const [createImageModal, setCreateImageModalOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState<string>("");
 
   const handleCreatePoster = useCallback(() => {
     // Toggle the state to open/close the modal
-    setCreateImageModalOpen((prev) => !prev);
+    setModalOpen("createImage");
   }, []);
 
   return (
@@ -56,8 +57,14 @@ export default function App() {
             <Route path="/archive" element={<Archive />} />
             <Route path="/about" element={<About />} />
           </Routes>
-          {createImageModal && (
-            <CreateImageModal onClose={() => setCreateImageModalOpen(false)} />
+          {modalOpen === "createImage" && (
+            <CreateImageModal
+              setModalState={setModalOpen}
+              onClose={() => setModalOpen("")}
+            />
+          )}
+          {modalOpen === "addTags" && (
+            <TagsModal onClose={() => setModalOpen("")} />
           )}
         </main>
       </article>

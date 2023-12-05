@@ -1,10 +1,11 @@
 main {
   position: relative;
+  display: flex;
+  justify-content: space-around;
   top: 2vh;
 }
 
 h1 {
   margin-bottom: 5%;
   font-size: 500%;
-  text-align: center;
 }

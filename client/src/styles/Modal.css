@@ -8,11 +8,29 @@
   width: 50%;
 }
 
-.input-fields {
+.input-fields,
+.tags-container {
   width: 50%;
 }
 
 .image-upload-content {
   display: flex;
   margin-bottom: 2%;
+}
+
+.save-btn {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.tags-container {
+  justify-content: space-around;
+  height: 5%;
+}
+
+.magenta-tag:hover,
+.green-tag:hover,
+.blue-tag:hover {
+  transform: scale(1.01);
+  transition: 0.3s;
 }
