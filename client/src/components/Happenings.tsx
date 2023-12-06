@@ -98,7 +98,6 @@ export default function Happenings() {
               textAlign="right"
             >
               <option value="option1">Soonest</option>
-              <option value="option2">A-Z</option>
               <option value="option3">Newest</option>
             </Select>
           </Box>

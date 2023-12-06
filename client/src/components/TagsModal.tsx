@@ -53,7 +53,11 @@ export default function TagsModal({ onClose }) {
                 <div className="green-tag">Party</div>
                 <div className="blue-tag">Outdoor</div>
                 <div className="save-btn">
-                  <Button color={"white"} onClick={onClose} margin={"2%"}>
+                  <Button
+                    className="save-upload-button"
+                    onClick={onClose}
+                    bottom="0"
+                  >
                     Upload Poster
                   </Button>
                 </div>

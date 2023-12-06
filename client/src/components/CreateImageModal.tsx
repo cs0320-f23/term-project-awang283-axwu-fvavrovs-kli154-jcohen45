@@ -65,7 +65,7 @@ export default function CreateImageModal({ onClose, setModalState }) {
                 <h3>Description</h3>
                 <Input minH={"31%"} />
                 <div className="save-btn">
-                  <Button onClick={onNext} className={"save-button"}>
+                  <Button onClick={onNext} className={"save-upload-button"}>
                     Save and Select Tags {"-> "}
                   </Button>
                 </div>

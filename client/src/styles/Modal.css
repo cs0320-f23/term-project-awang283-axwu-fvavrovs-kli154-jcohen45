@@ -78,7 +78,7 @@
   justify-content: flex-end;
 }
 
-.save-button {
+.save-upload-button {
   border-radius: 10px !important;
   color: white !important;
   outline: none;
@@ -93,7 +93,6 @@
 
 .tags-container {
   justify-content: space-around;
-  height: 5%;
 }
 
 .magenta-tag:hover,
@@ -104,9 +103,22 @@
 }
 
 .close-button {
-  border-radius: 10px !important;
+  border-radius: 13px !important;
   color: white !important;
+  position: absolute;
+  top: -1vh !important;
+  right: -0.7vw !important;
   z-index: 2;
+  stroke: white;
+  stroke-width: 1.5px !important;
+  height: 42px !important;
+  width: 42px !important;
+}
+
+.close-button:hover {
+  background-color: var(--dark-purple70) !important;
+  transition: 0.3s;
+  transform: scale(1.07) !important;
 }
 
 #view-title {
@@ -114,7 +126,7 @@
   font-size: 6vh;
   overflow: wrap;
   line-height: 115%;
-  transform: translateY(-15%);
+  margin-bottom: 1.5vh;
 }
 
 .view-info {

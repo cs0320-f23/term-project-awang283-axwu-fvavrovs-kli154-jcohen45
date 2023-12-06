@@ -9,6 +9,7 @@ import {
 } from "@chakra-ui/react";
 import { Search2Icon } from "@chakra-ui/icons";
 import "../styles/Home.css";
+import "../styles/Modal.css";
 import { ImageCard } from "./Happenings";
 
 export const images = [
@@ -82,7 +83,8 @@ export default function Home() {
         </label>
         <div className="search-bar">
           <Search2Icon id="search-icon" boxSize={5} width={14} />
-         <input placeholder="Search" type="text" />   {/*TODO onclick navs to Happenings, fetches results of search, displays in happenings search bar */}
+          <input placeholder="Search" type="text" />{" "}
+          {/*TODO onclick navs to Happenings, fetches results of search, displays in happenings search bar */}
           <Box w="12vw">
             <Select
               marginLeft="1vw"

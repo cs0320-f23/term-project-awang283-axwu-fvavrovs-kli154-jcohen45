@@ -66,28 +66,34 @@ article {
 #profile {
   border-radius: 12px;
   color: white;
-  transform: translateY(-15%);
   outline: none;
+  margin-bottom: 1vh;
+  box-shadow: var(--tag-shadow) !important;
 }
 
 #sign-up:hover,
-#create:hover,
 #profile:hover {
-  background-color: var(--dark-purple100) !important;
-  transform: scale(1.01) !important;
+  background-color: var(--dark-purple70) !important;
   transition: 0.3s;
+  transform: scale(1.05) !important;
+}
+
+#create:hover {
+  background-color: var(--dark-purple70) !important;
+  transition: 0.3s;
+  transform: scale(1.08) !important;
 }
 
 #login {
   background-color: transparent !important;
   font-size: 18px;
-  transform: translateY(-15%);
+  margin-bottom: 1vh;
+  color: var(--dark-purple100) !important;
 }
 
 #login:hover {
   color: var(--dark-purple70);
   transition: 0.3s;
-  border-bottom: 3px;
 }
 
 #create {
