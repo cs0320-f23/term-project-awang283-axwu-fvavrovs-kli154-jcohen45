@@ -68,6 +68,8 @@ h1 {
   font-family: "quicksand", sans-serif;
   font-size: 18px;
   font-weight: 550;
+  caret-color: var(--dark-purple100);
+  outline: none;
 }
 
 .browse-input::placeholder {

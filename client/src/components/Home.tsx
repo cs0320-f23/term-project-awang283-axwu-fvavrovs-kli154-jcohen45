@@ -18,6 +18,9 @@ export const images = [
     date: "Thursday Nov 30",
     time: "5:30 PM",
     location: "B&H 165",
+    link: "bit.ly/p@b",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Ut enim ad minim veniam, quis nostrud exercitati. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Ut enim ad minim veniam, quis nostrud exercitati. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Ut enim ad minim veniam, quis nostrud exercitati. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Ut enim ad minim veniam, quis nostrud exercitati.",
   },
   {
     path: "./posters/poster2.png",
@@ -25,6 +28,8 @@ export const images = [
     date: "Thursday Nov 30",
     time: "5-6 PM",
     location: "Salomon 003",
+    link: "bit.ly/p@b",
+    description: null,
   },
   {
     path: "./posters/poster3.png",
@@ -32,6 +37,9 @@ export const images = [
     date: "Friday Dec 1",
     time: "6:30-8 PM",
     location: "The Underground",
+    link: null,
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Ut enim ad minim veniam, quis nostrud exercitati.",
   },
   {
     path: "./posters/poster4.png",
@@ -39,6 +47,9 @@ export const images = [
     date: "Friday Dec 1",
     time: "10 PM-1 AM",
     location: "Seoul Providence",
+    link: "bit.ly/p@b",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Ut enim ad minim veniam, quis nostrud exercitati.",
   },
   {
     path: "./posters/poster5.png",
@@ -46,6 +57,9 @@ export const images = [
     date: "Saturday Dec 2",
     time: null,
     location: null,
+    link: null,
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Ut enim ad minim veniam, quis nostrud exercitati. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Ut enim ad minim veniam, quis nostrud exercitati. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Ut enim ad minim veniam, quis nostrud exercitati. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Ut enim ad minim veniam, quis nostrud exercitati.",
   },
   {
     path: "./posters/poster6.png",
@@ -53,6 +67,9 @@ export const images = [
     date: "Saturday Dec 2",
     time: "6:30 PM",
     location: "B&H 159",
+    link: "bit.ly/p@b",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Ut enim ad minim veniam, quis nostrud exercitati.",
   },
 ];
 
@@ -109,7 +126,9 @@ export default function Home() {
                 item.path,
                 item.date,
                 item.time,
-                item.location
+                item.location,
+                item.link,
+                item.description
               )}
             </Box>
           ))}

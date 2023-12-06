@@ -20,7 +20,9 @@ export default function Archive() {
               item.path,
               item.date,
               item.time,
-              item.location
+              item.location,
+              item.link,
+              item.description
             )}
           </Box>
         ))}
@@ -38,7 +40,9 @@ export default function Archive() {
               item.path,
               item.date,
               item.time,
-              item.location
+              item.location,
+              item.link,
+              item.description
             )}
           </Box>
         ))}

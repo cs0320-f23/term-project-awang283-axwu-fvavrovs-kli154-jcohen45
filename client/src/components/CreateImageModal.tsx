@@ -1,5 +1,3 @@
-import React from "react";
-
 import {
   Button,
   Input,
@@ -23,31 +21,16 @@ export default function CreateImageModal({ onClose, setModalState }) {
       <Modal isOpen={true} onClose={onClose}>
         <div className="modal-font">
           <ModalOverlay className="modal-overlay" />
-          <ModalContent minW={"70%"} minH={"90%"} borderRadius="20px">
-            <ModalHeader
-              className="modal-header"
-              fontSize="6vh"
-              display={"flex"}
-              justifyContent={"space-around"}
-            >
-              Upload a Poster
-            </ModalHeader>
-            <ModalCloseButton onClick={onClose} color={"white"} />
-            <ModalBody
-              display={"flex"}
-              color={"var(--chakra-colors-purple-800)"}
-            >
+          <ModalContent className="modal-content">
+            <ModalHeader className="modal-header">Upload a Poster</ModalHeader>
+            <ModalCloseButton className="close-button" onClick={onClose} />
+            <ModalBody className="modal-body">
               <div className="image-container"></div>
               <div className="input-fields">
                 <h3>Image</h3>
                 <div className="image-upload-content">
                   <Input placeholder="Image URL"></Input>
-                  <Button
-                    bgColor={"var(--chakra-colors-purple-800)"}
-                    color={"white"}
-                  >
-                    Upload
-                  </Button>
+                  <Button className="upload-button">Upload</Button>
                 </div>
                 <h3>Title</h3>
                 <Input placeholder="Enter Title" marginBottom={"2%"}></Input>
@@ -80,9 +63,9 @@ export default function CreateImageModal({ onClose, setModalState }) {
                   </Select>
                 </div>
                 <h3>Description</h3>
-                <Input minH={"35%"} />
+                <Input minH={"31%"} />
                 <div className="save-btn">
-                  <Button color={"white"} onClick={onNext} margin={"2%"}>
+                  <Button onClick={onNext} className={"save-button"}>
                     Save and Select Tags {"-> "}
                   </Button>
                 </div>

@@ -36,9 +36,9 @@ article {
 
 .nav-link::after {
   content: "";
-  height: 2.5px;
+  height: 2px;
   width: 0%;
-  background-color: var(--dark-purple100);
+  background-color: var(--light-blue);
   position: absolute;
   left: 0;
   bottom: 1.3vh;

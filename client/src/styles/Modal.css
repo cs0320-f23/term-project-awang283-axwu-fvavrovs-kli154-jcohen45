@@ -4,18 +4,58 @@
   justify-content: space-between;
 }
 
-.modal-overlay {
-  color: var(--dark-purple70) !important;
+.modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-font {
+  display: flex;
+  align-items: center;
+  justify-content: "center";
 }
 
 .modal-header {
+  display: flex;
+  justify-content: space-around;
   font-family: "pacifico", sans-serif !important;
   color: #3f315e !important;
   transform: translateY(-15%);
+  font-size: 6vh !important;
+}
+
+.modal-content {
+  box-shadow: var(--modal-shadow);
+  min-width: 70%;
+  min-height: 80%;
+  margin: auto !important;
+  border-radius: 25px !important;
+  font-family: "quicksand, sans-serif";
+}
+
+.modal-body {
+  display: flex;
+  color: var(--dark-purple100);
+  padding: 0vw !important;
+}
+
+.view-image {
+  min-width: 45%;
+  max-width: 45%;
+  height: 100%;
+  max-height: 90vh;
+  overflow-y: scroll;
+  margin: 1.5vw;
+  border-radius: 20px;
 }
 
 .image-container {
   width: 50%;
+  background: linear-gradient(180deg, #c9e2ff 0%, #f9eeff 75.52%);
+  margin: 1.5vw 1.5vw 0vw 1.5vw;
+  border-radius: 20px;
+  transform: translateY(-5%);
 }
 
 .input-fields,
@@ -23,16 +63,32 @@
   font-family: "quicksand", sans-serif;
   font-weight: 500;
   width: 50%;
+  padding: 1.5vw 1.5vw 1.5vw 0vw;
+  transform: translateY(-5%);
 }
 
 .image-upload-content {
   display: flex;
   margin-bottom: 2%;
+  border-radius: 10px !important;
 }
 
 .save-btn {
   display: flex;
   justify-content: flex-end;
+}
+
+.save-button {
+  border-radius: 10px !important;
+  color: white !important;
+  outline: none;
+  margin-top: 2vh;
+}
+
+.upload-button {
+  border-radius: 10px !important;
+  color: white !important;
+  outline: none;
 }
 
 .tags-container {
@@ -43,6 +99,58 @@
 .magenta-tag:hover,
 .green-tag:hover,
 .blue-tag:hover {
-  transform: scale(1.01);
+  transform: scale(1.03);
   transition: 0.3s;
+}
+
+.close-button {
+  border-radius: 10px !important;
+  color: white !important;
+  z-index: 2;
+}
+
+#view-title {
+  font-family: "pacifico", sans-serif;
+  font-size: 6vh;
+  overflow: wrap;
+  line-height: 115%;
+  transform: translateY(-15%);
+}
+
+.view-info {
+  display: flex;
+  flex-flow: column;
+  margin: 1.5vw 1.5vw 1.5vw 0vw;
+  gap: 2vh;
+  overflow-y: scroll;
+  max-height: 90vh;
+  z-index: 1;
+}
+
+.poster-details {
+  display: flex;
+  flex-flow: row;
+  gap: 3vw;
+}
+
+.poster-field {
+  display: flex;
+  flex-flow: column;
+  gap: 2vh;
+  color: var(--dark-purple70);
+}
+
+#description-field {
+  color: var(--dark-purple70);
+}
+
+#description-text {
+  font-family: "quicksand", sans-serif;
+}
+
+.poster-info {
+  display: flex;
+  flex-flow: column;
+  gap: 2vh;
+  color: var(--dark-purple100);
 }

@@ -6,10 +6,12 @@ export default function About() {
     <>
       <main>
         <h1> About Us</h1>
-        <p>Insert some text about why we made this</p>
-        <p>
-          Insert some text about each of us 5 and maybe a lil pic or drawing?
-        </p>
+        <div className="about-content">
+          <p>Insert some text about why we made this</p>
+          <p>
+            Insert some text about each of us 5 and maybe a lil pic or drawing?
+          </p>
+        </div>
       </main>
     </>
   );

@@ -1,13 +1,11 @@
 import {
   Button,
-  Input,
   Modal,
   ModalBody,
   ModalCloseButton,
   ModalContent,
   ModalHeader,
   ModalOverlay,
-  Select,
 } from "@chakra-ui/react";
 import "../styles/Modal.css";
 
@@ -16,25 +14,11 @@ export default function TagsModal({ onClose }) {
     <>
       <Modal isOpen={true} onClose={onClose}>
         <div className="modal-font">
-          <ModalOverlay />
-          <ModalContent
-            minW={"70%"}
-            minH={"80%"}
-            fontFamily={"quicksand, sans-serif"}
-          >
-            <ModalHeader
-              display={"flex"}
-              justifyContent={"space-around"}
-              color={"var(--chakra-colors-purple-800)"}
-            >
-              Tags
-            </ModalHeader>
-            <ModalCloseButton color={"white"} />
-            <ModalBody
-              display={"flex"}
-              // justifyContent={"space-around"}
-              color={"var(--chakra-colors-purple-800)"}
-            >
+          <ModalOverlay className="modal-overlay" />
+          <ModalContent className="modal-content">
+            <ModalHeader className="modal-header">Tags</ModalHeader>
+            <ModalCloseButton className="close-button" onClick={onClose} />
+            <ModalBody className="modal-body">
               <div className="image-container"></div>
               <div className="tags-container">
                 {/* TODO map list of all tags from database */}

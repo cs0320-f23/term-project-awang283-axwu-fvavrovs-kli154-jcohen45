@@ -1,25 +1,5 @@
-/* .posters .div {
-  align-items: flex-start;
-  display: flex;
-  gap: 50px;
-  position: relative;
-}
-
-.posters .frame {
-  align-items: flex-start;
-  background-color: #ffffff;
-  border-radius: 20px;
-  display: inline-flex;
-  flex: 0 0 auto;
-  flex-direction: column;
-  gap: 10px;
-  padding: 15px;
-  position: relative;
-  width: 100%;
-} */
-
 .home-content {
-  margin-top: 10vh;
+  margin-top: 6vh;
   display: flex;
   flex-flow: column;
   flex-wrap: nowrap;
@@ -78,6 +58,8 @@ input {
   font-family: "quicksand", sans-serif;
   font-weight: 600;
   font-size: 22px;
+  caret-color: var(--dark-purple100);
+  outline: none;
 }
 
 input::placeholder {
@@ -123,6 +105,8 @@ input::placeholder {
   margin-right: 2%;
   box-shadow: var(--tag-shadow);
   white-space: nowrap;
+  font-family: "quicksand", sans-serif;
+  font-weight: 600;
 }
 
 .tag-holder:hover {
