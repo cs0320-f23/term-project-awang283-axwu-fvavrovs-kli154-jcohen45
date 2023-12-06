@@ -194,10 +194,10 @@ h1 {
 
 .scroll-top {
   position: fixed !important;
-  min-height: 3.5vw;
-  width: 3.5vw;
+  min-height: 3vw;
+  width: 3vw;
   margin: 1.3vw;
-  border-radius: 14px !important;
+  border-radius: 12px !important;
   bottom: 0;
   right: 0;
   z-index: 5;
