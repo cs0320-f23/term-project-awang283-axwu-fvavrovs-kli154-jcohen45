@@ -1,8 +1,7 @@
 // import React from "react";
-import { Box, Button, HStack, Select } from "@chakra-ui/react";
-import { Search2Icon } from "@chakra-ui/icons";
+import { Box, HStack, IconButton, Select } from "@chakra-ui/react";
+import { Search2Icon, TriangleDownIcon } from "@chakra-ui/icons";
 import "../styles/Home.css";
-import "../styles/Modal.css";
 import { ImageCard } from "./Happenings";
 
 export const images = [
@@ -78,6 +77,16 @@ export const images = [
 ];
 
 export default function Home() {
+  const offset = 40;
+  const scrollToBottom = () => {
+    window.scrollTo({
+      top:
+        document.documentElement.scrollHeight -
+        document.documentElement.clientHeight -
+        offset,
+      behavior: "smooth",
+    });
+  };
   return (
     <main className="posters">
       <div className="home-content">
@@ -92,9 +101,8 @@ export default function Home() {
             type="text"
           />{" "}
           {/*TODO onclick navs to Happenings, fetches results of search, displays in happenings search bar */}
-          <Box w="12vw">
+          <Box w="11.5vw">
             <Select
-              marginLeft="1vw"
               className="tag-select"
               fontSize="20px"
               height="7vh"
@@ -102,6 +110,9 @@ export default function Home() {
               placeholder="Tags"
               alignItems="center"
               border="none"
+              icon={
+                <TriangleDownIcon id="triangle-icon" marginRight={"1.25vw"} />
+              }
             >
               {/* TODO: fetch list of tags and map each of them to an option, when clicked, set list of selected tags to contain tag, when clicked again, unselect tag */}
               <option value="option1">Free Food</option>
@@ -120,7 +131,6 @@ export default function Home() {
         </div>
         {/* map each poster to an img w/in a div  */}
       </div>
-      <Button></Button>
       <div className="happenings">
         <div className="happenings-label">Happenings Today</div>
         <HStack
@@ -128,6 +138,7 @@ export default function Home() {
           alignItems="flex-start"
           overflowX="auto"
           padding="1.5vh 4vw"
+          id="scroll"
         >
           {images.map((item, index) => (
             <Box key={index}>
@@ -144,6 +155,13 @@ export default function Home() {
           ))}
         </HStack>
       </div>
+      <IconButton
+        className="scroll-bottom"
+        color="white"
+        icon={<TriangleDownIcon id="triangle-icon" />}
+        aria-label={"scrolls user to bottom of page"}
+        onClick={scrollToBottom}
+      />
     </main>
   );
 }

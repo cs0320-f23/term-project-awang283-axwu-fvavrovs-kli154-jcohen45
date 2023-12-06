@@ -1,10 +1,21 @@
 // import React from "react";
-import { Box, Select } from "@chakra-ui/react";
+import { Box, IconButton, Select } from "@chakra-ui/react";
 import "../styles/Happenings.css";
 import { images } from "./Home";
-import { Search2Icon } from "@chakra-ui/icons";
+import {
+  Search2Icon,
+  TriangleDownIcon,
+  TriangleUpIcon,
+} from "@chakra-ui/icons";
 import { useCallback, useState } from "react";
 import ViewPosterModal from "./ViewPosterModal";
+
+const scrollToTop = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+};
 
 export const ImageCard = (
   title: string,
@@ -78,6 +89,9 @@ export default function Happenings() {
                 placeholder="Tags"
                 alignItems="center"
                 border="none"
+                icon={
+                  <TriangleDownIcon id="triangle-icon" marginRight={"1vw"} />
+                }
               >
                 <option value="option1">Free Food</option>
                 <option value="option2">Party</option>
@@ -120,6 +134,13 @@ export default function Happenings() {
             </Box>
           ))}
         </Box>
+        <IconButton
+          className="scroll-top"
+          color="white"
+          icon={<TriangleUpIcon id="triangle-icon" />}
+          aria-label={"scrolls user to bottom of page"}
+          onClick={scrollToTop}
+        />
       </main>
     </>
   );

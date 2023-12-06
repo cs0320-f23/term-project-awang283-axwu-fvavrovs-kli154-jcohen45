@@ -1,10 +1,17 @@
 // import React from "react";
 import "../styles/Archive.css";
 import { images } from "./Home";
+import { TriangleUpIcon } from "@chakra-ui/icons";
 import { ImageCard } from "./Happenings";
-import { Box } from "@chakra-ui/react";
+import { Box, IconButton } from "@chakra-ui/react";
 
 export default function Archive() {
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
   return (
     <main className="happenings">
       <h1 id="year">2023</h1>
@@ -47,6 +54,13 @@ export default function Archive() {
           </Box>
         ))}
       </Box>
+      <IconButton
+        className="scroll-top"
+        color="white"
+        icon={<TriangleUpIcon id="triangle-icon" />}
+        aria-label={"scrolls user to bottom of page"}
+        onClick={scrollToTop}
+      />
     </main>
   );
 }

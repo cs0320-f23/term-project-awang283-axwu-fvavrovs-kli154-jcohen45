@@ -36,14 +36,19 @@
 .tag-select {
   background-color: var(--dark-purple100) !important;
   font-family: "quicksand", sans-serif;
-  font-weight: 500;
+  font-weight: 600;
   border-radius: 0px 15px 15px 0px !important;
   box-shadow: 0px 3px 10px 3px rgba(0, 0, 0, 0.15);
+  padding-left: 1.3vw !important;
 }
 
 .tag-select:hover {
   background-color: var(--dark-purple70) !important;
   transition: 0.3s;
+}
+
+#triangle-icon {
+  transform: translateY(8%);
 }
 
 .search-input {
@@ -131,6 +136,13 @@
   background-color: var(--tagslight-blue);
 }
 
+.magenta-tag:hover,
+.green-tag:hover,
+.blue-tag:hover {
+  transform: scale(1.03);
+  transition: 0.3s;
+}
+
 .happenings-label {
   font-size: 6vh;
   margin-top: 7vh;
@@ -140,4 +152,15 @@
 
 img {
   border-radius: 15px;
+}
+
+.scroll-bottom {
+  position: fixed !important;
+  min-height: 3.5vw;
+  width: 3.5vw;
+  margin: 1.3vw;
+  border-radius: 14px !important;
+  bottom: 0;
+  right: 0;
+  z-index: 5;
 }
