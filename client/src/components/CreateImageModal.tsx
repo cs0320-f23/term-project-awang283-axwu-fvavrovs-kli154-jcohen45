@@ -25,11 +25,15 @@ export default function CreateImageModal({ onClose }) {
       <Modal isOpen={true} onClose={onClose}>
         <div className="modal-font">
           <ModalOverlay className="modal-overlay" />
-          <ModalContent className="modal-content" maxHeight={"95%"}>
+          <ModalContent className="modal-content">
             <ModalHeader className="modal-header">Upload a Poster</ModalHeader>
             <ModalCloseButton className="close-button" onClick={onClose} />
 
-            <ModalBody className="modal-body">
+            <ModalBody
+              className="modal-body"
+              minHeight={"90%"}
+              maxHeight={"90%"}
+            >
               {showTags ? (
                 <div className="tags-div">
                   <div className="image-container"></div>
@@ -65,7 +69,7 @@ export default function CreateImageModal({ onClose }) {
                     <div className="magenta-tag">Free Food</div>
                     <div className="green-tag">Party</div>
                     <div className="blue-tag">Outdoor</div>
-                    <div className="save-btn">
+                    <div className="final-save-div">
                       <Button className="final-upload-button" onClick={onClose}>
                         Upload Poster
                       </Button>
@@ -140,10 +144,13 @@ export default function CreateImageModal({ onClose }) {
                         placeholder="Enter Description"
                       />
                     </div>
-                    <div className="save-btn">
-                      <Button onClick={onNext} className={"save-button"}>
-                        Save and Select Tags
-                      </Button>
+                    <div className="save-div">
+                      <div>
+                        <h3>potato</h3>
+                        <Button onClick={onNext} className={"save-button"}>
+                          Save and Select Tags
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </div>
