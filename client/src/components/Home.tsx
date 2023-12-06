@@ -1,12 +1,5 @@
 // import React from "react";
-import {
-  Box,
-  HStack,
-  Select,
-  SimpleGrid,
-  Spacer,
-  Stack,
-} from "@chakra-ui/react";
+import { Box, Button, HStack, Select } from "@chakra-ui/react";
 import { Search2Icon } from "@chakra-ui/icons";
 import "../styles/Home.css";
 import "../styles/Modal.css";
@@ -50,7 +43,7 @@ export const images = [
     location: "Seoul Providence",
     link: "bit.ly/p@b",
     description:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Ut enim ad minim veniam, quis nostrud exercitati.",
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
   },
   {
     path: "./posters/poster5.png",
@@ -72,6 +65,16 @@ export const images = [
     description:
       "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Ut enim ad minim veniam, quis nostrud exercitati.",
   },
+  {
+    path: "./posters/poster7.png",
+    title: "CSA 2023 Lunar Banquet",
+    date: "Sunday Dec 3",
+    time: "6 PM",
+    location: "Alumnae Auditorium",
+    link: "bit.ly/p@b",
+    description:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Ut enim ad minim veniam, quis nostrud exercitati.",
+  },
 ];
 
 export default function Home() {
@@ -82,8 +85,12 @@ export default function Home() {
           <div className="text-wrapper">Posters @ Brown</div>
         </label>
         <div className="search-bar">
-          <Search2Icon id="search-icon" boxSize={5} width={14} />
-          <input placeholder="Search" type="text" />{" "}
+          <Search2Icon boxSize={5} width={14} />
+          <input
+            className="search-input"
+            placeholder="Search"
+            type="text"
+          />{" "}
           {/*TODO onclick navs to Happenings, fetches results of search, displays in happenings search bar */}
           <Box w="12vw">
             <Select
@@ -113,13 +120,14 @@ export default function Home() {
         </div>
         {/* map each poster to an img w/in a div  */}
       </div>
+      <Button></Button>
       <div className="happenings">
         <div className="happenings-label">Happenings Today</div>
         <HStack
           spacing="3vw"
           alignItems="flex-start"
           overflowX="auto"
-          padding="1vh 4vw"
+          padding="1.5vh 4vw"
         >
           {images.map((item, index) => (
             <Box key={index}>

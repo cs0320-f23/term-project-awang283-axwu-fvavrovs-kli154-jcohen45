@@ -28,6 +28,7 @@ export default function ViewPosterModal({
             flexFlow={"column"}
             alignContent={"center"}
             justifyContent={"space-around"}
+            minH="60%"
             className="modal-content"
           >
             <ModalCloseButton className="close-button" onClick={onClose} />

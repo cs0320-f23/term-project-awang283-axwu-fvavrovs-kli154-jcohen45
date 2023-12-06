@@ -63,15 +63,15 @@ export default function App() {
             <Route path="/archive" element={<Archive />} />
             <Route path="/about" element={<About />} />
           </Routes>
-          {modalOpen === "createImage" && (
+          {modalOpen && (
             <CreateImageModal
               setModalState={setModalOpen}
               onClose={() => setModalOpen("")}
             />
           )}
-          {modalOpen === "addTags" && (
+          {/* {modalOpen === "addTags" && (
             <TagsModal onClose={() => setModalOpen("")} />
-          )}
+          )} */}
         </main>
       </article>
     </>

@@ -46,7 +46,7 @@
   transition: 0.3s;
 }
 
-input {
+.search-input {
   background-color: transparent;
   display: flex;
   flex: 1;
@@ -60,9 +60,11 @@ input {
   font-size: 22px;
   caret-color: var(--dark-purple100);
   outline: none;
+  border: none !important;
+  box-shadow: none !important;
 }
 
-input::placeholder {
+.search-input::placeholder {
   color: var(--dark-purple70);
   font-family: "quicksand", sans-serif;
   font-size: 22px;
@@ -138,18 +140,4 @@ input::placeholder {
 
 img {
   border-radius: 15px;
-}
-
-@media (max-width: 780px) {
-  .label {
-    position: relative;
-    display: block;
-    width: 100%;
-    height: 40%;
-    color: var(--dark-purple100);
-    font-weight: 400;
-    letter-spacing: 0;
-    line-height: normal;
-    font-size: 15vw;
-  }
 }

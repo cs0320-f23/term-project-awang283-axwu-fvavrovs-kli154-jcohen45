@@ -20,7 +20,6 @@ export const ImageCard = (
   const handleViewPoster = useCallback(() => {
     setModalOpen("viewImage");
   }, []);
-
   return (
     <>
       <div className="image-card" onClick={handleViewPoster}>

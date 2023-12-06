@@ -4,9 +4,9 @@ import "../styles/About.css";
 export default function About() {
   return (
     <>
-      <main style={{ display: "flex" }}>
+      <main>
         <div
-          className="content"
+          className="about-content"
           style={{
             display: "flex",
             flexDirection: "column",

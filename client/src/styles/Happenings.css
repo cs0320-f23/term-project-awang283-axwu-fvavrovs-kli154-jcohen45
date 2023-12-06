@@ -71,6 +71,8 @@ h1 {
   font-weight: 550;
   caret-color: var(--dark-purple100);
   outline: none;
+  border: none !important;
+  box-shadow: none;
 }
 
 .browse-input::placeholder {
@@ -109,6 +111,7 @@ h1 {
   color: white;
   font-family: "quicksand", sans-serif;
   opacity: 0;
+  container-type: size;
 }
 
 .image-overlay:hover {
