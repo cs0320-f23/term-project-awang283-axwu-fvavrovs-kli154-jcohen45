@@ -25,7 +25,7 @@ export default function CreateImageModal({ onClose }) {
       <Modal isOpen={true} onClose={onClose}>
         <div className="modal-font">
           <ModalOverlay className="modal-overlay" />
-          <ModalContent className="modal-content" maxHeight={"80%"}>
+          <ModalContent className="modal-content" maxHeight={"95%"}>
             <ModalHeader className="modal-header">Upload a Poster</ModalHeader>
             <ModalCloseButton className="close-button" onClick={onClose} />
 
