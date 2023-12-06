@@ -62,6 +62,14 @@ h1 {
   transform: translateY(8%);
 }
 
+#triangle-icon-down {
+  transform: translateY(15%);
+}
+
+#triangle-icon-up {
+  transform: translateY(5%);
+}
+
 .browse-input {
   background-color: transparent;
   display: flex;

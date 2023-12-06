@@ -158,7 +158,7 @@ export default function Home() {
       <IconButton
         className="scroll-bottom"
         color="white"
-        icon={<TriangleDownIcon id="triangle-icon" />}
+        icon={<TriangleDownIcon id="triangle-icon-down" />}
         aria-label={"scrolls user to bottom of page"}
         onClick={scrollToBottom}
       />

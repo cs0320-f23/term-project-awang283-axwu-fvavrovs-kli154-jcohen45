@@ -137,7 +137,7 @@ export default function Happenings() {
         <IconButton
           className="scroll-top"
           color="white"
-          icon={<TriangleUpIcon id="triangle-icon" />}
+          icon={<TriangleUpIcon id="triangle-icon-up" />}
           aria-label={"scrolls user to bottom of page"}
           onClick={scrollToTop}
         />
