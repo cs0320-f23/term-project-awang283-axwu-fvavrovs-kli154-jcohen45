@@ -75,7 +75,6 @@ h1 {
   font-size: 18px;
   font-weight: 550;
   caret-color: var(--dark-purple100);
-  outline: none;
   border: none !important;
   box-shadow: none;
 }

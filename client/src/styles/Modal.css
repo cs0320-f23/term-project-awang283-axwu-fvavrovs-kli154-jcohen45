@@ -124,7 +124,6 @@ input::placeholder {
 .save-button {
   border-radius: 12px !important;
   color: white !important;
-  outline: none;
   margin-top: 2.8vh;
   display: absolute;
   bottom: 0;
@@ -134,7 +133,6 @@ input::placeholder {
 .final-upload-button {
   border-radius: 12px !important;
   color: white !important;
-  outline: none;
   display: absolute;
   padding: 15px 18px !important;
   margin-top: 15.4vh !important;
