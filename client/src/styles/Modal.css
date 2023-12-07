@@ -7,12 +7,6 @@
   gap: 2vw;
 }
 
-.modal {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .modal-font {
   display: flex;
   align-items: center;
@@ -59,7 +53,7 @@
 }
 
 .image-container {
-  width: 45%;
+  width: 46%;
   height: 74vh;
   background: linear-gradient(180deg, #c9e2ff 0%, #f9eeff 75.52%);
   margin: 0vw 1.5vw 1.5vw 1.5vw;
@@ -135,8 +129,8 @@ input::placeholder {
 .final-save-div {
   color: transparent;
   display: flex;
-  flex-flow: row-reverse;
-  align-items: right;
+  justify-content: space-between;
+  margin-top: 2vw;
 }
 
 .final-upload-button {
@@ -144,7 +138,7 @@ input::placeholder {
   color: white !important;
   display: absolute;
   padding: 15px 18px !important;
-  margin-top: 14.3vh !important;
+  margin: 0;
   bottom: 0;
 }
 
@@ -187,11 +181,10 @@ input::placeholder {
 }
 
 #view-title {
-  font-family: "pacifico", sans-serif;
-  font-size: 6vh;
+  font-family: "quicksand", sans-serif;
+  font-size: 44px;
   overflow: wrap;
   line-height: 115%;
-  margin-bottom: 1.5vh;
 }
 
 .view-info {
@@ -251,4 +244,13 @@ input::placeholder {
   transform: scale(1.03);
   transition: 0.3s;
   background-color: var(--dark-purple70);
+}
+
+#poster-link {
+  margin: 0;
+  font-family: "quicksand", sans-serif;
+}
+
+#poster-link:hover {
+  color: var(--dark-purple70);
 }

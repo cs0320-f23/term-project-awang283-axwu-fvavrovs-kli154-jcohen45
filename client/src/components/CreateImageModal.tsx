@@ -15,9 +15,12 @@ import TagsModal from "./TagsModal";
 
 export default function CreateImageModal({ onClose }) {
   const [showTags, setShowTags] = useState<boolean>(false);
-  const onNext = () => {
-    //setModalState("addTags"); //TODO nicer transition
+  const onSaveSelectTags = () => {
     setShowTags(true);
+  };
+
+  const onBack = () => {
+    setShowTags(false);
   };
 
   return (
@@ -70,6 +73,12 @@ export default function CreateImageModal({ onClose }) {
                     <div className="green-tag">Party</div>
                     <div className="blue-tag">Outdoor</div>
                     <div className="final-save-div">
+                      <Button
+                        onClick={onBack}
+                        className={"final-upload-button"}
+                      >
+                        Back
+                      </Button>
                       <Button className="final-upload-button" onClick={onClose}>
                         Upload Poster
                       </Button>
@@ -147,7 +156,10 @@ export default function CreateImageModal({ onClose }) {
                     <div className="save-div">
                       <div>
                         <h3>potato</h3>
-                        <Button onClick={onNext} className={"save-button"}>
+                        <Button
+                          onClick={onSaveSelectTags}
+                          className={"save-button"}
+                        >
                           Save and Select Tags
                         </Button>
                       </div>

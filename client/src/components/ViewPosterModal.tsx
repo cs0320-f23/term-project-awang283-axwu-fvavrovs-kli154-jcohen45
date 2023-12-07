@@ -50,7 +50,11 @@ export default function ViewPosterModal({
                     <p>{weekday + ", " + month + " " + day}</p>
                     {time && <p>{time}</p>}
                     {location && <p>{location}</p>}
-                    {link && <p>{link}</p>}
+                    {link && (
+                      <a href={link} id="poster-link" target="_blank">
+                        {link}
+                      </a>
+                    )}
                     <div id="row">
                       <div className="magenta-tag">Free Food</div>
                       <div className="green-tag">Party</div>
