@@ -2,10 +2,10 @@ package edu.brown.cs.student.main.types;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import org.joda.time.DateTime;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.UUID;
 
@@ -16,43 +16,62 @@ import java.util.UUID;
 @Document(collection = "poster")
 public class Poster {
 
+  // TODO: should probably update fields to include support for tags?
   @Id private String id; // or some identifier
-  private String title; //req
+  private String title; // req
   private String content; // url or image path
   private String description;
   private HashSet<String> tags;
-  private DateTime createdAt;
-  private DateTime startDate;
-  private DateTime endDate;
+
+
+  private LocalDateTime createdAt;
+
+
+  private LocalDateTime startDate;
+
+  private LocalDateTime endDate;
+
   private boolean isRecurring;
   private String organization;
- // private User user;
-
+  // private User user;
 
   @JsonPropertyOrder({"id", "title", "description"})
-  public Poster(String title, String content, String description) {
-    // i turned ID to a string to make it easier to test the GET by ID endpoint (it's not working
-    // btw)
+  public Poster(String title, String description) {
+    this.id = UUID.randomUUID().toString(); // so that IDs are randomly generated and unique
+    this.title = title;
+    //this.content = content;
+    this.description = description;
+    this.tags = new HashSet<>();
+  }
+
+  /**
+   * allows user to input tags and organization, which i'm using to test search
+   */
+  @JsonPropertyOrder({"id", "title", "description","tags","org"})
+
+  public Poster(String title, String content, String description, HashSet<String> tags, String org) {
+    // i turned ID to a string
     this.id = UUID.randomUUID().toString(); // so that IDs are randomly generated and unique
     this.title = title;
     this.content = content;
     this.description = description;
-    this.tags = new HashSet<>();
+    this.tags = tags;
+    this.organization = org;
   }
-  /*
-  Allows user to create poster w/o description of event
-   */
-  public Poster(String title, String content) {
-    this.id = UUID.randomUUID().toString(); // so that IDs are randomly generated and unique
-    this.title = title;
-    this.content = content;
-  }
+  /** Allows user to create poster w/o description of event */
+//  public Poster(String title, String content) {
+//    this.id = UUID.randomUUID().toString(); // so that IDs are randomly generated and unique
+//    this.title = title;
+//    this.content = content;
+//    this.tags = new HashSet<>();
+//    this.organization = "";
+//  }
 
   /** a no argument constructor so that Jackson can deserialize the json */
   public Poster() {
     this.id = UUID.randomUUID().toString();
     this.tags = new HashSet<>();
-    this.createdAt = new DateTime();
+    this.createdAt = LocalDateTime.now();
   }
 
   @JsonProperty("id")
@@ -60,15 +79,13 @@ public class Poster {
     return this.id;
   }
 
-  public void setID(String newID){
+  public void setID(String newID) {
     this.id = newID;
   }
 
-  /*
-  validates necessary fields
-   */
+  /** validates necessary fields */
   public Boolean isPoster() {
-    return this.id != null && this.title != null ;
+    return this.id != null && this.title != null;
   }
 
   @JsonProperty("title")
@@ -131,11 +148,11 @@ public class Poster {
     this.tags.remove(tag);
   }
 
-  public boolean isRecurring() {
+  public boolean getIsRecurring() {
     return isRecurring;
   }
 
-  public void setRecurring(boolean recurring) {
+  public void setIsRecurring(boolean recurring) {
     isRecurring = recurring;
   }
 
@@ -147,27 +164,45 @@ public class Poster {
     this.organization = organization;
   }
 
-  public DateTime getCreatedAt() {
+
+  public LocalDateTime getCreatedAt() {
+
     return createdAt;
   }
 
-  public void setCreatedAt(DateTime createdAt) {
+  public void setCreatedAt(LocalDateTime createdAt) {
     this.createdAt = createdAt;
   }
 
-  public DateTime getStartDate() {
+  public LocalDateTime getStartDate() {
     return startDate;
   }
 
-  public void setStartDate(DateTime startDate) {
+  public void setStartDate(LocalDateTime startDate) {
     this.startDate = startDate;
   }
 
-  public DateTime getEndDate() {
-    return endDate;
+  public LocalDateTime getEndDate() {
+    return this.endDate;
   }
 
-  public void setEndDate(DateTime endDate) {
+  public void setEndDate(LocalDateTime endDate) {
     this.endDate = endDate;
+  }
+
+  public String getHaystack(){
+    StringBuilder haystack = new StringBuilder(this.title);
+    if (this.description != ""){
+      haystack.append(this.description);
+    }
+    if (!this.tags.isEmpty()){
+      for (String tag: this.tags){
+        haystack.append(tag);
+      }
+    }
+    if (this.organization != "") {
+      haystack.append(this.organization);
+    }
+    return haystack.toString();
   }
 }
