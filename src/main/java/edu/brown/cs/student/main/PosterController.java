@@ -1,6 +1,6 @@
 package edu.brown.cs.student.main;
 
-import edu.brown.cs.student.main.imgur.ImgurService;
+//import edu.brown.cs.student.main.imgur.ImgurService;
 import edu.brown.cs.student.main.responses.ServiceResponse;
 import edu.brown.cs.student.main.types.Poster;
 
@@ -17,11 +17,11 @@ import org.springframework.web.bind.annotation.*;
 public class PosterController {
 
   private final PosterService posterService; // instance of the class that does all the dirty work
-  private final ImgurService imgurService;
+//  private final ImgurService imgurService;
 
-  public PosterController(PosterService posterService, ImgurService imgurService) {
+  public PosterController(PosterService posterService) {
     this.posterService = posterService;
-    this.imgurService = imgurService;
+//    this.imgurService = imgurService;
   }
 
   /**
@@ -116,8 +116,8 @@ public class PosterController {
   @PostMapping(value = "/create")
   public CompletableFuture<ResponseEntity<ServiceResponse<Poster>>> createPoster(
       @RequestBody Poster poster) {
-    ServiceResponse imgurResponse = imgurService.uploadToImgur(poster.getContent());
-    poster.setContent(imgurResponse.getData().toString());
+//    ServiceResponse imgurResponse = imgurService.uploadToImgur(poster.getContent());
+//    poster.setContent(imgurResponse.getData().toString());
     return this.posterService
         .createPoster(poster)
         .thenApply(response -> ResponseEntity.ok(response)) // good response

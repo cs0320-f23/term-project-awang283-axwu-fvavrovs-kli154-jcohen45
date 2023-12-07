@@ -21,6 +21,8 @@ public class Poster {
   private String content; // url or image path
   private String description;
   private HashSet<String> tags;
+  private String link;
+  private String location;
 
 
   private LocalDateTime createdAt;
@@ -35,12 +37,15 @@ public class Poster {
   // private User user;
 
   @JsonPropertyOrder({"id", "title", "description"})
-  public Poster(String title, String content, String description) {
+  public Poster(String title, String content, String description, String location, String link) {
     this.id = UUID.randomUUID().toString(); // so that IDs are randomly generated and unique
     this.title = title;
     this.content = content;
     this.description = description;
     this.tags = new HashSet<>();
+    this.createdAt = LocalDateTime.now();
+    this.location = location;
+    this.link = link;
   }
 
   /**
@@ -56,6 +61,9 @@ public class Poster {
     this.description = description;
     this.tags = tags;
     this.organization = org;
+    this.createdAt = LocalDateTime.now();
+
+
   }
   /** Allows user to create poster w/o description of event */
   public Poster(String title, String content) {
@@ -64,6 +72,8 @@ public class Poster {
     this.content = content;
     this.tags = new HashSet<>();
     this.organization = "";
+    this.createdAt = LocalDateTime.now();
+
   }
 
   /** a no argument constructor so that Jackson can deserialize the json */
@@ -71,6 +81,7 @@ public class Poster {
     this.id = UUID.randomUUID().toString();
     this.tags = new HashSet<>();
     this.createdAt = LocalDateTime.now();
+
   }
 
   @JsonProperty("id")
