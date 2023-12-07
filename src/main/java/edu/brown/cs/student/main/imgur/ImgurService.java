@@ -1,7 +1,3 @@
-//
-// Source code recreated from a .class file by IntelliJ IDEA
-// (powered by FernFlower decompiler)
-//
 
 package edu.brown.cs.student.main.imgur;
 
@@ -55,3 +51,4 @@ public class ImgurService {
         }
     }
 }
+

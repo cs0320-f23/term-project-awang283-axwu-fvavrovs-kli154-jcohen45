@@ -11,3 +11,4 @@ public class ImgurApiResponse {
         this.data = data;
     }
 }
+

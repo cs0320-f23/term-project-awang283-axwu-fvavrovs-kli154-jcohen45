@@ -8,6 +8,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.UUID;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * The Poster model defines the necessary set of properties for a poster object and contains getters
@@ -23,6 +25,9 @@ public class Poster {
   private String description;
   private HashSet<String> tags;
 
+  private String link;
+  private String location;
+
 
   private LocalDateTime createdAt;
 
@@ -36,28 +41,26 @@ public class Poster {
   // private User user;
 
   @JsonPropertyOrder({"id", "title", "description"})
+
   public Poster(String title, String description) {
-    this.id = UUID.randomUUID().toString(); // so that IDs are randomly generated and unique
-    this.title = title;
-    //this.content = content;
-    this.description = description;
-    this.tags = new HashSet<>();
-  }
-
-  /**
-   * allows user to input tags and organization, which i'm using to test search
-   */
-  @JsonPropertyOrder({"id", "title", "description","tags","org"})
-
-  public Poster(String title, String content, String description, HashSet<String> tags, String org) {
-    // i turned ID to a string
     this.id = UUID.randomUUID().toString(); // so that IDs are randomly generated and unique
     this.title = title;
     this.content = content;
     this.description = description;
     this.tags = tags;
-    this.organization = org;
+    //this.organization = org;
+
+    this.tags = new HashSet<>();
+    this.createdAt = LocalDateTime.now();
+//    this.location = location;
+//    this.link = link;
   }
+
+  /**
+   * allows user to input tags and organization, which i'm using to test search
+   */
+
+
   /** Allows user to create poster w/o description of event */
 //  public Poster(String title, String content) {
 //    this.id = UUID.randomUUID().toString(); // so that IDs are randomly generated and unique
@@ -72,6 +75,7 @@ public class Poster {
     this.id = UUID.randomUUID().toString();
     this.tags = new HashSet<>();
     this.createdAt = LocalDateTime.now();
+
   }
 
   @JsonProperty("id")
@@ -81,6 +85,22 @@ public class Poster {
 
   public void setID(String newID) {
     this.id = newID;
+  }
+
+  public void setLocation(String location){
+    this.location = location;
+  }
+
+  public String getLocation(){
+    return this.location;
+  }
+
+  public void setLink(String link){
+    this.link = link;
+  }
+
+  public String getLink(){
+    return this.link;
   }
 
   /** validates necessary fields */
@@ -206,3 +226,4 @@ public class Poster {
     return haystack.toString();
   }
 }
+

@@ -1,9 +1,10 @@
 edu/brown/cs/student/main/PosterService.class
 edu/brown/cs/student/main/responses/ServiceResponse.class
+edu/brown/cs/student/main/types/DateTimeDeserializer.class
 edu/brown/cs/student/main/PosterController.class
 edu/brown/cs/student/main/SecurityConfig.class
 edu/brown/cs/student/main/App.class
 edu/brown/cs/student/main/MediaConverterConfiguration.class
+JacksonConfig.class
 edu/brown/cs/student/main/types/Poster.class
 edu/brown/cs/student/main/types/PosterRepository.class
-edu/brown/cs/student/main/MongoClientConnection.class

@@ -1,22 +1,31 @@
 package edu.brown.cs.student.main.responses;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ServiceResponse<T> {
+  /** This class handles responses to API requests */
   private String message;
-  private T data;
 
+  private T data; // generic so it can be used with endpoints not related to poster management
+
+  /**
+   * Message only constructor (used mainly for errors, since no data is returned)
+   *
+   * @param message
+   */
   public ServiceResponse(String message) {
     this.message = message;
-
   }
 
-  public ServiceResponse(String message, T data) {
-    this.message = message;
-    this.data = data;
-  }
-
+  /**
+   * Message and data constructor (used mainly for successes, since data, e.g. a poster, is
+   * returned)
+   *
+   * @param message
+   */
   public ServiceResponse(T data, String message) {
     this.data = data;
     this.message = message;

@@ -1,6 +1,7 @@
 package edu.brown.cs.student.main;
 
 import edu.brown.cs.student.main.imgur.ImgurService;
+
 import edu.brown.cs.student.main.responses.ServiceResponse;
 import edu.brown.cs.student.main.types.Poster;
 
@@ -91,10 +92,10 @@ public class PosterController {
                 .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
     }
 
-    @GetMapping("/term/{term}")
-    public CompletableFuture<ResponseEntity<List<Poster>>> getPosterByTerm(@PathVariable String term){
+    @GetMapping("/term")
+    public CompletableFuture<ResponseEntity<List<Poster>>> getPosterByTerm(@RequestParam String term, @RequestParam(required = false) String[] tags){
         return posterService
-                .searchByTerm(term)
+                .searchByTerm(term,tags)
                 .thenApply(ResponseEntity::ok)
                 .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
     }
@@ -102,8 +103,7 @@ public class PosterController {
     /**
      * sends a POST request to the mapping /poster/create
      *
-     * @param poster a poster (see fields expected in Poster class) expected in JSON format in the
-     *     request body
+
      * @return a JSONified ServiceResponse instance that contains a "message" (string) field and a
      *     "data" (JSON) field that contains the data of the poster that was just created
      */
@@ -189,3 +189,4 @@ public class PosterController {
                 .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
     }
 }
+
