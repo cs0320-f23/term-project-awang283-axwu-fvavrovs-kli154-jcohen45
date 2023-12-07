@@ -12,6 +12,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,10 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class PosterService {
+
+
   private final PosterRepository posterRepository;
+
 
   @Autowired // annotation so Spring will automatically wire (inject) into dependent objects, in
   // this case PosterController
@@ -35,8 +39,8 @@ public class PosterService {
     // Save the Poster object to the database
     if (poster.isPoster()) {
       if (posterRepository
-          .findById(poster.getID())
-          .isEmpty()) { // check if already exists in database
+              .findById(poster.getID())
+              .isEmpty()) { // check if already exists in database
         Poster savedPoster = posterRepository.insert(poster);
         // Create a response object
         response = new ServiceResponse<>(savedPoster, "added to database");
@@ -72,19 +76,20 @@ public class PosterService {
   @Async
   public CompletableFuture<ServiceResponse<Poster>> getPosterById(String id) {
     return this.getPosters()
-        .thenCompose(
-            posters ->
-                posters.stream()
-                    .filter(poster -> id.equals(poster.getID()))
-                    .findFirst()
-                    .map(
-                        poster ->
-                            CompletableFuture.completedFuture(
-                                new ServiceResponse<Poster>(poster, "poster with id found")))
-                    .orElseGet(
-                        () ->
-                            CompletableFuture.completedFuture(
-                                new ServiceResponse<Poster>("Poster not found"))));
+            .thenCompose(
+                    posters ->
+                            posters.stream()
+                                    .filter(poster -> id.equals(poster.getID()))
+                                    .findFirst()
+                                    .map(
+                                            poster ->
+                                                    CompletableFuture.completedFuture(
+                                                            new ServiceResponse<Poster>(poster, "poster with id found")))
+                                    .orElseGet(
+                                            () ->
+                                                    CompletableFuture.completedFuture(
+                                                            new ServiceResponse<Poster>("Poster not found"))));
+
   }
 
   @Async
@@ -117,6 +122,7 @@ public class PosterService {
   }
 
   @Async
+
   public CompletableFuture<HashSet<Object>> getAllFields(String field) {
     return this.getPosters().thenApply(posters -> {
       switch (field) {
@@ -177,6 +183,7 @@ public class PosterService {
     }
   }
 
+
   private boolean containsAllTags(Poster poster, String[] tags) {
     HashSet<String> posterTags = poster.getTags();
     return posterTags.containsAll(Arrays.asList(tags));
@@ -190,3 +197,4 @@ public class PosterService {
 
 
 }
+

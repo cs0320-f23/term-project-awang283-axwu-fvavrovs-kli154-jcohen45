@@ -7,6 +7,7 @@ public class BMSearch {
     private char[] needle;
     private char[] haystack;
     public BMSearch(String needle, String haystack){
+
         this.needle = needle.toLowerCase().toCharArray();
         this.haystack = haystack.toLowerCase().toCharArray();
     }
@@ -106,3 +107,4 @@ public class BMSearch {
         return len;
     }
 }
+
