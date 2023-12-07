@@ -1,6 +1,7 @@
 package edu.brown.cs.student.main.user;
-import edu.brown.cs.student.main.responses.ServiceResponse;
 import edu.brown.cs.student.main.user.User;
+import edu.brown.cs.student.main.responses.ServiceResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,16 +35,43 @@ public class UserController {
                 .thenApply(response -> ResponseEntity.ok(response));
     }
 
-    @PutMapping("/update/{id}")
-    public CompletableFuture<ResponseEntity<ServiceResponse<User>>> updateUser(
-            @PathVariable String id, @RequestBody User updatedUser) {
-        return userService.updateUser(id, updatedUser)
-                .thenApply(response -> ResponseEntity.ok(response));
-    }
 
     @DeleteMapping("/delete/{id}")
     public CompletableFuture<ResponseEntity<ServiceResponse<Object>>> deleteUser(@PathVariable String id) {
-        return userService.deleteUser(id)
-                .thenApply(response -> ResponseEntity.ok(response));
+        return userService
+                .getUserById(id)
+                .thenCompose(
+                        existingUser -> {
+                            if (existingUser.getData() != null) {
+                                return userService
+                                        .deleteUserById(id)
+                                        .thenApply(
+                                                deleted -> new ServiceResponse<>("User with id " + id + " deleted"));
+                            } else {
+                                return CompletableFuture.completedFuture(
+                                        new ServiceResponse<>("User with id " + id + " not found"));
+                            }
+                        })
+                .thenApply(response -> ResponseEntity.ok(response))
+                .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+    }
+
+    @PutMapping("/update/{id}")
+    public CompletableFuture<ResponseEntity<ServiceResponse<User>>> updateUser(
+            @PathVariable String id, @RequestBody User updatedUser) {
+        return userService
+                .getUserById(id)
+                .thenCompose(
+                        existingUser -> {
+                            if (existingUser.getData() != null) {
+                                updatedUser.setId(id); // Ensure ID consistency
+                                return userService.updateUser(updatedUser);
+                            } else {
+                                return CompletableFuture.completedFuture(
+                                        new ServiceResponse<>("User with id " + id + " not found"));
+                            }
+                        })
+                .thenApply(response -> ResponseEntity.ok(response))
+                .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
     }
 }
