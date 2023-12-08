@@ -6,7 +6,6 @@ import edu.brown.cs.student.main.user.User;
 import edu.brown.cs.student.main.responses.ServiceResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,12 +17,10 @@ import java.util.concurrent.CompletionStage;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @Async
@@ -31,7 +28,7 @@ public class UserService {
         ServiceResponse<User> response;
 
         // Validate user data
-        if (user == null || user.getUsername() == null || user.getEmail() == null || user.getPassword() == null) {
+        if (user == null || user.getUsername() == null || user.getEmail() == null ) {
             response = new ServiceResponse<>("Invalid user data");
         } else {
             // Check if the username is already taken
@@ -42,8 +39,6 @@ public class UserService {
                 if (userRepository.findByEmail(user.getEmail()).isPresent()) {
                     response = new ServiceResponse<>("Email is already taken");
                 } else {
-                    // Hash the user's password before saving it to the database
-                    user.setPassword(passwordEncoder.encode(user.getPassword()));
 
                     // Save the User object to the database
                     User savedUser = userRepository.save(user);
