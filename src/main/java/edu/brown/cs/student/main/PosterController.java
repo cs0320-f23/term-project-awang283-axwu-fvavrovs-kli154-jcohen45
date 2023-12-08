@@ -5,10 +5,13 @@ import edu.brown.cs.student.main.imgur.ImgurService;
 import edu.brown.cs.student.main.responses.ServiceResponse;
 import edu.brown.cs.student.main.types.Poster;
 
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -62,21 +65,37 @@ public class PosterController {
      * @param tag an array of tags (strings)
      * @return a list of all posters matching the requested tags
      */
-    @GetMapping("/tag/{tag}")
-    public CompletableFuture<ResponseEntity<List<Poster>>> getPosterByTag(@PathVariable String[] tag) {
+
+    @GetMapping("/tag")
+    public CompletableFuture<ResponseEntity<List<Poster>>> getPosterByTag(@RequestParam String[] tag, @RequestParam(required = false) String date) {
+        CompletableFuture<List<Poster>> postersFuture;
         if (tag.length == 1) {
             // If there is only one tag, use the searchByTag method
-            return posterService
-                    .searchByTag(tag[0])
-                    .thenApply(ResponseEntity::ok)
-                    .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+            postersFuture = posterService.searchByTag(tag[0]);
         } else {
             // If there are multiple tags, use the searchByMultipleTags method
-            return posterService
-                    .searchByMultipleTags(tag)
+            postersFuture = posterService.searchByMultipleTags(tag);
+        }
+
+        if (date.equals("createdAt")){
+            return postersFuture
+                    .thenApply(posters -> posters.stream()
+                            .sorted(Comparator.comparing(Poster::getCreatedAt)) // Sort by createdAt date
+                            .collect(Collectors.toList()))
                     .thenApply(ResponseEntity::ok)
                     .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
         }
+        if (date.equals("startDate")){
+            return postersFuture
+                    .thenApply(posters -> posters.stream()
+                            .sorted(Comparator.comparing(Poster::getStartDate)) // Sort by startDate
+                            .collect(Collectors.toList()))
+                    .thenApply(ResponseEntity::ok)
+                    .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+        }
+        return postersFuture
+                .thenApply(ResponseEntity::ok)
+                .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
     }
 
     /**
@@ -84,18 +103,67 @@ public class PosterController {
      * @param org name of the organization (string)
      * @return a list of all posters by the requested organization
      */
-    @GetMapping("/org/{org}")
-    public CompletableFuture<ResponseEntity<List<Poster>>> getPosterByOrg(@PathVariable String org){
-        return posterService
-                .searchByOrganization(org)
+    @GetMapping("/org")
+    public CompletableFuture<ResponseEntity<List<Poster>>> getPosterByOrg(@RequestParam String org, @RequestParam(required = false) String date){
+        CompletableFuture<List<Poster>> postersFuture = posterService.searchByOrganization(org);
+        if (date.equals("createdAt")){
+            return postersFuture
+                    .thenApply(posters -> posters.stream()
+                            .sorted(Comparator.comparing(Poster::getCreatedAt))
+                            .collect(Collectors.toList()))
+                    .thenApply(ResponseEntity::ok)
+                    .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+        }
+        if (date.equals("startDate")){
+            return postersFuture
+                    .thenApply(posters -> posters.stream()
+                            .sorted(Comparator.comparing(Poster::getStartDate))
+                            .collect(Collectors.toList()))
+                    .thenApply(ResponseEntity::ok)
+                    .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+        }
+        return postersFuture
                 .thenApply(ResponseEntity::ok)
                 .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
     }
 
     @GetMapping("/term")
-    public CompletableFuture<ResponseEntity<List<Poster>>> getPosterByTerm(@RequestParam String term, @RequestParam(required = false) String[] tags){
+    public CompletableFuture<ResponseEntity<List<Poster>>> getPosterByTerm(@RequestParam String term, @RequestParam(required = false) String[] tags,
+                                                                           @RequestParam(required = false) String date){
+        if (date == "createdAt"){
+            return posterService
+                    .searchByTerm(term,tags)
+                    .thenApply(posters -> posters.stream()
+                            .sorted(Comparator.comparing(Poster::getCreatedAt))
+                            .collect(Collectors.toList()))
+                    .thenApply(ResponseEntity::ok)
+                    .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+        }
+        if (date == "startDate"){
+            return posterService
+                    .searchByTerm(term,tags)
+                    .thenApply(posters -> posters.stream()
+                            .sorted(Comparator.comparing(Poster::getStartDate))
+                            .collect(Collectors.toList()))
+                    .thenApply(ResponseEntity::ok)
+                    .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+        }
         return posterService
                 .searchByTerm(term,tags)
+                .thenApply(ResponseEntity::ok)
+                .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+    }
+
+    /**
+     * Gets everything in a requested field, e.g. all tags, all organizations, all titles. Accepted request parameters
+     * are "title," "organization," and "tags"
+     * @param field
+     * @return
+     */
+    @GetMapping("/all")
+    public CompletableFuture<ResponseEntity<HashSet<Object>>> getPosterByTerm(@RequestParam String field){
+        return posterService
+                .getAllFields(field)
                 .thenApply(ResponseEntity::ok)
                 .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
     }

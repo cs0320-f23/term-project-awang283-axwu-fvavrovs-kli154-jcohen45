@@ -161,7 +161,7 @@ public class PosterService {
     return this.getPosters()
             .thenApply(posters ->
                     posters.stream()
-                            .filter(poster -> poster.getOrganization().equalsIgnoreCase(org))
+                            .filter(poster -> poster.getOrganization().equals(org))
                             .collect(Collectors.toList()));
   }
   @Async
