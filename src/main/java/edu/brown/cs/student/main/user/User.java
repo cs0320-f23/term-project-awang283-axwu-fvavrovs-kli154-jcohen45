@@ -5,6 +5,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Set;
+import java.util.UUID;
+
 @Document(collection = "user")
     public class User {
     @Id
@@ -14,8 +16,12 @@ import java.util.Set;
     private String email;
     private Set<Poster> posters; // Assuming a user can have multiple posters
 
-    // Getters and Setters
 
+    /** a no argument constructor so that Jackson can deserialize the json */
+    public User() {
+        this.id = UUID.randomUUID().toString();
+    }
+    // Getters and Setters
     public String getId() {
         return id;
     }
@@ -46,5 +52,13 @@ import java.util.Set;
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Set<Poster> getPosters() {
+        return posters;
+    }
+
+    public void setPosters(Set<Poster> posters) {
+        this.posters = posters;
     }
 }
