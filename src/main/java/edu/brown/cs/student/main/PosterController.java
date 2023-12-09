@@ -45,8 +45,8 @@ public class PosterController {
      *
      * @param id the id (string) for the poster
      * @return a JSONified ServiceResponse instance that contains a "message" (string) field and, if
-     *     poster with id exists, a "data" (JSON) field that contains the data associated with that
-     *     poster
+     * poster with id exists, a "data" (JSON) field that contains the data associated with that
+     * poster
      */
     @GetMapping("/{id}") // params like id should be enclosed in squiggly brackets
     public CompletableFuture<ResponseEntity<ServiceResponse<Poster>>> getPosterById(
@@ -59,6 +59,7 @@ public class PosterController {
 
     /**
      * sends a GET request to filter by tag(s)
+     *
      * @param tag an array of tags (strings)
      * @return a list of all posters matching the requested tags
      */
@@ -74,7 +75,7 @@ public class PosterController {
             postersFuture = posterService.searchByMultipleTags(tag);
         }
 
-        if (date.equals("createdAt")){
+        if (date.equals("createdAt")) {
             return postersFuture
                     .thenApply(posters -> posters.stream()
                             .sorted(Comparator.comparing(Poster::getCreatedAt)) // Sort by createdAt date
@@ -82,7 +83,7 @@ public class PosterController {
                     .thenApply(ResponseEntity::ok)
                     .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
         }
-        if (date.equals("startDate")){
+        if (date.equals("startDate")) {
             return postersFuture
                     .thenApply(posters -> posters.stream()
                             .sorted(Comparator.comparing(Poster::getStartDate)) // Sort by startDate
@@ -97,13 +98,14 @@ public class PosterController {
 
     /**
      * sends a GET request for filtering by organization name
+     *
      * @param org name of the organization (string)
      * @return a list of all posters by the requested organization
      */
     @GetMapping("/org")
-    public CompletableFuture<ResponseEntity<List<Poster>>> getPosterByOrg(@RequestParam String org, @RequestParam(required = false) String date){
+    public CompletableFuture<ResponseEntity<List<Poster>>> getPosterByOrg(@RequestParam String org, @RequestParam(required = false) String date) {
         CompletableFuture<List<Poster>> postersFuture = posterService.searchByOrganization(org);
-        if (date.equals("createdAt")){
+        if (date.equals("createdAt")) {
             return postersFuture
                     .thenApply(posters -> posters.stream()
                             .sorted(Comparator.comparing(Poster::getCreatedAt))
@@ -111,7 +113,7 @@ public class PosterController {
                     .thenApply(ResponseEntity::ok)
                     .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
         }
-        if (date.equals("startDate")){
+        if (date.equals("startDate")) {
             return postersFuture
                     .thenApply(posters -> posters.stream()
                             .sorted(Comparator.comparing(Poster::getStartDate))
@@ -126,19 +128,19 @@ public class PosterController {
 
     @GetMapping("/term")
     public CompletableFuture<ResponseEntity<List<Poster>>> getPosterByTerm(@RequestParam String term, @RequestParam(required = false) String[] tags,
-                                                                           @RequestParam(required = false) String date){
-        if (date == "createdAt"){
+                                                                           @RequestParam(required = false) String date) {
+        if (date == "createdAt") {
             return posterService
-                    .searchByTerm(term,tags)
+                    .searchByTerm(term, tags)
                     .thenApply(posters -> posters.stream()
                             .sorted(Comparator.comparing(Poster::getCreatedAt))
                             .collect(Collectors.toList()))
                     .thenApply(ResponseEntity::ok)
                     .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
         }
-        if (date == "startDate"){
+        if (date == "startDate") {
             return posterService
-                    .searchByTerm(term,tags)
+                    .searchByTerm(term, tags)
                     .thenApply(posters -> posters.stream()
                             .sorted(Comparator.comparing(Poster::getStartDate))
                             .collect(Collectors.toList()))
@@ -146,7 +148,7 @@ public class PosterController {
                     .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
         }
         return posterService
-                .searchByTerm(term,tags)
+                .searchByTerm(term, tags)
                 .thenApply(ResponseEntity::ok)
                 .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
     }
@@ -154,11 +156,12 @@ public class PosterController {
     /**
      * Gets everything in a requested field, e.g. all tags, all organizations, all titles. Accepted request parameters
      * are "title," "organization," and "tags"
+     *
      * @param field
      * @return
      */
     @GetMapping("/all")
-    public CompletableFuture<ResponseEntity<HashSet<Object>>> getPosterByTerm(@RequestParam String field){
+    public CompletableFuture<ResponseEntity<HashSet<Object>>> getPosterByTerm(@RequestParam String field) {
         return posterService
                 .getAllFields(field)
                 .thenApply(ResponseEntity::ok)
@@ -178,7 +181,6 @@ public class PosterController {
     /**
      * sends a POST request to the mapping /poster/create
      *
-
      * @return a JSONified ServiceResponse instance that contains a "message" (string) field and a
      *     "data" (JSON) field that contains the data of the poster that was just created
      */
@@ -208,7 +210,7 @@ public class PosterController {
      */
     @DeleteMapping("/delete")
     public void deleteAll() {
-         posterService.deleteAll();
+        posterService.deleteAll();
     }
 
     /**
@@ -216,7 +218,7 @@ public class PosterController {
      *
      * @param id the id (string) of the poster to be deleted
      * @return a JSONified ServiceResponse instance that contains a "message" (string) field and a
-     *     "data" (JSON) field that contains the data of the poster that was just deleted
+     * "data" (JSON) field that contains the data of the poster that was just deleted
      */
     @DeleteMapping("/delete/{id}")
     public CompletableFuture<ResponseEntity<ServiceResponse<Object>>> deletePoster(
@@ -239,6 +241,7 @@ public class PosterController {
                 .thenApply(response -> ResponseEntity.ok(response))
                 .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
     }
+}
 
     /**
      * sends a PUT request to update an existing poster. When integrated with the frontend, usage of
@@ -252,23 +255,59 @@ public class PosterController {
      * @return instance that contains a "message" (string) field and, if successful (the id is found),
      *     a "data" (JSON) field that contains the data of the poster that was just deleted
      */
-    @PutMapping("/update/{id}")
-    public CompletableFuture<ResponseEntity<ServiceResponse<Poster>>> updatePoster(
-            @PathVariable String id, @RequestBody Poster updatedPoster) {
-        return posterService
-                .getPosterById(id)
-                .thenCompose(
-                        existingPoster -> {
-                            if (existingPoster.getData() != null) {
-                                updatedPoster.setID(id); // Ensure ID consistency
-                                return posterService.updatePoster(updatedPoster);
-                            } else {
-                                return CompletableFuture.completedFuture(
-                                        new ServiceResponse<>("Poster with id " + id + " not found"));
-                            }
-                        })
-                .thenApply(response -> ResponseEntity.ok(response))
-                .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
-    }
-}
-
+//    @PutMapping("/update/{id}")
+//    public CompletableFuture<ResponseEntity<ServiceResponse<Poster>>> updatePoster(
+//            @PathVariable String id, @RequestBody Poster updatedPoster) {
+//        return posterService
+//                .getPosterById(id)
+//                .thenCompose(
+//                        existingPoster -> {
+//                            if (existingPoster.getData() != null) {
+//                                updatedPoster.setID(id); // Ensure ID consistency
+//                                return posterService.updatePoster(updatedPoster);
+//                            } else {
+//                                return CompletableFuture.completedFuture(
+//                                        new ServiceResponse<>("Poster with id " + id + " not found"));
+//                            }
+//                        })
+//                .thenApply(response -> ResponseEntity.ok(response))
+//                .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+//    }
+//
+//    @PutMapping("/update/{id}")
+//    public CompletableFuture<ServiceResponse<Poster>> updatePoster(String id, Poster updatedPoster) {
+//        return getPosterById(id)
+//                .thenCompose(existingPosterResponse -> {
+//                    Poster existingPoster = existingPosterResponse.getData();
+//                    if (existingPoster != null) {
+//                        // Exclude ID and content from the update
+//                        existingPoster.setTitle(updatedPoster.getTitle());
+//                        existingPoster.setDescription(updatedPoster.getDescription());
+//                        existingPoster.setTags(updatedPoster.getTags());
+//                        existingPoster.setIsRecurring(updatedPoster.getIsRecurring());
+//
+//                        return CompletableFuture.completedFuture(existingPoster);
+//                    } else {
+//                        return CompletableFuture.completedFuture(null);
+//                    }
+//                })
+//                .thenCompose(updated -> {
+//                    if (updated != null) {
+//                        return CompletableFuture.completedFuture(
+//                                posterRepository.save(updated)
+//                        );
+//                    } else {
+//                        return CompletableFuture.completedFuture(null);
+//                    }
+//                })
+//                .thenApply(updated -> {
+//                    if (updated != null) {
+//                        return new ServiceResponse<>(updated, "Poster updated");
+//                    } else {
+//                        return new ServiceResponse<>("Failed to update poster");
+//                    }
+//                });
+//    }
+//
+//}
+//

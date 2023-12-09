@@ -96,7 +96,7 @@ public class Poster {
 
   /** validates necessary fields */
   public Boolean isPoster() {
-    return this.id != null && this.title != null;
+    return this.id != null;
   }
 
   @JsonProperty("title")
