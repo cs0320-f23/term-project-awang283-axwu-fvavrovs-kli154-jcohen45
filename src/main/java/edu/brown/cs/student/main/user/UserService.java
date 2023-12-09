@@ -28,7 +28,7 @@ public class UserService {
         ServiceResponse<User> response;
 
         // Validate user data
-        if (user == null || user.getUsername() == null || user.getEmail() == null ) {
+        if (user == null || isNullOrEmpty(user.getUsername()) || isNullOrEmpty(user.getEmail()) || isNullOrEmpty(user.getName())) {
             response = new ServiceResponse<>("Invalid user data");
         } else {
             // Check if the username is already taken
@@ -54,6 +54,10 @@ public class UserService {
 
         // CompletableFuture is basically a Promise
         return CompletableFuture.completedFuture(response);
+    }
+    // Helper method to check if a string is null or empty
+    private boolean isNullOrEmpty(String str) {
+        return str == null || str.trim().isEmpty();
     }
 
 

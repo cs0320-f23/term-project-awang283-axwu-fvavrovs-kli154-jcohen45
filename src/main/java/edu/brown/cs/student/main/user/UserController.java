@@ -29,7 +29,7 @@ public class UserController {
                 .thenApply(ResponseEntity::ok);
     }
 
-    @PostMapping("/create")
+    @PostMapping(value = "/create", produces = "application/json")
     public CompletableFuture<ResponseEntity<ServiceResponse<User>>> createUser(@RequestBody User user) {
         return userService.createUser(user)
                 .thenApply(response -> ResponseEntity.ok(response));
