@@ -4,6 +4,7 @@ import edu.brown.cs.student.main.imgur.ImgurService;
 import edu.brown.cs.student.main.responses.ServiceResponse;
 import edu.brown.cs.student.main.types.Poster;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -169,13 +170,12 @@ public class PosterController {
     }
 
     @PostMapping(value = "/create/imgur")
-    public ServiceResponse<Poster> createImgurLink(@RequestPart(value = "content") MultipartFile content) {
+    public CompletableFuture<ServiceResponse<Poster>> createImgurLink(@RequestBody MultipartFile content) {
         Poster poster = new Poster();
-        ServiceResponse imgurResponse = imgurService.uploadToImgur(content);
-        poster.setContent(imgurResponse.getData().toString());
+        ServiceResponse<String> imgurResponse = imgurService.uploadToImgur(content);
+        poster.setContent(imgurResponse.getData());
         this.posterService.createPoster(poster);
-        return new ServiceResponse<Poster>(poster, ": uploaded to imgur");
-
+        return CompletableFuture.completedFuture(new ServiceResponse<Poster>(poster, ": uploaded to imgur"));
     }
 
     /**
@@ -241,7 +241,7 @@ public class PosterController {
                 .thenApply(response -> ResponseEntity.ok(response))
                 .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
     }
-}
+
 
     /**
      * sends a PUT request to update an existing poster. When integrated with the frontend, usage of
@@ -255,24 +255,25 @@ public class PosterController {
      * @return instance that contains a "message" (string) field and, if successful (the id is found),
      *     a "data" (JSON) field that contains the data of the poster that was just deleted
      */
-//    @PutMapping("/update/{id}")
-//    public CompletableFuture<ResponseEntity<ServiceResponse<Poster>>> updatePoster(
-//            @PathVariable String id, @RequestBody Poster updatedPoster) {
-//        return posterService
-//                .getPosterById(id)
-//                .thenCompose(
-//                        existingPoster -> {
-//                            if (existingPoster.getData() != null) {
-//                                updatedPoster.setID(id); // Ensure ID consistency
-//                                return posterService.updatePoster(updatedPoster);
-//                            } else {
-//                                return CompletableFuture.completedFuture(
-//                                        new ServiceResponse<>("Poster with id " + id + " not found"));
-//                            }
-//                        })
-//                .thenApply(response -> ResponseEntity.ok(response))
-//                .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
-//    }
+    @PutMapping("/update/{id}")
+    public CompletableFuture<ResponseEntity<ServiceResponse<Poster>>> updatePoster(
+            @PathVariable String id, @RequestBody Poster updatedPoster) {
+        return posterService
+                .getPosterById(id)
+                .thenCompose(
+                        existingPoster -> {
+                            if (existingPoster.getData() != null) {
+                                updatedPoster.setID(id); // Ensure ID consistency
+                                return posterService.updatePoster(updatedPoster);
+                            } else {
+                                return CompletableFuture.completedFuture(
+                                        new ServiceResponse<>("Poster with id " + id + " not found"));
+                            }
+                        })
+                .thenApply(response -> ResponseEntity.ok(response))
+                .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+    }
+
 //
 //    @PutMapping("/update/{id}")
 //    public CompletableFuture<ServiceResponse<Poster>> updatePoster(String id, Poster updatedPoster) {
@@ -303,11 +304,12 @@ public class PosterController {
 //                .thenApply(updated -> {
 //                    if (updated != null) {
 //                        return new ServiceResponse<>(updated, "Poster updated");
-//                    } else {
-//                        return new ServiceResponse<>("Failed to update poster");
 //                    }
+//                    return new ServiceResponse<>("Failed to update poster");
+//
 //                });
+//
 //    }
-//
-//}
-//
+
+}
+

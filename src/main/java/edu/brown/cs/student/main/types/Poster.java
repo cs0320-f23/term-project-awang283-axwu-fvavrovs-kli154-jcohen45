@@ -1,5 +1,6 @@
 package edu.brown.cs.student.main.types;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.springframework.data.annotation.Id;
@@ -14,6 +15,7 @@ import java.util.UUID;
  * and setters used to validate and change data
  */
 @Document(collection = "poster")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Poster {
 
   // TODO: should probably update fields to include support for tags?
@@ -31,7 +33,7 @@ public class Poster {
   private String organization;
   // private User user;
 
-  @JsonPropertyOrder({"id", "title", "description"})
+  //@JsonPropertyOrder({"id", "title", "description"})
 
   public Poster(String title, String description) {
     this.id = UUID.randomUUID().toString(); // so that IDs are randomly generated and unique
@@ -99,7 +101,7 @@ public class Poster {
     return this.id != null;
   }
 
-  @JsonProperty("title")
+  //@JsonProperty("title")
   public String getTitle() {
     return this.title;
   }
@@ -138,7 +140,7 @@ public class Poster {
     this.description = newDesc;
   }
 
-  @JsonProperty("description")
+  //@JsonProperty("description")
   public String getDescription() {
     return this.description;
   }
@@ -201,7 +203,7 @@ public class Poster {
     this.endDate = endDate;
   }
 
-  public String getHaystack(){
+  public String returnHaystack(){
     StringBuilder haystack = new StringBuilder(this.title);
     if (this.description != ""){
       haystack.append(this.description);
