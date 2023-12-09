@@ -1,21 +1,18 @@
 package edu.brown.cs.student.main;
 
 import edu.brown.cs.student.main.imgur.ImgurService;
-
 import edu.brown.cs.student.main.responses.ServiceResponse;
 import edu.brown.cs.student.main.types.Poster;
-
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 /** This class defines the mappings and endpoints for poster management */
 @RestController
@@ -168,6 +165,16 @@ public class PosterController {
                 .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
     }
 
+    @PostMapping(value = "/create/imgur")
+    public ServiceResponse<Poster> createImgurLink(@RequestPart(value = "content") MultipartFile content) {
+        Poster poster = new Poster();
+        ServiceResponse imgurResponse = imgurService.uploadToImgur(content);
+        poster.setContent(imgurResponse.getData().toString());
+        this.posterService.createPoster(poster);
+        return new ServiceResponse<Poster>(poster, ": uploaded to imgur");
+
+    }
+
     /**
      * sends a POST request to the mapping /poster/create
      *
@@ -175,26 +182,33 @@ public class PosterController {
      * @return a JSONified ServiceResponse instance that contains a "message" (string) field and a
      *     "data" (JSON) field that contains the data of the poster that was just created
      */
-    @PostMapping(value = "/create")
-    public CompletableFuture<ResponseEntity<ServiceResponse<Poster>>> createPoster(
-            @RequestPart(value = "title", required = true) String title,
-            @RequestPart(value = "description", required = false) String description,
-            @RequestPart(value = "tags", required = false) HashSet<String> tags,
-            @RequestPart(value = "isRecurring", required = false) Boolean isRecurring,
-            @RequestPart(value = "content") MultipartFile content) {
-        Poster poster = new Poster(title, description);
-        poster.setTags(tags);
-        poster.setIsRecurring(isRecurring);
+//    @PutMapping(value = "/create")
+//    public CompletableFuture<ResponseEntity<ServiceResponse<Poster>>> createPoster(
+//            @RequestPart(value = "title", required = true) String title,
+//            @RequestPart(value = "description", required = false) String description,
+//            @RequestPart(value = "tags", required = false) HashSet<String> tags,
+//            @RequestPart(value = "isRecurring", required = false) Boolean isRecurring,
+//            @RequestPart(value = "content") String id) {
+//        Poster poster = new Poster(title, description);
+//        poster.setTags(tags);
+//        poster.setIsRecurring(isRecurring);
+//        poster.setContent(this.createImgurLink(content));
+//
+//        return this.posterService
+//                .createPoster(poster)
+//                .thenApply(response -> ResponseEntity.ok(response)) // good response
+//                .exceptionally(
+//                        ex ->
+//                                ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                                        .body(new ServiceResponse<>(poster, ex.getMessage())));
+//    }
 
-        ServiceResponse imgurResponse = imgurService.uploadToImgur(content);
-        poster.setContent(imgurResponse.getData().toString());
-        return this.posterService
-                .createPoster(poster)
-                .thenApply(response -> ResponseEntity.ok(response)) // good response
-                .exceptionally(
-                        ex ->
-                                ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                                        .body(new ServiceResponse<>(poster, ex.getMessage())));
+    /**
+     * JUST FOR MONGO. DO NOT USE IN CODE.
+     */
+    @DeleteMapping("/delete")
+    public void deleteAll() {
+         posterService.deleteAll();
     }
 
     /**

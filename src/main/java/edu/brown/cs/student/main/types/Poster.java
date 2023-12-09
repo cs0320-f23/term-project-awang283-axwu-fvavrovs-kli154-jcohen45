@@ -8,8 +8,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.UUID;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * The Poster model defines the necessary set of properties for a poster object and contains getters
@@ -24,18 +22,11 @@ public class Poster {
   private String content; // url or image path
   private String description;
   private HashSet<String> tags;
-
-  private String link;
-  private String location;
-
-
-  private LocalDateTime createdAt;
-
-
-  private LocalDateTime startDate;
-
-  private LocalDateTime endDate;
-
+  private String link; //link to club website? registration
+  private String location; //location of event
+  private LocalDateTime createdAt; //date poster is created in databsse
+  private LocalDateTime startDate; //start of event
+  private LocalDateTime endDate; //end of event
   private boolean isRecurring;
   private String organization;
   // private User user;
