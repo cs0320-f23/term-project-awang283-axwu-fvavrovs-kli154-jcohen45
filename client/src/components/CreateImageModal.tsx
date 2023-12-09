@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import "../styles/Modal.css";
 import { useState } from "react";
-import { create } from "@mui/material/styles/createTransitions";
+import axios from "axios";
 
 const createImgurLink = async (file: File) => {
   const config = {
@@ -22,15 +22,22 @@ const createImgurLink = async (file: File) => {
   };
 
   try {
-    let url = "http://localhost:3232/create/imgur?content=" + file;
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error("Error in fetch");
-    }
-    const resJSON = await response.json();
-    return Promise.resolve(resJSON.result);
+    let url = "http://localhost:8080/posters/create/imgur";
+    let formData = new FormData();
+    formData.append("content", file);
+    console.log("Before axios request");
+    const res = await axios.post(url, formData, config);
+    console.log("After axios request");
+    console.log(res.data.data);
+    return Promise.resolve(res.data.data);
   } catch (error) {
-    return Promise.resolve(`Error in fetch`);
+    if (axios.isAxiosError(error) && error.response) {
+      console.log(error.response.data.message);
+      return Promise.resolve(`Error in fetch: ${error.response.data.message}`);
+    } else {
+      console.log("Network error or other issue:", error.message);
+      return Promise.resolve("Error in fetch: Network error or other issue");
+    }
   }
 };
 
@@ -65,7 +72,7 @@ export default function CreateImageModal({ onClose }) {
         reader.readAsDataURL(file);
       }
 
-      console.log(createImgurLink(posterFile!));
+      console.log(createImgurLink(file));
     }
   };
 
