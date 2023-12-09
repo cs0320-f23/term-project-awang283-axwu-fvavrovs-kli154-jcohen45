@@ -54,24 +54,49 @@ public class PosterService {
     return CompletableFuture.completedFuture(response);
   }
 
-  @Async
-  public CompletableFuture<ServiceResponse<Poster>> updatePoster(Poster updatedPoster) {
-
-    Poster updated = posterRepository.save(updatedPoster);
-
-    if (updated != null) {
-      return CompletableFuture.completedFuture(new ServiceResponse<>(updated, "Poster updated"));
-    } else {
-      return CompletableFuture.completedFuture(new ServiceResponse<>("Failed to update poster"));
-    }
+//  @Async
+//  public CompletableFuture<ServiceResponse<Poster>> updatePoster(Poster updatedPoster) {
+//
+//    //Poster updated = posterRepository.save(updatedPoster);
+//
+//    if (updatedPoster != null) {
+//      ServiceResponse<Poster> oldPoster = this.getPosterById(updatedPoster.getID());
+//      return CompletableFuture.completedFuture(new ServiceResponse<>(updatedPoster, "Poster updated"));
+//    } else {
+//      return CompletableFuture.completedFuture(new ServiceResponse<>("Failed to update poster"));
+//    }
+//  }
+@Async
+public CompletableFuture<ServiceResponse<Poster>> updatePoster(Poster updatedPoster) {
+  if (updatedPoster != null) {
+    return this.getPosterById(updatedPoster.getID())
+            .thenApply(oldPosterResponse -> {
+              Poster oldPoster = oldPosterResponse.getData();
+              if (oldPoster != null) {
+                if (updatedPoster.getStartDate() != null) oldPoster.setStartDate(updatedPoster.getStartDate());
+                if (updatedPoster.getEndDate() != null) oldPoster.setEndDate(updatedPoster.getEndDate());
+                oldPoster.setIsRecurring(updatedPoster.getIsRecurring());
+                if (updatedPoster.getTitle() != null) oldPoster.setTitle((updatedPoster.getTitle()));
+                if (updatedPoster.getDescription() != null) oldPoster.setDescription(updatedPoster.getDescription());
+                if (updatedPoster.getLink() != null) oldPoster.setLink(updatedPoster.getLink());
+                if (updatedPoster.getStartDate() != null) oldPoster.setTags(updatedPoster.getTags());
+                posterRepository.save(oldPoster);
+                return new ServiceResponse<>(oldPoster, "Poster updated");
+              } else {
+                return new ServiceResponse<>("Failed to update poster - Poster not found");
+              }
+            });
+  } else {
+    return CompletableFuture.completedFuture(new ServiceResponse<>("Failed to update poster - Invalid data"));
   }
+}
+
 
   @Async
   public CompletableFuture<List<Poster>> getPosters() {
     return CompletableFuture.completedFuture(posterRepository.findAll());
   }
 
-  @Async
   public CompletableFuture<ServiceResponse<Poster>> getPosterById(String id) {
     return this.getPosters()
             .thenCompose(
@@ -193,7 +218,7 @@ public class PosterService {
   }
 
   private boolean searchTermHelper(Poster poster, String term){
-    String haystack = poster.getHaystack();
+    String haystack = poster.returnHaystack();
     BMSearch searcher = new BMSearch(term, haystack);
     return searcher.getSearchResult();
   }
