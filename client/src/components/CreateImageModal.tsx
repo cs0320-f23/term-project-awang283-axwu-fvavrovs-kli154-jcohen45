@@ -12,6 +12,27 @@ import {
 } from "@chakra-ui/react";
 import "../styles/Modal.css";
 import { useState } from "react";
+import { create } from "@mui/material/styles/createTransitions";
+
+const createImgurLink = async (file: File) => {
+  const config = {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  };
+
+  try {
+    let url = "http://localhost:3232/create/imgur?content=" + file;
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error("Error in fetch");
+    }
+    const resJSON = await response.json();
+    return Promise.resolve(resJSON.result);
+  } catch (error) {
+    return Promise.resolve(`Error in fetch`);
+  }
+};
 
 export default function CreateImageModal({ onClose }) {
   const [showTags, setShowTags] = useState<boolean>(false);
@@ -25,7 +46,7 @@ export default function CreateImageModal({ onClose }) {
   const [posterFile, setPosterFile] = useState<File>();
   const [posterSrc, setPosterSrc] = useState<string>("");
 
-  const handlePosterUpload = (target: EventTarget & HTMLInputElement) => {
+  const handlePosterUpload = async (target: EventTarget & HTMLInputElement) => {
     if (target.files) {
       const file = target.files[0];
       setPosterFile(file);
@@ -43,6 +64,8 @@ export default function CreateImageModal({ onClose }) {
         };
         reader.readAsDataURL(file);
       }
+
+      console.log(createImgurLink(posterFile!));
     }
   };
 
