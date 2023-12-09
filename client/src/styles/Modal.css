@@ -85,7 +85,7 @@ input {
   font-weight: 600;
   border: 1.5px solid var(--dark-purple-30, #c6c1cf) !important;
   box-shadow: var(--tag-shadow);
-  padding: 1.5% 1.5% 1.5% 1.5vh;
+  padding: 1.5%;
 }
 
 input::placeholder {
@@ -103,9 +103,6 @@ input::placeholder {
   font-weight: 600;
   font-size: 16px;
   border-radius: 12px;
-  /* color: var(--dark-purple70); */
-  /* font-weight: 500; */
-  /* border: 1.5px solid var(--dark-purple-30, #c6c1cf) !important; */
   box-shadow: var(--tag-shadow);
   padding-left: 0.75vw;
 }
@@ -143,11 +140,14 @@ input::placeholder {
 }
 
 .upload-button {
+  display: inline-flex;
+  align-items: center;
   color: white !important;
   border-radius: 12px !important;
-  padding: 15px 26px !important;
   box-shadow: var(--tag-shadow) !important;
-  margin: 0px !important;
+  background-color: var(--dark-purple100);
+  padding: 0vh 18px !important;
+  font-weight: 600;
 }
 
 .tags-container {
@@ -229,6 +229,16 @@ input::placeholder {
   height: 19vh !important;
   text-align: left;
   padding-bottom: 14.5vh;
+  border-radius: 10px !important;
+  color: var(--dark-purple100);
+  font-weight: 600;
+  border: 1.5px solid var(--dark-purple-30, #c6c1cf) !important;
+  box-shadow: var(--tag-shadow);
+}
+
+#description-input::placeholder {
+  font-weight: 500;
+  color: var(--dark-purple70);
 }
 
 #date-time-input {

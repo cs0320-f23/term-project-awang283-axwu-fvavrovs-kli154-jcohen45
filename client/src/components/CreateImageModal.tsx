@@ -8,10 +8,10 @@ import {
   ModalHeader,
   ModalOverlay,
   Select,
+  Textarea,
 } from "@chakra-ui/react";
 import "../styles/Modal.css";
 import { useState } from "react";
-import TagsModal from "./TagsModal";
 
 export default function CreateImageModal({ onClose }) {
   const [showTags, setShowTags] = useState<boolean>(false);
@@ -21,6 +21,29 @@ export default function CreateImageModal({ onClose }) {
 
   const onBack = () => {
     setShowTags(false);
+  };
+  const [posterFile, setPosterFile] = useState<File>();
+  const [posterSrc, setPosterSrc] = useState<string>("");
+
+  const handlePosterUpload = (target: EventTarget & HTMLInputElement) => {
+    if (target.files) {
+      const file = target.files[0];
+      setPosterFile(file);
+      console.log("File name:", file.name);
+      console.log("File type:", file.type);
+      console.log("File size:", file.size, "bytes");
+
+      if (file && file.type.startsWith("image/")) {
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+          if (e.target && typeof e.target.result === "string") {
+            setPosterSrc(e.target.result);
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+    }
   };
 
   return (
@@ -87,13 +110,28 @@ export default function CreateImageModal({ onClose }) {
                 </div>
               ) : (
                 <div className="create-div">
-                  <div className="image-container"></div>
+                  {posterFile ? (
+                    <div className="view-image">
+                      <img src={posterSrc} id=""></img>
+                    </div>
+                  ) : (
+                    <div className="image-container"></div>
+                  )}
                   <div className="input-fields">
                     <div>
                       <h3>Image</h3>
                       <div className="image-upload-content">
                         <Input placeholder="Image URL"></Input>
-                        <Button className="upload-button">Upload</Button>
+                        <label htmlFor="image-upload" className="upload-button">
+                          Upload
+                        </label>
+                        <Input
+                          type="file"
+                          onChange={(ev) => handlePosterUpload(ev.target)}
+                          id="image-upload"
+                          accept="image/png, image/jpeg, image/jpg"
+                          display="none"
+                        ></Input>
                       </div>
                     </div>
                     <div className="title-div">
@@ -148,9 +186,11 @@ export default function CreateImageModal({ onClose }) {
                     </div>
                     <div className="desc-div">
                       <h3>Description</h3>
-                      <Input
+                      <Textarea
                         id="description-input"
                         placeholder="Enter Description"
+                        wordBreak="break-word"
+                        resize="none"
                       />
                     </div>
                     <div className="save-div">
