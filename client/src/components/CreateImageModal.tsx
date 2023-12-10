@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Input,
   Modal,
@@ -13,6 +14,7 @@ import {
 import "../styles/Modal.css";
 import { useState } from "react";
 import axios from "axios";
+import TagsModal from "./TagsModal";
 
 const createImgurLink = async (file: File) => {
   const config = {
@@ -72,15 +74,20 @@ export default function CreateImageModal({ onClose }) {
       }
 
       const output = await createImgurLink(file);
+      setImgUrl(output.content);
       console.log(output);
       console.log(output.content);
-      const text = document.getElementById("image-url") as HTMLInputElement;
-      if (text) {
-        let link = output.content;
-        text.value += link;
-      }
     }
   };
+
+  const [imgUrl, setImgUrl] = useState<string>("");
+  const [title, setTitle] = useState<string>("");
+  const [location, setLocation] = useState<string>("");
+  const [startDateTime, setStartDateTime] = useState<string>("");
+  const [endDateTime, setEndDateTime] = useState<string>("");
+  const [repeats, setRepeats] = useState<string>("");
+  const [eventLink, setEventLink] = useState<string>("");
+  const [desc, setDesc] = useState<string>("");
 
   return (
     <>
@@ -91,73 +98,33 @@ export default function CreateImageModal({ onClose }) {
             <ModalHeader className="modal-header">Upload a Poster</ModalHeader>
             <ModalCloseButton className="close-button" onClick={onClose} />
 
-            <ModalBody
-              className="modal-body"
-              minHeight={"90%"}
-              maxHeight={"90%"}
-            >
-              {showTags ? (
-                <div className="tags-div">
+            <ModalBody className="modal-body">
+              <div className="create-div">
+                {posterFile ? (
+                  <Box
+                    className="view-image"
+                    maxHeight={"76vh"}
+                    overflowY={"scroll"}
+                  >
+                    <img src={posterSrc} id=""></img>
+                  </Box>
+                ) : (
                   <div className="image-container"></div>
-                  <div className="tags-container">
-                    {/* TODO map list of all tags from database */}
-                    <div className="magenta-tag">Free Food</div>
-                    <div className="green-tag">Party</div>
-                    <div className="blue-tag">Outdoor</div>
-                    <div className="magenta-tag">Free Food</div>
-                    <div className="green-tag">Party</div>
-                    <div className="blue-tag">Outdoor</div>
-                    <div className="magenta-tag">Free Food</div>
-                    <div className="green-tag">Party</div>
-                    <div className="blue-tag">Outdoor</div>
-                    <div className="magenta-tag">Free Food</div>
-                    <div className="green-tag">Party</div>
-                    <div className="blue-tag">Outdoor</div>
-                    <div className="magenta-tag">Free Food</div>
-                    <div className="green-tag">Party</div>
-                    <div className="blue-tag">Outdoor</div>
-                    <div className="magenta-tag">Free Food</div>
-                    <div className="green-tag">Party</div>
-                    <div className="blue-tag">Outdoor</div>
-                    <div className="magenta-tag">Free Food</div>
-                    <div className="green-tag">Party</div>
-                    <div className="blue-tag">Outdoor</div>
-                    <div className="magenta-tag">Free Food</div>
-                    <div className="green-tag">Party</div>
-                    <div className="blue-tag">Outdoor</div>
-                    <div className="magenta-tag">Free Food</div>
-                    <div className="green-tag">Party</div>
-                    <div className="blue-tag">Outdoor</div>
-                    <div className="magenta-tag">Free Food</div>
-                    <div className="green-tag">Party</div>
-                    <div className="blue-tag">Outdoor</div>
-                    <div className="final-save-div">
-                      <Button
-                        onClick={onBack}
-                        className={"final-upload-button"}
-                      >
-                        Back
-                      </Button>
-                      <Button className="final-upload-button" onClick={onClose}>
-                        Upload Poster
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="create-div">
-                  {posterFile ? (
-                    <div className="view-image">
-                      <img src={posterSrc} id=""></img>
-                    </div>
-                  ) : (
-                    <div className="image-container"></div>
-                  )}
+                )}
+                {showTags ? (
+                  <TagsModal onClose={onClose} onBack={onBack} />
+                ) : (
                   <div className="input-fields">
                     <div>
                       <h3>Image</h3>
-                      <div className="image-upload-content">
-                        <Input id="image-url" placeholder="Image URL"></Input>
+                      <div className="input-text-input">
+                        <Input
+                          id="image-url"
+                          placeholder="Image URL"
+                          value={imgUrl}
+                          onChange={(ev) => setImgUrl(ev.target.value)}
+                        ></Input>
+                        <h3>or</h3>
                         <label htmlFor="image-upload" className="upload-button">
                           Upload
                         </label>
@@ -172,12 +139,21 @@ export default function CreateImageModal({ onClose }) {
                     </div>
                     <div className="title-div">
                       <h3>Title</h3>
-                      <Input placeholder="Enter Title"></Input>
+                      <Input
+                        placeholder="Enter Title"
+                        value={title}
+                        onChange={(ev) => setTitle(ev.target.value)}
+                      ></Input>
                     </div>
                     <div className="location-div">
                       <div>
                         <h3>Location</h3>
-                        <Input placeholder="Enter Location" width="23.4vw" />
+                        <Input
+                          placeholder="Enter Location"
+                          width="23.4vw"
+                          value={location}
+                          onChange={(ev) => setLocation(ev.target.value)}
+                        />
                       </div>
                       <div>
                         <h3>Repeats</h3>
@@ -186,6 +162,8 @@ export default function CreateImageModal({ onClose }) {
                           id="recur-select"
                           width="8vw"
                           color="white"
+                          value={repeats}
+                          onChange={(ev) => setRepeats(ev.target.value)}
                         >
                           <option value="Never">Never</option>
                           <option value="Daily">Daily</option>
@@ -195,30 +173,36 @@ export default function CreateImageModal({ onClose }) {
                       </div>
                     </div>
                     <div className="date-div">
-                      <div>
-                        <h3>From</h3>
+                      <h3>Date</h3>
+                      <div className="input-text-input">
                         <Input
                           id="date-time-input"
                           placeholder="Select Date and Time"
                           type="datetime-local"
-                          width="15.7vw"
+                          width="15.2vw"
                           color="white"
+                          value={startDateTime}
+                          onChange={(ev) => setStartDateTime(ev.target.value)}
                         />
-                      </div>
-                      <div>
-                        <h3>To</h3>
+                        <h3>to</h3>
                         <Input
                           id="date-time-input"
                           placeholder="Select Date and Time"
                           type="datetime-local"
-                          width="15.7vw"
+                          width="15.2vw"
                           color="white"
+                          value={endDateTime}
+                          onChange={(ev) => setEndDateTime(ev.target.value)}
                         />
                       </div>
                     </div>
                     <div className="link-div">
                       <h3>Link</h3>
-                      <Input placeholder="Enter Link" />
+                      <Input
+                        placeholder="Enter Link"
+                        value={eventLink}
+                        onChange={(ev) => setEventLink(ev.target.value)}
+                      />
                     </div>
                     <div className="desc-div">
                       <h3>Description</h3>
@@ -227,6 +211,8 @@ export default function CreateImageModal({ onClose }) {
                         placeholder="Enter Description"
                         wordBreak="break-word"
                         resize="none"
+                        value={desc}
+                        onChange={(ev) => setDesc(ev.target.value)}
                       />
                     </div>
                     <div className="save-div">
@@ -241,8 +227,8 @@ export default function CreateImageModal({ onClose }) {
                       </div>
                     </div>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </ModalBody>
           </ModalContent>
         </div>

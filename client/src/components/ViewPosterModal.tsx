@@ -7,6 +7,17 @@ import {
 } from "@chakra-ui/react";
 import "../styles/Modal.css";
 
+interface viewProps {
+  onClose: () => void;
+  title: string;
+  path: string;
+  date: string;
+  time: string;
+  location: string;
+  link: string;
+  description: string;
+}
+
 export default function ViewPosterModal({
   onClose,
   title,
@@ -16,7 +27,7 @@ export default function ViewPosterModal({
   location,
   link,
   description,
-}) {
+}: viewProps) {
   const [weekday, month, day] = date.split(" ");
   return (
     <>

@@ -1,10 +1,14 @@
-.date-div,
 .location-div,
 .location-recur-titles,
 .location-recur {
   display: flex;
   justify-content: space-between;
   gap: 2vw;
+}
+
+.date-div {
+  display: flex;
+  flex-flow: column;
 }
 
 .modal-font {
@@ -37,8 +41,7 @@
   padding: 0vw !important;
 }
 
-.create-div,
-.tags-div {
+.create-div {
   display: flex;
   width: 100%;
 }
@@ -47,13 +50,13 @@
   min-width: 45%;
   max-width: 45%;
   height: 100%;
-  overflow-y: scroll;
+  max-height: 90vh;
   margin: 1.5vw;
   border-radius: 20px;
 }
 
 .image-container {
-  width: 46%;
+  width: 45%;
   height: 74vh;
   background: linear-gradient(180deg, #c9e2ff 0%, #f9eeff 75.52%);
   margin: 0vw 1.5vw 1.5vw 1.5vw;
@@ -85,7 +88,7 @@ input {
   font-weight: 600;
   border: 1.5px solid var(--dark-purple-30, #c6c1cf) !important;
   box-shadow: var(--tag-shadow);
-  padding: 1.5%;
+  padding: 5px 10px !important;
 }
 
 input::placeholder {
@@ -136,7 +139,6 @@ input::placeholder {
   display: absolute;
   padding: 15px 18px !important;
   margin: 0;
-  bottom: 0;
 }
 
 .upload-button {
@@ -146,7 +148,7 @@ input::placeholder {
   border-radius: 12px !important;
   box-shadow: var(--tag-shadow) !important;
   background-color: var(--dark-purple100);
-  padding: 0vh 18px !important;
+  padding: 8px 18px !important;
   font-weight: 600;
 }
 
@@ -228,7 +230,7 @@ input::placeholder {
 #description-input {
   height: 19vh !important;
   text-align: left;
-  padding-bottom: 14.5vh;
+  padding: 5px 10px !important;
   border-radius: 10px !important;
   color: var(--dark-purple100);
   font-weight: 600;
@@ -250,7 +252,8 @@ input::placeholder {
 }
 
 #date-time-input:hover,
-#recur-select:hover {
+#recur-select:hover,
+.upload-button:hover {
   transform: scale(1.03);
   transition: 0.3s;
   background-color: var(--dark-purple70);
@@ -263,4 +266,11 @@ input::placeholder {
 
 #poster-link:hover {
   color: var(--dark-purple70);
+}
+
+.input-text-input {
+  display: flex;
+  flex-flow: row;
+  gap: 1vw;
+  align-items: center;
 }
