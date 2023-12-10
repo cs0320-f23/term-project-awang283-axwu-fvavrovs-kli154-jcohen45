@@ -28,7 +28,6 @@ const createImgurLink = async (file: File) => {
     console.log("Before axios request");
     const res = await axios.post(url, formData, config);
     console.log("After axios request");
-    console.log(res.data.data);
     return Promise.resolve(res.data.data);
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
@@ -55,15 +54,15 @@ export default function CreateImageModal({ onClose }) {
 
   const handlePosterUpload = async (target: EventTarget & HTMLInputElement) => {
     if (target.files) {
-      const file = target.files[0];
+      const file = target.files[0]; //getting the file object
       setPosterFile(file);
       console.log("File name:", file.name);
       console.log("File type:", file.type);
       console.log("File size:", file.size, "bytes");
 
       if (file && file.type.startsWith("image/")) {
+        //convert our image file into a format that can be fed into img component's src property to be displayed after upload
         const reader = new FileReader();
-
         reader.onload = function (e) {
           if (e.target && typeof e.target.result === "string") {
             setPosterSrc(e.target.result);
@@ -72,7 +71,14 @@ export default function CreateImageModal({ onClose }) {
         reader.readAsDataURL(file);
       }
 
-      console.log(createImgurLink(file));
+      const output = await createImgurLink(file);
+      console.log(output);
+      console.log(output.content);
+      const text = document.getElementById("image-url") as HTMLInputElement;
+      if (text) {
+        let link = output.content;
+        text.value += link;
+      }
     }
   };
 
@@ -151,7 +157,7 @@ export default function CreateImageModal({ onClose }) {
                     <div>
                       <h3>Image</h3>
                       <div className="image-upload-content">
-                        <Input placeholder="Image URL"></Input>
+                        <Input id="image-url" placeholder="Image URL"></Input>
                         <label htmlFor="image-upload" className="upload-button">
                           Upload
                         </label>

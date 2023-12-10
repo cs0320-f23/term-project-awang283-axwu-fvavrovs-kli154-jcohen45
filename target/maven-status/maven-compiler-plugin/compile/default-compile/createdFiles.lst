@@ -1,0 +1,14 @@
+edu/brown/cs/student/main/imgur/ImgurData.class
+edu/brown/cs/student/main/BMSearch.class
+edu/brown/cs/student/main/imgur/ImgurApiResponse.class
+edu/brown/cs/student/main/imgur/ImgurService.class
+edu/brown/cs/student/main/CorsConfig.class
+edu/brown/cs/student/main/PosterService.class
+edu/brown/cs/student/main/CorsConfig$1.class
+edu/brown/cs/student/main/responses/ServiceResponse.class
+edu/brown/cs/student/main/PosterController.class
+edu/brown/cs/student/main/SecurityConfig.class
+edu/brown/cs/student/main/App.class
+edu/brown/cs/student/main/MediaConverterConfiguration.class
+edu/brown/cs/student/main/types/Poster.class
+edu/brown/cs/student/main/types/PosterRepository.class
