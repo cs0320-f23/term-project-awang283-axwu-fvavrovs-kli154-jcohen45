@@ -84,7 +84,7 @@ export default function CreateImageModal({ onClose }) {
 
   return (
     <>
-      <Modal isOpen={true} onClose={onClose}>
+      <Modal closeOnOverlayClick={false} isOpen={true} onClose={onClose}>
         <div className="modal-font">
           <ModalOverlay className="modal-overlay" />
           <ModalContent className="modal-content">
