@@ -31,7 +31,7 @@ export default function ViewPosterModal({
   const [weekday, month, day] = date.split(" ");
   return (
     <>
-      <Modal isOpen={true} onClose={onClose} className="modal">
+      <Modal isOpen={true} onClose={onClose}>
         <div className="modal-font">
           <ModalOverlay className="modal-overlay" />
           <ModalContent

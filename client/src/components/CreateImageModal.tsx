@@ -16,13 +16,13 @@ import { useState } from "react";
 import axios from "axios";
 import TagsModal from "./TagsModal";
 
-const createImgurLink = async (file: File) => {
-  const config = {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  };
+const config = {
+  headers: {
+    "Content-Type": "multipart/form-data",
+  },
+};
 
+const createImgurFromFile = async (file: File) => {
   try {
     let url = "http://localhost:8080/posters/create/imgur";
     let formData = new FormData();
@@ -36,7 +36,25 @@ const createImgurLink = async (file: File) => {
       console.log(error.response.data.message);
       return Promise.resolve(`Error in fetch: ${error.response.data.message}`);
     } else {
-      console.log("Network error or other issue:", error.message);
+      return Promise.resolve("Error in fetch: Network error or other issue");
+    }
+  }
+};
+
+const createImgurFromLink = async (link: string) => {
+  try {
+    let url = "http://localhost:8080/posters/create/fromLink";
+    let formData = new FormData();
+    formData.append("content", link);
+    console.log("Before axios request");
+    const res = await axios.post(url, formData, config);
+    console.log("After axios request");
+    return Promise.resolve(res.data.data);
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      console.log(error.response.data.message);
+      return Promise.resolve(`Error in fetch: ${error.response.data.message}`);
+    } else {
       return Promise.resolve("Error in fetch: Network error or other issue");
     }
   }
@@ -73,7 +91,7 @@ export default function CreateImageModal({ onClose }) {
         reader.readAsDataURL(file);
       }
 
-      const output = await createImgurLink(file);
+      const output = await createImgurFromFile(file);
       setImgUrl(output.content);
       console.log(output);
       console.log(output.content);
@@ -123,6 +141,11 @@ export default function CreateImageModal({ onClose }) {
                           placeholder="Image URL"
                           value={imgUrl}
                           onChange={(ev) => setImgUrl(ev.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              createImgurFromLink(imgUrl);
+                            }
+                          }}
                         ></Input>
                         <h3>or</h3>
                         <label htmlFor="image-upload" className="upload-button">
