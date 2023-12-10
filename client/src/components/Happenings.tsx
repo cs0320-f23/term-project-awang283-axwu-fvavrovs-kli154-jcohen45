@@ -72,13 +72,23 @@ export const ImageCard = (
 };
 
 export default function Happenings() {
+  const [searchInput, setSearchInput] = useState<string>("");
+  const [searchTags, setSearchTags] = useState<string>("");
+  const [sortPosters, setSortPosters] = useState<string>("");
+
   return (
     <>
       <main className="happenings">
         <div className="search-filter-fixed">
           <div className="browse-search-bar">
             <Search2Icon boxSize={5} width={14} />
-            <input className="browse-input" placeholder="Search" type="text" />
+            <input
+              className="browse-input"
+              placeholder="Search"
+              type="text"
+              value={searchInput}
+              onChange={(ev) => setSearchInput(ev.target.value)}
+            />
             <Box w="10vw">
               <Select
                 marginLeft="1vw"
@@ -92,6 +102,8 @@ export default function Happenings() {
                 icon={
                   <TriangleDownIcon id="triangle-icon" marginRight={"1vw"} />
                 }
+                value={searchTags}
+                onChange={(ev) => setSearchTags(ev.target.value)}
               >
                 <option value="option1">Free Food</option>
                 <option value="option2">Party</option>
@@ -109,6 +121,8 @@ export default function Happenings() {
               alignItems="center"
               border="none"
               textAlign="right"
+              value={sortPosters}
+              onChange={(ev) => setSortPosters(ev.target.value)}
             >
               <option value="option1">Soonest</option>
               <option value="option3">Newest</option>
