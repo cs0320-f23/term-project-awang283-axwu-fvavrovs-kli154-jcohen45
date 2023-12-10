@@ -183,6 +183,22 @@ public class PosterController {
         .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
   }
 
+  //TODO: have some error checking (on frontend) to display an error if the link is corrupted
+    @PostMapping(value = "/create/fromlink")
+    public CompletableFuture<ServiceResponse<Poster>> createFromLink(@RequestBody String content) {
+        Poster poster = new Poster();
+        poster.setContent(content);
+        this.posterService.createPoster(poster);
+        return CompletableFuture.completedFuture(new ServiceResponse<Poster>(poster, "uploaded to imgur"));
+    }
+
+    /**
+     * sends a POST request to the mapping /poster/create
+     *
+     * @return a JSONified ServiceResponse instance that contains a "message" (string) field and a
+     *     "data" (JSON) field that contains the data of the poster that was just created
+     */
+
   @PostMapping(value = "/create/imgur")
   public CompletableFuture<ServiceResponse<Poster>> createImgurLink(
       @RequestBody MultipartFile content) {
@@ -191,7 +207,7 @@ public class PosterController {
     poster.setContent(imgurResponse.getData());
     this.posterService.createPoster(poster);
     return CompletableFuture.completedFuture(
-        new ServiceResponse<Poster>(poster, ": uploaded to imgur"));
+        new ServiceResponse<Poster>(poster, "uploaded to imgur"));
   }
 
   /**
@@ -200,26 +216,7 @@ public class PosterController {
    * @return a JSONified ServiceResponse instance that contains a "message" (string) field and a
    *     "data" (JSON) field that contains the data of the poster that was just created
    */
-  //    @PutMapping(value = "/create")
-  //    public CompletableFuture<ResponseEntity<ServiceResponse<Poster>>> createPoster(
-  //            @RequestPart(value = "title", required = true) String title,
-  //            @RequestPart(value = "description", required = false) String description,
-  //            @RequestPart(value = "tags", required = false) HashSet<String> tags,
-  //            @RequestPart(value = "isRecurring", required = false) Boolean isRecurring,
-  //            @RequestPart(value = "content") String id) {
-  //        Poster poster = new Poster(title, description);
-  //        poster.setTags(tags);
-  //        poster.setIsRecurring(isRecurring);
-  //        poster.setContent(this.createImgurLink(content));
-  //
-  //        return this.posterService
-  //                .createPoster(poster)
-  //                .thenApply(response -> ResponseEntity.ok(response)) // good response
-  //                .exceptionally(
-  //                        ex ->
-  //                                ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-  //                                        .body(new ServiceResponse<>(poster, ex.getMessage())));
-  //    }
+
 
   /** JUST FOR MONGO. DO NOT USE IN CODE. */
   @DeleteMapping("/delete")
