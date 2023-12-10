@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Input,
   Modal,
@@ -8,10 +9,38 @@ import {
   ModalHeader,
   ModalOverlay,
   Select,
+  Textarea,
 } from "@chakra-ui/react";
 import "../styles/Modal.css";
 import { useState } from "react";
+import axios from "axios";
 import TagsModal from "./TagsModal";
+
+const createImgurLink = async (file: File) => {
+  const config = {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  };
+
+  try {
+    let url = "http://localhost:8080/posters/create/imgur";
+    let formData = new FormData();
+    formData.append("content", file);
+    console.log("Before axios request");
+    const res = await axios.post(url, formData, config);
+    console.log("After axios request");
+    return Promise.resolve(res.data.data);
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      console.log(error.response.data.message);
+      return Promise.resolve(`Error in fetch: ${error.response.data.message}`);
+    } else {
+      console.log("Network error or other issue:", error.message);
+      return Promise.resolve("Error in fetch: Network error or other issue");
+    }
+  }
+};
 
 export default function CreateImageModal({ onClose }) {
   const [showTags, setShowTags] = useState<boolean>(false);
@@ -22,88 +51,109 @@ export default function CreateImageModal({ onClose }) {
   const onBack = () => {
     setShowTags(false);
   };
+  const [posterFile, setPosterFile] = useState<File>();
+  const [posterSrc, setPosterSrc] = useState<string>("");
+
+  const handlePosterUpload = async (target: EventTarget & HTMLInputElement) => {
+    if (target.files) {
+      const file = target.files[0]; //getting the file object
+      setPosterFile(file);
+      console.log("File name:", file.name);
+      console.log("File type:", file.type);
+      console.log("File size:", file.size, "bytes");
+
+      if (file && file.type.startsWith("image/")) {
+        //convert our image file into a format that can be fed into img component's src property to be displayed after upload
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          if (e.target && typeof e.target.result === "string") {
+            setPosterSrc(e.target.result);
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+
+      const output = await createImgurLink(file);
+      setImgUrl(output.content);
+      console.log(output);
+      console.log(output.content);
+    }
+  };
+
+  const [imgUrl, setImgUrl] = useState<string>("");
+  const [title, setTitle] = useState<string>("");
+  const [location, setLocation] = useState<string>("");
+  const [startDateTime, setStartDateTime] = useState<string>("");
+  const [endDateTime, setEndDateTime] = useState<string>("");
+  const [repeats, setRepeats] = useState<string>("");
+  const [eventLink, setEventLink] = useState<string>("");
+  const [desc, setDesc] = useState<string>("");
 
   return (
     <>
-      <Modal isOpen={true} onClose={onClose}>
+      <Modal closeOnOverlayClick={false} isOpen={true} onClose={onClose}>
         <div className="modal-font">
           <ModalOverlay className="modal-overlay" />
           <ModalContent className="modal-content">
             <ModalHeader className="modal-header">Upload a Poster</ModalHeader>
             <ModalCloseButton className="close-button" onClick={onClose} />
 
-            <ModalBody
-              className="modal-body"
-              minHeight={"90%"}
-              maxHeight={"90%"}
-            >
-              {showTags ? (
-                <div className="tags-div">
+            <ModalBody className="modal-body">
+              <div className="create-div">
+                {posterFile ? (
+                  <Box
+                    className="view-image"
+                    maxHeight={"76vh"}
+                    overflowY={"scroll"}
+                  >
+                    <img src={posterSrc} id=""></img>
+                  </Box>
+                ) : (
                   <div className="image-container"></div>
-                  <div className="tags-container">
-                    {/* TODO map list of all tags from database */}
-                    <div className="magenta-tag">Free Food</div>
-                    <div className="green-tag">Party</div>
-                    <div className="blue-tag">Outdoor</div>
-                    <div className="magenta-tag">Free Food</div>
-                    <div className="green-tag">Party</div>
-                    <div className="blue-tag">Outdoor</div>
-                    <div className="magenta-tag">Free Food</div>
-                    <div className="green-tag">Party</div>
-                    <div className="blue-tag">Outdoor</div>
-                    <div className="magenta-tag">Free Food</div>
-                    <div className="green-tag">Party</div>
-                    <div className="blue-tag">Outdoor</div>
-                    <div className="magenta-tag">Free Food</div>
-                    <div className="green-tag">Party</div>
-                    <div className="blue-tag">Outdoor</div>
-                    <div className="magenta-tag">Free Food</div>
-                    <div className="green-tag">Party</div>
-                    <div className="blue-tag">Outdoor</div>
-                    <div className="magenta-tag">Free Food</div>
-                    <div className="green-tag">Party</div>
-                    <div className="blue-tag">Outdoor</div>
-                    <div className="magenta-tag">Free Food</div>
-                    <div className="green-tag">Party</div>
-                    <div className="blue-tag">Outdoor</div>
-                    <div className="magenta-tag">Free Food</div>
-                    <div className="green-tag">Party</div>
-                    <div className="blue-tag">Outdoor</div>
-                    <div className="magenta-tag">Free Food</div>
-                    <div className="green-tag">Party</div>
-                    <div className="blue-tag">Outdoor</div>
-                    <div className="final-save-div">
-                      <Button
-                        onClick={onBack}
-                        className={"final-upload-button"}
-                      >
-                        Back
-                      </Button>
-                      <Button className="final-upload-button" onClick={onClose}>
-                        Upload Poster
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="create-div">
-                  <div className="image-container"></div>
+                )}
+                {showTags ? (
+                  <TagsModal onClose={onClose} onBack={onBack} />
+                ) : (
                   <div className="input-fields">
                     <div>
                       <h3>Image</h3>
-                      <div className="image-upload-content">
-                        <Input placeholder="Image URL"></Input>
-                        <Button className="upload-button">Upload</Button>
+                      <div className="input-text-input">
+                        <Input
+                          id="image-url"
+                          placeholder="Image URL"
+                          value={imgUrl}
+                          onChange={(ev) => setImgUrl(ev.target.value)}
+                        ></Input>
+                        <h3>or</h3>
+                        <label htmlFor="image-upload" className="upload-button">
+                          Upload
+                        </label>
+                        <Input
+                          type="file"
+                          onChange={(ev) => handlePosterUpload(ev.target)}
+                          id="image-upload"
+                          accept="image/png, image/jpeg, image/jpg"
+                          display="none"
+                        ></Input>
                       </div>
                     </div>
                     <div className="title-div">
                       <h3>Title</h3>
-                      <Input placeholder="Enter Title"></Input>
+                      <Input
+                        placeholder="Enter Title"
+                        value={title}
+                        onChange={(ev) => setTitle(ev.target.value)}
+                      ></Input>
                     </div>
                     <div className="location-div">
                       <div>
                         <h3>Location</h3>
-                        <Input placeholder="Enter Location" width="23.4vw" />
+                        <Input
+                          placeholder="Enter Location"
+                          width="23.4vw"
+                          value={location}
+                          onChange={(ev) => setLocation(ev.target.value)}
+                        />
                       </div>
                       <div>
                         <h3>Repeats</h3>
@@ -112,6 +162,8 @@ export default function CreateImageModal({ onClose }) {
                           id="recur-select"
                           width="8vw"
                           color="white"
+                          value={repeats}
+                          onChange={(ev) => setRepeats(ev.target.value)}
                         >
                           <option value="Never">Never</option>
                           <option value="Daily">Daily</option>
@@ -121,36 +173,46 @@ export default function CreateImageModal({ onClose }) {
                       </div>
                     </div>
                     <div className="date-div">
-                      <div>
-                        <h3>From</h3>
+                      <h3>Date</h3>
+                      <div className="input-text-input">
                         <Input
                           id="date-time-input"
                           placeholder="Select Date and Time"
                           type="datetime-local"
-                          width="15.7vw"
+                          width="15.2vw"
                           color="white"
+                          value={startDateTime}
+                          onChange={(ev) => setStartDateTime(ev.target.value)}
                         />
-                      </div>
-                      <div>
-                        <h3>To</h3>
+                        <h3>to</h3>
                         <Input
                           id="date-time-input"
                           placeholder="Select Date and Time"
                           type="datetime-local"
-                          width="15.7vw"
+                          width="15.2vw"
                           color="white"
+                          value={endDateTime}
+                          onChange={(ev) => setEndDateTime(ev.target.value)}
                         />
                       </div>
                     </div>
                     <div className="link-div">
                       <h3>Link</h3>
-                      <Input placeholder="Enter Link" />
+                      <Input
+                        placeholder="Enter Link"
+                        value={eventLink}
+                        onChange={(ev) => setEventLink(ev.target.value)}
+                      />
                     </div>
                     <div className="desc-div">
                       <h3>Description</h3>
-                      <Input
+                      <Textarea
                         id="description-input"
                         placeholder="Enter Description"
+                        wordBreak="break-word"
+                        resize="none"
+                        value={desc}
+                        onChange={(ev) => setDesc(ev.target.value)}
                       />
                     </div>
                     <div className="save-div">
@@ -165,8 +227,8 @@ export default function CreateImageModal({ onClose }) {
                       </div>
                     </div>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </ModalBody>
           </ModalContent>
         </div>

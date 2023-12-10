@@ -3,6 +3,7 @@ import { Box, HStack, IconButton, Select } from "@chakra-ui/react";
 import { Search2Icon, TriangleDownIcon } from "@chakra-ui/icons";
 import "../styles/Home.css";
 import { ImageCard } from "./Happenings";
+import { useState } from "react";
 
 export const images = [
   {
@@ -77,6 +78,8 @@ export const images = [
 ];
 
 export default function Home() {
+  const [searchInput, setSearchInput] = useState<string>("");
+  const [searchTags, setSearchTags] = useState<string>("");
   const offset = 40;
   const scrollToBottom = () => {
     window.scrollTo({
@@ -99,6 +102,8 @@ export default function Home() {
             className="search-input"
             placeholder="Search"
             type="text"
+            value={searchInput}
+            onChange={(ev) => setSearchInput(ev.target.value)}
           />{" "}
           {/*TODO onclick navs to Happenings, fetches results of search, displays in happenings search bar */}
           <Box w="11.5vw">
@@ -113,6 +118,8 @@ export default function Home() {
               icon={
                 <TriangleDownIcon id="triangle-icon" marginRight={"1.25vw"} />
               }
+              value={searchTags}
+              onChange={(ev) => setSearchTags(ev.target.value)}
             >
               {/* TODO: fetch list of tags and map each of them to an option, when clicked, set list of selected tags to contain tag, when clicked again, unselect tag */}
               <option value="option1">Free Food</option>

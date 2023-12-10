@@ -13,21 +13,6 @@ public class App {
   public static void main(String[] args) {
 
     SpringApplication.run(App.class, args);
-    Poster instance = new Poster();
-    instance.setContent("hi");
 
-    // Initialize ObjectMapper
-    ObjectMapper objectMapper = new ObjectMapper();
-
-    try {
-      // Serialize the instance to JSON
-      String json = objectMapper.writeValueAsString(instance);
-
-      // Print the JSON representation
-      System.out.println("JSON representation:");
-      System.out.println(json);
-    } catch (JsonProcessingException e) {
-      e.printStackTrace();
-    }
   }
 }

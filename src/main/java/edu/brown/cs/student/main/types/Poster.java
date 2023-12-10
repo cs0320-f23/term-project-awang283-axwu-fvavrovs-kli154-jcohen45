@@ -2,13 +2,11 @@ package edu.brown.cs.student.main.types;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.UUID;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * The Poster model defines the necessary set of properties for a poster object and contains getters
@@ -24,16 +22,16 @@ public class Poster {
   private String content; // url or image path
   private String description;
   private HashSet<String> tags;
-  private String link; //link to club website? registration
-  private String location; //location of event
-  private LocalDateTime createdAt; //date poster is created in databsse
-  private LocalDateTime startDate; //start of event
-  private LocalDateTime endDate; //end of event
+  private String link; // link to club website? registration
+  private String location; // location of event
+  private LocalDateTime createdAt; // date poster is created in databsse
+  private LocalDateTime startDate; // start of event
+  private LocalDateTime endDate; // end of event
   private boolean isRecurring;
   private String organization;
   // private User user;
 
-  //@JsonPropertyOrder({"id", "title", "description"})
+  // @JsonPropertyOrder({"id", "title", "description"})
 
   public Poster(String title, String description) {
     this.id = UUID.randomUUID().toString(); // so that IDs are randomly generated and unique
@@ -41,34 +39,30 @@ public class Poster {
     this.content = content;
     this.description = description;
     this.tags = tags;
-    //this.organization = org;
+    // this.organization = org;
 
     this.tags = new HashSet<>();
     this.createdAt = LocalDateTime.now();
-//    this.location = location;
-//    this.link = link;
+    //    this.location = location;
+    //    this.link = link;
   }
 
-  /**
-   * allows user to input tags and organization, which i'm using to test search
-   */
-
+  /** allows user to input tags and organization, which i'm using to test search */
 
   /** Allows user to create poster w/o description of event */
-//  public Poster(String title, String content) {
-//    this.id = UUID.randomUUID().toString(); // so that IDs are randomly generated and unique
-//    this.title = title;
-//    this.content = content;
-//    this.tags = new HashSet<>();
-//    this.organization = "";
-//  }
+  //  public Poster(String title, String content) {
+  //    this.id = UUID.randomUUID().toString(); // so that IDs are randomly generated and unique
+  //    this.title = title;
+  //    this.content = content;
+  //    this.tags = new HashSet<>();
+  //    this.organization = "";
+  //  }
 
   /** a no argument constructor so that Jackson can deserialize the json */
   public Poster() {
     this.id = UUID.randomUUID().toString();
     this.tags = new HashSet<>();
     this.createdAt = LocalDateTime.now();
-
   }
 
   @JsonProperty("id")
@@ -80,19 +74,19 @@ public class Poster {
     this.id = newID;
   }
 
-  public void setLocation(String location){
+  public void setLocation(String location) {
     this.location = location;
   }
 
-  public String getLocation(){
+  public String getLocation() {
     return this.location;
   }
 
-  public void setLink(String link){
+  public void setLink(String link) {
     this.link = link;
   }
 
-  public String getLink(){
+  public String getLink() {
     return this.link;
   }
 
@@ -101,7 +95,7 @@ public class Poster {
     return this.id != null;
   }
 
-  //@JsonProperty("title")
+  // @JsonProperty("title")
   public String getTitle() {
     return this.title;
   }
@@ -140,7 +134,7 @@ public class Poster {
     this.description = newDesc;
   }
 
-  //@JsonProperty("description")
+  // @JsonProperty("description")
   public String getDescription() {
     return this.description;
   }
@@ -177,7 +171,6 @@ public class Poster {
     this.organization = organization;
   }
 
-
   public LocalDateTime getCreatedAt() {
 
     return createdAt;
@@ -203,13 +196,13 @@ public class Poster {
     this.endDate = endDate;
   }
 
-  public String returnHaystack(){
+  public String returnHaystack() {
     StringBuilder haystack = new StringBuilder(this.title);
-    if (this.description != ""){
+    if (this.description != "") {
       haystack.append(this.description);
     }
-    if (!this.tags.isEmpty()){
-      for (String tag: this.tags){
+    if (!this.tags.isEmpty()) {
+      for (String tag : this.tags) {
         haystack.append(tag);
       }
     }
@@ -219,4 +212,3 @@ public class Poster {
     return haystack.toString();
   }
 }
-
