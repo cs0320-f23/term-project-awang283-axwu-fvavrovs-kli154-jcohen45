@@ -178,6 +178,14 @@ public class PosterController {
         return CompletableFuture.completedFuture(new ServiceResponse<Poster>(poster, ": uploaded to imgur"));
     }
 
+    @PostMapping(value = "/create/fromlink")
+    public CompletableFuture<ServiceResponse<Poster>> createFromLink(@RequestBody String content) {
+        Poster poster = new Poster();
+        poster.setContent(content);
+        this.posterService.createPoster(poster);
+        return CompletableFuture.completedFuture(new ServiceResponse<Poster>(poster, ": uploaded to imgur"));
+    }
+
     /**
      * sends a POST request to the mapping /poster/create
      *
