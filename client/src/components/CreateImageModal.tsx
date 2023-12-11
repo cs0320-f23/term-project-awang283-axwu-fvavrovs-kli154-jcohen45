@@ -16,34 +16,81 @@ import { useState } from "react";
 import axios from "axios";
 import TagsModal from "./TagsModal";
 
-const createImgurLink = async (file: File) => {
-  const config = {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
+export default function CreateImageModal({ onClose }) {
+  const [imgUrl, setImgUrl] = useState<string>("");
+  const [title, setTitle] = useState<string>("");
+  const [location, setLocation] = useState<string>("");
+  const [startDateTime, setStartDateTime] = useState<string>("");
+  const [endDateTime, setEndDateTime] = useState<string>("");
+  const [repeats, setRepeats] = useState<string>("");
+  const [eventLink, setEventLink] = useState<string>("");
+  const [desc, setDesc] = useState<string>("");
+  const [showTags, setShowTags] = useState<boolean>(false);
+
+  const setUserLink = async (target: EventTarget & HTMLInputElement) => {
+    //on change
+    //setURL
+    setImgUrl(target.value);
+    //if link not imgur
+    if (!imgUrl.includes("https://i.imgur.com")) {
+      try {
+        //add to database
+        const config = {
+          headers: {
+            "Content-Type": "application/json",
+            // "Content-Type": "multipart/form-data",
+          },
+        };
+        const url = "http://localhost:8080/posters/create/fromlink";
+        const formData = new FormData();
+        formData.append("content", imgUrl);
+        const res = await axios.post(url, formData, config);
+        console.log("After axios request");
+        return Promise.resolve(res.data.data);
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          console.log(error.response.data.message);
+          return Promise.resolve(
+            `Error in fetch: ${error.response.data.message}`
+          );
+        } else {
+          console.log("Network error or other issue:", error.message);
+          return Promise.resolve(
+            "Error in fetch: Network error or other issue"
+          );
+        }
+      }
+    }
   };
 
-  try {
-    let url = "http://localhost:8080/posters/create/imgur";
-    let formData = new FormData();
-    formData.append("content", file);
-    console.log("Before axios request");
-    const res = await axios.post(url, formData, config);
-    console.log("After axios request");
-    return Promise.resolve(res.data.data);
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      console.log(error.response.data.message);
-      return Promise.resolve(`Error in fetch: ${error.response.data.message}`);
-    } else {
-      console.log("Network error or other issue:", error.message);
-      return Promise.resolve("Error in fetch: Network error or other issue");
-    }
-  }
-};
+  const createImgurLink = async (file: File) => {
+    const config = {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    };
 
-export default function CreateImageModal({ onClose }) {
-  const [showTags, setShowTags] = useState<boolean>(false);
+    try {
+      let url = "http://localhost:8080/posters/create/imgur";
+      let formData = new FormData();
+      formData.append("content", file);
+      console.log("Before axios request");
+      const res = await axios.post(url, formData, config);
+      console.log("After axios request");
+      return Promise.resolve(res.data.data);
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        console.log(error.response.data.message);
+        return Promise.resolve(
+          `Error in fetch: ${error.response.data.message}`
+        );
+      } else {
+        console.log("Network error or other issue:", error.message);
+        return Promise.resolve("Error in fetch: Network error or other issue");
+      }
+    }
+  };
+
   const onSaveSelectTags = () => {
     setShowTags(true);
   };
@@ -80,15 +127,6 @@ export default function CreateImageModal({ onClose }) {
     }
   };
 
-  const [imgUrl, setImgUrl] = useState<string>("");
-  const [title, setTitle] = useState<string>("");
-  const [location, setLocation] = useState<string>("");
-  const [startDateTime, setStartDateTime] = useState<string>("");
-  const [endDateTime, setEndDateTime] = useState<string>("");
-  const [repeats, setRepeats] = useState<string>("");
-  const [eventLink, setEventLink] = useState<string>("");
-  const [desc, setDesc] = useState<string>("");
-
   return (
     <>
       <Modal closeOnOverlayClick={false} isOpen={true} onClose={onClose}>
@@ -122,7 +160,8 @@ export default function CreateImageModal({ onClose }) {
                           id="image-url"
                           placeholder="Image URL"
                           value={imgUrl}
-                          onChange={(ev) => setImgUrl(ev.target.value)}
+                          onChange={(ev) => setUserLink(ev.target)}
+                          // needs to be able to take in a user link and call backend to create poster
                         ></Input>
                         <h3>or</h3>
                         <label htmlFor="image-upload" className="upload-button">
