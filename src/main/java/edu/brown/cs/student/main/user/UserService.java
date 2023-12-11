@@ -1,6 +1,8 @@
 package edu.brown.cs.student.main.user;
 
+import edu.brown.cs.student.main.PosterService;
 import edu.brown.cs.student.main.responses.ServiceResponse;
+import edu.brown.cs.student.main.types.Poster;
 import edu.brown.cs.student.main.user.User;
 
 import edu.brown.cs.student.main.responses.ServiceResponse;
@@ -96,5 +98,23 @@ public class UserService {
         } else {
             return CompletableFuture.completedFuture(new ServiceResponse<>("User not found"));
         }
+    }
+
+    @Async
+    public CompletableFuture<ServiceResponse<User>> associatePosterWithUser(String userId, Poster poster) {
+        // Find the user by ID
+        return userRepository.findById(userId)
+                .map(user -> {
+                    // Set the user ID in the poster
+                    poster.setUserId(userId);
+                    // Add the poster to the user's list of posters
+                    user.getPosters().add(poster);
+                    // Save the updated user
+                    userRepository.save(user);
+                    // Create a response object
+                    return new ServiceResponse<>(user, "Poster associated with user");
+                })
+                .map(CompletableFuture::completedFuture)
+                .orElse(CompletableFuture.completedFuture(new ServiceResponse<>("User not found")));
     }
 }

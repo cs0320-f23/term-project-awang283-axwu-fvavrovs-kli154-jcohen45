@@ -5,6 +5,8 @@ import edu.brown.cs.student.main.responses.ServiceResponse;
 import edu.brown.cs.student.main.types.Poster;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+
+import edu.brown.cs.student.main.user.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,9 +19,12 @@ public class PosterController {
   private final PosterService posterService; // instance of the class that does all the dirty work
   private final ImgurService imgurService;
 
-  public PosterController(PosterService posterService, ImgurService imgurService) {
+  private final UserService userService;
+
+  public PosterController(PosterService posterService, ImgurService imgurService, UserService userService) {
     this.posterService = posterService;
     this.imgurService = imgurService;
+    this.userService = userService;
   }
 
   /**
@@ -103,18 +108,44 @@ public class PosterController {
    * @return a JSONified ServiceResponse instance that contains a "message" (string) field and a
    *     "data" (JSON) field that contains the data of the poster that was just created
    */
+//  @PostMapping(value = "/create")
+//  public CompletableFuture<ResponseEntity<ServiceResponse<Poster>>> createPoster(
+//      @RequestBody Poster poster) {
+//    ServiceResponse imgurResponse = imgurService.uploadToImgur(poster.getContent());
+//    poster.setContent(imgurResponse.getData().toString());
+//    return this.posterService
+//        .createPoster(poster)
+//        .thenApply(response -> ResponseEntity.ok(response)) // good response
+//        .exceptionally(
+//            ex ->
+//                ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//                    .body(new ServiceResponse<>(poster, ex.getMessage())));
+//  }
   @PostMapping(value = "/create")
   public CompletableFuture<ResponseEntity<ServiceResponse<Poster>>> createPoster(
-      @RequestBody Poster poster) {
+          @RequestBody Poster poster,
+          @RequestParam String userId) {
+    // Assuming imgurService.uploadToImgur returns a ServiceResponse
     ServiceResponse imgurResponse = imgurService.uploadToImgur(poster.getContent());
     poster.setContent(imgurResponse.getData().toString());
-    return this.posterService
-        .createPoster(poster)
-        .thenApply(response -> ResponseEntity.ok(response)) // good response
-        .exceptionally(
-            ex ->
-                ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ServiceResponse<>(poster, ex.getMessage())));
+
+    // Associate the poster with the user
+    return userService.associatePosterWithUser(userId, poster)
+            .thenCompose(userServiceResponse -> {
+              if (userServiceResponse.getData() != null) {
+                // If the user was found and the poster was associated, proceed with creating the poster
+                return posterService.createPoster(poster)
+                        .thenApply(posterServiceResponse -> ResponseEntity.ok(posterServiceResponse));
+              } else {
+                // If the user was not found, return an error response
+                return CompletableFuture.completedFuture(
+                        ResponseEntity.status(HttpStatus.NOT_FOUND)
+                                .body(new ServiceResponse<>("User not found")));
+              }
+            })
+            .exceptionally(ex ->
+                    ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .body(new ServiceResponse<>(poster, ex.getMessage())));
   }
 
   /**

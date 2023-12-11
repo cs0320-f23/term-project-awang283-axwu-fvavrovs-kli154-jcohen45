@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.UUID;
+
+import edu.brown.cs.student.main.user.User;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -22,9 +24,7 @@ public class Poster {
   private String description;
   private HashSet<String> tags;
 
-
   private LocalDateTime createdAt;
-
 
   private LocalDateTime startDate;
 
@@ -32,7 +32,8 @@ public class Poster {
 
   private boolean isRecurring;
   private String organization;
-  // private User user;
+
+  private String userId;
 
   @JsonPropertyOrder({"id", "title", "description"})
   public Poster(String title, String content, String description) {
@@ -203,5 +204,16 @@ public class Poster {
       haystack.append(this.organization);
     }
     return haystack.toString();
+  }
+
+  // other fields and methods...
+
+  @JsonProperty("userId")
+  public String getUserId() {
+    return userId;
+  }
+
+  public void setUserId(String userId) {
+    this.userId = userId;
   }
 }
