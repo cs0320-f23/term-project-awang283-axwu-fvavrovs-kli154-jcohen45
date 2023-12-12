@@ -3,15 +3,16 @@ package edu.brown.cs.student.main;
 import edu.brown.cs.student.main.imgur.ImgurService;
 import edu.brown.cs.student.main.responses.ServiceResponse;
 import edu.brown.cs.student.main.types.Poster;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 /** This class defines the mappings and endpoints for poster management */
 @RestController
@@ -185,11 +186,12 @@ public class PosterController {
 
   //TODO: have some error checking (on frontend) to display an error if the link is corrupted
     @PostMapping(value = "/create/fromlink")
-    public CompletableFuture<ServiceResponse<Poster>> createFromLink(@RequestBody String content) {
+    public CompletableFuture<ServiceResponse<Poster>> createFromLink(@RequestBody Content content) {
+      System.out.println(content);
         Poster poster = new Poster();
-        poster.setContent(content);
+        poster.setContent(content.getContent());
         this.posterService.createPoster(poster);
-        return CompletableFuture.completedFuture(new ServiceResponse<Poster>(poster, "uploaded to imgur"));
+        return CompletableFuture.completedFuture(new ServiceResponse<Poster>(poster, "uploaded to database"));
     }
 
     /**
