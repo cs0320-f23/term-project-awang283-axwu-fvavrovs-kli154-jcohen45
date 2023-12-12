@@ -15,6 +15,7 @@ import "../styles/Modal.css";
 import { useState } from "react";
 import axios from "axios";
 import TagsModal from "./TagsModal";
+import { create } from "domain";
 
 export default function CreateImageModal({ onClose }) {
   const [imgUrl, setImgUrl] = useState<string>("");
@@ -26,13 +27,28 @@ export default function CreateImageModal({ onClose }) {
   const [eventLink, setEventLink] = useState<string>("");
   const [desc, setDesc] = useState<string>("");
   const [showTags, setShowTags] = useState<boolean>(false);
+  const [posterFile, setPosterFile] = useState<File | string>();
+  const [posterSrc, setPosterSrc] = useState<string>("");
 
-  const setUserLink = async (target: EventTarget & HTMLInputElement) => {
+  // useEffect(() => {}, [posterSrc]);
+
+  const setUserLink = async (target: EventTarget) => {
     //on change
+    const inputElement = target as HTMLInputElement;
+
     //setURL
-    setImgUrl(target.value);
+    // console.log(target + " target " + target.value + " value");
+    setImgUrl(inputElement.value);
+    console.log(inputElement.value + " imgurl");
+    //console.log(target);
     //if link not imgur
-    if (!imgUrl.includes("https://i.imgur.com")) {
+    if (!inputElement.value.includes("https://i.imgur.com")) {
+      //if inputed string is actually an img file
+      // const pattern: RegExp = /^.*\.(png|jpg|jpeg)$/i;
+      // if (pattern.test(target.value)) {
+      //   console.log(target.value + " val");
+      //   return createImgurLink(target.value);
+      // }
       try {
         //add to database
         const config = {
@@ -43,18 +59,22 @@ export default function CreateImageModal({ onClose }) {
         };
         const url = "http://localhost:8080/posters/create/fromlink";
         const formData = new FormData();
-        formData.append("content", imgUrl);
+        // console.log(imgUrl + " url" + typeof imgUrl + " type");
+        formData.append("content", inputElement.value);
         const res = await axios.post(url, formData, config);
-        console.log("After axios request");
+        // console.log("After axios request");
+
+        setPosterSrc(inputElement.value);
+        setPosterFile(inputElement.value);
         return Promise.resolve(res.data.data);
       } catch (error) {
         if (axios.isAxiosError(error) && error.response) {
-          console.log(error.response.data.message);
+          // console.log(error.response.data.message);
           return Promise.resolve(
             `Error in fetch: ${error.response.data.message}`
           );
         } else {
-          console.log("Network error or other issue:", error.message);
+          //.log("Network error or other issue:", error.message);
           return Promise.resolve(
             "Error in fetch: Network error or other issue"
           );
@@ -63,7 +83,10 @@ export default function CreateImageModal({ onClose }) {
     }
   };
 
-  const createImgurLink = async (file: File) => {
+  const createImgurLink = async (file: File | string) => {
+    console.log(file + " file");
+    console.log(typeof file + " type");
+
     const config = {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -71,8 +94,8 @@ export default function CreateImageModal({ onClose }) {
     };
 
     try {
-      let url = "http://localhost:8080/posters/create/imgur";
-      let formData = new FormData();
+      const url = "http://localhost:8080/posters/create/imgur";
+      const formData = new FormData();
       formData.append("content", file);
       console.log("Before axios request");
       const res = await axios.post(url, formData, config);
@@ -81,6 +104,7 @@ export default function CreateImageModal({ onClose }) {
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         console.log(error.response.data.message);
+        console.log(error);
         return Promise.resolve(
           `Error in fetch: ${error.response.data.message}`
         );
@@ -98,16 +122,15 @@ export default function CreateImageModal({ onClose }) {
   const onBack = () => {
     setShowTags(false);
   };
-  const [posterFile, setPosterFile] = useState<File>();
-  const [posterSrc, setPosterSrc] = useState<string>("");
 
   const handlePosterUpload = async (target: EventTarget & HTMLInputElement) => {
+    // console.log(JSON.stringify(target) + " files");
     if (target.files) {
       const file = target.files[0]; //getting the file object
       setPosterFile(file);
-      console.log("File name:", file.name);
-      console.log("File type:", file.type);
-      console.log("File size:", file.size, "bytes");
+      // console.log("File name:", file.name);
+      // console.log("File type:", file.type);
+      //  console.log("File size:", file.size, "bytes");
 
       if (file && file.type.startsWith("image/")) {
         //convert our image file into a format that can be fed into img component's src property to be displayed after upload
@@ -122,8 +145,8 @@ export default function CreateImageModal({ onClose }) {
 
       const output = await createImgurLink(file);
       setImgUrl(output.content);
-      console.log(output);
-      console.log(output.content);
+      //console.log(output);
+      // console.log(output.content);
     }
   };
 
@@ -138,7 +161,7 @@ export default function CreateImageModal({ onClose }) {
 
             <ModalBody className="modal-body">
               <div className="create-div">
-                {posterFile ? (
+                {posterSrc ? (
                   <Box
                     className="view-image"
                     maxHeight={"76vh"}
@@ -160,7 +183,12 @@ export default function CreateImageModal({ onClose }) {
                           id="image-url"
                           placeholder="Image URL"
                           value={imgUrl}
-                          onChange={(ev) => setUserLink(ev.target)}
+                          onChange={(ev) => setImgUrl(ev.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              setUserLink(e.target);
+                            }
+                          }}
                           // needs to be able to take in a user link and call backend to create poster
                         ></Input>
                         <h3>or</h3>
