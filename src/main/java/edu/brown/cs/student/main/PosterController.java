@@ -184,7 +184,7 @@ public class PosterController {
   }
 
   //TODO: have some error checking (on frontend) to display an error if the link is corrupted
-    @PostMapping(value = "/create/fromlink")
+    @PostMapping(value = "/create/fromLink")
     public CompletableFuture<ServiceResponse<Poster>> createFromLink(@RequestBody String content) {
         Poster poster = new Poster();
         poster.setContent(content);
@@ -196,7 +196,7 @@ public class PosterController {
      * sends a POST request to the mapping /poster/create
      *
      * @return a JSONified ServiceResponse instance that contains a "message" (string) field and a
-     *     "data" (JSON) field that contains the data of the poster that was just created
+     *     "data" (JSON) field that contains the data ofi the poster that was just created
      */
 
   @PostMapping(value = "/create/imgur")

@@ -16,50 +16,6 @@ import { useState } from "react";
 import axios from "axios";
 import TagsModal from "./TagsModal";
 
-const config = {
-  headers: {
-    "Content-Type": "multipart/form-data",
-  },
-};
-
-const createImgurFromFile = async (file: File) => {
-  try {
-    let url = "http://localhost:8080/posters/create/imgur";
-    let formData = new FormData();
-    formData.append("content", file);
-    console.log("Before axios request");
-    const res = await axios.post(url, formData, config);
-    console.log("After axios request");
-    return Promise.resolve(res.data.data);
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      console.log(error.response.data.message);
-      return Promise.resolve(`Error in fetch: ${error.response.data.message}`);
-    } else {
-      return Promise.resolve("Error in fetch: Network error or other issue");
-    }
-  }
-};
-
-const createImgurFromLink = async (link: string) => {
-  try {
-    let url = "http://localhost:8080/posters/create/fromLink";
-    let formData = new FormData();
-    formData.append("content", link);
-    console.log("Before axios request");
-    const res = await axios.post(url, formData, config);
-    console.log("After axios request");
-    return Promise.resolve(res.data.data);
-  } catch (error) {
-    if (axios.isAxiosError(error) && error.response) {
-      console.log(error.response.data.message);
-      return Promise.resolve(`Error in fetch: ${error.response.data.message}`);
-    } else {
-      return Promise.resolve("Error in fetch: Network error or other issue");
-    }
-  }
-};
-
 export default function CreateImageModal({ onClose }) {
   const [showTags, setShowTags] = useState<boolean>(false);
   const onSaveSelectTags = () => {
@@ -71,6 +27,64 @@ export default function CreateImageModal({ onClose }) {
   };
   const [posterFile, setPosterFile] = useState<File>();
   const [posterSrc, setPosterSrc] = useState<string>("");
+
+  const createImgurFromFile = async (file: File) => {
+    const config = {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    };
+
+    try {
+      let url = "http://localhost:8080/posters/create/imgur";
+      let formData = new FormData();
+      formData.append("content", file);
+      console.log("Before axios request");
+      const res = await axios.post(url, formData, config);
+      console.log("After axios request");
+      return Promise.resolve(res.data.data);
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        console.log(error.response.data.message);
+        return Promise.resolve(
+          `Error in fetch: ${error.response.data.message}`
+        );
+      } else {
+        return Promise.resolve("Error in fetch: Network error or other issue");
+      }
+    }
+  };
+
+  const createImgurFromLink = async (link: string) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    try {
+      let url = "http://localhost:8080/posters/create/fromLink";
+      let formData = new FormData();
+      formData.append("content", link);
+      console.log("Before axios request");
+      const res = await axios.post(url, link, config);
+      console.log("After axios request");
+      setImgUrl(res.data.data.content);
+      setPosterSrc(res.data.data.content);
+      console.log();
+      console.log(res.data.data.content);
+      return Promise.resolve(res.data.data);
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        console.log(error.response.data.message);
+        return Promise.resolve(
+          `Error in fetch: ${error.response.data.message}`
+        );
+      } else {
+        return Promise.resolve("Error in fetch: Network error or other issue");
+      }
+    }
+  };
 
   const handlePosterUpload = async (target: EventTarget & HTMLInputElement) => {
     if (target.files) {
@@ -118,13 +132,13 @@ export default function CreateImageModal({ onClose }) {
 
             <ModalBody className="modal-body">
               <div className="create-div">
-                {posterFile ? (
+                {posterSrc ? (
                   <Box
                     className="view-image"
                     maxHeight={"76vh"}
                     overflowY={"scroll"}
                   >
-                    <img src={posterSrc} id=""></img>
+                    <img src={posterSrc}></img>
                   </Box>
                 ) : (
                   <div className="image-container"></div>
