@@ -60,10 +60,10 @@ export const ImageCard = (
             title={title}
             path={path}
             date={date}
-            time={time}
-            location={location}
-            link={link}
-            description={description}
+            time={time!}
+            location={location!}
+            link={link!}
+            description={description!}
           />
         )}
       </div>

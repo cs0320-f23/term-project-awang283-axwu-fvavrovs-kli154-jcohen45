@@ -17,7 +17,101 @@ import axios from "axios";
 import TagsModal from "./TagsModal";
 
 export default function CreateImageModal({ onClose }) {
+  const [imgUrl, setImgUrl] = useState<string>("");
+  const [title, setTitle] = useState<string>("");
+  const [location, setLocation] = useState<string>("");
+  const [startDateTime, setStartDateTime] = useState<string>("");
+  const [endDateTime, setEndDateTime] = useState<string>("");
+  const [repeats, setRepeats] = useState<string>("");
+  const [eventLink, setEventLink] = useState<string>("");
+  const [desc, setDesc] = useState<string>("");
   const [showTags, setShowTags] = useState<boolean>(false);
+  const [posterSrc, setPosterSrc] = useState<string>("");
+
+  // useEffect(() => {}, [posterSrc]);
+
+  const setUserLink = async (target: EventTarget) => {
+    //on change
+    const inputElement = target as HTMLInputElement;
+
+    //setURL
+    // console.log(target + " target " + target.value + " value");
+    setImgUrl(inputElement.value);
+    console.log(inputElement.value + " imgurl");
+    //console.log(target);
+    //if link not imgur
+    if (!inputElement.value.includes("https://i.imgur.com")) {
+      //if inputed string is actually an img file
+      // const pattern: RegExp = /^.*\.(png|jpg|jpeg)$/i;
+      // if (pattern.test(target.value)) {
+      //   console.log(target.value + " val");
+      //   return createImgurLink(target.value);
+      // }
+      try {
+        //add to database
+        const config = {
+          headers: {
+            "Content-Type": "application/json",
+            // "Content-Type": "multipart/form-data",
+          },
+        };
+        const url = "http://localhost:8080/posters/create/fromlink";
+        const formData = new FormData();
+        // console.log(imgUrl + " url" + typeof imgUrl + " type");
+        formData.append("content", inputElement.value);
+        const res = await axios.post(url, formData, config);
+        // console.log("After axios request");
+
+        setPosterSrc(inputElement.value);
+        return Promise.resolve(res.data.data);
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          // console.log(error.response.data.message);
+          return Promise.resolve(
+            `Error in fetch: ${error.response.data.message}`
+          );
+        } else {
+          //.log("Network error or other issue:", error.message);
+          return Promise.resolve(
+            "Error in fetch: Network error or other issue"
+          );
+        }
+      }
+    }
+  };
+
+  const createImgurLink = async (file: File | string) => {
+    console.log(file + " file");
+    console.log(typeof file + " type");
+
+    const config = {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    };
+
+    try {
+      const url = "http://localhost:8080/posters/create/imgur";
+      const formData = new FormData();
+      formData.append("content", file);
+      console.log("Before axios request");
+      const res = await axios.post(url, formData, config);
+      console.log("After axios request");
+      return Promise.resolve(res.data.data);
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        console.log(error.response.data.message);
+        console.log(error);
+        return Promise.resolve(
+          `Error in fetch: ${error.response.data.message}`
+        );
+      } else {
+        console.log("Network error or other issue:", error.message);
+        return Promise.resolve("Error in fetch: Network error or other issue");
+      }
+    }
+  };
+
   const onSaveSelectTags = () => {
     setShowTags(true);
   };
@@ -25,8 +119,6 @@ export default function CreateImageModal({ onClose }) {
   const onBack = () => {
     setShowTags(false);
   };
-  const [posterFile, setPosterFile] = useState<File>();
-  const [posterSrc, setPosterSrc] = useState<string>("");
 
   const createImgurFromFile = async (file: File) => {
     const config = {
@@ -55,44 +147,13 @@ export default function CreateImageModal({ onClose }) {
     }
   };
 
-  const createImgurFromLink = async (link: string) => {
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-
-    try {
-      let url = "http://localhost:8080/posters/create/fromLink";
-      let formData = new FormData();
-      formData.append("content", link);
-      console.log("Before axios request");
-      const res = await axios.post(url, link, config);
-      console.log("After axios request");
-      setImgUrl(res.data.data.content);
-      setPosterSrc(res.data.data.content);
-      console.log();
-      console.log(res.data.data.content);
-      return Promise.resolve(res.data.data);
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.response) {
-        console.log(error.response.data.message);
-        return Promise.resolve(
-          `Error in fetch: ${error.response.data.message}`
-        );
-      } else {
-        return Promise.resolve("Error in fetch: Network error or other issue");
-      }
-    }
-  };
-
   const handlePosterUpload = async (target: EventTarget & HTMLInputElement) => {
+    // console.log(JSON.stringify(target) + " files");
     if (target.files) {
       const file = target.files[0]; //getting the file object
-      setPosterFile(file);
-      console.log("File name:", file.name);
-      console.log("File type:", file.type);
-      console.log("File size:", file.size, "bytes");
+      // console.log("File name:", file.name);
+      // console.log("File type:", file.type);
+      //  console.log("File size:", file.size, "bytes");
 
       if (file && file.type.startsWith("image/")) {
         //convert our image file into a format that can be fed into img component's src property to be displayed after upload
@@ -107,19 +168,10 @@ export default function CreateImageModal({ onClose }) {
 
       const output = await createImgurFromFile(file);
       setImgUrl(output.content);
-      console.log(output);
-      console.log(output.content);
+      //console.log(output);
+      // console.log(output.content);
     }
   };
-
-  const [imgUrl, setImgUrl] = useState<string>("");
-  const [title, setTitle] = useState<string>("");
-  const [location, setLocation] = useState<string>("");
-  const [startDateTime, setStartDateTime] = useState<string>("");
-  const [endDateTime, setEndDateTime] = useState<string>("");
-  const [repeats, setRepeats] = useState<string>("");
-  const [eventLink, setEventLink] = useState<string>("");
-  const [desc, setDesc] = useState<string>("");
 
   return (
     <>
@@ -157,9 +209,10 @@ export default function CreateImageModal({ onClose }) {
                           onChange={(ev) => setImgUrl(ev.target.value)}
                           onKeyDown={(e) => {
                             if (e.key === "Enter") {
-                              createImgurFromLink(imgUrl);
+                              setUserLink(e.target);
                             }
                           }}
+                          // needs to be able to take in a user link and call backend to create poster
                         ></Input>
                         <h3>or</h3>
                         <label htmlFor="image-upload" className="upload-button">
