@@ -15,7 +15,6 @@ import "../styles/Modal.css";
 import { useState } from "react";
 import axios from "axios";
 import TagsModal from "./TagsModal";
-import { create } from "domain";
 
 export default function CreateImageModal({ onClose }) {
   const [imgUrl, setImgUrl] = useState<string>("");
@@ -27,7 +26,6 @@ export default function CreateImageModal({ onClose }) {
   const [eventLink, setEventLink] = useState<string>("");
   const [desc, setDesc] = useState<string>("");
   const [showTags, setShowTags] = useState<boolean>(false);
-  const [posterFile, setPosterFile] = useState<File | string>();
   const [posterSrc, setPosterSrc] = useState<string>("");
 
   // useEffect(() => {}, [posterSrc]);
@@ -65,7 +63,6 @@ export default function CreateImageModal({ onClose }) {
         // console.log("After axios request");
 
         setPosterSrc(inputElement.value);
-        setPosterFile(inputElement.value);
         return Promise.resolve(res.data.data);
       } catch (error) {
         if (axios.isAxiosError(error) && error.response) {
@@ -127,7 +124,6 @@ export default function CreateImageModal({ onClose }) {
     // console.log(JSON.stringify(target) + " files");
     if (target.files) {
       const file = target.files[0]; //getting the file object
-      setPosterFile(file);
       // console.log("File name:", file.name);
       // console.log("File type:", file.type);
       //  console.log("File size:", file.size, "bytes");
