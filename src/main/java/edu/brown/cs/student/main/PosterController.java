@@ -125,29 +125,28 @@ public class PosterController {
   public CompletableFuture<ResponseEntity<ServiceResponse<Poster>>> createPoster(
           @RequestBody Poster poster,
           @RequestParam String userId) {
-    // Assuming imgurService.uploadToImgur returns a ServiceResponse
-    ServiceResponse imgurResponse = imgurService.uploadToImgur(poster.getContent());
-    poster.setContent(imgurResponse.getData().toString());
+      // Assuming imgurService.uploadToImgur returns a ServiceResponse
+      ServiceResponse imgurResponse = imgurService.uploadToImgur(poster.getContent());
+      poster.setContent(imgurResponse.getData().toString());
 
-    // Associate the poster with the user
-    return userService.associatePosterWithUser(userId, poster)
-            .thenCompose(userServiceResponse -> {
-              if (userServiceResponse.getData() != null) {
-                // If the user was found and the poster was associated, proceed with creating the poster
-                return posterService.createPoster(poster)
-                        .thenApply(posterServiceResponse -> ResponseEntity.ok(posterServiceResponse));
-              } else {
-                // If the user was not found, return an error response
-                return CompletableFuture.completedFuture(
-                        ResponseEntity.status(HttpStatus.NOT_FOUND)
-                                .body(new ServiceResponse<>("User not found")));
-              }
-            })
-            .exceptionally(ex ->
-                    ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                            .body(new ServiceResponse<>(poster, ex.getMessage())));
+      // Associate the poster with the user
+      return userService.associatePosterWithUser(userId, poster)
+              .thenCompose(userServiceResponse -> {
+                  if (userServiceResponse.getData() != null) {
+                      // If the user was found and the poster was associated, proceed with creating the poster
+                      return posterService.createPoster(poster)
+                              .thenApply(posterServiceResponse -> ResponseEntity.ok(posterServiceResponse));
+                  } else {
+                      // If the user was not found, return an error response
+                      return CompletableFuture.completedFuture(
+                              ResponseEntity.status(HttpStatus.NOT_FOUND)
+                                      .body(new ServiceResponse<>(poster, "User not found")));
+                  }
+              })
+              .exceptionally(ex ->
+                      ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                              .body(new ServiceResponse<>(poster, ex.getMessage())));
   }
-
   /**
    * sends a DELETE request to delete a poster
    *

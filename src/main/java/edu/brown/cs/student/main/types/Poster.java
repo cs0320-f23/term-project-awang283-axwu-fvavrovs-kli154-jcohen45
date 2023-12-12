@@ -206,9 +206,7 @@ public class Poster {
     return haystack.toString();
   }
 
-  // other fields and methods...
 
-  @JsonProperty("userId")
   public String getUserId() {
     return userId;
   }
