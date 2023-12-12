@@ -198,7 +198,7 @@ public class PosterController {
      * sends a POST request to the mapping /poster/create
      *
      * @return a JSONified ServiceResponse instance that contains a "message" (string) field and a
-     *     "data" (JSON) field that contains the data of the poster that was just created
+     *     "data" (JSON) field that contains the data ofi the poster that was just created
      */
 
   @PostMapping(value = "/create/imgur")

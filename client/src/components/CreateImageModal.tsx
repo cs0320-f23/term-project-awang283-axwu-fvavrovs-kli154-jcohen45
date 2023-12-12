@@ -120,6 +120,33 @@ export default function CreateImageModal({ onClose }) {
     setShowTags(false);
   };
 
+  const createImgurFromFile = async (file: File) => {
+    const config = {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    };
+
+    try {
+      let url = "http://localhost:8080/posters/create/imgur";
+      let formData = new FormData();
+      formData.append("content", file);
+      console.log("Before axios request");
+      const res = await axios.post(url, formData, config);
+      console.log("After axios request");
+      return Promise.resolve(res.data.data);
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        console.log(error.response.data.message);
+        return Promise.resolve(
+          `Error in fetch: ${error.response.data.message}`
+        );
+      } else {
+        return Promise.resolve("Error in fetch: Network error or other issue");
+      }
+    }
+  };
+
   const handlePosterUpload = async (target: EventTarget & HTMLInputElement) => {
     // console.log(JSON.stringify(target) + " files");
     if (target.files) {
@@ -139,7 +166,7 @@ export default function CreateImageModal({ onClose }) {
         reader.readAsDataURL(file);
       }
 
-      const output = await createImgurLink(file);
+      const output = await createImgurFromFile(file);
       setImgUrl(output.content);
       //console.log(output);
       // console.log(output.content);
@@ -163,7 +190,7 @@ export default function CreateImageModal({ onClose }) {
                     maxHeight={"76vh"}
                     overflowY={"scroll"}
                   >
-                    <img src={posterSrc} id=""></img>
+                    <img src={posterSrc}></img>
                   </Box>
                 ) : (
                   <div className="image-container"></div>
