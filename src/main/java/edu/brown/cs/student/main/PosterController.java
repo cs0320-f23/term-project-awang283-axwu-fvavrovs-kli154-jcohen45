@@ -184,6 +184,12 @@ public class PosterController {
         .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
   }
 
+  @GetMapping("/alltags")
+  public List<String> getAllTags() {
+     Tags tags = new Tags();
+    return tags.getTags();
+  }
+
   //TODO: have some error checking (on frontend) to display an error if the link is corrupted
     @PostMapping(value = "/create/fromlink")
     public CompletableFuture<ServiceResponse<Poster>> createFromLink(@RequestBody Content content) {
