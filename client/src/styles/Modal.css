@@ -75,10 +75,11 @@
 
 .tags-div {
   justify-content: space-around;
-  height: 92%;
+  height: 90.7%;
   width: 100%;
   overflow-y: scroll;
   padding-left: 0.5vw;
+  gap: 5vh;
 }
 
 .input-fields {
@@ -164,8 +165,8 @@ input::placeholder {
 .magenta-tag:hover,
 .green-tag:hover,
 .blue-tag:hover {
-  transform: scale(1.03);
-  transition: 0.3s;
+  transform: scale(1.05);
+  transition: 0.2s;
 }
 
 .close-button {

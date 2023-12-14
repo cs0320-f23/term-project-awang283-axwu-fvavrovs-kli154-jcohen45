@@ -16,17 +16,46 @@ import { useState } from "react";
 import axios from "axios";
 import TagsModal from "./TagsModal";
 
+interface IPoster {
+  content?: string;
+  title?: string;
+  location?: string;
+  startDate?: string;
+  endDate?: string;
+  isRecurring?: string;
+  link?: string;
+  description?: string;
+  tags?: Set<string>;
+}
+
 export default function CreateImageModal({ onClose }) {
-  const [imgUrl, setImgUrl] = useState<string>("");
-  const [title, setTitle] = useState<string>("");
-  const [location, setLocation] = useState<string>("");
-  const [startDateTime, setStartDateTime] = useState<string>("");
-  const [endDateTime, setEndDateTime] = useState<string>("");
-  const [repeats, setRepeats] = useState<string>("");
-  const [eventLink, setEventLink] = useState<string>("");
-  const [desc, setDesc] = useState<string>("");
+  const [, setImgUrl] = useState<string>("");
   const [showTags, setShowTags] = useState<boolean>(false);
   const [posterSrc, setPosterSrc] = useState<string>("");
+  const [poster, setPoster] = useState<IPoster>({});
+  const [posterId, setPosterId] = useState<string>("");
+
+  const handleChange = (
+    value: string[] | string | Set<string>,
+    property: keyof IPoster
+  ) => {
+    let updatedValue: {
+      [x: string]: string[] | Set<string> | string;
+    };
+    if (value instanceof Set) {
+      updatedValue = { [property]: Array.from(value) };
+
+      console.log(JSON.stringify(Array.from(value)) + " updated tags");
+    } else {
+      updatedValue = { [property]: value };
+    }
+    setPoster((prevPoster) => ({
+      ...prevPoster,
+      ...updatedValue,
+    }));
+    return poster;
+    console.log(JSON.stringify(poster) + " after updated tags");
+  };
 
   const setUserLink = async (target: EventTarget) => {
     //on change
@@ -50,6 +79,7 @@ export default function CreateImageModal({ onClose }) {
         const res = await axios.post(url, formData, config);
 
         setPosterSrc(inputElement.value);
+        setPosterId(res.data.data.id);
         return Promise.resolve(res.data.data);
       } catch (error) {
         if (axios.isAxiosError(error) && error.response) {
@@ -66,9 +96,6 @@ export default function CreateImageModal({ onClose }) {
   };
 
   const createImgurLink = async (file: File | string) => {
-    console.log(file + " file");
-    console.log(typeof file + " type");
-
     const config = {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -82,6 +109,7 @@ export default function CreateImageModal({ onClose }) {
       console.log("Before axios request");
       const res = await axios.post(url, formData, config);
       console.log("After axios request");
+      setPosterId(res.data.data.id);
       return Promise.resolve(res.data.data);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -91,7 +119,7 @@ export default function CreateImageModal({ onClose }) {
           `Error in fetch: ${error.response.data.message}`
         );
       } else {
-        console.log("Network error or other issue:", error.message);
+        //console.log("Network error or other issue:", error.message);
         return Promise.resolve("Error in fetch: Network error or other issue");
       }
     }
@@ -148,7 +176,13 @@ export default function CreateImageModal({ onClose }) {
                   <div className="image-container"></div>
                 )}
                 {showTags ? (
-                  <TagsModal onClose={onClose} onBack={onBack} />
+                  <TagsModal
+                    onClose={onClose}
+                    onBack={onBack}
+                    poster={poster}
+                    posterId={posterId}
+                    handleChange={handleChange}
+                  />
                 ) : (
                   <div className="input-fields">
                     <div>
@@ -157,8 +191,10 @@ export default function CreateImageModal({ onClose }) {
                         <Input
                           id="image-url"
                           placeholder="Image URL"
-                          value={imgUrl}
-                          onChange={(ev) => setImgUrl(ev.target.value)}
+                          value={poster.content}
+                          onChange={(ev) =>
+                            handleChange(ev.target.value, "content")
+                          }
                           onKeyDown={(e) => {
                             if (e.key === "Enter") {
                               setUserLink(e.target);
@@ -183,8 +219,10 @@ export default function CreateImageModal({ onClose }) {
                       <h3>Title</h3>
                       <Input
                         placeholder="Enter Title"
-                        value={title}
-                        onChange={(ev) => setTitle(ev.target.value)}
+                        value={poster.title}
+                        onChange={(ev) =>
+                          handleChange(ev.target.value, "title")
+                        }
                       ></Input>
                     </div>
                     <div className="location-div">
@@ -193,8 +231,10 @@ export default function CreateImageModal({ onClose }) {
                         <Input
                           placeholder="Enter Location"
                           width="23.4vw"
-                          value={location}
-                          onChange={(ev) => setLocation(ev.target.value)}
+                          value={poster.location}
+                          onChange={(ev) =>
+                            handleChange(ev.target.value, "location")
+                          }
                         />
                       </div>
                       <div>
@@ -204,13 +244,15 @@ export default function CreateImageModal({ onClose }) {
                           id="recur-select"
                           width="8vw"
                           color="white"
-                          value={repeats}
-                          onChange={(ev) => setRepeats(ev.target.value)}
+                          value={poster.isRecurring}
+                          onChange={(ev) =>
+                            handleChange(ev.target.value, "isRecurring")
+                          }
                         >
-                          <option value="Never">Never</option>
-                          <option value="Daily">Daily</option>
-                          <option value="Weekly">Weekly</option>
-                          <option value="Monthly">Monthly</option>
+                          <option value="NEVER">Never</option>
+                          <option value="DAILY">Daily</option>
+                          <option value="WEEKLY">Weekly</option>
+                          <option value="MONTHLY">Monthly</option>
                         </Select>
                       </div>
                     </div>
@@ -223,8 +265,10 @@ export default function CreateImageModal({ onClose }) {
                           type="datetime-local"
                           width="15.2vw"
                           color="white"
-                          value={startDateTime}
-                          onChange={(ev) => setStartDateTime(ev.target.value)}
+                          value={poster.startDate}
+                          onChange={(ev) =>
+                            handleChange(ev.target.value, "startDate")
+                          }
                         />
                         <h3>to</h3>
                         <Input
@@ -233,8 +277,10 @@ export default function CreateImageModal({ onClose }) {
                           type="datetime-local"
                           width="15.2vw"
                           color="white"
-                          value={endDateTime}
-                          onChange={(ev) => setEndDateTime(ev.target.value)}
+                          value={poster.endDate}
+                          onChange={(ev) =>
+                            handleChange(ev.target.value, "endDate")
+                          }
                         />
                       </div>
                     </div>
@@ -242,8 +288,8 @@ export default function CreateImageModal({ onClose }) {
                       <h3>Link</h3>
                       <Input
                         placeholder="Enter Link"
-                        value={eventLink}
-                        onChange={(ev) => setEventLink(ev.target.value)}
+                        value={poster.link}
+                        onChange={(ev) => handleChange(ev.target.value, "link")}
                       />
                     </div>
                     <div className="desc-div">
@@ -253,8 +299,10 @@ export default function CreateImageModal({ onClose }) {
                         placeholder="Enter Description"
                         wordBreak="break-word"
                         resize="none"
-                        value={desc}
-                        onChange={(ev) => setDesc(ev.target.value)}
+                        value={poster.description}
+                        onChange={(ev) =>
+                          handleChange(ev.target.value, "description")
+                        }
                       />
                     </div>
                     <div className="save-div">
