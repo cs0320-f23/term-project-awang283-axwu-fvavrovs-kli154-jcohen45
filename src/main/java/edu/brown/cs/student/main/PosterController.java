@@ -189,7 +189,7 @@ public class PosterController {
         Poster poster = new Poster();
         poster.setContent(content);
         this.posterService.createPoster(poster);
-        return CompletableFuture.completedFuture(new ServiceResponse<Poster>(poster, "uploaded to imgur"));
+        return CompletableFuture.completedFuture(new ServiceResponse<Poster>(poster, "created new poster using existing link"));
     }
 
     /**
