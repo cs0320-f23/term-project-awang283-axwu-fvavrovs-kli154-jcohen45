@@ -1,4 +1,7 @@
-package edu.brown.cs.student.main;
+package edu.brown.cs.student.main.ocr;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import org.springframework.boot.jackson.JsonComponent;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
@@ -12,6 +15,8 @@ import java.util.Iterator;
 public class OCRAsyncTask {
 
     public String sendPost(String apiKey, boolean isOverlayRequired, String imageUrl, String language) throws Exception {
+
+        OCRParser parser = new OCRParser();
 
         URL obj = new URL("https://api.ocr.space/parse/image"); // OCR API Endpoints
         HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
@@ -49,6 +54,9 @@ public class OCRAsyncTask {
 
         //return result
         System.out.println("Result: " + String.valueOf(response));
+
+        parser.deserialize(String.valueOf(response));
+
         return String.valueOf(response);
     }
 
