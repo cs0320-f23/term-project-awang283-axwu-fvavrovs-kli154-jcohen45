@@ -99,13 +99,8 @@ public class OCRParser {
         HashMap<String, List<String>> tags = tagObj.getJumboTags();
         HashSet<String> toReturn = new HashSet<>();
 
-//        for (String tag : tags){
-//            if (searcher.getSearchResult(tag, description)){
-//                toReturn.add(tag);
-//            }
-//        }
         for (String word : words){
-            if (word.length() > 1){
+            if (word.length() > 2){
                 for (String tag : tags.keySet()){
                     List<String> tagLine = tags.get(tag);
                     for (String tagWord : tagLine){

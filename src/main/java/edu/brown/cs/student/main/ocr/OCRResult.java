@@ -72,8 +72,6 @@ class ParsedResult {
 
     private String ParsedText;
 
-    // Add getters and setters
-
     public TextOverlay getTextOverlay() {
         return this.TextOverlay;
     }
@@ -107,8 +105,6 @@ class TextOverlay {
     private boolean HasOverlay;
     @JsonProperty("Message")
     private String Message;
-
-    // Add getters and setters
 
     public List<Line> getLines() {
         return this.Lines;
@@ -145,8 +141,6 @@ class Line {
     private double MaxHeight;
     @JsonProperty("MinTop")
     private double MinTop;
-
-    // Add getters and setters
 
     public String getLineText() {
         return this.LineText;
@@ -193,8 +187,6 @@ class Word {
     private double Height;
     @JsonProperty("Width")
     private double Width;
-
-    // Add getters and setters
 
     public String getWordText() {
         return this.WordText;

@@ -14,22 +14,22 @@ public class Tags {
                 "jabberwocks", "chattertocks", "ursa minors", "shades of brown", "harmonic motion", "beauty and the beats", "acapella")));
         jumboTags.put("live music", new ArrayList<>(Arrays.asList("live music", "jam", "a cap", "acapella", "concert", "song")));
         jumboTags.put("sports", new ArrayList<>(Arrays.asList("sport", "football", "soccer", "basketball", "volleyball", "baseball",
-                "danc", "hockey", "fencing", "golf", "gym", "rowing", "ski", "swim", "tennis", "intramural", "athlet", "recreation", "fitness")));
+                "danc", "hockey", "fencing", "golf", "gym", "rowing", "swim", "tennis", "intramural", "athlet", "recreation", "fitness")));
         jumboTags.put("free food", new ArrayList<>(Arrays.asList("food", "pizza", "kabob", "snack", "boba", "tea", "lunch",
                 "dinner", "brunch", "breakfast", "beverage")));
-        jumboTags.put("party", new ArrayList<>(Arrays.asList("party", "social", "hang", "celebrat")));
-        jumboTags.put("outdoors", new ArrayList<>(Arrays.asList("outdoor", "camp", "hik", "outing", "bird", "nature",
+        jumboTags.put("party", new ArrayList<>(Arrays.asList("party")));
+        jumboTags.put("outdoors", new ArrayList<>(Arrays.asList("outdoor", "camping", "hike", "hiking", "outing", "bird", "nature",
                 "trail", "beach", "walk", "garden", "recreation", "wildlife")));
-        jumboTags.put("volunteering", new ArrayList<>(Arrays.asList("volunteer", "tutor", "unpaid", "serv", "nonprofit", "non-profit")));
-        jumboTags.put("arts", new ArrayList<>(Arrays.asList("art", "exhibit", "gallery")));
+        jumboTags.put("volunteering", new ArrayList<>(Arrays.asList("volunteer", "tutor", "unpaid", "nonprofit", "non-profit")));
+        jumboTags.put("arts", new ArrayList<>(Arrays.asList(" art", "exhibit", "gallery")));
         jumboTags.put("crafts", new ArrayList<>(Arrays.asList("craft", "paint", "draw", "knit", "crochet", "decorat")));
         jumboTags.put("tech", new ArrayList<>(Arrays.asList("tech", "comput")));
         jumboTags.put("stem", new ArrayList<>(Arrays.asList("stem", "scien", "engineer", "tech", "math", "biology", "chem", "physics")));
         jumboTags.put("entry fee", new ArrayList<>(Arrays.asList("entry fee")));
         jumboTags.put("free", new ArrayList<>(Arrays.asList("free")));
         jumboTags.put("id required", new ArrayList<>(Arrays.asList("id required")));
-        jumboTags.put("online", new ArrayList<>(Arrays.asList("online","zoom")));
-        jumboTags.put("in person", new ArrayList<>(Arrays.asList("in person")));
+        jumboTags.put("online", new ArrayList<>(Arrays.asList("online","zoom", "virtual")));
+        jumboTags.put("in person", new ArrayList<>(Arrays.asList("in person", "in-person")));
         jumboTags.put("activism", new ArrayList<>(Arrays.asList("activis", "protest", "rally", "petition")));
         jumboTags.put("LGBTQ+", new ArrayList<>(Arrays.asList("lgbt", "gay", "trans", "transgender", "queer", "Stonewall")));
         jumboTags.put("UFLI", new ArrayList<>(Arrays.asList("ufli", "first-gen", "low-income")));
@@ -49,6 +49,7 @@ public class Tags {
         jumboTags.put("dug", new ArrayList<>(Arrays.asList("dug")));
         jumboTags.put("club", new ArrayList<>(Arrays.asList("club")));
         jumboTags.put("application", new ArrayList<>(Arrays.asList("apply", "application", "form")));
+        jumboTags.put("rsvp required", new ArrayList<>(Arrays.asList("rsvp rquired", "register")));
         jumboTags.put("movie", new ArrayList<>(Arrays.asList("movie", "screen")));
 
 
