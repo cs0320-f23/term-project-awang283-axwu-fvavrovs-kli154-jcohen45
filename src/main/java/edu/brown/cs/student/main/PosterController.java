@@ -106,34 +106,34 @@ public class PosterController {
    * @param org name of the organization (string)
    * @return a list of all posters by the requested organization
    */
-  @GetMapping("/org")
-  public CompletableFuture<ResponseEntity<List<Poster>>> getPosterByOrg(
-      @RequestParam String org, @RequestParam(required = false) String date) {
-    CompletableFuture<List<Poster>> postersFuture = posterService.searchByOrganization(org);
-    if (date.equals("createdAt")) {
-      return postersFuture
-          .thenApply(
-              posters ->
-                  posters.stream()
-                      .sorted(Comparator.comparing(Poster::getCreatedAt))
-                      .collect(Collectors.toList()))
-          .thenApply(ResponseEntity::ok)
-          .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
-    }
-    if (date.equals("startDate")) {
-      return postersFuture
-          .thenApply(
-              posters ->
-                  posters.stream()
-                      .sorted(Comparator.comparing(Poster::getStartDate))
-                      .collect(Collectors.toList()))
-          .thenApply(ResponseEntity::ok)
-          .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
-    }
-    return postersFuture
-        .thenApply(ResponseEntity::ok)
-        .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
-  }
+//  @GetMapping("/org")
+//  public CompletableFuture<ResponseEntity<List<Poster>>> getPosterByOrg(
+//      @RequestParam String org, @RequestParam(required = false) String date) {
+//    CompletableFuture<List<Poster>> postersFuture = posterService.searchByOrganization(org);
+//    if (date.equals("createdAt")) {
+//      return postersFuture
+//          .thenApply(
+//              posters ->
+//                  posters.stream()
+//                      .sorted(Comparator.comparing(Poster::getCreatedAt))
+//                      .collect(Collectors.toList()))
+//          .thenApply(ResponseEntity::ok)
+//          .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+////    }
+//    if (date.equals("startDate")) {
+//      return postersFuture
+//          .thenApply(
+//              posters ->
+//                  posters.stream()
+//                      .sorted(Comparator.comparing(Poster::getStartDate))
+//                      .collect(Collectors.toList()))
+//          .thenApply(ResponseEntity::ok)
+//          .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+//    }
+//    return postersFuture
+//        .thenApply(ResponseEntity::ok)
+//        .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+//  }
 
   @GetMapping("/term")
   public CompletableFuture<ResponseEntity<List<Poster>>> getPosterByTerm(
@@ -193,7 +193,6 @@ public class PosterController {
   //TODO: have some error checking (on frontend) to display an error if the link is corrupted
     @PostMapping(value = "/create/fromlink")
     public CompletableFuture<ServiceResponse<Poster>> createFromLink(@RequestBody Content content) {
-      System.out.println(content);
         Poster poster = new Poster();
         poster.setContent(content.getContent());
         this.posterService.createPoster(poster);
