@@ -16,6 +16,6 @@ public class App {
     SpringApplication.run(App.class, args);
 
     OCRAsyncTask task = new OCRAsyncTask();
-    task.sendPost("K85630038588957", true, b, "eng");
+    task.sendPost("K85630038588957", true, a, "eng");
   }
 }

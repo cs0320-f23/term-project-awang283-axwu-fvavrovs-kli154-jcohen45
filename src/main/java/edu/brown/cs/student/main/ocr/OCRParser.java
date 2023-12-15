@@ -67,7 +67,8 @@ public class OCRParser {
         // also finds words of similar heights bc sometimes the parsing isn't exact but they're visually the same
         for (Line line : lines){
             double compHeight = line.getMaxHeight();
-            if (max - compHeight < 65){
+            double percentDiff = Math.abs((max - compHeight)/compHeight);
+            if (percentDiff < 0.4){
                 title += line.getLineText() + " ";
             }
         }
