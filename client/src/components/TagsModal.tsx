@@ -99,11 +99,8 @@ export default function TagsModal({
 
   return (
     <>
-      <div style={{ width: "50%", height: "100%" }}>
-        <div
-          className="tags-container"
-          style={{ overflowY: "scroll", width: "100%" }}
-        >
+      <div className="tags-container">
+        <div className="tags-div">
           {allTags.map((tag, index) => {
             return (
               <div

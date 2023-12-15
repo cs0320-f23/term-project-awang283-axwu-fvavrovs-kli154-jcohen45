@@ -196,7 +196,7 @@ public class PosterController {
         Poster poster = new Poster();
         poster.setContent(content.getContent());
         this.posterService.createPoster(poster);
-        return CompletableFuture.completedFuture(new ServiceResponse<Poster>(poster, "uploaded to database"));
+        return CompletableFuture.completedFuture(new ServiceResponse<Poster>(poster, "created new poster using existing link"));
     }
 
     /**

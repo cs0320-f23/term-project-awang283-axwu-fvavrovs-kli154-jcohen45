@@ -9,6 +9,7 @@ import {
 } from "@chakra-ui/icons";
 import { useCallback, useState } from "react";
 import ViewPosterModal from "./ViewPosterModal";
+import axios from "axios";
 
 const scrollToTop = () => {
   window.scrollTo({
@@ -55,7 +56,6 @@ export const ImageCard = (
         </div>
         {modalOpen === "viewImage" && (
           <ViewPosterModal
-            setModalState={setModalOpen}
             onClose={() => setModalOpen("")}
             title={title}
             path={path}
@@ -75,6 +75,38 @@ export default function Happenings() {
   const [searchInput, setSearchInput] = useState<string>("");
   const [searchTags, setSearchTags] = useState<string>("");
   const [sortPosters, setSortPosters] = useState<string>("");
+
+  const createImgurLink = async (file: File | string) => {
+    console.log(file + " file");
+    console.log(typeof file + " type");
+
+    const config = {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    };
+
+    try {
+      const url = "http://localhost:8080/posters/create/imgur";
+      const formData = new FormData();
+      formData.append("content", file);
+      console.log("Before axios request");
+      const res = await axios.post(url, formData, config);
+      console.log("After axios request");
+      return Promise.resolve(res.data.data);
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        console.log(error.response.data.message);
+        console.log(error);
+        return Promise.resolve(
+          `Error in fetch: ${error.response.data.message}`
+        );
+      } else {
+        console.log("Network error or other issue:", error.message);
+        return Promise.resolve("Error in fetch: Network error or other issue");
+      }
+    }
+  };
 
   return (
     <>
