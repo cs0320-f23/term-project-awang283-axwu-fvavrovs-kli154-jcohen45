@@ -3,16 +3,15 @@ package edu.brown.cs.student.main;
 import edu.brown.cs.student.main.imgur.ImgurService;
 import edu.brown.cs.student.main.responses.ServiceResponse;
 import edu.brown.cs.student.main.types.Poster;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /** This class defines the mappings and endpoints for poster management */
 @RestController
@@ -37,10 +36,10 @@ public class PosterController {
     return posterService
         .getPosters()
         .thenApply(
-                posters ->
-                        posters.stream()
-                                .sorted(Comparator.comparing(Poster::getStartDate))
-                                .collect(Collectors.toList()))
+            posters ->
+                posters.stream()
+                    .sorted(Comparator.comparing(Poster::getStartDate))
+                    .collect(Collectors.toList()))
         .thenApply(ResponseEntity::ok)
         .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
   }
@@ -129,7 +128,6 @@ public class PosterController {
                     .collect(Collectors.toList()))
         .thenApply(ResponseEntity::ok)
         .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
-
   }
 
   /**
@@ -150,26 +148,26 @@ public class PosterController {
 
   @GetMapping("/alltags")
   public List<String> getAllTags() {
-     Tags tags = new Tags();
+    Tags tags = new Tags();
     return tags.getTags();
   }
 
-  //TODO: have some error checking (on frontend) to display an error if the link is corrupted
-    @PostMapping(value = "/create/fromlink")
-    public CompletableFuture<ServiceResponse<Poster>> createFromLink(@RequestBody Content content) {
-        Poster poster = new Poster();
-        poster.setContent(content.getContent());
-        this.posterService.createPoster(poster);
-        return CompletableFuture.completedFuture(new ServiceResponse<Poster>(poster, "created new poster using existing link"));
-    }
+  // TODO: have some error checking (on frontend) to display an error if the link is corrupted
+  @PostMapping(value = "/create/fromlink")
+  public CompletableFuture<ServiceResponse<Poster>> createFromLink(@RequestBody Content content) {
+    Poster poster = new Poster();
+    poster.setContent(content.getContent());
+    this.posterService.createPoster(poster);
+    return CompletableFuture.completedFuture(
+        new ServiceResponse<Poster>(poster, "created new poster using existing link"));
+  }
 
-    /**
-     * sends a POST request to the mapping /poster/create
-     *
-     * @return a JSONified ServiceResponse instance that contains a "message" (string) field and a
-     *     "data" (JSON) field that contains the data ofi the poster that was just created
-     */
-
+  /**
+   * sends a POST request to the mapping /poster/create
+   *
+   * @return a JSONified ServiceResponse instance that contains a "message" (string) field and a
+   *     "data" (JSON) field that contains the data ofi the poster that was just created
+   */
   @PostMapping(value = "/create/imgur")
   public CompletableFuture<ServiceResponse<Poster>> createImgurLink(
       @RequestBody MultipartFile content) {
@@ -187,7 +185,6 @@ public class PosterController {
    * @return a JSONified ServiceResponse instance that contains a "message" (string) field and a
    *     "data" (JSON) field that contains the data of the poster that was just created
    */
-
 
   /** JUST FOR MONGO. DO NOT USE IN CODE. */
   @DeleteMapping("/delete")

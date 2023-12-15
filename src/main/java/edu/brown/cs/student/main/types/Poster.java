@@ -2,12 +2,11 @@ package edu.brown.cs.student.main.types;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.UUID;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * The Poster model defines the necessary set of properties for a poster object and contains getters
@@ -162,7 +161,6 @@ public class Poster {
   public void setIsRecurring(Recurrence recurring) {
     isRecurring = recurring;
   }
-
 
   public LocalDateTime getCreatedAt() {
 

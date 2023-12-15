@@ -3,16 +3,15 @@ package edu.brown.cs.student.main;
 import edu.brown.cs.student.main.responses.ServiceResponse;
 import edu.brown.cs.student.main.types.Poster;
 import edu.brown.cs.student.main.types.PosterRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
 
 /**
  * This class handles the logic of creating a poster. This involves validating the input data and
@@ -86,8 +85,7 @@ public class PosterService {
                   if (updatedPoster.getLocation() != null)
                     oldPoster.setLocation(updatedPoster.getLocation());
                   if (updatedPoster.getLink() != null) oldPoster.setLink(updatedPoster.getLink());
-                  if (updatedPoster.getStartDate() != null)
-                    oldPoster.setTags(updatedPoster.getTags());
+                  if (updatedPoster.getTags() != null) oldPoster.setTags(updatedPoster.getTags());
                   posterRepository.save(oldPoster);
                   return new ServiceResponse<>(oldPoster, "Poster updated");
                 } else {
@@ -185,16 +183,16 @@ public class PosterService {
               }
             });
   }
-//
-//  @Async
-//  public CompletableFuture<List<Poster>> searchByOrganization(String org) {
-//    return this.getPosters()
-//        .thenApply(
-//            posters ->
-//                posters.stream()
-//                    .filter(poster -> poster.getOrganization().equals(org))
-//                    .collect(Collectors.toList()));
-//  }
+  //
+  //  @Async
+  //  public CompletableFuture<List<Poster>> searchByOrganization(String org) {
+  //    return this.getPosters()
+  //        .thenApply(
+  //            posters ->
+  //                posters.stream()
+  //                    .filter(poster -> poster.getOrganization().equals(org))
+  //                    .collect(Collectors.toList()));
+  //  }
 
   @Async
   public CompletableFuture<List<Poster>> searchByTerm(String term, String[] tags) {
