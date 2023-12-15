@@ -3,13 +3,17 @@ package edu.brown.cs.student.main;
 import edu.brown.cs.student.main.imgur.ImgurService;
 import edu.brown.cs.student.main.responses.ServiceResponse;
 import edu.brown.cs.student.main.types.Poster;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import edu.brown.cs.student.main.user.UserService;
+import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /** This class defines the mappings and endpoints for poster management */
 @RestController
@@ -59,94 +63,173 @@ public class PosterController {
 
   /**
    * sends a GET request to filter by tag(s)
+   *
    * @param tag an array of tags (strings)
    * @return a list of all posters matching the requested tags
    */
-  @GetMapping("/tag/{tag}")
-  public CompletableFuture<ResponseEntity<List<Poster>>> getPosterByTag(@PathVariable String[] tag) {
+  @GetMapping("/tag")
+  public CompletableFuture<ResponseEntity<List<Poster>>> getPosterByTag(
+      @RequestParam String[] tag, @RequestParam(required = false) String date) {
+    CompletableFuture<List<Poster>> postersFuture;
     if (tag.length == 1) {
       // If there is only one tag, use the searchByTag method
-      return posterService
-              .searchByTag(tag[0])
-              .thenApply(ResponseEntity::ok)
-              .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+      postersFuture = posterService.searchByTag(tag[0]);
     } else {
       // If there are multiple tags, use the searchByMultipleTags method
-      return posterService
-              .searchByMultipleTags(tag)
-              .thenApply(ResponseEntity::ok)
-              .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+      postersFuture = posterService.searchByMultipleTags(tag);
     }
+
+    if (date.equals("createdAt")) {
+      return postersFuture
+          .thenApply(
+              posters ->
+                  posters.stream()
+                      .sorted(Comparator.comparing(Poster::getCreatedAt)) // Sort by createdAt date
+                      .collect(Collectors.toList()))
+          .thenApply(ResponseEntity::ok)
+          .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+    }
+    if (date.equals("startDate")) {
+      return postersFuture
+          .thenApply(
+              posters ->
+                  posters.stream()
+                      .sorted(Comparator.comparing(Poster::getStartDate)) // Sort by startDate
+                      .collect(Collectors.toList()))
+          .thenApply(ResponseEntity::ok)
+          .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+    }
+    return postersFuture
+        .thenApply(ResponseEntity::ok)
+        .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
   }
 
   /**
    * sends a GET request for filtering by organization name
+   *
    * @param org name of the organization (string)
    * @return a list of all posters by the requested organization
    */
-  @GetMapping("/org/{org}")
-  public CompletableFuture<ResponseEntity<List<Poster>>> getPosterByOrg(@PathVariable String org){
-    return posterService
-            .searchByOrganization(org)
-            .thenApply(ResponseEntity::ok)
-            .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+  @GetMapping("/org")
+  public CompletableFuture<ResponseEntity<List<Poster>>> getPosterByOrg(
+      @RequestParam String org, @RequestParam(required = false) String date) {
+    CompletableFuture<List<Poster>> postersFuture = posterService.searchByOrganization(org);
+    if (date.equals("createdAt")) {
+      return postersFuture
+          .thenApply(
+              posters ->
+                  posters.stream()
+                      .sorted(Comparator.comparing(Poster::getCreatedAt))
+                      .collect(Collectors.toList()))
+          .thenApply(ResponseEntity::ok)
+          .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+    }
+    if (date.equals("startDate")) {
+      return postersFuture
+          .thenApply(
+              posters ->
+                  posters.stream()
+                      .sorted(Comparator.comparing(Poster::getStartDate))
+                      .collect(Collectors.toList()))
+          .thenApply(ResponseEntity::ok)
+          .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+    }
+    return postersFuture
+        .thenApply(ResponseEntity::ok)
+        .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
   }
 
-  @GetMapping("/term/{term}")
-  public CompletableFuture<ResponseEntity<List<Poster>>> getPosterByTerm(@PathVariable String term){
+  @GetMapping("/term")
+  public CompletableFuture<ResponseEntity<List<Poster>>> getPosterByTerm(
+      @RequestParam String term,
+      @RequestParam(required = false) String[] tags,
+      @RequestParam(required = false) String date) {
+    if (date == "createdAt") {
+      return posterService
+          .searchByTerm(term, tags)
+          .thenApply(
+              posters ->
+                  posters.stream()
+                      .sorted(Comparator.comparing(Poster::getCreatedAt))
+                      .collect(Collectors.toList()))
+          .thenApply(ResponseEntity::ok)
+          .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+    }
+    if (date == "startDate") {
+      return posterService
+          .searchByTerm(term, tags)
+          .thenApply(
+              posters ->
+                  posters.stream()
+                      .sorted(Comparator.comparing(Poster::getStartDate))
+                      .collect(Collectors.toList()))
+          .thenApply(ResponseEntity::ok)
+          .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+    }
     return posterService
-            .searchByTerm(term)
-            .thenApply(ResponseEntity::ok)
-            .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+        .searchByTerm(term, tags)
+        .thenApply(ResponseEntity::ok)
+        .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+  }
+
+  /**
+   * Gets everything in a requested field, e.g. all tags, all organizations, all titles. Accepted
+   * request parameters are "title," "organization," and "tags"
+   *
+   * @param field
+   * @return
+   */
+  @GetMapping("/all")
+  public CompletableFuture<ResponseEntity<HashSet<Object>>> getPosterByTerm(
+      @RequestParam String field) {
+    return posterService
+        .getAllFields(field)
+        .thenApply(ResponseEntity::ok)
+        .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+  }
+
+  //TODO: have some error checking (on frontend) to display an error if the link is corrupted
+    @PostMapping(value = "/create/fromlink")
+    public CompletableFuture<ServiceResponse<Poster>> createFromLink(@RequestBody String content,
+                                                                     @RequestParam String userId) {
+        Poster poster = new Poster();
+        poster.setContent(content);
+        this.posterService.createPoster(poster, userId);
+        return CompletableFuture.completedFuture(new ServiceResponse<Poster>(poster, "uploaded to imgur"));
+    }
+
+    /**
+     * sends a POST request to the mapping /poster/create
+     *
+     * @return a JSONified ServiceResponse instance that contains a "message" (string) field and a
+     *     "data" (JSON) field that contains the data of the poster that was just created
+     */
+
+  @PostMapping(value = "/create/imgur")
+  public CompletableFuture<ServiceResponse<Poster>> createImgurLink(
+      @RequestBody MultipartFile content,
+      @RequestParam String userId) {
+    Poster poster = new Poster();
+    ServiceResponse<String> imgurResponse = imgurService.uploadToImgur(content);
+    poster.setContent(imgurResponse.getData());
+    this.posterService.createPoster(poster, userId);
+    return CompletableFuture.completedFuture(
+        new ServiceResponse<Poster>(poster, "uploaded to imgur"));
   }
 
   /**
    * sends a POST request to the mapping /poster/create
    *
-   * @param poster a poster (see fields expected in Poster class) expected in JSON format in the
-   *     request body
    * @return a JSONified ServiceResponse instance that contains a "message" (string) field and a
    *     "data" (JSON) field that contains the data of the poster that was just created
    */
-//  @PostMapping(value = "/create")
-//  public CompletableFuture<ResponseEntity<ServiceResponse<Poster>>> createPoster(
-//      @RequestBody Poster poster) {
-//    ServiceResponse imgurResponse = imgurService.uploadToImgur(poster.getContent());
-//    poster.setContent(imgurResponse.getData().toString());
-//    return this.posterService
-//        .createPoster(poster)
-//        .thenApply(response -> ResponseEntity.ok(response)) // good response
-//        .exceptionally(
-//            ex ->
-//                ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-//                    .body(new ServiceResponse<>(poster, ex.getMessage())));
-//  }
-  @PostMapping(value = "/create")
-  public CompletableFuture<ResponseEntity<ServiceResponse<Poster>>> createPoster(
-          @RequestBody Poster poster,
-          @RequestParam String userId) {
-      // Assuming imgurService.uploadToImgur returns a ServiceResponse
-      ServiceResponse imgurResponse = imgurService.uploadToImgur(poster.getContent());
-      poster.setContent(imgurResponse.getData().toString());
 
-      // Associate the poster with the user
-      return userService.associatePosterWithUser(userId, poster)
-              .thenCompose(userServiceResponse -> {
-                  if (userServiceResponse.getData() != null) {
-                      // If the user was found and the poster was associated, proceed with creating the poster
-                      return posterService.createPoster(poster)
-                              .thenApply(posterServiceResponse -> ResponseEntity.ok(posterServiceResponse));
-                  } else {
-                      // If the user was not found, return an error response
-                      return CompletableFuture.completedFuture(
-                              ResponseEntity.status(HttpStatus.NOT_FOUND)
-                                      .body(new ServiceResponse<>(poster, "User not found")));
-                  }
-              })
-              .exceptionally(ex ->
-                      ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                              .body(new ServiceResponse<>(poster, ex.getMessage())));
+  /** JUST FOR MONGO. DO NOT USE IN CODE. */
+  @DeleteMapping("/delete")
+  public void deleteAll() {
+    posterService.deleteAll();
   }
+
   /**
    * sends a DELETE request to delete a poster
    *
@@ -206,4 +289,43 @@ public class PosterController {
         .thenApply(response -> ResponseEntity.ok(response))
         .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
   }
+
+  //
+  //    @PutMapping("/update/{id}")
+  //    public CompletableFuture<ServiceResponse<Poster>> updatePoster(String id, Poster
+  // updatedPoster) {
+  //        return getPosterById(id)
+  //                .thenCompose(existingPosterResponse -> {
+  //                    Poster existingPoster = existingPosterResponse.getData();
+  //                    if (existingPoster != null) {
+  //                        // Exclude ID and content from the update
+  //                        existingPoster.setTitle(updatedPoster.getTitle());
+  //                        existingPoster.setDescription(updatedPoster.getDescription());
+  //                        existingPoster.setTags(updatedPoster.getTags());
+  //                        existingPoster.setIsRecurring(updatedPoster.getIsRecurring());
+  //
+  //                        return CompletableFuture.completedFuture(existingPoster);
+  //                    } else {
+  //                        return CompletableFuture.completedFuture(null);
+  //                    }
+  //                })
+  //                .thenCompose(updated -> {
+  //                    if (updated != null) {
+  //                        return CompletableFuture.completedFuture(
+  //                                posterRepository.save(updated)
+  //                        );
+  //                    } else {
+  //                        return CompletableFuture.completedFuture(null);
+  //                    }
+  //                })
+  //                .thenApply(updated -> {
+  //                    if (updated != null) {
+  //                        return new ServiceResponse<>(updated, "Poster updated");
+  //                    }
+  //                    return new ServiceResponse<>("Failed to update poster");
+  //
+  //                });
+  //
+  //    }
+
 }

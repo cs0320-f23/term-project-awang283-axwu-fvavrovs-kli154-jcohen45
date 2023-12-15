@@ -53,16 +53,23 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-security</artifactId>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-oauth2-client -->
     <dependency>
+<<<<<<< HEAD
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-databind</artifactId>
+=======
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-oauth2-client</artifactId>
+      <version>6.2.0</version>
+>>>>>>> main
     </dependency>
 
-<!--    <dependency>-->
-<!--      <groupId>org.springframework.security.oauth.boot</groupId>-->
-<!--      <artifactId>spring-security-oauth2-autoconfigure</artifactId>-->
-<!--      <version>2.0.0.RC2</version>-->
-<!--    </dependency>-->
+    <!--    <dependency>-->
+    <!--      <groupId>org.springframework.security.oauth.boot</groupId>-->
+    <!--      <artifactId>spring-security-oauth2-autoconfigure</artifactId>-->
+    <!--      <version>2.0.0.RC2</version>-->
+    <!--    </dependency>-->
 
     <!-- SLF4J API -->
     <!--    <dependency>-->
@@ -133,6 +140,12 @@
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>32.1.2-jre</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-security</artifactId>
+      <version>RELEASE</version>
       <scope>compile</scope>
     </dependency>
 
@@ -375,11 +388,11 @@
           Maven JXR plugin used with PMD plugin for referencing code errors.
           https://maven.apache.org/jxr/maven-jxr-plugin/.
       -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jxr-plugin</artifactId>
-        <version>3.0.0</version>
-      </plugin>
+<!--      <plugin>-->
+<!--        <groupId>org.apache.maven.plugins</groupId>-->
+<!--        <artifactId>maven-jxr-plugin</artifactId>-->
+<!--        <version>3.0.0</version>-->
+<!--      </plugin>-->
 
       <!--
           Javadoc plugin for generating javadoc site.
