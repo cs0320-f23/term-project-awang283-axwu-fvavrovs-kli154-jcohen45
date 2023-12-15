@@ -3,7 +3,13 @@ package edu.brown.cs.student.main.types;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDateTime;
+<<<<<<< HEAD
 import java.util.HashSet;
+=======
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+>>>>>>> 6d344fbf209c37f6bda3ca7948a3939e5b58185d
 import java.util.UUID;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -27,7 +33,7 @@ public class Poster {
   private LocalDateTime createdAt; // date poster is created in databsse
   private LocalDateTime startDate; // start of event
   private LocalDateTime endDate; // end of event
-  private Recurrence isRecurring;
+//  private Recurrence isRecurring;
   // private User user;
 
   // @JsonPropertyOrder({"id", "title", "description"})
@@ -42,6 +48,25 @@ public class Poster {
 
     this.tags = new HashSet<>();
     this.createdAt = LocalDateTime.now();
+    this.startDate = null;
+    this.endDate = null;
+    //    this.isRecurring = Recurrence.NEVER;
+    //    this.location = location;
+    //    this.link = link;
+  }
+
+  public Poster(String title, String description, HashSet<String> tags) {
+    this.id = UUID.randomUUID().toString(); // so that IDs are randomly generated and unique
+    this.title = title;
+    this.content = content;
+    this.description = description;
+    this.tags = tags;
+    // this.organization = org;
+
+    //    this.tags = new HashSet<>();
+    this.createdAt = LocalDateTime.now();
+    this.startDate = null;
+    this.endDate = null;
     //    this.location = location;
     //    this.link = link;
   }
@@ -62,6 +87,8 @@ public class Poster {
     this.id = UUID.randomUUID().toString();
     this.tags = new HashSet<>();
     this.createdAt = LocalDateTime.now();
+    this.startDate = null;
+    this.endDate = null;
   }
 
   @JsonProperty("id")
@@ -154,6 +181,7 @@ public class Poster {
     this.tags.remove(tag);
   }
 
+<<<<<<< HEAD
   public Recurrence getIsRecurring() {
     return isRecurring;
   }
@@ -161,6 +189,15 @@ public class Poster {
   public void setIsRecurring(Recurrence recurring) {
     isRecurring = recurring;
   }
+=======
+//  public Recurrence getIsRecurring() {
+//    return isRecurring;
+//  }
+//
+//  public void setIsRecurring(Recurrence recurring) {
+//    isRecurring = recurring;
+//  }
+>>>>>>> 6d344fbf209c37f6bda3ca7948a3939e5b58185d
 
   public LocalDateTime getCreatedAt() {
 
