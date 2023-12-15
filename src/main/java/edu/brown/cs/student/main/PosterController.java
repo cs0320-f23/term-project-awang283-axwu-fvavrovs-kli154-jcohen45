@@ -28,7 +28,7 @@ public class PosterController {
   }
 
   /**
-   * Sends a GET request
+   * Sends a GET request for all posters (sorted by start date)
    *
    * @return all posters (JSONified)
    */
@@ -36,6 +36,11 @@ public class PosterController {
   public CompletableFuture<ResponseEntity<List<Poster>>> getAllPosters() {
     return posterService
         .getPosters()
+        .thenApply(
+                posters ->
+                        posters.stream()
+                                .sorted(Comparator.comparing(Poster::getStartDate))
+                                .collect(Collectors.toList()))
         .thenApply(ResponseEntity::ok)
         .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
   }
@@ -85,17 +90,14 @@ public class PosterController {
           .thenApply(ResponseEntity::ok)
           .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
     }
-    if (date.equals("startDate")) {
-      return postersFuture
-          .thenApply(
-              posters ->
-                  posters.stream()
-                      .sorted(Comparator.comparing(Poster::getStartDate)) // Sort by startDate
-                      .collect(Collectors.toList()))
-          .thenApply(ResponseEntity::ok)
-          .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
-    }
+    // sort by start date by default
+
     return postersFuture
+        .thenApply(
+            posters ->
+                posters.stream()
+                    .sorted(Comparator.comparing(Poster::getStartDate)) // Sort by startDate
+                    .collect(Collectors.toList()))
         .thenApply(ResponseEntity::ok)
         .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
   }
@@ -120,19 +122,16 @@ public class PosterController {
           .thenApply(ResponseEntity::ok)
           .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
     }
-    if (date.equals("startDate")) {
-      return postersFuture
-          .thenApply(
-              posters ->
-                  posters.stream()
-                      .sorted(Comparator.comparing(Poster::getStartDate))
-                      .collect(Collectors.toList()))
-          .thenApply(ResponseEntity::ok)
-          .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
-    }
+    // sort by start date by default
     return postersFuture
+        .thenApply(
+            posters ->
+                posters.stream()
+                    .sorted(Comparator.comparing(Poster::getStartDate))
+                    .collect(Collectors.toList()))
         .thenApply(ResponseEntity::ok)
         .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+
   }
 
   @GetMapping("/term")
@@ -151,21 +150,18 @@ public class PosterController {
           .thenApply(ResponseEntity::ok)
           .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
     }
-    if (date == "startDate") {
-      return posterService
-          .searchByTerm(term, tags)
-          .thenApply(
-              posters ->
-                  posters.stream()
-                      .sorted(Comparator.comparing(Poster::getStartDate))
-                      .collect(Collectors.toList()))
-          .thenApply(ResponseEntity::ok)
-          .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
-    }
+
+    // sort by start date by default
     return posterService
         .searchByTerm(term, tags)
+        .thenApply(
+            posters ->
+                posters.stream()
+                    .sorted(Comparator.comparing(Poster::getStartDate))
+                    .collect(Collectors.toList()))
         .thenApply(ResponseEntity::ok)
         .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+
   }
 
   /**
