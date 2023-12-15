@@ -74,11 +74,11 @@ class ParsedResult {
 
     // Add getters and setters
 
-    public edu.brown.cs.student.main.ocr.TextOverlay getTextOverlay() {
+    public TextOverlay getTextOverlay() {
         return this.TextOverlay;
     }
 
-    public void setTextOverlay(edu.brown.cs.student.main.ocr.TextOverlay textOverlay) {
+    public void setTextOverlay(TextOverlay textOverlay) {
         this.TextOverlay = textOverlay;
     }
 

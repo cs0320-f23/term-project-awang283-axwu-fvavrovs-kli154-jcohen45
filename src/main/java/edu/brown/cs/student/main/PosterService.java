@@ -229,7 +229,7 @@ public class PosterService {
 
   private boolean searchTermHelper(Poster poster, String term) {
     String haystack = poster.returnHaystack();
-    BMSearch searcher = new BMSearch(term, haystack);
-    return searcher.getSearchResult();
+    BMSearch searcher = new BMSearch();
+    return searcher.getSearchResult(term, haystack);
   }
 }

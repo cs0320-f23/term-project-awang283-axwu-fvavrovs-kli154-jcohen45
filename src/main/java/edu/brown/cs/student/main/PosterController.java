@@ -176,7 +176,7 @@ public class PosterController {
    * @return
    */
   @GetMapping("/all")
-  public CompletableFuture<ResponseEntity<HashSet<Object>>> getPosterByTerm(
+  public CompletableFuture<ResponseEntity<HashSet<Object>>> getAllFieldVars(
       @RequestParam String field) {
     return posterService
         .getAllFields(field)
