@@ -1,13 +1,12 @@
 // import React from "react";
 import { Box, IconButton, Select } from "@chakra-ui/react";
 import "../styles/Happenings.css";
-import { images } from "./Home";
 import {
   Search2Icon,
   TriangleDownIcon,
   TriangleUpIcon,
 } from "@chakra-ui/icons";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import ViewPosterModal from "./ViewPosterModal";
 import axios from "axios";
 
@@ -18,25 +17,97 @@ const scrollToTop = () => {
   });
 };
 
-export const ImageCard = (
-  title: string,
-  path: string,
-  date: string,
-  time: string | null,
-  location: string | null,
-  link: string | null,
-  description: string | null
-) => {
-  const [weekday, month, day] = date.split(" ");
+export interface IPoster {
+  content: string;
+  title: string;
+  location?: string;
+  startDate: number[];
+  endDate?: number[];
+  isRecurring: boolean;
+  link?: string;
+  description?: string;
+  tags?: string[];
+  id: string;
+  createdAt: number[];
+  poster: boolean;
+}
+
+interface ImageCardProps {
+  title: string;
+  content: string;
+  startDate: number[];
+  endDate?: number[];
+  location?: string;
+  link?: string;
+  description?: string;
+  tags?: string[];
+}
+
+export const ImageCard: React.FC<ImageCardProps> = ({
+  title,
+  content,
+  startDate,
+  endDate,
+  location,
+  link,
+  description,
+  tags,
+}) => {
+  const listMonths = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  const listWeekdays = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
   const [modalOpen, setModalOpen] = useState<string>("");
   const handleViewPoster = useCallback(() => {
     setModalOpen("viewImage");
   }, []);
+  const monthName =
+    listMonths[new Date(JSON.stringify(startDate[1])).getMonth()];
+  const month = monthName.substring(0, 3);
+  const fullDate = `${monthName} ${startDate[2]}, ${startDate[0]}`;
+  const weekday = listWeekdays[new Date(fullDate).getDay()];
+  function time(date) {
+    let minutes = date[4];
+    if (date[4] === 0) {
+      minutes = "00";
+    }
+    if (date[3] > 12) {
+      return date[3] - 12 + ":" + minutes + " PM";
+    } else {
+      return date[3] + ":" + minutes + " AM";
+    }
+  }
+  const startTime = time(startDate);
+  let endTime = null;
+  if (endDate) {
+    endTime = time(endDate);
+  }
+  const day = startDate[2];
+
   return (
     <>
       <div className="image-card" onClick={handleViewPoster}>
         <div className="card-backing">
-          <img src={path} alt={title}></img>
+          <img src={content} alt={title} />
         </div>
         <div className="image-overlay">
           <div className="top-info">
@@ -46,7 +117,7 @@ export const ImageCard = (
             </div>
             <div className="weekday-time">
               <p id="weekday">{weekday}</p>
-              <p id="time">{time}</p>
+              <p id="time">{startTime}</p>
             </div>
           </div>
           <div className="title-location">
@@ -58,9 +129,9 @@ export const ImageCard = (
           <ViewPosterModal
             onClose={() => setModalOpen("")}
             title={title}
-            path={path}
-            date={date}
-            time={time!}
+            path={content}
+            date={fullDate}
+            time={startTime}
             location={location!}
             link={link!}
             description={description!}
@@ -71,42 +142,37 @@ export const ImageCard = (
   );
 };
 
+export async function getPosters() {
+  try {
+    const url = "http://localhost:8080/posters/";
+    const res = await axios.get<IPoster[]>(url);
+    const allValidPosters = res.data.filter((poster) => poster.title);
+    return Promise.resolve(allValidPosters);
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      console.log(error.response.data.message);
+      console.log(error);
+      return Promise.resolve(`Error in fetch: ${error.response.data.message}`);
+    } else {
+      console.log("Network error or other issue:", error.message);
+      return Promise.resolve("Error in fetch: Network error or other issue");
+    }
+  }
+}
+
 export default function Happenings() {
   const [searchInput, setSearchInput] = useState<string>("");
   const [searchTags, setSearchTags] = useState<string>("");
   const [sortPosters, setSortPosters] = useState<string>("");
+  const [allPosters, setAllPosters] = useState<IPoster[]>([]);
 
-  const createImgurLink = async (file: File | string) => {
-    console.log(file + " file");
-    console.log(typeof file + " type");
+  useEffect(() => {
+    getPosters().then((data) => setAllPosters(data));
+  }, []);
 
-    const config = {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    };
-
-    try {
-      const url = "http://localhost:8080/posters/create/imgur";
-      const formData = new FormData();
-      formData.append("content", file);
-      console.log("Before axios request");
-      const res = await axios.post(url, formData, config);
-      console.log("After axios request");
-      return Promise.resolve(res.data.data);
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.response) {
-        console.log(error.response.data.message);
-        console.log(error);
-        return Promise.resolve(
-          `Error in fetch: ${error.response.data.message}`
-        );
-      } else {
-        console.log("Network error or other issue:", error.message);
-        return Promise.resolve("Error in fetch: Network error or other issue");
-      }
-    }
-  };
+  // useEffect(() => {
+  //   console.log(allPosters);
+  // }, [allPosters]);
 
   return (
     <>
@@ -166,17 +232,18 @@ export default function Happenings() {
           padding={4}
           sx={{ columnCount: [1, 2, 3], columnGap: "3vw" }}
         >
-          {images.map((item, index) => (
+          {allPosters.map((item, index) => (
             <Box key={index}>
-              {ImageCard(
-                item.title,
-                item.path,
-                item.date,
-                item.time,
-                item.location,
-                item.link,
-                item.description
-              )}
+              <ImageCard
+                title={item.title}
+                content={item.content}
+                startDate={item.startDate}
+                endDate={item.endDate}
+                location={item.location}
+                link={item.link}
+                description={item.description}
+                tags={item.tags}
+              />
             </Box>
           ))}
         </Box>

@@ -57,6 +57,7 @@ export default function TagsModal({
 
   //on hit create button
   const createPoster = async () => {
+    onClose();
     //add list to poster obj w handlechange
     // console.log(JSON.stringify(poster) + " before tags");
     const newPoster = handleChange(
@@ -84,7 +85,6 @@ export default function TagsModal({
       // formData.append("tags", JSON.stringify(Array.from(tags)));
       console.log(JSON.stringify(Array.from(formData)) + " formdata");
       const res = await axios.put(url, formData, config);
-      onClose();
       return Promise.resolve(res.data.data);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {

@@ -82,6 +82,8 @@ public class PosterService {
                     oldPoster.setTitle((updatedPoster.getTitle()));
                   if (updatedPoster.getDescription() != null)
                     oldPoster.setDescription(updatedPoster.getDescription());
+                  if (updatedPoster.getLocation() != null)
+                    oldPoster.setLocation(updatedPoster.getLocation());
                   if (updatedPoster.getLink() != null) oldPoster.setLink(updatedPoster.getLink());
                   if (updatedPoster.getStartDate() != null)
                     oldPoster.setTags(updatedPoster.getTags());
