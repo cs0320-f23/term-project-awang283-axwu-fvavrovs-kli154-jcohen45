@@ -38,7 +38,7 @@ public class PosterController {
         .thenApply(
             posters ->
                 posters.stream()
-                    .sorted(Comparator.comparing(Poster::getStartDate))
+                    .sorted(Comparator.nullsLast(Comparator.comparing(Poster::getStartDate)))
                     .collect(Collectors.toList()))
         .thenApply(ResponseEntity::ok)
         .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());

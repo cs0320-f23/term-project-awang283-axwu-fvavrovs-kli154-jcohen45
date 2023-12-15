@@ -44,6 +44,8 @@ public class Poster {
 
     this.tags = new HashSet<>();
     this.createdAt = LocalDateTime.now();
+    this.startDate = null;
+    this.endDate = null;
     //    this.isRecurring = Recurrence.NEVER;
     //    this.location = location;
     //    this.link = link;
@@ -59,6 +61,8 @@ public class Poster {
 
     //    this.tags = new HashSet<>();
     this.createdAt = LocalDateTime.now();
+    this.startDate = null;
+    this.endDate = null;
     //    this.location = location;
     //    this.link = link;
   }
@@ -79,6 +83,8 @@ public class Poster {
     this.id = UUID.randomUUID().toString();
     this.tags = new HashSet<>();
     this.createdAt = LocalDateTime.now();
+    this.startDate = null;
+    this.endDate = null;
   }
 
   @JsonProperty("id")
