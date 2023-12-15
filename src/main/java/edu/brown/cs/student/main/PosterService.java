@@ -3,15 +3,16 @@ package edu.brown.cs.student.main;
 import edu.brown.cs.student.main.responses.ServiceResponse;
 import edu.brown.cs.student.main.types.Poster;
 import edu.brown.cs.student.main.types.PosterRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
 
 /**
  * This class handles the logic of creating a poster. This involves validating the input data and
@@ -163,10 +164,6 @@ public class PosterService {
                   return posters.stream()
                       .flatMap(poster -> poster.getTags().stream())
                       .collect(Collectors.toCollection(HashSet::new));
-                case "organization":
-                  return posters.stream()
-                      .map(Poster::getOrganization)
-                      .collect(Collectors.toCollection(HashSet::new));
                 case "title":
                   return posters.stream()
                       .map(Poster::getTitle)
@@ -188,16 +185,16 @@ public class PosterService {
               }
             });
   }
-
-  @Async
-  public CompletableFuture<List<Poster>> searchByOrganization(String org) {
-    return this.getPosters()
-        .thenApply(
-            posters ->
-                posters.stream()
-                    .filter(poster -> poster.getOrganization().equals(org))
-                    .collect(Collectors.toList()));
-  }
+//
+//  @Async
+//  public CompletableFuture<List<Poster>> searchByOrganization(String org) {
+//    return this.getPosters()
+//        .thenApply(
+//            posters ->
+//                posters.stream()
+//                    .filter(poster -> poster.getOrganization().equals(org))
+//                    .collect(Collectors.toList()));
+//  }
 
   @Async
   public CompletableFuture<List<Poster>> searchByTerm(String term, String[] tags) {
