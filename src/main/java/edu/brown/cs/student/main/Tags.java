@@ -10,7 +10,7 @@ public class Tags {
         jumboTags.put("subfree", new ArrayList<>(Arrays.asList("subfree", "sub-free", "sober")));
         jumboTags.put("dance", new ArrayList<>(Arrays.asList("danc", "ballroom")));
         jumboTags.put("performance", new ArrayList<>(Arrays.asList("performance", "concert", "show", "theat","taps", "musical")));
-        jumboTags.put("a capella", new ArrayList<>(Arrays.asList("a capella", "higher keys", "bear necessities", "derbies", "madrigal",
+        jumboTags.put("a capella", new ArrayList<>(Arrays.asList("a cappella", "higher keys", "bear necessities", "derbies", "madrigal",
                 "jabberwocks", "chattertocks", "ursa minors", "shades of brown", "harmonic motion", "beauty and the beats", "acapella")));
         jumboTags.put("live music", new ArrayList<>(Arrays.asList("live music", "jam", "a cap", "acapella", "concert", "song")));
         jumboTags.put("sports", new ArrayList<>(Arrays.asList("sport", "football", "soccer", "basketball", "volleyball", "baseball",
