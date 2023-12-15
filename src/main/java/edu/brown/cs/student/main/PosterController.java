@@ -3,9 +3,9 @@ package edu.brown.cs.student.main;
 import edu.brown.cs.student.main.imgur.ImgurService;
 import edu.brown.cs.student.main.responses.ServiceResponse;
 import edu.brown.cs.student.main.types.Poster;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
+
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
@@ -33,13 +33,7 @@ public class PosterController {
    */
   @GetMapping("/")
   public CompletableFuture<ResponseEntity<List<Poster>>> getAllPosters() {
-    return posterService
-        .getPosters()
-        .thenApply(
-            posters ->
-                posters.stream()
-                    .sorted(Comparator.nullsLast(Comparator.comparing(Poster::getStartDate)))
-                    .collect(Collectors.toList()))
+    return this.sortBySoonest(posterService.getPosters())
         .thenApply(ResponseEntity::ok)
         .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
   }
@@ -65,6 +59,7 @@ public class PosterController {
    * sends a GET request to filter by tag(s)
    *
    * @param tag an array of tags (strings)
+   * @param date this is optional, should be "createdAt" to sort by create date
    * @return a list of all posters matching the requested tags
    */
   @GetMapping("/tag")
@@ -79,7 +74,7 @@ public class PosterController {
       postersFuture = posterService.searchByMultipleTags(tag);
     }
 
-    if (date.equals("createdAt")) {
+    if (date != null && date.equals("createdAt")) {
       return postersFuture
           .thenApply(
               posters ->
@@ -90,23 +85,24 @@ public class PosterController {
           .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
     }
     // sort by start date by default
-
-    return postersFuture
-        .thenApply(
-            posters ->
-                posters.stream()
-                    .sorted(Comparator.comparing(Poster::getStartDate)) // Sort by startDate
-                    .collect(Collectors.toList()))
-        .thenApply(ResponseEntity::ok)
-        .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+    return this.sortBySoonest(postersFuture)
+            .thenApply(ResponseEntity::ok)
+            .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
   }
 
+  /**
+   * sends  GET request to search by keyword term
+   * @param term required keyword or phrase
+   * @param tags required but it can be blank if there are no tags, e.g. http://localhost:8080/posters/term? term=[term]&tags=
+   * @param date optional, should be "createdAt" to sort by create date
+   * @return
+   */
   @GetMapping("/term")
   public CompletableFuture<ResponseEntity<List<Poster>>> getPosterByTerm(
       @RequestParam String term,
       @RequestParam(required = false) String[] tags,
       @RequestParam(required = false) String date) {
-    if (date == "createdAt") {
+    if (date != null && date.equals("createdAt")) {
       return posterService
           .searchByTerm(term, tags)
           .thenApply(
@@ -119,15 +115,9 @@ public class PosterController {
     }
 
     // sort by start date by default
-    return posterService
-        .searchByTerm(term, tags)
-        .thenApply(
-            posters ->
-                posters.stream()
-                    .sorted(Comparator.comparing(Poster::getStartDate))
-                    .collect(Collectors.toList()))
-        .thenApply(ResponseEntity::ok)
-        .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+    return this.sortBySoonest(posterService.searchByTerm(term, tags))
+            .thenApply(ResponseEntity::ok)
+            .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
   }
 
   /**
@@ -250,6 +240,22 @@ public class PosterController {
             })
         .thenApply(response -> ResponseEntity.ok(response))
         .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+  }
+
+  public CompletableFuture<List<Poster>> sortBySoonest(CompletableFuture<List<Poster>> myPosters){
+    CompletableFuture<List<Poster>> beforePosters = myPosters.thenApply(
+            posters -> posters.stream().filter(poster -> poster.getStartDate().isBefore(LocalDateTime.now()))
+                    .sorted(Comparator.nullsLast(Comparator.comparing(Poster::getStartDate).reversed()))
+                    .collect(Collectors.toList()));
+    CompletableFuture<List<Poster>> afterPosters = posterService.getPosters().thenApply(
+            posters -> posters.stream().filter(poster -> poster.getStartDate().isAfter(LocalDateTime.now()))
+                    .sorted(Comparator.nullsLast(Comparator.comparing(Poster::getStartDate)))
+                    .collect(Collectors.toList()));
+    CompletableFuture<List<Poster>> allPosters = afterPosters.thenCombine(beforePosters, (list1, list2) -> {
+      list1.addAll(list2);
+      return list1;
+    });
+    return allPosters;
   }
 
   //
