@@ -1,12 +1,11 @@
 package edu.brown.cs.student.main;
 
+import edu.brown.cs.student.main.ocr.OCRAsyncTask;
 import edu.brown.cs.student.main.responses.ServiceResponse;
 import edu.brown.cs.student.main.types.Poster;
 import edu.brown.cs.student.main.types.PosterRepository;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +31,20 @@ public class PosterService {
   public CompletableFuture<ServiceResponse<Poster>> createPoster(Poster poster) {
     ServiceResponse<Poster> response;
     // Save the Poster object to the database
+    try {
+      OCRAsyncTask task = new OCRAsyncTask();
+      HashMap suggestedFields = task.sendPost("K85630038588957", true, poster.getContent(), "eng");
+      poster.setTitle((String) suggestedFields.get("title"));
+      poster.setDescription((String) suggestedFields.get("description"));
+      poster.setLink((String) suggestedFields.get("link"));
+      poster.setTags((HashSet<String>) suggestedFields.get("tags"));
+//      suggestedFields.setID(poster.getID());
+//      this.updatePoster(suggestedFields);
+    }
+    catch(Exception e){
+      System.err.println("Error reading text on image file: " + e.getMessage());
+    }
+
     if (poster.isPoster()) {
       if (posterRepository
           .findById(poster.getID())
@@ -83,7 +96,7 @@ public class PosterService {
                   if (updatedPoster.getDescription() != null)
                     oldPoster.setDescription(updatedPoster.getDescription());
                   if (updatedPoster.getLink() != null) oldPoster.setLink(updatedPoster.getLink());
-                  if (updatedPoster.getStartDate() != null)
+                  if (updatedPoster.getTags() != null)
                     oldPoster.setTags(updatedPoster.getTags());
                   posterRepository.save(oldPoster);
                   return new ServiceResponse<>(oldPoster, "Poster updated");

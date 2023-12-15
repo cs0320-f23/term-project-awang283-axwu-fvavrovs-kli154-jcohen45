@@ -1,6 +1,7 @@
 package edu.brown.cs.student.main.ocr;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import edu.brown.cs.student.main.types.Poster;
 import org.springframework.boot.jackson.JsonComponent;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -14,7 +15,7 @@ import java.util.Iterator;
 
 public class OCRAsyncTask {
 
-    public String sendPost(String apiKey, boolean isOverlayRequired, String imageUrl, String language) throws Exception {
+    public HashMap sendPost(String apiKey, boolean isOverlayRequired, String imageUrl, String language) throws Exception {
 
         OCRParser parser = new OCRParser();
 
@@ -55,9 +56,9 @@ public class OCRAsyncTask {
         //return result
         System.out.println("Result: " + String.valueOf(response));
 
-        parser.deserialize(String.valueOf(response));
+        return parser.deserialize(String.valueOf(response));
 
-        return String.valueOf(response);
+        //return String.valueOf(response);
     }
 
     public String getPostDataString(HashMap params) throws Exception {
