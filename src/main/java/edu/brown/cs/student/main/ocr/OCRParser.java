@@ -8,10 +8,7 @@ import edu.brown.cs.student.main.PosterService;
 import edu.brown.cs.student.main.Tags;
 import edu.brown.cs.student.main.types.Poster;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 public class OCRParser {
 
@@ -22,7 +19,7 @@ public class OCRParser {
         String description = result.get(0).getParsedText().replace("\r\n", " ");
         String[] words = description.split(" ");
         String link = this.extractLink(words);
-        HashSet<String> tags = this.extractTags(description);
+        HashSet<String> tags = this.extractTags(words);
 
         System.out.println("Title: " + title);
         System.out.println("Description: " + description);
@@ -77,7 +74,7 @@ public class OCRParser {
     }
 
     private String extractLink(String[] words) {
-        HashSet<String> indicators = new HashSet<>(Arrays.asList("http", "https", ".com",".org",".net",".edu",".gov",
+        HashSet<String> indicators = new HashSet<>(Arrays.asList("http", "https", " com"," org"," net"," edu"," gov",
                 "www", "tinyurl", "bitly"));
         for (String word : words){
             for (String webWord : indicators){
@@ -96,17 +93,32 @@ public class OCRParser {
         return null;
     }
 
-    private HashSet<String> extractTags(String description) {
+    private HashSet<String> extractTags(String[] words) {
         BMSearch searcher = new BMSearch();
         Tags tagObj = new Tags();
-        ArrayList<String> tags = tagObj.getTags();
+        HashMap<String, List<String>> tags = tagObj.getJumboTags();
         HashSet<String> toReturn = new HashSet<>();
 
-        for (String tag : tags){
-            if (searcher.getSearchResult(tag, description)){
-                toReturn.add(tag);
+//        for (String tag : tags){
+//            if (searcher.getSearchResult(tag, description)){
+//                toReturn.add(tag);
+//            }
+//        }
+        for (String word : words){
+            if (word.length() > 1){
+                for (String tag : tags.keySet()){
+                    List<String> tagLine = tags.get(tag);
+                    for (String tagWord : tagLine){
+                        if (word.toLowerCase().contains(tagWord)){
+                            toReturn.add(tag);
+                            break;
+                        }
+                    }
+
+                }
             }
         }
+
         return toReturn;
     }
 
