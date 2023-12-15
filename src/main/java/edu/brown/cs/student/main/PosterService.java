@@ -60,26 +60,16 @@ public class PosterService {
 public CompletableFuture<ServiceResponse<Poster>> createPoster(Poster poster, String userId) {
   ServiceResponse<Poster> response;
 
-  // Get the user directly using the userService
-  CompletableFuture<ServiceResponse<User>> userFuture = userService.getUserById(userId);
-  ServiceResponse<User> userServiceResponse = userFuture.join();
-  User user = userServiceResponse.getData();
+  // Associate the poster with the user
+  CompletableFuture<ServiceResponse<User>> associateResponse = userService.associatePosterWithUser(userId, poster);
+  ServiceResponse<User> userServiceResponse = associateResponse.join();
 
-  if (user != null && poster.isPoster()) {
-    // Set the user ID in the poster
-    poster.setUserId(userId);
-
-    // Add the poster to the user's list of posters
-    user.getPosters().add(poster);
-
-    // Save the updated user
-    userService.updateUser(user);
-
-    // Save the Poster object to the database
+  if (userServiceResponse.getData() != null) {
+    // If the user was found and the poster was associated, proceed with creating the poster
     Poster savedPoster = posterRepository.insert(poster);
-
     response = new ServiceResponse<>(savedPoster, "added to database and associated with user");
   } else {
+    // If the user was not found, return an error response
     response = new ServiceResponse<>(poster, "not added to database or user not found");
   }
 
