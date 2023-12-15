@@ -101,13 +101,12 @@
 .magenta-tag,
 .green-tag,
 .blue-tag {
-  margin-top: 2%;
+  margin: 6px;
   border-radius: 10px;
   display: inline-flex;
   justify-content: center;
   padding: 10px 20px;
   position: relative;
-  margin-right: 2%;
   box-shadow: var(--tag-shadow);
   white-space: nowrap;
   font-family: "quicksand", sans-serif;
