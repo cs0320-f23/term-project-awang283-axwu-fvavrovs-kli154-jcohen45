@@ -81,11 +81,14 @@ public class OCRParser {
 
     private String extractLink(String[] words) {
         HashSet<String> indicators = new HashSet<>(Arrays.asList("http", "https", " com"," org"," net"," edu"," gov",
-                "www", "tinyurl", "bitly"));
+                "www", "tinyurl", "bitly", "formsgle"));
         for (String word : words){
             for (String webWord : indicators){
                 if (word.contains("tinyurlcom")){
                     return word.replace("tinyurlcom","tinyurl.com");
+                }
+                if (word.contains("formsgle")){
+                    return word.replace("formsgle","forms.gle");
                 }
                 if (word.contains("bitly")){
                     return word.replace("bitly","bit.ly");
