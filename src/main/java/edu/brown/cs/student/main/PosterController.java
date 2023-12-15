@@ -23,12 +23,10 @@ public class PosterController {
   private final PosterService posterService; // instance of the class that does all the dirty work
   private final ImgurService imgurService;
 
-  private final UserService userService;
 
-  public PosterController(PosterService posterService, ImgurService imgurService, UserService userService) {
+  public PosterController(PosterService posterService, ImgurService imgurService) {
     this.posterService = posterService;
     this.imgurService = imgurService;
-    this.userService = userService;
   }
 
   /**

@@ -60,12 +60,12 @@ public class PosterService {
 public CompletableFuture<ServiceResponse<Poster>> createPoster(Poster poster, String userId) {
   ServiceResponse<Poster> response;
 
-  if (poster.isPoster()) {
-    // Get the user directly, assuming it always exists for the given userId
-    CompletableFuture<ServiceResponse<User>> userFuture = userService.getUserById(userId);
-    ServiceResponse<User> userServiceResponse = userFuture.join();
-    User user = userServiceResponse.getData();
+  // Get the user directly using the userService
+  CompletableFuture<ServiceResponse<User>> userFuture = userService.getUserById(userId);
+  ServiceResponse<User> userServiceResponse = userFuture.join();
+  User user = userServiceResponse.getData();
 
+  if (user != null && poster.isPoster()) {
     // Set the user ID in the poster
     poster.setUserId(userId);
 
@@ -80,12 +80,11 @@ public CompletableFuture<ServiceResponse<Poster>> createPoster(Poster poster, St
 
     response = new ServiceResponse<>(savedPoster, "added to database and associated with user");
   } else {
-    response = new ServiceResponse<>(poster, "not added to database");
+    response = new ServiceResponse<>(poster, "not added to database or user not found");
   }
 
   return CompletableFuture.completedFuture(response);
 }
-
   //  @Async
   //  public CompletableFuture<ServiceResponse<Poster>> updatePoster(Poster updatedPoster) {
   //
