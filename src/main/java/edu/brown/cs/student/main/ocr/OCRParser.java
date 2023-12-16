@@ -8,11 +8,12 @@ import edu.brown.cs.student.main.PosterService;
 import edu.brown.cs.student.main.Tags;
 import edu.brown.cs.student.main.types.Poster;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class OCRParser {
 
-    public Poster parseResult(List<ParsedResult> result){
+    public HashMap parseResult(List<ParsedResult> result){
         List<Line> lines = result.get(0).getTextOverlay().getLines();
 
         String title = this.extractTitle(lines);
@@ -26,21 +27,29 @@ public class OCRParser {
         System.out.println("Link: " + link);
         System.out.println("Tags: " + tags);
 
-        Poster suggestedPoster = new Poster(title, description);
-        suggestedPoster.setLink(link);
-        suggestedPoster.setTags(tags);
-        return suggestedPoster;
+        HashMap suggestedFields = new HashMap();
+        LocalDateTime nullTime = null;
+//        suggestedFields.setLink(link);
+//        suggestedFields.setDescription(description);
+//        suggestedFields.setTags(tags);
+//        suggestedFields.setTitle(title);
+        suggestedFields.put("title", title);
+        suggestedFields.put("description", description);
+        suggestedFields.put("link", link);
+        suggestedFields.put("tags", tags);
+        suggestedFields.put("startDate", nullTime);
+        return suggestedFields;
     }
 
 
 
-    public void deserialize(String json) throws JsonProcessingException {
+    public HashMap deserialize(String json) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         OCRResult ocrResult = objectMapper.readValue(json, OCRResult.class);
 
         List<ParsedResult> parsedResults = ocrResult.getParsedResults();
 
-        this.parseResult(parsedResults);
+        return this.parseResult(parsedResults);
     }
 
     /**

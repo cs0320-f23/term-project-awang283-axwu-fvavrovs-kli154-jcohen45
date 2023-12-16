@@ -1,3 +1,7 @@
+edu/brown/cs/student/main/Tags.class
+edu/brown/cs/student/main/OCRAsyncTask.class
+edu/brown/cs/student/main/Content.class
+edu/brown/cs/student/main/types/Recurrence.class
 edu/brown/cs/student/main/imgur/ImgurData.class
 edu/brown/cs/student/main/BMSearch.class
 edu/brown/cs/student/main/imgur/ImgurApiResponse.class
