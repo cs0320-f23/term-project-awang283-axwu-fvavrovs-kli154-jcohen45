@@ -2,6 +2,7 @@ import { Button } from "@chakra-ui/react";
 import "../styles/Modal.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { fetchTags } from "../functions/fetch";
 
 export default function TagsModal({
   onClose,
@@ -14,20 +15,16 @@ export default function TagsModal({
   const [tags, setTags] = useState<Set<string>>(new Set());
 
   useEffect(() => {
-    async function fetchTags() {
+    const fetchAllTags = async () => {
       try {
-        const response = await fetch("http://localhost:8080/posters/alltags");
-        if (response.ok) {
-          const tagsData = await response.json();
-          setAllTags(tagsData);
-        } else {
-          throw new Error("Failed to fetch tags");
-        }
+        const tagsData = await fetchTags();
+        setAllTags(tagsData);
       } catch (error) {
         console.error("Error fetching tags:", error);
       }
-    }
-    fetchTags();
+    };
+
+    fetchAllTags();
   }, []);
 
   const classNameTag = (index: number) => {
