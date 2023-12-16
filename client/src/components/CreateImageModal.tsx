@@ -22,7 +22,7 @@ interface IPoster {
   location?: string;
   startDate?: string;
   endDate?: string;
-  isRecurring?: string;
+  //isRecurring?: string;
   link?: string;
   description?: string;
   tags?: Set<string>;
@@ -239,7 +239,7 @@ export default function CreateImageModal({ onClose }) {
                       </div>
                       <div>
                         <h3>Repeats</h3>
-                        <Select
+                        {/* <Select
                           placeholder="Repeats"
                           id="recur-select"
                           width="8vw"
@@ -253,7 +253,7 @@ export default function CreateImageModal({ onClose }) {
                           <option value="DAILY">Daily</option>
                           <option value="WEEKLY">Weekly</option>
                           <option value="MONTHLY">Monthly</option>
-                        </Select>
+                        </Select> */}
                       </div>
                     </div>
                     <div className="date-div">

@@ -28,7 +28,7 @@ public class Poster {
   private LocalDateTime createdAt; // date poster is created in databsse
   private LocalDateTime startDate; // start of event
   private LocalDateTime endDate; // end of event
-  private Recurrence isRecurring;
+  //private Recurrence isRecurring;
   // private User user;
 
   // @JsonPropertyOrder({"id", "title", "description"})
@@ -155,13 +155,13 @@ public class Poster {
     this.tags.remove(tag);
   }
 
-  public Recurrence getIsRecurring() {
-    return isRecurring;
-  }
+  //public Recurrence getIsRecurring() {
+   // return isRecurring;
+  //}
 
-  public void setIsRecurring(Recurrence recurring) {
-    isRecurring = recurring;
-  }
+//  public void setIsRecurring(Recurrence recurring) {
+//    isRecurring = recurring;
+//  }
 
 
   public LocalDateTime getCreatedAt() {

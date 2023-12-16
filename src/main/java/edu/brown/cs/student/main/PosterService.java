@@ -78,7 +78,8 @@ public class PosterService {
                     oldPoster.setStartDate(updatedPoster.getStartDate());
                   if (updatedPoster.getEndDate() != null)
                     oldPoster.setEndDate(updatedPoster.getEndDate());
-                  oldPoster.setIsRecurring(updatedPoster.getIsRecurring());
+                  //if (updatedPoster.getIsRecurring() != null)
+                 // oldPoster.setIsRecurring(updatedPoster.getIsRecurring());
                   if (updatedPoster.getTitle() != null)
                     oldPoster.setTitle((updatedPoster.getTitle()));
                   if (updatedPoster.getDescription() != null)
