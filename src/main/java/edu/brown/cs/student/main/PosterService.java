@@ -12,6 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
+
 /**
  * This class handles the logic of creating a poster. This involves validating the input data and
  * interacting with the database to persist the Poster object. Used by PosterController
@@ -92,7 +99,7 @@ public class PosterService {
                     oldPoster.setStartDate(updatedPoster.getStartDate());
                   if (updatedPoster.getEndDate() != null)
                     oldPoster.setEndDate(updatedPoster.getEndDate());
-//                  oldPoster.setIsRecurring(updatedPoster.getIsRecurring());
+                  oldPoster.setIsRecurring(updatedPoster.getIsRecurring());
                   if (updatedPoster.getTitle() != null)
                     oldPoster.setTitle((updatedPoster.getTitle()));
                   if (updatedPoster.getDescription() != null)
