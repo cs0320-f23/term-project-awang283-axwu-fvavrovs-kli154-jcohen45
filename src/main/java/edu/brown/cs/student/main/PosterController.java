@@ -128,7 +128,7 @@ public class PosterController {
    * @return
    */
   @GetMapping("/all")
-  public CompletableFuture<ResponseEntity<HashSet<Object>>> getPosterByTerm(
+  public CompletableFuture<ResponseEntity<HashSet<Object>>> getAllFieldVars(
       @RequestParam String field) {
     return posterService
         .getAllFields(field)
@@ -137,7 +137,7 @@ public class PosterController {
   }
 
   @GetMapping("/alltags")
-  public List<String> getAllTags() {
+  public ArrayList<String> getAllTags() {
     Tags tags = new Tags();
     return tags.getTags();
   }
