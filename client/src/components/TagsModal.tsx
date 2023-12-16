@@ -48,7 +48,6 @@ export default function TagsModal({
     if (updatedTags.has(tag)) {
       updatedTags.delete(tag); // If the tag exists, remove it from the set
     } else {
-      console.log(JSON.stringify(Array.from(updatedTags)) + " inside tags");
       updatedTags.add(tag); // If the tag doesn't exist, add it to the set
     }
 
@@ -108,12 +107,13 @@ export default function TagsModal({
       <div className="tags-container">
         <div className="tags-div">
           {allTags.map((tag, index) => {
+            const isSelected = tags.has(tag);
+            const tagClass = isSelected
+              ? "selected-tag" + " " + classNameTag(index)
+              : classNameTag(index);
+
             return (
-              <div
-                key={tag}
-                className={classNameTag(index)}
-                onClick={() => onClick(tag)}
-              >
+              <div key={tag} className={tagClass} onClick={() => onClick(tag)}>
                 {tag}
               </div>
             );
