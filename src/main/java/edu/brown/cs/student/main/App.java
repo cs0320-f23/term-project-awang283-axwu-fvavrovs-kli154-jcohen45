@@ -9,5 +9,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 public class App {
   public static void main(String[] args) throws Exception {
     SpringApplication.run(App.class, args);
+
   }
 }

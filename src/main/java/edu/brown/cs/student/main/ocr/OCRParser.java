@@ -29,10 +29,7 @@ public class OCRParser {
 
         HashMap suggestedFields = new HashMap();
         LocalDateTime nullTime = null;
-//        suggestedFields.setLink(link);
-//        suggestedFields.setDescription(description);
-//        suggestedFields.setTags(tags);
-//        suggestedFields.setTitle(title);
+
         suggestedFields.put("title", title);
         suggestedFields.put("description", description);
         suggestedFields.put("link", link);
