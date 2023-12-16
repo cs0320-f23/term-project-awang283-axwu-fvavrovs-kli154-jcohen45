@@ -3,16 +3,13 @@ package edu.brown.cs.student.main;
 import edu.brown.cs.student.main.responses.ServiceResponse;
 import edu.brown.cs.student.main.types.Poster;
 import edu.brown.cs.student.main.types.PosterRepository;
+
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 /**
  * This class handles the logic of creating a poster. This involves validating the input data and
@@ -78,15 +75,15 @@ public class PosterService {
                     oldPoster.setStartDate(updatedPoster.getStartDate());
                   if (updatedPoster.getEndDate() != null)
                     oldPoster.setEndDate(updatedPoster.getEndDate());
-                  //if (updatedPoster.getIsRecurring() != null)
-                 // oldPoster.setIsRecurring(updatedPoster.getIsRecurring());
+//                  oldPoster.setIsRecurring(updatedPoster.getIsRecurring());
                   if (updatedPoster.getTitle() != null)
                     oldPoster.setTitle((updatedPoster.getTitle()));
                   if (updatedPoster.getDescription() != null)
                     oldPoster.setDescription(updatedPoster.getDescription());
                   if (updatedPoster.getLink() != null) oldPoster.setLink(updatedPoster.getLink());
-                  if (updatedPoster.getStartDate() != null)
+                  if (updatedPoster.getTags() != null){
                     oldPoster.setTags(updatedPoster.getTags());
+                  }
                   posterRepository.save(oldPoster);
                   return new ServiceResponse<>(oldPoster, "Poster updated");
                 } else {
@@ -184,16 +181,16 @@ public class PosterService {
               }
             });
   }
-//
-//  @Async
-//  public CompletableFuture<List<Poster>> searchByOrganization(String org) {
-//    return this.getPosters()
-//        .thenApply(
-//            posters ->
-//                posters.stream()
-//                    .filter(poster -> poster.getOrganization().equals(org))
-//                    .collect(Collectors.toList()));
-//  }
+  //
+  //  @Async
+  //  public CompletableFuture<List<Poster>> searchByOrganization(String org) {
+  //    return this.getPosters()
+  //        .thenApply(
+  //            posters ->
+  //                posters.stream()
+  //                    .filter(poster -> poster.getOrganization().equals(org))
+  //                    .collect(Collectors.toList()));
+  //  }
 
   @Async
   public CompletableFuture<List<Poster>> searchByTerm(String term, String[] tags) {
