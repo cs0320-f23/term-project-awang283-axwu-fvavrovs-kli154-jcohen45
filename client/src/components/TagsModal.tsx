@@ -59,13 +59,15 @@ export default function TagsModal({
   const createPoster = async () => {
     //add list to poster obj w handlechange
     // console.log(JSON.stringify(poster) + " before tags");
-    const newPoster = handleChange(
-      tags,
-      "tags"
-      // console.log(JSON.stringify(poster) + " after updating tags");
-    );
+    const newPoster = handleChange(tags, "tags", () => {
+      // Call the put endpoint or perform other operations that need the updated poster state
+      // This will ensure you're working with the updated poster state after the change
+      console.log(JSON.stringify(poster) + " after updating tags");
+      // ... Other code that depends on the updated poster state
+    });
+
     // console.log(JSON.stringify(Array.from(tags)) + " tags");
-    // console.log(JSON.stringify(newPoster) + " after tags");
+    console.log(JSON.stringify(newPoster) + " new poster");
     //call put endpoint
     try {
       //add to database
@@ -76,13 +78,17 @@ export default function TagsModal({
       };
       const url = "http://localhost:8080/posters/update/" + posterId;
       const formData = new FormData();
+      // const tagArr = [];
+      tags.forEach((tag) => {
+        formData.append("tags[]", tag);
+      });
+
       for (const key in newPoster) {
         if (newPoster[key]) {
           formData.append(key, newPoster[key]);
         }
       }
-      // formData.append("tags", JSON.stringify(Array.from(tags)));
-      console.log(JSON.stringify(Array.from(formData)) + " formdata");
+      //console.log(JSON.stringify(Array.from(formData)) + " formdata");
       const res = await axios.put(url, formData, config);
       onClose();
       return Promise.resolve(res.data.data);

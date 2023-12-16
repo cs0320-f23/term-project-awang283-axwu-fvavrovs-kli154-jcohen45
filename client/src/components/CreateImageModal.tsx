@@ -22,7 +22,7 @@ interface IPoster {
   location?: string;
   startDate?: string;
   endDate?: string;
-  //isRecurring?: string;
+  isRecurring?: string;
   link?: string;
   description?: string;
   tags?: Set<string>;
@@ -37,7 +37,8 @@ export default function CreateImageModal({ onClose }) {
 
   const handleChange = (
     value: string[] | string | Set<string>,
-    property: keyof IPoster
+    property: keyof IPoster,
+    callback?: () => void
   ) => {
     let updatedValue: {
       [x: string]: string[] | Set<string> | string;
@@ -53,8 +54,11 @@ export default function CreateImageModal({ onClose }) {
       ...prevPoster,
       ...updatedValue,
     }));
+    if (callback) {
+      callback();
+    }
     return poster;
-    console.log(JSON.stringify(poster) + " after updated tags");
+    // console.log(JSON.stringify(poster) + " after updated tags");
   };
 
   const setUserLink = async (target: EventTarget) => {
@@ -65,7 +69,12 @@ export default function CreateImageModal({ onClose }) {
     setImgUrl(inputElement.value);
     console.log(inputElement.value + " imgurl");
     //if link not imgur
-    if (!inputElement.value.includes("https://i.imgur.com")) {
+    const pattern: RegExp = /^.*\.(png|jpg|jpeg)$/i;
+
+    if (
+      !inputElement.value.includes("https://i.imgur.com") &&
+      pattern.test(inputElement.value)
+    ) {
       try {
         //add to database
         const config = {
@@ -190,7 +199,7 @@ export default function CreateImageModal({ onClose }) {
                       <div className="input-text-input">
                         <Input
                           id="image-url"
-                          placeholder="Image URL"
+                          placeholder="Image URL- png or jpg/jpeg"
                           value={poster.content}
                           onChange={(ev) =>
                             handleChange(ev.target.value, "content")
@@ -239,7 +248,7 @@ export default function CreateImageModal({ onClose }) {
                       </div>
                       <div>
                         <h3>Repeats</h3>
-                        {/* <Select
+                        <Select
                           placeholder="Repeats"
                           id="recur-select"
                           width="8vw"
@@ -253,7 +262,7 @@ export default function CreateImageModal({ onClose }) {
                           <option value="DAILY">Daily</option>
                           <option value="WEEKLY">Weekly</option>
                           <option value="MONTHLY">Monthly</option>
-                        </Select> */}
+                        </Select>
                       </div>
                     </div>
                     <div className="date-div">

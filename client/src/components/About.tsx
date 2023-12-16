@@ -60,14 +60,20 @@ export default function About() {
               </p>
             </div>
             <div className="body-text" style={{ width: "50%" }}>
-              <p>
+              <p style={{ marginBottom: "5%" }}>
                 Posters at Brown started out as a silly little idea to create an
                 archive of tons of physical posters of student events, organize
                 them, and then donate them to the Hay, solely because we thought
                 it might be interesting to see how student ideas, values, and
                 aesthetics shift over time.
               </p>
-              <p>t</p>
+              <p>
+                Now, Posters at Brown functions as a hub for all student hosted
+                events at Brown, from club meetings to dances and more. It aims
+                to use the medium of posters to turn physical advertisement into
+                an easy way for students to find all the events they've ever
+                wanted to go to, but would've missed out on otherwise.
+              </p>
             </div>
           </div>
         </div>

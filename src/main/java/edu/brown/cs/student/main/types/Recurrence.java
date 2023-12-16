@@ -1,18 +1,18 @@
-//package edu.brown.cs.student.main.types;
-//
-//public enum Recurrence {
-//  NEVER,
-//  DAILY,
-//  WEEKLY,
-//  MONTHLY;
-//
-//  private String name;
-//
-//  public String getName() {
-//    return name;
-//  }
-//
-//  public void setName(String name) {
-//    this.name = name;
-//  }
-//}
+package edu.brown.cs.student.main.types;
+
+public class Recurrence {
+private String frequency;
+
+
+  public Recurrence() {
+
+  }
+
+  public String setFrequency() {
+    return frequency;
+  }
+
+  public void setFrequency(String frequency) {
+    this.frequency = frequency;
+  }
+}
