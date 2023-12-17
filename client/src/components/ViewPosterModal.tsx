@@ -67,7 +67,7 @@ export default function ViewPosterModal({
                     {time && <p>Time</p>}
                     {location && <p>Where</p>}
                     {link && <p>Link</p>}
-                    <p>Tags</p>
+                    {tags.length > 0 && <p>Tags</p>}
                   </div>
                   <div className="poster-info">
                     <p>{weekday + ", " + month + " " + day}</p>
@@ -86,11 +86,6 @@ export default function ViewPosterModal({
                           </div>
                         );
                       })}
-                      {/* <div className="magenta-tag">Free Food</div>
-                      <div className="green-tag">Party</div>
-                      <div className="blue-tag">Outdoor</div>
-                      <div className="magenta-tag">Free Food</div>
-                      <div className="green-tag">Party</div> */}
                     </div>
                   </div>
                 </div>

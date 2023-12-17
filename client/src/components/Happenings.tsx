@@ -11,6 +11,7 @@ import ViewPosterModal from "./ViewPosterModal";
 import axios from "axios";
 import { useRecoilState } from "recoil";
 import { searchState } from "./atoms/atoms";
+import { fetchTags } from "../functions/fetch";
 
 const scrollToTop = () => {
   window.scrollTo({
@@ -168,8 +169,18 @@ export default function Happenings() {
   const [sortPosters, setSortPosters] = useState<string>("");
   const [searchInput, setSearchInput] = useRecoilState(searchState);
   const [searchResults, setSearchResults] = useState<IPoster[]>([]);
+  const [allTags, setAllTags] = useState<string[]>([]);
 
   useEffect(() => {
+    const fetchAllTags = async () => {
+      try {
+        const tagsData = await fetchTags();
+        setAllTags(tagsData);
+      } catch (error) {
+        console.error("Error fetching tags:", error);
+      }
+    };
+    fetchAllTags();
     if (searchInput.length > 0) {
       getSearchResults();
     } else {
@@ -178,20 +189,24 @@ export default function Happenings() {
   }, []);
 
   const getSearchResults = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:8080/posters/term?term=${searchInput}&tags=${searchTags}`
-      );
+    if (searchInput == "" || searchInput == " ") {
+      getPosters().then((data) => setSearchResults(data));
+    } else {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/posters/term?term=${searchInput}&tags=${searchTags}`
+        );
 
-      if (!response.ok) {
-        throw new Error("Failed to fetch data");
+        if (!response.ok) {
+          throw new Error("Failed to fetch data");
+        }
+
+        const results: IPoster[] = await response.json();
+
+        setSearchResults(results);
+      } catch (error) {
+        console.error("Error fetching search results:", error);
       }
-
-      const results: IPoster[] = await response.json();
-
-      setSearchResults(results);
-    } catch (error) {
-      console.error("Error fetching search results:", error);
     }
   };
 
@@ -230,9 +245,13 @@ export default function Happenings() {
                 value={searchTags}
                 onChange={(ev) => setSearchTags(ev.target.value)}
               >
-                <option value="option1">Free Food</option>
-                <option value="option2">Party</option>
-                <option value="option3">Outdoor</option>
+                {allTags.map((tag, index) => {
+                  return (
+                    <option key={index} value={tag}>
+                      {tag}
+                    </option>
+                  );
+                })}
               </Select>
             </Box>
           </div>

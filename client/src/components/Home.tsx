@@ -153,17 +153,13 @@ export default function Home() {
               value={searchTags}
               onChange={(ev) => setSearchTags(ev.target.value)}
             >
-              {/* TODO: fetch list of tags and map each of them to an option, when clicked, set list of selected tags to contain tag, when clicked again, unselect tag */}
-              {allTags.map((tag, index) => {
+               {allTags.map((tag, index) => {
                 return (
                   <option key={index} value={tag}>
                     {tag}
                   </option>
                 );
               })}
-              {/* <option value="option1">Free Food</option>
-              <option value="option2">Party</option>
-              <option value="option3">Outdoor</option> */}
             </Select>
           </Box>
         </div>
