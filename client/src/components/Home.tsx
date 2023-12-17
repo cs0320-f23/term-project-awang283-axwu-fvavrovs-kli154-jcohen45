@@ -2,7 +2,7 @@
 import { Box, HStack, IconButton, Select } from "@chakra-ui/react";
 import { Search2Icon, TriangleDownIcon } from "@chakra-ui/icons";
 import "../styles/Home.css";
-import { ImageCard } from "./Happenings";
+import { IPoster, ImageCard, getPosters } from "./Happenings";
 import { useEffect, useState } from "react";
 import { fetchTags } from "../functions/fetch";
 

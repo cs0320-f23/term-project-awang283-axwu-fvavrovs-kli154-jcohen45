@@ -128,7 +128,6 @@ export default function CreateImageModal({ onClose }) {
           `Error in fetch: ${error.response.data.message}`
         );
       } else {
-        //console.log("Network error or other issue:", error.message);
         return Promise.resolve("Error in fetch: Network error or other issue");
       }
     }
