@@ -200,6 +200,7 @@ input::placeholder {
   margin: 1.5vw 1.5vw 1.5vw 0vw;
   gap: 2vh;
   overflow-y: scroll;
+  overflow-x: hidden;
   max-height: 90vh;
   z-index: 1;
 }
@@ -230,6 +231,7 @@ input::placeholder {
   flex-flow: column;
   gap: 2vh;
   color: var(--dark-purple100);
+  overflow-x: auto;
 }
 
 #description-input {

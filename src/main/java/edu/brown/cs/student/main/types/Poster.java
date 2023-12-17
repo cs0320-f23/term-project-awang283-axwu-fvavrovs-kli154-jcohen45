@@ -225,7 +225,6 @@ public class Poster {
     return haystack.toString();
   }
 
-
   public String getUserId() {
     return userId;
   }

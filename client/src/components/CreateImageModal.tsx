@@ -198,7 +198,7 @@ export default function CreateImageModal({ onClose }) {
                       <div className="input-text-input">
                         <Input
                           id="image-url"
-                          placeholder="Image URL- png or jpg/jpeg"
+                          placeholder="Enter URL - .PNG or .JPG/JPEG"
                           value={poster.content}
                           onChange={(ev) =>
                             handleChange(ev.target.value, "content")
