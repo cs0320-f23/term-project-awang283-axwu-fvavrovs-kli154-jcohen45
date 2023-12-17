@@ -69,11 +69,11 @@ export default function CreateImageModal({ onClose }) {
     setImgUrl(inputElement.value);
     console.log(inputElement.value + " imgurl");
     //if link not imgur
-    const pattern: RegExp = /^.*\.(png|jpg|jpeg)$/i;
+    //const pattern: RegExp = /^.*\.(png|jpg|jpeg)$/i;
 
     if (
-      !inputElement.value.includes("https://i.imgur.com") &&
-      pattern.test(inputElement.value)
+      !inputElement.value.includes("https://i.imgur.com") // &&
+      //pattern.test(inputElement.value)
     ) {
       try {
         //add to database
