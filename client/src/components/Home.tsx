@@ -2,8 +2,9 @@
 import { Box, HStack, IconButton, Select } from "@chakra-ui/react";
 import { Search2Icon, TriangleDownIcon } from "@chakra-ui/icons";
 import "../styles/Home.css";
-import { IPoster, ImageCard, getPosters } from "./Happenings";
+import { ImageCard } from "./Happenings";
 import { useEffect, useState } from "react";
+import { fetchTags } from "../functions/fetch";
 
 export const images = [
   {
@@ -91,9 +92,19 @@ export default function Home() {
   const [searchInput, setSearchInput] = useState<string>("");
   const [searchTags, setSearchTags] = useState<string>("");
   const [allPosters, setAllPosters] = useState<IPoster[]>([]);
+  const [allTags, setAllTags] = useState<string[]>([]);
 
   useEffect(() => {
+    const fetchAllTags = async () => {
+      try {
+        const tagsData = await fetchTags();
+        setAllTags(tagsData);
+      } catch (error) {
+        console.error("Error fetching tags:", error);
+      }
+    };
     getPosters().then((data) => setAllPosters(data));
+    fetchAllTags();
   }, []);
 
   return (
@@ -128,9 +139,16 @@ export default function Home() {
               onChange={(ev) => setSearchTags(ev.target.value)}
             >
               {/* TODO: fetch list of tags and map each of them to an option, when clicked, set list of selected tags to contain tag, when clicked again, unselect tag */}
-              <option value="option1">Free Food</option>
+              {allTags.map((tag, index) => {
+                return (
+                  <option key={index} value={tag}>
+                    {tag}
+                  </option>
+                );
+              })}
+              {/* <option value="option1">Free Food</option>
               <option value="option2">Party</option>
-              <option value="option3">Outdoor</option>
+              <option value="option3">Outdoor</option> */}
             </Select>
           </Box>
         </div>

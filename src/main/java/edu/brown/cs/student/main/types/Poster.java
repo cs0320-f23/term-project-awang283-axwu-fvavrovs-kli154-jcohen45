@@ -3,10 +3,10 @@ package edu.brown.cs.student.main.types;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.UUID;
+
+import edu.brown.cs.student.main.user.User;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -29,8 +29,10 @@ public class Poster {
   private LocalDateTime createdAt; // date poster is created in databsse
   private LocalDateTime startDate; // start of event
   private LocalDateTime endDate; // end of event
-//  private Recurrence isRecurring;
-  // private User user;
+  private String organization;
+  private String userId;
+  private String isRecurring;
+  private User user;
 
   // @JsonPropertyOrder({"id", "title", "description"})
 
@@ -177,13 +179,13 @@ public class Poster {
     this.tags.remove(tag);
   }
 
-//  public Recurrence getIsRecurring() {
-//    return isRecurring;
-//  }
-//
-//  public void setIsRecurring(Recurrence recurring) {
-//    isRecurring = recurring;
-//  }
+  public String getIsRecurring() {
+    return this.isRecurring;
+  }
+
+  public void setIsRecurring(String recurring) {
+    this.isRecurring = recurring;
+  }
 
   public LocalDateTime getCreatedAt() {
 
@@ -222,4 +224,16 @@ public class Poster {
     }
     return haystack.toString();
   }
+<<<<<<< HEAD
 }
+=======
+
+  public String getUserId() {
+    return userId;
+  }
+
+  public void setUserId(String userId) {
+    this.userId = userId;
+  }
+}
+>>>>>>> 3539c944a28c71aca4c3de34a26887ca4d0542f4

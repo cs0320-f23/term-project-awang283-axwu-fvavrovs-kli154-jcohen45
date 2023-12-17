@@ -279,3 +279,15 @@ input::placeholder {
   gap: 1vw;
   align-items: center;
 }
+
+.selected-tag {
+  cursor: pointer;
+  filter: brightness(85%);
+  transition: background-color 0.3s ease;
+}
+
+.selected-tag:hover {
+  transform: scale(1.05);
+  transition: 0.2s;
+  filter: brightness(85%);
+}

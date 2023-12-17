@@ -1,0 +1,16 @@
+main {
+  position: relative;
+  top: 2vh;
+}
+
+h1 {
+  margin-bottom: 5%;
+  font-size: 500%;
+}
+
+.about-content {
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+}
