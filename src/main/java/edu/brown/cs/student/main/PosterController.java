@@ -3,7 +3,6 @@ package edu.brown.cs.student.main;
 import edu.brown.cs.student.main.imgur.ImgurService;
 import edu.brown.cs.student.main.responses.ServiceResponse;
 import edu.brown.cs.student.main.types.Poster;
-
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -86,14 +85,16 @@ public class PosterController {
     }
     // sort by start date by default
     return this.sortBySoonest(postersFuture)
-            .thenApply(ResponseEntity::ok)
-            .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+        .thenApply(ResponseEntity::ok)
+        .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
   }
 
   /**
-   * sends  GET request to search by keyword term
+   * sends GET request to search by keyword term
+   *
    * @param term required keyword or phrase
-   * @param tags required but it can be blank if there are no tags, e.g. http://localhost:8080/posters/term? term=[term]&tags=
+   * @param tags required but it can be blank if there are no tags, e.g.
+   *     http://localhost:8080/posters/term? term=[term]&tags=
    * @param date optional, should be "createdAt" to sort by create date
    * @return
    */
@@ -116,8 +117,8 @@ public class PosterController {
 
     // sort by start date by default
     return this.sortBySoonest(posterService.searchByTerm(term, tags))
-            .thenApply(ResponseEntity::ok)
-            .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+        .thenApply(ResponseEntity::ok)
+        .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
   }
 
   /**
@@ -128,7 +129,7 @@ public class PosterController {
    * @return
    */
   @GetMapping("/all")
-  public CompletableFuture<ResponseEntity<HashSet<Object>>> getPosterByTerm(
+  public CompletableFuture<ResponseEntity<HashSet<Object>>> getAllFieldVars(
       @RequestParam String field) {
     return posterService
         .getAllFields(field)
@@ -137,17 +138,18 @@ public class PosterController {
   }
 
   @GetMapping("/alltags")
-  public List<String> getAllTags() {
+  public ArrayList<String> getAllTags() {
     Tags tags = new Tags();
     return tags.getTags();
   }
 
   // TODO: have some error checking (on frontend) to display an error if the link is corrupted
   @PostMapping(value = "/create/fromlink")
-  public CompletableFuture<ServiceResponse<Poster>> createFromLink(@RequestBody Content content) {
+  public CompletableFuture<ServiceResponse<Poster>> createFromLink(
+      @RequestBody Content content, @RequestParam String userId) {
     Poster poster = new Poster();
     poster.setContent(content.getContent());
-    this.posterService.createPoster(poster);
+    this.posterService.createPoster(poster, userId);
     return CompletableFuture.completedFuture(
         new ServiceResponse<Poster>(poster, "created new poster using existing link"));
   }
@@ -160,11 +162,11 @@ public class PosterController {
    */
   @PostMapping(value = "/create/imgur")
   public CompletableFuture<ServiceResponse<Poster>> createImgurLink(
-      @RequestBody MultipartFile content) {
+      @RequestBody MultipartFile content, @RequestParam String userId) {
     Poster poster = new Poster();
     ServiceResponse<String> imgurResponse = imgurService.uploadToImgur(content);
     poster.setContent(imgurResponse.getData());
-    this.posterService.createPoster(poster);
+    this.posterService.createPoster(poster, userId);
     return CompletableFuture.completedFuture(
         new ServiceResponse<Poster>(poster, "uploaded to imgur"));
   }
@@ -242,19 +244,47 @@ public class PosterController {
         .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
   }
 
+<<<<<<< HEAD
   public CompletableFuture<List<Poster>> sortBySoonest(CompletableFuture<List<Poster>> myPosters){
     CompletableFuture<List<Poster>> beforePosters = myPosters.thenApply(
-            posters -> posters.stream().filter(poster -> poster.getStartDate().isBefore(LocalDateTime.now()))
-                    .sorted(Comparator.nullsLast(Comparator.comparing(Poster::getStartDate).reversed()))
-                    .collect(Collectors.toList()));
+        posters -> posters.stream().filter(poster -> poster.getStartDate().isBefore(LocalDateTime.now()))
+            .sorted(Comparator.nullsLast(Comparator.comparing(Poster::getStartDate).reversed()))
+            .collect(Collectors.toList()));
     CompletableFuture<List<Poster>> afterPosters = posterService.getPosters().thenApply(
-            posters -> posters.stream().filter(poster -> poster.getStartDate().isAfter(LocalDateTime.now()))
-                    .sorted(Comparator.nullsLast(Comparator.comparing(Poster::getStartDate)))
-                    .collect(Collectors.toList()));
+        posters -> posters.stream().filter(poster -> poster.getStartDate().isAfter(LocalDateTime.now()))
+            .sorted(Comparator.nullsLast(Comparator.comparing(Poster::getStartDate)))
+            .collect(Collectors.toList()));
     CompletableFuture<List<Poster>> allPosters = afterPosters.thenCombine(beforePosters, (list1, list2) -> {
       list1.addAll(list2);
       return list1;
     });
+=======
+  public CompletableFuture<List<Poster>> sortBySoonest(CompletableFuture<List<Poster>> myPosters) {
+    CompletableFuture<List<Poster>> beforePosters =
+        myPosters.thenApply(
+            posters ->
+                posters.stream()
+                    .filter(poster -> poster.getStartDate().isBefore(LocalDateTime.now()))
+                    .sorted(
+                        Comparator.nullsLast(Comparator.comparing(Poster::getStartDate).reversed()))
+                    .collect(Collectors.toList()));
+    CompletableFuture<List<Poster>> afterPosters =
+        posterService
+            .getPosters()
+            .thenApply(
+                posters ->
+                    posters.stream()
+                        .filter(poster -> poster.getStartDate().isAfter(LocalDateTime.now()))
+                        .sorted(Comparator.nullsLast(Comparator.comparing(Poster::getStartDate)))
+                        .collect(Collectors.toList()));
+    CompletableFuture<List<Poster>> allPosters =
+        afterPosters.thenCombine(
+            beforePosters,
+            (list1, list2) -> {
+              list1.addAll(list2);
+              return list1;
+            });
+>>>>>>> 3539c944a28c71aca4c3de34a26887ca4d0542f4
     return allPosters;
   }
 

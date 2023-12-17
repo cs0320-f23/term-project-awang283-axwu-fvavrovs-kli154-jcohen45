@@ -8,13 +8,9 @@ public class BMSearch {
   private char[] needle;
   private char[] haystack;
 
-  public BMSearch(String needle, String haystack) {
-
+  public boolean getSearchResult(String needle, String haystack) {
     this.needle = needle.toLowerCase().toCharArray();
     this.haystack = haystack.toLowerCase().toCharArray();
-  }
-
-  public boolean getSearchResult() {
     int index = BMSearch.indexOf(this.haystack, this.needle);
     if (index >= 0) {
       return true;
