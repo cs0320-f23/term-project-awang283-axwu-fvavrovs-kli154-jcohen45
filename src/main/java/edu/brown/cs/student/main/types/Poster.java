@@ -224,9 +224,7 @@ public class Poster {
     }
     return haystack.toString();
   }
-<<<<<<< HEAD
-}
-=======
+
 
   public String getUserId() {
     return userId;
@@ -236,4 +234,3 @@ public class Poster {
     this.userId = userId;
   }
 }
->>>>>>> 3539c944a28c71aca4c3de34a26887ca4d0542f4

@@ -244,21 +244,6 @@ public class PosterController {
         .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
   }
 
-<<<<<<< HEAD
-  public CompletableFuture<List<Poster>> sortBySoonest(CompletableFuture<List<Poster>> myPosters){
-    CompletableFuture<List<Poster>> beforePosters = myPosters.thenApply(
-        posters -> posters.stream().filter(poster -> poster.getStartDate().isBefore(LocalDateTime.now()))
-            .sorted(Comparator.nullsLast(Comparator.comparing(Poster::getStartDate).reversed()))
-            .collect(Collectors.toList()));
-    CompletableFuture<List<Poster>> afterPosters = posterService.getPosters().thenApply(
-        posters -> posters.stream().filter(poster -> poster.getStartDate().isAfter(LocalDateTime.now()))
-            .sorted(Comparator.nullsLast(Comparator.comparing(Poster::getStartDate)))
-            .collect(Collectors.toList()));
-    CompletableFuture<List<Poster>> allPosters = afterPosters.thenCombine(beforePosters, (list1, list2) -> {
-      list1.addAll(list2);
-      return list1;
-    });
-=======
   public CompletableFuture<List<Poster>> sortBySoonest(CompletableFuture<List<Poster>> myPosters) {
     CompletableFuture<List<Poster>> beforePosters =
         myPosters.thenApply(
@@ -284,7 +269,6 @@ public class PosterController {
               list1.addAll(list2);
               return list1;
             });
->>>>>>> 3539c944a28c71aca4c3de34a26887ca4d0542f4
     return allPosters;
   }
 
