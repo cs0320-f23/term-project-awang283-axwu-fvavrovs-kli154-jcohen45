@@ -2,7 +2,7 @@
 import { Box, HStack, IconButton, Select } from "@chakra-ui/react";
 import { Search2Icon, TriangleDownIcon } from "@chakra-ui/icons";
 import "../styles/Home.css";
-import { IPoster, ImageCard, getPosters } from "./Happenings";
+import { ImageCard } from "./Happenings";
 import { useEffect, useState } from "react";
 import { fetchTags } from "../functions/fetch";
 
@@ -78,21 +78,11 @@ export const images = [
   },
 ];
 
-const scrollToBottom = () => {
-  window.scrollTo({
-    top:
-      document.documentElement.scrollHeight -
-      document.documentElement.clientHeight -
-      40,
-    behavior: "smooth",
-  });
-};
-
 export default function Home() {
   const [searchInput, setSearchInput] = useState<string>("");
   const [searchTags, setSearchTags] = useState<string>("");
-  const [allPosters, setAllPosters] = useState<IPoster[]>([]);
   const [allTags, setAllTags] = useState<string[]>([]);
+  const offset = 40;
 
   useEffect(() => {
     const fetchAllTags = async () => {
@@ -103,10 +93,19 @@ export default function Home() {
         console.error("Error fetching tags:", error);
       }
     };
-    getPosters().then((data) => setAllPosters(data));
+
     fetchAllTags();
   }, []);
 
+  const scrollToBottom = () => {
+    window.scrollTo({
+      top:
+        document.documentElement.scrollHeight -
+        document.documentElement.clientHeight -
+        offset,
+      behavior: "smooth",
+    });
+  };
   return (
     <main className="posters">
       <div className="home-content">
@@ -163,7 +162,7 @@ export default function Home() {
         {/* map each poster to an img w/in a div  */}
       </div>
       <div className="happenings">
-        <div className="happenings-label">Happening Soon</div>
+        <div className="happenings-label">Happenings Today</div>
         <HStack
           spacing="3vw"
           alignItems="flex-start"
@@ -171,18 +170,17 @@ export default function Home() {
           padding="1.5vh 4vw"
           id="scroll"
         >
-          {allPosters.map((item, index) => (
+          {images.map((item, index) => (
             <Box key={index}>
-              <ImageCard
-                title={item.title}
-                content={item.content}
-                startDate={item.startDate}
-                endDate={item.endDate}
-                location={item.location}
-                link={item.link}
-                description={item.description}
-                tags={item.tags}
-              />
+              {ImageCard(
+                item.title,
+                item.path,
+                item.date,
+                item.time,
+                item.location,
+                item.link,
+                item.description
+              )}
             </Box>
           ))}
         </HStack>
