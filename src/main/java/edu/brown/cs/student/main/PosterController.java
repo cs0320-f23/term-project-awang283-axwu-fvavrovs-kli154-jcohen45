@@ -300,8 +300,7 @@ public class PosterController {
                         Comparator.nullsLast(Comparator.comparing(Poster::getStartDate).reversed()))
                     .collect(Collectors.toList()));
     CompletableFuture<List<Poster>> afterPosters =
-        posterService
-            .getPosters()
+            myPosters
             .thenApply(
                 posters ->
                     posters.stream()
