@@ -57,6 +57,33 @@ public class PosterController {
   }
 
   /**
+   * Sends a GET request for all posters that ended (or started if endDate not available)
+   *
+   * @return all posters (JSONified)
+   */
+  @GetMapping("/archive")
+  public CompletableFuture<ResponseEntity<List<Poster>>> getArchive() {
+    return posterService
+            .getPosters()
+            .thenApply(
+                    posters ->
+                            posters.stream()
+                                    .filter(poster -> {
+                                      LocalDateTime currentDate = LocalDateTime.now();
+                                      if (poster.getEndDate() != null) {
+                                        // Check if the endDate has passed
+                                        return poster.getEndDate().isBefore(currentDate);
+                                      }
+                                      // Check if the startDate has passed
+                                      return poster.getStartDate().isBefore(currentDate);
+                                    })
+                                    .sorted(Comparator.nullsLast(Comparator.comparing(Poster::getStartDate)).reversed())
+                                    .collect(Collectors.toList()))
+            .thenApply(ResponseEntity::ok)
+            .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+  }
+
+  /**
    * sends a GET request for one specific poster
    *
    * @param id the id (string) for the poster
