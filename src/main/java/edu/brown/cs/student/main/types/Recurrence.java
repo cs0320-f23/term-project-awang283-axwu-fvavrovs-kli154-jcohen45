@@ -1,12 +1,9 @@
 package edu.brown.cs.student.main.types;
 
 public class Recurrence {
-private String frequency;
+  private String frequency;
 
-
-  public Recurrence() {
-
-  }
+  public Recurrence() {}
 
   public String setFrequency() {
     return frequency;

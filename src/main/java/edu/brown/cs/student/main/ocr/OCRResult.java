@@ -2,230 +2,239 @@ package edu.brown.cs.student.main.ocr;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-
 public class OCRResult {
-    @JsonProperty("ParsedResults")
-    private List<ParsedResult> ParsedResults;
-    @JsonProperty("OCRExitCode")
-    private int OCRExitCode;
-    @JsonProperty("IsErroredOnProcessing")
-    private boolean IsErroredOnProcessing;
-    @JsonProperty("ProcessingTimeInMilliseconds")
-    private String ProcessingTimeInMilliseconds;
-    @JsonProperty("SearchablePDFURL")
-    private String SearchablePDFURL;
+  @JsonProperty("ParsedResults")
+  private List<ParsedResult> ParsedResults;
 
-    public List<ParsedResult> getParsedResults() {
-        return this.ParsedResults;
-    }
+  @JsonProperty("OCRExitCode")
+  private int OCRExitCode;
 
-    public void setParsedResults(List<ParsedResult> parsedResults) {
-        this.ParsedResults = parsedResults;
-    }
+  @JsonProperty("IsErroredOnProcessing")
+  private boolean IsErroredOnProcessing;
 
-    public int getOCRExitCode() {
-        return this.OCRExitCode;
-    }
+  @JsonProperty("ProcessingTimeInMilliseconds")
+  private String ProcessingTimeInMilliseconds;
 
-    public void setOCRExitCode(int OCRExitCode) {
-        this.OCRExitCode = OCRExitCode;
-    }
+  @JsonProperty("SearchablePDFURL")
+  private String SearchablePDFURL;
 
-    public boolean isErroredOnProcessing() {
-        return this.IsErroredOnProcessing;
-    }
+  public List<ParsedResult> getParsedResults() {
+    return this.ParsedResults;
+  }
 
-    public void setErroredOnProcessing(boolean erroredOnProcessing) {
-        this.IsErroredOnProcessing = erroredOnProcessing;
-    }
+  public void setParsedResults(List<ParsedResult> parsedResults) {
+    this.ParsedResults = parsedResults;
+  }
 
-    public String getProcessingTimeInMilliseconds() {
-        return this.ProcessingTimeInMilliseconds;
-    }
+  public int getOCRExitCode() {
+    return this.OCRExitCode;
+  }
 
-    public void setProcessingTimeInMilliseconds(String processingTimeInMilliseconds) {
-        this.ProcessingTimeInMilliseconds = processingTimeInMilliseconds;
-    }
+  public void setOCRExitCode(int OCRExitCode) {
+    this.OCRExitCode = OCRExitCode;
+  }
 
-    public String getSearchablePDFURL() {
-        return this.SearchablePDFURL;
-    }
+  public boolean isErroredOnProcessing() {
+    return this.IsErroredOnProcessing;
+  }
 
-    public void setSearchablePDFURL(String searchablePDFURL) {
-        this.SearchablePDFURL = searchablePDFURL;
-    }
+  public void setErroredOnProcessing(boolean erroredOnProcessing) {
+    this.IsErroredOnProcessing = erroredOnProcessing;
+  }
 
+  public String getProcessingTimeInMilliseconds() {
+    return this.ProcessingTimeInMilliseconds;
+  }
+
+  public void setProcessingTimeInMilliseconds(String processingTimeInMilliseconds) {
+    this.ProcessingTimeInMilliseconds = processingTimeInMilliseconds;
+  }
+
+  public String getSearchablePDFURL() {
+    return this.SearchablePDFURL;
+  }
+
+  public void setSearchablePDFURL(String searchablePDFURL) {
+    this.SearchablePDFURL = searchablePDFURL;
+  }
 }
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 class ParsedResult {
-    @JsonProperty("TextOverlay")
+  @JsonProperty("TextOverlay")
+  private TextOverlay TextOverlay;
 
-    private TextOverlay TextOverlay;
-    @JsonProperty("FileParseExitCode")
-    private int FileParseExitCode;
-    @JsonProperty("ParsedText")
+  @JsonProperty("FileParseExitCode")
+  private int FileParseExitCode;
 
-    private String ParsedText;
+  @JsonProperty("ParsedText")
+  private String ParsedText;
 
-    public TextOverlay getTextOverlay() {
-        return this.TextOverlay;
-    }
+  public TextOverlay getTextOverlay() {
+    return this.TextOverlay;
+  }
 
-    public void setTextOverlay(TextOverlay textOverlay) {
-        this.TextOverlay = textOverlay;
-    }
+  public void setTextOverlay(TextOverlay textOverlay) {
+    this.TextOverlay = textOverlay;
+  }
 
-    public int getFileParseExitCode() {
-        return this.FileParseExitCode;
-    }
+  public int getFileParseExitCode() {
+    return this.FileParseExitCode;
+  }
 
-    public void setFileParseExitCode(int fileParseExitCode) {
-        this.FileParseExitCode = fileParseExitCode;
-    }
+  public void setFileParseExitCode(int fileParseExitCode) {
+    this.FileParseExitCode = fileParseExitCode;
+  }
 
-    public String getParsedText() {
-        return this.ParsedText;
-    }
+  public String getParsedText() {
+    return this.ParsedText;
+  }
 
-    public void setParsedText(String parsedText) {
-        this.ParsedText = parsedText;
-    }
+  public void setParsedText(String parsedText) {
+    this.ParsedText = parsedText;
+  }
 }
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 class TextOverlay {
-    @JsonProperty("Lines")
-    private List<Line> Lines;
-    @JsonProperty("HasOverlay")
-    private boolean HasOverlay;
-    @JsonProperty("Message")
-    private String Message;
+  @JsonProperty("Lines")
+  private List<Line> Lines;
 
-    public List<Line> getLines() {
-        return this.Lines;
-    }
+  @JsonProperty("HasOverlay")
+  private boolean HasOverlay;
 
-    public void setLines(List<Line> lines) {
-        this.Lines = lines;
-    }
+  @JsonProperty("Message")
+  private String Message;
 
-    public boolean isHasOverlay() {
-        return this.HasOverlay;
-    }
+  public List<Line> getLines() {
+    return this.Lines;
+  }
 
-    public void setHasOverlay(boolean hasOverlay) {
-        this.HasOverlay = hasOverlay;
-    }
+  public void setLines(List<Line> lines) {
+    this.Lines = lines;
+  }
 
-    public String getMessage() {
-        return this.Message;
-    }
+  public boolean isHasOverlay() {
+    return this.HasOverlay;
+  }
 
-    public void setMessage(String message) {
-        this.Message = message;
-    }
+  public void setHasOverlay(boolean hasOverlay) {
+    this.HasOverlay = hasOverlay;
+  }
+
+  public String getMessage() {
+    return this.Message;
+  }
+
+  public void setMessage(String message) {
+    this.Message = message;
+  }
 }
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 class Line {
-    @JsonProperty("LineText")
-    private String LineText;
-    @JsonProperty("Words")
-    private List<Word> Words;
-    @JsonProperty("MaxHeight")
-    private double MaxHeight;
-    @JsonProperty("MinTop")
-    private double MinTop;
+  @JsonProperty("LineText")
+  private String LineText;
 
-    public String getLineText() {
-        return this.LineText;
-    }
+  @JsonProperty("Words")
+  private List<Word> Words;
 
-    public void setLineText(String lineText) {
-        this.LineText = lineText;
-    }
+  @JsonProperty("MaxHeight")
+  private double MaxHeight;
 
-    public List<Word> getWords() {
-        return this.Words;
-    }
+  @JsonProperty("MinTop")
+  private double MinTop;
 
-    public void setWords(List<Word> words) {
-        this.Words = words;
-    }
+  public String getLineText() {
+    return this.LineText;
+  }
 
-    public double getMaxHeight() {
-        return this.MaxHeight;
-    }
+  public void setLineText(String lineText) {
+    this.LineText = lineText;
+  }
 
-    public void setMaxHeight(double maxHeight) {
-        this.MaxHeight = maxHeight;
-    }
+  public List<Word> getWords() {
+    return this.Words;
+  }
 
-    public double getMinTop() {
-        return this.MinTop;
-    }
+  public void setWords(List<Word> words) {
+    this.Words = words;
+  }
 
-    public void setMinTop(double minTop) {
-        this.MinTop = minTop;
-    }
+  public double getMaxHeight() {
+    return this.MaxHeight;
+  }
+
+  public void setMaxHeight(double maxHeight) {
+    this.MaxHeight = maxHeight;
+  }
+
+  public double getMinTop() {
+    return this.MinTop;
+  }
+
+  public void setMinTop(double minTop) {
+    this.MinTop = minTop;
+  }
 }
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 class Word {
-    @JsonProperty("WordText")
-    private String WordText;
-    @JsonProperty("Left")
-    private double Left;
-    @JsonProperty("Top")
-    private double Top;
-    @JsonProperty("Height")
-    private double Height;
-    @JsonProperty("Width")
-    private double Width;
+  @JsonProperty("WordText")
+  private String WordText;
 
-    public String getWordText() {
-        return this.WordText;
-    }
+  @JsonProperty("Left")
+  private double Left;
 
-    public void setWordText(String wordText) {
-        this.WordText = wordText;
-    }
+  @JsonProperty("Top")
+  private double Top;
 
-    public double getLeft() {
-        return this.Left;
-    }
+  @JsonProperty("Height")
+  private double Height;
 
-    public void setLeft(double left) {
-        this.Left = left;
-    }
+  @JsonProperty("Width")
+  private double Width;
 
-    public double getTop() {
-        return this.Top;
-    }
+  public String getWordText() {
+    return this.WordText;
+  }
 
-    public void setTop(double top) {
-        this.Top = top;
-    }
+  public void setWordText(String wordText) {
+    this.WordText = wordText;
+  }
 
-    public double getHeight() {
-        return this.Height;
-    }
+  public double getLeft() {
+    return this.Left;
+  }
 
-    public void setHeight(double height) {
-        this.Height = height;
-    }
+  public void setLeft(double left) {
+    this.Left = left;
+  }
 
-    public double getWidth() {
-        return this.Width;
-    }
+  public double getTop() {
+    return this.Top;
+  }
 
-    public void setWidth(double width) {
-        this.Width = width;
-    }
+  public void setTop(double top) {
+    this.Top = top;
+  }
+
+  public double getHeight() {
+    return this.Height;
+  }
+
+  public void setHeight(double height) {
+    this.Height = height;
+  }
+
+  public double getWidth() {
+    return this.Width;
+  }
+
+  public void setWidth(double width) {
+    this.Width = width;
+  }
 }
-
