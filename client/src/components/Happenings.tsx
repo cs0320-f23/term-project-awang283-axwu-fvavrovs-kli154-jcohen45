@@ -170,9 +170,9 @@ export default function Happenings() {
     getPosters().then((data) => setAllPosters(data));
   }, []);
 
-  // useEffect(() => {
-  //   console.log(allPosters);
-  // }, [allPosters]);
+  useEffect(() => {
+    console.log(allPosters);
+  }, [allPosters]);
 
   return (
     <>

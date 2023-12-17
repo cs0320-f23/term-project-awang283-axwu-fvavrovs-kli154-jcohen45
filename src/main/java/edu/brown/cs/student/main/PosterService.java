@@ -83,7 +83,9 @@ public class PosterService {
                   if (updatedPoster.getLocation() != null)
                     oldPoster.setLocation(updatedPoster.getLocation());
                   if (updatedPoster.getLink() != null) oldPoster.setLink(updatedPoster.getLink());
-                  if (updatedPoster.getTags() != null) oldPoster.setTags(updatedPoster.getTags());
+                  if (updatedPoster.getTags() != null){
+                    oldPoster.setTags(updatedPoster.getTags());
+                  }
                   posterRepository.save(oldPoster);
                   return new ServiceResponse<>(oldPoster, "Poster updated");
                 } else {
@@ -164,18 +166,18 @@ public class PosterService {
                   return posters.stream()
                       .map(Poster::getTitle)
                       .collect(Collectors.toCollection(HashSet::new));
-                  //        case "createdAt":
-                  //          return posters.stream()
-                  //                  .map(poster -> poster.getCreatedAt().toString())
-                  //                  .collect(Collectors.toCollection(HashSet::new));
-                  //        case "startDate":
-                  //          return posters.stream()
-                  //                  .map(poster -> poster.getStartDate().toString())
-                  //                  .collect(Collectors.toCollection(HashSet::new));
-                  //        case "endDate":
-                  //          return posters.stream()
-                  //                  .map(poster -> poster.getEndDate().toString())
-                  //                  .collect(Collectors.toCollection(HashSet::new));
+                //        case "createdAt":
+                //          return posters.stream()
+                //                  .map(poster -> poster.getCreatedAt().toString())
+                //                  .collect(Collectors.toCollection(HashSet::new));
+                //        case "startDate":
+                //          return posters.stream()
+                //                  .map(poster -> poster.getStartDate().toString())
+                //                  .collect(Collectors.toCollection(HashSet::new));
+                //        case "endDate":
+                //          return posters.stream()
+                //                  .map(poster -> poster.getEndDate().toString())
+                //                  .collect(Collectors.toCollection(HashSet::new));
                 default:
                   return new HashSet<>();
               }

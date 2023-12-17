@@ -3,13 +3,9 @@ package edu.brown.cs.student.main.types;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDateTime;
-<<<<<<< HEAD
-import java.util.HashSet;
-=======
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
->>>>>>> 6d344fbf209c37f6bda3ca7948a3939e5b58185d
 import java.util.UUID;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -181,15 +177,6 @@ public class Poster {
     this.tags.remove(tag);
   }
 
-<<<<<<< HEAD
-  public Recurrence getIsRecurring() {
-    return isRecurring;
-  }
-
-  public void setIsRecurring(Recurrence recurring) {
-    isRecurring = recurring;
-  }
-=======
 //  public Recurrence getIsRecurring() {
 //    return isRecurring;
 //  }
@@ -197,7 +184,6 @@ public class Poster {
 //  public void setIsRecurring(Recurrence recurring) {
 //    isRecurring = recurring;
 //  }
->>>>>>> 6d344fbf209c37f6bda3ca7948a3939e5b58185d
 
   public LocalDateTime getCreatedAt() {
 
