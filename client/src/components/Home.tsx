@@ -5,6 +5,9 @@ import "../styles/Home.css";
 import { IPoster, ImageCard, getPosters } from "./Happenings";
 import { useEffect, useState } from "react";
 import { fetchTags } from "../functions/fetch";
+import { useNavigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { searchState } from "./atoms/atoms";
 
 export const images = [
   {
@@ -89,10 +92,22 @@ const scrollToBottom = () => {
 };
 
 export default function Home() {
-  const [searchInput, setSearchInput] = useState<string>("");
+  const [searchInput, setSearchInput] = useRecoilState(searchState);
   const [searchTags, setSearchTags] = useState<string>("");
   const [allPosters, setAllPosters] = useState<IPoster[]>([]);
   const [allTags, setAllTags] = useState<string[]>([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    setSearchInput("");
+  }, []);
+
+  // Handle Enter key press
+  const handleKeyPress = (ev) => {
+    if (ev.key === "Enter") {
+      navigate("/happenings");
+    }
+  };
 
   useEffect(() => {
     const fetchAllTags = async () => {
@@ -121,8 +136,8 @@ export default function Home() {
             type="text"
             value={searchInput}
             onChange={(ev) => setSearchInput(ev.target.value)}
+            onKeyDown={(ev) => handleKeyPress(ev)}
           />{" "}
-          {/*TODO onclick navs to Happenings, fetches results of search, displays in happenings search bar */}
           <Box w="11.5vw">
             <Select
               className="tag-select"

@@ -3,14 +3,18 @@ package edu.brown.cs.student.main;
 import edu.brown.cs.student.main.imgur.ImgurService;
 import edu.brown.cs.student.main.responses.ServiceResponse;
 import edu.brown.cs.student.main.types.Poster;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 /** This class defines the mappings and endpoints for poster management */
 @RestController
@@ -273,8 +277,7 @@ public class PosterController {
                         Comparator.nullsLast(Comparator.comparing(Poster::getStartDate).reversed()))
                     .collect(Collectors.toList()));
     CompletableFuture<List<Poster>> afterPosters =
-        posterService
-            .getPosters()
+        myPosters
             .thenApply(
                 posters ->
                     posters.stream()
