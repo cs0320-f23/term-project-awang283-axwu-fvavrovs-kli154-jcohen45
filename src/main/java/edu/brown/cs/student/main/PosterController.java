@@ -192,10 +192,10 @@ public class PosterController {
   // TODO: have some error checking (on frontend) to display an error if the link is corrupted
   @PostMapping(value = "/create/fromlink")
   public CompletableFuture<ServiceResponse<Poster>> createFromLink(
-      @RequestBody Content content, @RequestParam String userId) {
+      @RequestBody Content content, @RequestParam(required = false) String userId) {
     Poster poster = new Poster();
     poster.setContent(content.getContent());
-    this.posterService.createPoster(poster, userId);
+    this.posterService.createPoster(poster, "1");
     return CompletableFuture.completedFuture(
         new ServiceResponse<Poster>(poster, "created new poster using existing link"));
   }
@@ -208,11 +208,11 @@ public class PosterController {
    */
   @PostMapping(value = "/create/imgur")
   public CompletableFuture<ServiceResponse<Poster>> createImgurLink(
-      @RequestBody MultipartFile content, @RequestParam String userId) {
+      @RequestBody MultipartFile content, @RequestParam(required = false) String userId) {
     Poster poster = new Poster();
     ServiceResponse<String> imgurResponse = imgurService.uploadToImgur(content);
     poster.setContent(imgurResponse.getData());
-    this.posterService.createPoster(poster, userId);
+    this.posterService.createPoster(poster, "1");
     return CompletableFuture.completedFuture(
         new ServiceResponse<Poster>(poster, "uploaded to imgur"));
   }
