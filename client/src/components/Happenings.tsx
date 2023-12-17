@@ -9,6 +9,9 @@ import {
 import { useCallback, useEffect, useState } from "react";
 import ViewPosterModal from "./ViewPosterModal";
 import axios from "axios";
+import { useRecoilState } from "recoil";
+import { searchState } from "./atoms/atoms";
+import { fetchTags } from "../functions/fetch";
 
 const scrollToTop = () => {
   window.scrollTo({
@@ -135,6 +138,7 @@ export const ImageCard: React.FC<ImageCardProps> = ({
             location={location!}
             link={link!}
             description={description!}
+            tags={tags!}
           />
         )}
       </div>
@@ -161,18 +165,50 @@ export async function getPosters() {
 }
 
 export default function Happenings() {
-  const [searchInput, setSearchInput] = useState<string>("");
   const [searchTags, setSearchTags] = useState<string>("");
   const [sortPosters, setSortPosters] = useState<string>("");
-  const [allPosters, setAllPosters] = useState<IPoster[]>([]);
+  const [searchInput, setSearchInput] = useRecoilState(searchState);
+  const [searchResults, setSearchResults] = useState<IPoster[]>([]);
+  const [allTags, setAllTags] = useState<string[]>([]);
 
   useEffect(() => {
-    getPosters().then((data) => setAllPosters(data));
+    const fetchAllTags = async () => {
+      try {
+        const tagsData = await fetchTags();
+        setAllTags(tagsData);
+      } catch (error) {
+        console.error("Error fetching tags:", error);
+      }
+    };
+    fetchAllTags();
+    if (searchInput.length > 0) {
+      getSearchResults();
+    } else {
+      getPosters().then((data) => setSearchResults(data));
+    }
   }, []);
 
-  useEffect(() => {
-    console.log(allPosters);
-  }, [allPosters]);
+  const getSearchResults = async () => {
+    if (searchInput == "" || searchInput == " ") {
+      getPosters().then((data) => setSearchResults(data));
+    } else {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/posters/term?term=${searchInput}&tags=${searchTags}`
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch data");
+        }
+
+        const results: IPoster[] = await response.json();
+
+        setSearchResults(results);
+      } catch (error) {
+        console.error("Error fetching search results:", error);
+      }
+    }
+  };
 
   return (
     <>
@@ -186,6 +222,12 @@ export default function Happenings() {
               type="text"
               value={searchInput}
               onChange={(ev) => setSearchInput(ev.target.value)}
+              onKeyDown={(ev) => {
+                if (ev.key === "Enter") {
+                  ev.preventDefault();
+                  getSearchResults();
+                }
+              }}
             />
             <Box w="10vw">
               <Select
@@ -203,9 +245,13 @@ export default function Happenings() {
                 value={searchTags}
                 onChange={(ev) => setSearchTags(ev.target.value)}
               >
-                <option value="option1">Free Food</option>
-                <option value="option2">Party</option>
-                <option value="option3">Outdoor</option>
+                {allTags.map((tag, index) => {
+                  return (
+                    <option key={index} value={tag}>
+                      {tag}
+                    </option>
+                  );
+                })}
               </Select>
             </Box>
           </div>
@@ -232,7 +278,7 @@ export default function Happenings() {
           padding={4}
           sx={{ columnCount: [1, 2, 3], columnGap: "3vw" }}
         >
-          {allPosters.map((item, index) => (
+          {searchResults.map((item, index) => (
             <Box key={index}>
               <ImageCard
                 title={item.title}

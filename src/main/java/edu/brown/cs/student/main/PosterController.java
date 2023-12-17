@@ -3,14 +3,18 @@ package edu.brown.cs.student.main;
 import edu.brown.cs.student.main.imgur.ImgurService;
 import edu.brown.cs.student.main.responses.ServiceResponse;
 import edu.brown.cs.student.main.types.Poster;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 /** This class defines the mappings and endpoints for poster management */
 @RestController
@@ -51,6 +55,33 @@ public class PosterController {
                             posters.stream()
                                     .filter(poster -> poster.getStartDate().isAfter(LocalDateTime.now()))
                                     .sorted(Comparator.nullsLast(Comparator.comparing(Poster::getStartDate)))
+                                    .collect(Collectors.toList()))
+            .thenApply(ResponseEntity::ok)
+            .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+  }
+
+  /**
+   * Sends a GET request for all posters that ended (or started if endDate not available)
+   *
+   * @return all posters (JSONified)
+   */
+  @GetMapping("/archive")
+  public CompletableFuture<ResponseEntity<List<Poster>>> getArchive() {
+    return posterService
+            .getPosters()
+            .thenApply(
+                    posters ->
+                            posters.stream()
+                                    .filter(poster -> {
+                                      LocalDateTime currentDate = LocalDateTime.now();
+                                      if (poster.getEndDate() != null) {
+                                        // Check if the endDate has passed
+                                        return poster.getEndDate().isBefore(currentDate);
+                                      }
+                                      // Check if the startDate has passed
+                                      return poster.getStartDate().isBefore(currentDate);
+                                    })
+                                    .sorted(Comparator.nullsLast(Comparator.comparing(Poster::getStartDate)).reversed())
                                     .collect(Collectors.toList()))
             .thenApply(ResponseEntity::ok)
             .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
@@ -165,10 +196,10 @@ public class PosterController {
   // TODO: have some error checking (on frontend) to display an error if the link is corrupted
   @PostMapping(value = "/create/fromlink")
   public CompletableFuture<ServiceResponse<Poster>> createFromLink(
-      @RequestBody Content content, @RequestParam String userId) {
+      @RequestBody Content content, @RequestParam(required = false) String userId) {
     Poster poster = new Poster();
     poster.setContent(content.getContent());
-    this.posterService.createPoster(poster, userId);
+    this.posterService.createPoster(poster, "1");
     return CompletableFuture.completedFuture(
         new ServiceResponse<Poster>(poster, "created new poster using existing link"));
   }
@@ -181,11 +212,11 @@ public class PosterController {
    */
   @PostMapping(value = "/create/imgur")
   public CompletableFuture<ServiceResponse<Poster>> createImgurLink(
-      @RequestBody MultipartFile content, @RequestParam String userId) {
+      @RequestBody MultipartFile content, @RequestParam(required = false) String userId) {
     Poster poster = new Poster();
     ServiceResponse<String> imgurResponse = imgurService.uploadToImgur(content);
     poster.setContent(imgurResponse.getData());
-    this.posterService.createPoster(poster, userId);
+    this.posterService.createPoster(poster, "1");
     return CompletableFuture.completedFuture(
         new ServiceResponse<Poster>(poster, "uploaded to imgur"));
   }
@@ -273,9 +304,7 @@ public class PosterController {
                         Comparator.nullsLast(Comparator.comparing(Poster::getStartDate).reversed()))
                     .collect(Collectors.toList()));
     CompletableFuture<List<Poster>> afterPosters =
-        posterService
-            .getPosters()
-            .thenApply(
+            myPosters.thenApply(
                 posters ->
                     posters.stream()
                         .filter(poster -> poster.getStartDate().isAfter(LocalDateTime.now()))

@@ -16,6 +16,7 @@ interface viewProps {
   location: string;
   link: string;
   description: string;
+  tags: string[];
 }
 
 export default function ViewPosterModal({
@@ -27,8 +28,19 @@ export default function ViewPosterModal({
   location,
   link,
   description,
+  tags,
 }: viewProps) {
   const [weekday, month, day] = date.split(" ");
+
+  const classNameTag = (index: number) => {
+    if (index % 3 == 0) {
+      return "magenta-tag";
+    } else if (index % 3 == 1) {
+      return "green-tag";
+    } else {
+      return "blue-tag";
+    }
+  };
   return (
     <>
       <Modal isOpen={true} onClose={onClose}>
@@ -55,7 +67,7 @@ export default function ViewPosterModal({
                     {time && <p>Time</p>}
                     {location && <p>Where</p>}
                     {link && <p>Link</p>}
-                    <p>Tags</p>
+                    {tags.length > 0 && <p>Tags</p>}
                   </div>
                   <div className="poster-info">
                     <p>{weekday + ", " + month + " " + day}</p>
@@ -67,11 +79,13 @@ export default function ViewPosterModal({
                       </a>
                     )}
                     <div id="row">
-                      <div className="magenta-tag">Free Food</div>
-                      <div className="green-tag">Party</div>
-                      <div className="blue-tag">Outdoor</div>
-                      <div className="magenta-tag">Free Food</div>
-                      <div className="green-tag">Party</div>
+                      {tags.map((tag, index) => {
+                        return (
+                          <div key={tag} className={classNameTag(index)}>
+                            {tag}
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 </div>
