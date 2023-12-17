@@ -1,17 +1,20 @@
 package edu.brown.cs.student.main;
 
+import edu.brown.cs.student.main.ocr.OCRAsyncTask;
 import edu.brown.cs.student.main.responses.ServiceResponse;
 import edu.brown.cs.student.main.types.Poster;
 import edu.brown.cs.student.main.types.PosterRepository;
+import edu.brown.cs.student.main.user.User;
+import edu.brown.cs.student.main.user.UserService;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
-
-import edu.brown.cs.student.main.user.User;
-import edu.brown.cs.student.main.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -34,47 +37,88 @@ public class PosterService {
     this.userService = userService;
   }
 
-//  @Async
-//  public CompletableFuture<ServiceResponse<Poster>> createPoster(Poster poster) {
-//    ServiceResponse<Poster> response;
-//    // Save the Poster object to the database
-//    if (poster.isPoster()) {
-//      if (posterRepository
-//          .findById(poster.getID())
-//          .isEmpty()) { // check if already exists in database
-//        Poster savedPoster = posterRepository.insert(poster);
-//        // Create a response object
-//        response = new ServiceResponse<>(savedPoster, "added to database");
-//      } else {
-//        Poster savedPoster = posterRepository.save(poster);
-//        // Create a response object
-//        response = new ServiceResponse<>(savedPoster, "saved to database");
-//      }
-//    } else {
-//      response = new ServiceResponse<>(poster, "not added to database");
-//    }
-//    // CompletableFuture is basically a Promise
-//    return CompletableFuture.completedFuture(response);
-//  }
-@Async
-public CompletableFuture<ServiceResponse<Poster>> createPoster(Poster poster, String userId) {
-  ServiceResponse<Poster> response;
+  //  @Async
+  //  public CompletableFuture<ServiceResponse<Poster>> createPoster(Poster poster) {
+  //    ServiceResponse<Poster> response;
+  //    // Save the Poster object to the database
+  //    if (poster.isPoster()) {
+  //      if (posterRepository
+  //          .findById(poster.getID())
+  //          .isEmpty()) { // check if already exists in database
+  //        Poster savedPoster = posterRepository.insert(poster);
+  //        // Create a response object
+  //        response = new ServiceResponse<>(savedPoster, "added to database");
+  //      } else {
+  //        Poster savedPoster = posterRepository.save(poster);
+  //        // Create a response object
+  //        response = new ServiceResponse<>(savedPoster, "saved to database");
+  //      }
+  //    } else {
+  //      response = new ServiceResponse<>(poster, "not added to database");
+  //    }
+  //    // CompletableFuture is basically a Promise
+  //    return CompletableFuture.completedFuture(response);
+  //  }
 
-  // Associate the poster with the user
-  CompletableFuture<ServiceResponse<User>> associateResponse = userService.associatePosterWithUser(userId, poster);
-  ServiceResponse<User> userServiceResponse = associateResponse.join();
+  @Async
+  public CompletableFuture<ServiceResponse<Poster>> createPoster(Poster poster, String userID) {
+    ServiceResponse<Poster> response;
+    // Associate the poster with the user
+    CompletableFuture<ServiceResponse<User>> associateResponse =
+            userService.associatePosterWithUser(userID, poster);
 
-  if (userServiceResponse.getData() != null) {
-    // If the user was found and the poster was associated, proceed with creating the poster
-    Poster savedPoster = posterRepository.insert(poster);
-    response = new ServiceResponse<>(savedPoster, "added to database and associated with user");
-  } else {
-    // If the user was not found, return an error response
-    response = new ServiceResponse<>(poster, "not added to database or user not found");
+    try {
+      associateResponse.get(); // Wait for the completion of the asynchronous task
+    } catch (InterruptedException | ExecutionException e) {
+      System.err.println("Error: " + e.getMessage());
+    }
+
+    if (!associateResponse.isCompletedExceptionally()){
+      System.out.println(associateResponse);
+      System.out.println("associateResponse.isCompletedExceptionally() == false");
+      // Save the Poster object to the database
+      try {
+        OCRAsyncTask task = new OCRAsyncTask();
+        HashMap suggestedFields =
+                task.sendPost("K85630038588957", true, poster.getContent(), "eng");
+        poster.setTitle((String) suggestedFields.get("title"));
+        poster.setDescription((String) suggestedFields.get("description"));
+        poster.setLink((String) suggestedFields.get("link"));
+        poster.setTags((HashSet<String>) suggestedFields.get("tags"));
+        poster.setStartDate((LocalDateTime) suggestedFields.get("startDate"));
+
+        //      suggestedFields.setID(poster.getID());
+        //      this.updatePoster(suggestedFields);
+      } catch (Exception e) {
+        System.err.println("Error reading text on image file: " + e.getMessage());
+      }
+
+      if (poster.isPoster()) {
+        if (posterRepository
+                .findById(poster.getID())
+                .isEmpty()) { // check if already exists in database
+          System.out.println("Saving to mongo now");
+          Poster savedPoster = posterRepository.insert(poster);
+          // Create a response object
+          response = new ServiceResponse<>(savedPoster, "added to database");
+        } else {
+          System.out.println("Saving to mongo now");
+          Poster savedPoster = posterRepository.save(poster);
+          // Create a response object
+          response = new ServiceResponse<>(savedPoster, "saved to database");
+        }
+      } else {
+        response = new ServiceResponse<>(poster, "not added to database");
+      }
+      //  }
+      response = new ServiceResponse<>(poster, "not added to database");
+      // CompletableFuture is basically a Promise
+      return CompletableFuture.completedFuture(response);
+    }
+
+    return CompletableFuture.completedFuture(new ServiceResponse<>(poster, "Invalid user ID provided"));
+
   }
-
-  return CompletableFuture.completedFuture(response);
-}
   //  @Async
   //  public CompletableFuture<ServiceResponse<Poster>> updatePoster(Poster updatedPoster) {
   //
@@ -107,8 +151,7 @@ public CompletableFuture<ServiceResponse<Poster>> createPoster(Poster poster, St
                   if (updatedPoster.getDescription() != null)
                     oldPoster.setDescription(updatedPoster.getDescription());
                   if (updatedPoster.getLink() != null) oldPoster.setLink(updatedPoster.getLink());
-                  if (updatedPoster.getStartDate() != null)
-                    oldPoster.setTags(updatedPoster.getTags());
+                  if (updatedPoster.getTags() != null) oldPoster.setTags(updatedPoster.getTags());
                   posterRepository.save(oldPoster);
                   return new ServiceResponse<>(oldPoster, "Poster updated");
                 } else {
@@ -185,10 +228,11 @@ public CompletableFuture<ServiceResponse<Poster>> createPoster(Poster poster, St
                   return posters.stream()
                       .flatMap(poster -> poster.getTags().stream())
                       .collect(Collectors.toCollection(HashSet::new));
-                case "organization":
-                  return posters.stream()
-                      .map(Poster::getOrganization)
-                      .collect(Collectors.toCollection(HashSet::new));
+                  //                        case "organization":
+                  //                          return posters.stream()
+                  //                                  .map(Poster::getOrganization)
+                  //
+                  // .collect(Collectors.toCollection(HashSet::new));
                 case "title":
                   return posters.stream()
                       .map(Poster::getTitle)
@@ -211,15 +255,15 @@ public CompletableFuture<ServiceResponse<Poster>> createPoster(Poster poster, St
             });
   }
 
-  @Async
-  public CompletableFuture<List<Poster>> searchByOrganization(String org) {
-    return this.getPosters()
-        .thenApply(
-            posters ->
-                posters.stream()
-                    .filter(poster -> poster.getOrganization().equals(org))
-                    .collect(Collectors.toList()));
-  }
+  //  @Async
+  //  public CompletableFuture<List<Poster>> searchByOrganization(String org) {
+  //    return this.getPosters()
+  //            .thenApply(
+  //                    posters ->
+  //                            posters.stream()
+  //                                    .filter(poster -> poster.getOrganization().equals(org))
+  //                                    .collect(Collectors.toList()));
+  //  }
 
   @Async
   public CompletableFuture<List<Poster>> searchByTerm(String term, String[] tags) {
@@ -253,7 +297,7 @@ public CompletableFuture<ServiceResponse<Poster>> createPoster(Poster poster, St
 
   private boolean searchTermHelper(Poster poster, String term) {
     String haystack = poster.returnHaystack();
-    BMSearch searcher = new BMSearch(term, haystack);
-    return searcher.getSearchResult();
+    BMSearch searcher = new BMSearch();
+    return searcher.getSearchResult(term, haystack);
   }
 }
