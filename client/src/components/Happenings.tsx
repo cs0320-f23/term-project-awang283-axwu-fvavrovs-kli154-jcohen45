@@ -121,7 +121,10 @@ export const ImageCard: React.FC<ImageCardProps> = ({
             </div>
             <div className="weekday-time">
               <p id="weekday">{weekday}</p>
-              <p id="time">{startTime}</p>
+              <p id="time">
+                {startTime}
+                {endTime && "-" + endTime}
+              </p>
             </div>
           </div>
           <div className="title-location">
@@ -135,7 +138,8 @@ export const ImageCard: React.FC<ImageCardProps> = ({
             title={title}
             path={content}
             date={fullDate}
-            time={startTime}
+            startTime={startTime}
+            endTime={endTime!}
             location={location!}
             link={link!}
             description={description!}

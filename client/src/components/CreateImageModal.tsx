@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Img,
   Input,
   Modal,
   ModalBody,
@@ -29,11 +30,13 @@ interface IPoster {
 }
 
 export default function CreateImageModal({ onClose }) {
-  const [, setImgUrl] = useState<string>("");
+  const [ImgUrl, setImgUrl] = useState<string>("");
   const [showTags, setShowTags] = useState<boolean>(false);
   const [posterSrc, setPosterSrc] = useState<string>("");
   const [poster, setPoster] = useState<IPoster>({});
   const [posterId, setPosterId] = useState<string>("");
+  const [posterTitle, setPosterTitle] = useState<string>("");
+  const [posterDesc, setPosterDesc] = useState<string>("");
 
   const handleChange = (
     value: string[] | string | Set<string>,
@@ -48,7 +51,18 @@ export default function CreateImageModal({ onClose }) {
 
       console.log(JSON.stringify(Array.from(value)) + " updated tags");
     } else {
-      updatedValue = { [property]: value };
+      if (property === "title" && typeof value == "string") {
+        setPosterTitle(value);
+        updatedValue = { [property]: posterTitle };
+      } else if (property === "description" && typeof value == "string") {
+        setPosterDesc(value);
+        updatedValue = { [property]: posterDesc };
+      } else if (property === "content" && typeof value == "string") {
+        setImgUrl(value);
+        updatedValue = { [property]: ImgUrl };
+      } else {
+        updatedValue = { [property]: value };
+      }
     }
     setPoster((prevPoster) => ({
       ...prevPoster,
@@ -58,7 +72,23 @@ export default function CreateImageModal({ onClose }) {
       callback();
     }
     return poster;
-    // console.log(JSON.stringify(poster) + " after updated tags");
+  };
+
+  const setCVFields = async (id: string) => {
+    try {
+      const url = "http://localhost:8080/posters/" + id;
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
+      }
+
+      const res = await response.json();
+      setPosterTitle(res.data.title);
+      setPosterDesc(res.data.description);
+    } catch (error) {
+      console.error("Error fetching search results:", error);
+    }
   };
 
   const setUserLink = async (target: EventTarget) => {
@@ -86,9 +116,11 @@ export default function CreateImageModal({ onClose }) {
         const formData = new FormData();
         formData.append("content", inputElement.value);
         const res = await axios.post(url, formData, config);
-
         setPosterSrc(inputElement.value);
+        //need at least 3 seconds to give enough time for the poster to be created + id to exist
+        await new Promise((resolve) => setTimeout(resolve, 3000));
         setPosterId(res.data.data.id);
+        setCVFields(res.data.data.id);
         return Promise.resolve(res.data.data);
       } catch (error) {
         if (axios.isAxiosError(error) && error.response) {
@@ -133,14 +165,6 @@ export default function CreateImageModal({ onClose }) {
     }
   };
 
-  const onSaveSelectTags = () => {
-    setShowTags(true);
-  };
-
-  const onBack = () => {
-    setShowTags(false);
-  };
-
   const handlePosterUpload = async (target: EventTarget & HTMLInputElement) => {
     if (target.files) {
       const file = target.files[0]; //getting the file object
@@ -157,8 +181,19 @@ export default function CreateImageModal({ onClose }) {
       }
 
       const output = await createImgurLink(file);
+      //need at least 3 seconds to give enough time for the poster to be created + id to exist
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+      setCVFields(output.id);
       setImgUrl(output.content);
     }
+  };
+
+  const onSaveSelectTags = () => {
+    setShowTags(true);
+  };
+
+  const onBack = () => {
+    setShowTags(false);
   };
 
   return (
@@ -199,7 +234,7 @@ export default function CreateImageModal({ onClose }) {
                         <Input
                           id="image-url"
                           placeholder="Enter URL - .PNG or .JPG/JPEG"
-                          value={poster.content}
+                          value={ImgUrl}
                           onChange={(ev) =>
                             handleChange(ev.target.value, "content")
                           }
@@ -227,7 +262,7 @@ export default function CreateImageModal({ onClose }) {
                       <h3>Title</h3>
                       <Input
                         placeholder="Enter Title"
-                        value={poster.title}
+                        value={posterTitle}
                         onChange={(ev) =>
                           handleChange(ev.target.value, "title")
                         }
@@ -307,7 +342,7 @@ export default function CreateImageModal({ onClose }) {
                         placeholder="Enter Description"
                         wordBreak="break-word"
                         resize="none"
-                        value={poster.description}
+                        value={posterDesc}
                         onChange={(ev) =>
                           handleChange(ev.target.value, "description")
                         }

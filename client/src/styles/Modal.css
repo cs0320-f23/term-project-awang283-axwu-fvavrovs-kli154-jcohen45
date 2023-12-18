@@ -32,7 +32,7 @@
   min-height: 90%;
   margin: auto !important;
   border-radius: 25px !important;
-  font-family: "quicksand, sans-serif";
+  font-family: "quicksand", sans-serif;
 }
 
 .modal-body {
@@ -188,7 +188,6 @@ input::placeholder {
 }
 
 #view-title {
-  font-family: "quicksand", sans-serif;
   font-size: 44px;
   overflow: wrap;
   line-height: 115%;
@@ -207,35 +206,32 @@ input::placeholder {
 
 .poster-details {
   display: flex;
-  flex-flow: row;
-  gap: 3vw;
+  flex-flow: column;
+  gap: 1.5vh;
 }
 
-.poster-field {
+.info-row {
   display: flex;
-  flex-flow: column;
-  gap: 2vh;
+  flex-flow: row;
+}
+
+.field-name {
   color: var(--dark-purple70);
+  width: 5vw;
+}
+
+#field-text {
+  flex: 1;
+  color: var(--dark-purple100);
+  overflow-x: auto;
 }
 
 #description-field {
   color: var(--dark-purple70);
 }
 
-#description-text {
-  font-family: "quicksand", sans-serif;
-}
-
-.poster-info {
-  display: flex;
-  flex-flow: column;
-  gap: 2vh;
-  color: var(--dark-purple100);
-  overflow-x: auto;
-}
-
 #description-input {
-  height: 19vh !important;
+  height: 21vh !important;
   text-align: left;
   padding: 5px 10px !important;
   border-radius: 10px !important;
@@ -268,7 +264,6 @@ input::placeholder {
 
 #poster-link {
   margin: 0;
-  font-family: "quicksand", sans-serif;
 }
 
 #poster-link:hover {

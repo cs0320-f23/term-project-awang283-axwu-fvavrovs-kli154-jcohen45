@@ -188,13 +188,14 @@ public class Tags {
                 "rsvp",
                 "dug",
                 "languages",
-            "semiformal",
+                "semiformal",
                 "career",
                 "application",
                 "publication",
                 "cultural",
                 "STEM",
-                "Brown students only"));
+                "Brown/RISD",
+                "Brown-only"));
     return tags;
   }
 
