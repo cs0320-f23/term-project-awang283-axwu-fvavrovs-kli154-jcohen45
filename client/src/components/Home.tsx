@@ -153,7 +153,7 @@ export default function Home() {
               value={searchTags}
               onChange={(ev) => setSearchTags(ev.target.value)}
             >
-               {allTags.map((tag, index) => {
+              {allTags.map((tag, index) => {
                 return (
                   <option key={index} value={tag}>
                     {tag}
@@ -182,7 +182,7 @@ export default function Home() {
           padding="1.5vh 4vw"
           id="scroll"
         >
-          {allPosters.map((item, index) => (
+          {allPosters.slice(0, 9).map((item, index) => (
             <Box key={index}>
               <ImageCard
                 title={item.title}

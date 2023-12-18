@@ -1,14 +1,35 @@
 // import React from "react";
 import "../styles/Archive.css";
 import { TriangleUpIcon } from "@chakra-ui/icons";
-import { ImageCard, getPosters } from "./Happenings";
+import { IPoster, ImageCard } from "./Happenings";
 import { Box, IconButton } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { fetchTags } from "../functions/fetch";
+import axios from "axios";
+import Masonry from "react-responsive-masonry";
 
 export default function Archive() {
   const [searchResults, setSearchResults] = useState<IPoster[]>([]);
   const [, setAllTags] = useState<string[]>([]);
+
+  async function getArchive() {
+    try {
+      const url = "http://localhost:8080/posters/archive";
+      const res = await axios.get<IPoster[]>(url);
+      return Promise.resolve(res.data);
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        console.log(error.response.data.message);
+        console.log(error);
+        return Promise.resolve(
+          `Error in fetch: ${error.response.data.message}`
+        );
+      } else {
+        console.log("Network error or other issue:", error.message);
+        return Promise.resolve("Error in fetch: Network error or other issue");
+      }
+    }
+  }
 
   useEffect(() => {
     const fetchAllTags = async () => {
@@ -21,7 +42,7 @@ export default function Archive() {
     };
     fetchAllTags();
     const images = () => {
-      getPosters().then((data) => setSearchResults(data));
+      getArchive().then((data) => setSearchResults(data));
     };
     images();
   }, []);
@@ -35,19 +56,11 @@ export default function Archive() {
 
   return (
     <main className="happenings">
-      <h1 id="year" style={{ marginBottom: "5%" }}>
-        2023
-      </h1>
-      <Box
-        className="archive-grid"
-        padding={4}
-        sx={{ columnCount: [1, 2, 3], columnGap: "3vw" }}
-        marginTop={"2%"}
-      >
+      <h1 id="year">2023</h1>
+      <Masonry className="grid" columnsCount={3}>
         {searchResults.map(
           (item, index) =>
-            item.startDate[0] < 2024 &&
-            item.startDate[0] > 2022 && (
+            item.startDate[0] === 2023 && (
               <Box key={index}>
                 <ImageCard
                   title={item.title}
@@ -62,16 +75,12 @@ export default function Archive() {
               </Box>
             )
         )}
-      </Box>
+      </Masonry>
       <h1 id="year">2022</h1>
-      <Box
-        className="archive-grid"
-        padding={4}
-        sx={{ columnCount: [1, 2, 3], columnGap: "3vw" }}
-      >
+      <Masonry className="grid" columnsCount={3}>
         {searchResults.map(
           (item, index) =>
-            item.startDate[0] < 2023 && (
+            item.startDate[0] === 2022 && (
               <Box key={index}>
                 <ImageCard
                   title={item.title}
@@ -86,7 +95,7 @@ export default function Archive() {
               </Box>
             )
         )}
-      </Box>
+      </Masonry>
       <IconButton
         className="scroll-top"
         color="white"
