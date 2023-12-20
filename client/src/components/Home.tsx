@@ -248,13 +248,6 @@ export default function Home() {
                 </Modal>
               )}
 
-              {allTags.map((tag, index) => {
-                return (
-                  <option key={index} value={tag}>
-                    {tag}
-                  </option>
-                );
-              })}
               {/* </Select> */}
             </Box>
           </div>
