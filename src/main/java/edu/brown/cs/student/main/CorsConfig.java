@@ -18,10 +18,11 @@ public class CorsConfig {
             .allowedOrigins("http://localhost:5173") // Add your frontend URL here
             .allowedMethods("GET", "POST", "PUT", "DELETE")
             .allowedHeaders("*");
-        registry.addMapping("/users/**")
-                .allowedOrigins("http://localhost:5173")
-                .allowedMethods("GET", "POST", "PUT", "DELETE")
-                .allowedHeaders("Content-Type");
+        registry
+            .addMapping("/users/**")
+            .allowedOrigins("http://localhost:5173")
+            .allowedMethods("GET", "POST", "PUT", "DELETE")
+            .allowedHeaders("Content-Type");
       }
     };
   }

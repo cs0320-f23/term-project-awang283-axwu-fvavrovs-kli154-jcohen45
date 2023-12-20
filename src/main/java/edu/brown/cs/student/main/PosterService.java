@@ -65,7 +65,7 @@ public class PosterService {
     ServiceResponse<Poster> response;
     // Associate the poster with the user
     CompletableFuture<ServiceResponse<User>> associateResponse =
-            userService.associatePosterWithUser(userID, poster);
+        userService.associatePosterWithUser(userID, poster);
 
     try {
       associateResponse.get(); // Wait for the completion of the asynchronous task
@@ -73,14 +73,14 @@ public class PosterService {
       System.err.println("Error: " + e.getMessage());
     }
 
-    if (!associateResponse.isCompletedExceptionally()){
+    if (!associateResponse.isCompletedExceptionally()) {
       System.out.println(associateResponse);
       System.out.println("associateResponse.isCompletedExceptionally() == false");
       // Save the Poster object to the database
       try {
         OCRAsyncTask task = new OCRAsyncTask();
         HashMap suggestedFields =
-                task.sendPost("K85630038588957", true, poster.getContent(), "eng");
+            task.sendPost("K85630038588957", true, poster.getContent(), "eng");
         poster.setTitle((String) suggestedFields.get("title"));
         poster.setDescription((String) suggestedFields.get("description"));
         poster.setLink((String) suggestedFields.get("link"));
@@ -95,8 +95,8 @@ public class PosterService {
 
       if (poster.isPoster()) {
         if (posterRepository
-                .findById(poster.getID())
-                .isEmpty()) { // check if already exists in database
+            .findById(poster.getID())
+            .isEmpty()) { // check if already exists in database
           System.out.println("Saving to mongo now");
           Poster savedPoster = posterRepository.insert(poster);
           // Create a response object
@@ -116,8 +116,8 @@ public class PosterService {
       return CompletableFuture.completedFuture(response);
     }
 
-    return CompletableFuture.completedFuture(new ServiceResponse<>(poster, "Invalid user ID provided"));
-
+    return CompletableFuture.completedFuture(
+        new ServiceResponse<>(poster, "Invalid user ID provided"));
   }
   //  @Async
   //  public CompletableFuture<ServiceResponse<Poster>> updatePoster(Poster updatedPoster) {
@@ -239,18 +239,18 @@ public class PosterService {
                   return posters.stream()
                       .map(Poster::getTitle)
                       .collect(Collectors.toCollection(HashSet::new));
-                //        case "createdAt":
-                //          return posters.stream()
-                //                  .map(poster -> poster.getCreatedAt().toString())
-                //                  .collect(Collectors.toCollection(HashSet::new));
-                //        case "startDate":
-                //          return posters.stream()
-                //                  .map(poster -> poster.getStartDate().toString())
-                //                  .collect(Collectors.toCollection(HashSet::new));
-                //        case "endDate":
-                //          return posters.stream()
-                //                  .map(poster -> poster.getEndDate().toString())
-                //                  .collect(Collectors.toCollection(HashSet::new));
+                  //        case "createdAt":
+                  //          return posters.stream()
+                  //                  .map(poster -> poster.getCreatedAt().toString())
+                  //                  .collect(Collectors.toCollection(HashSet::new));
+                  //        case "startDate":
+                  //          return posters.stream()
+                  //                  .map(poster -> poster.getStartDate().toString())
+                  //                  .collect(Collectors.toCollection(HashSet::new));
+                  //        case "endDate":
+                  //          return posters.stream()
+                  //                  .map(poster -> poster.getEndDate().toString())
+                  //                  .collect(Collectors.toCollection(HashSet::new));
                 default:
                   return new HashSet<>();
               }
