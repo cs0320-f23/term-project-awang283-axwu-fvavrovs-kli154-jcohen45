@@ -4,13 +4,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { fetchTags } from "../functions/fetch";
 
-export default function TagsModal({
-  onClose,
-  onBack,
-  poster,
-  posterId,
-  handleChange,
-}) {
+export default function TagsModal({ onClose, onBack, posterId, handleChange }) {
   const [allTags, setAllTags] = useState<string[]>([]);
   const [tags, setTags] = useState<Set<string>>(new Set());
 
@@ -55,16 +49,15 @@ export default function TagsModal({
   const createPoster = async () => {
     onClose();
     //add list to poster obj w handlechange
-    // console.log(JSON.stringify(poster) + " before tags");
     const newPoster = handleChange(tags, "tags", () => {
       // Call the put endpoint or perform other operations that need the updated poster state
       // This will ensure you're working with the updated poster state after the change
-      console.log(JSON.stringify(poster) + " after updating tags");
+      // console.log(JSON.stringify(poster) + " after updating tags");
       // ... Other code that depends on the updated poster state
     });
 
     // console.log(JSON.stringify(Array.from(tags)) + " tags");
-    console.log(JSON.stringify(newPoster) + " new poster");
+    // console.log(JSON.stringify(newPoster) + " new poster");
     //call put endpoint
     try {
       //add to database
@@ -121,7 +114,7 @@ export default function TagsModal({
             Back
           </Button>
           <Button className="final-upload-button" onClick={createPoster}>
-            Upload Poster
+            Create Poster
           </Button>
         </div>
       </div>

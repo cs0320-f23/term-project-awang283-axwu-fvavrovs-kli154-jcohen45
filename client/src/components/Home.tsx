@@ -1,5 +1,16 @@
 // import React from "react";
-import { Box, HStack, IconButton, Select } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  HStack,
+  IconButton,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalHeader,
+  Select,
+} from "@chakra-ui/react";
 import { Search2Icon, TriangleDownIcon } from "@chakra-ui/icons";
 import "../styles/Home.css";
 import { IPoster, ImageCard, getPosters } from "./Happenings";
@@ -7,7 +18,7 @@ import { useEffect, useState } from "react";
 import { fetchTags } from "../functions/fetch";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import { searchState } from "./atoms/atoms";
+import { searchState, tagsState } from "./atoms/atoms";
 
 export const images = [
   {
@@ -93,9 +104,10 @@ const scrollToBottom = () => {
 
 export default function Home() {
   const [searchInput, setSearchInput] = useRecoilState(searchState);
-  const [searchTags, setSearchTags] = useState<string>("");
   const [allPosters, setAllPosters] = useState<IPoster[]>([]);
-  const [allTags, setAllTags] = useState<string[]>([]);
+  const [showTags, setShowTags] = useState<boolean>(false); //shows the tags modal
+  const [allTags, setAllTags] = useState<string[]>([]); //all tags in database
+  const [tags, setTags] = useRecoilState<Set<string>>(tagsState); //list of tags user clicked
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -106,6 +118,16 @@ export default function Home() {
   const handleKeyPress = (ev) => {
     if (ev.key === "Enter") {
       navigate("/happenings");
+    }
+  };
+
+  const classNameTag = (index: number) => {
+    if (index % 3 == 0) {
+      return "magenta-tag";
+    } else if (index % 3 == 1) {
+      return "green-tag";
+    } else {
+      return "blue-tag";
     }
   };
 
@@ -121,6 +143,20 @@ export default function Home() {
     getPosters().then((data) => setAllPosters(data));
     fetchAllTags();
   }, []);
+
+  //onclick
+  const onClick = (tag: string) => {
+    //if in tagslist, take out
+    const updatedTags = new Set(tags); // Create a new set from the current tags
+
+    if (updatedTags.has(tag)) {
+      updatedTags.delete(tag); // If the tag exists, remove it from the set
+    } else {
+      updatedTags.add(tag); // If the tag doesn't exist, add it to the set
+    }
+
+    setTags(updatedTags);
+  };
 
   return (
     <main className="posters">
@@ -138,29 +174,78 @@ export default function Home() {
             onChange={(ev) => setSearchInput(ev.target.value)}
             onKeyDown={(ev) => handleKeyPress(ev)}
           />{" "}
-          <Box w="11.5vw">
-            <Select
-              className="tag-select"
-              fontSize="20px"
-              height="7vh"
+          <Box w="11.5vw" display="flex" justifyContent="right">
+            <Button
+              marginLeft="1vw"
+              className="browse-select"
+              fontSize="18px"
+              height="6.9vh"
               color="white"
-              placeholder="Tags"
               alignItems="center"
               border="none"
-              icon={
-                <TriangleDownIcon id="triangle-icon" marginRight={"1.25vw"} />
-              }
-              value={searchTags}
-              onChange={(ev) => setSearchTags(ev.target.value)}
+              onClick={() => setShowTags(true)}
             >
-               {allTags.map((tag, index) => {
-                return (
-                  <option key={index} value={tag}>
-                    {tag}
-                  </option>
-                );
-              })}
-            </Select>
+              Tags
+            </Button>
+
+            {showTags && (
+              <Modal isOpen={true} onClose={() => setShowTags(false)}>
+                <ModalBody>
+                  <ModalContent>
+                    <ModalHeader className="modal-header">
+                      Choose Tags
+                    </ModalHeader>
+                    <ModalCloseButton
+                      className="close-button"
+                      onClick={() => setShowTags(false)}
+                    />
+                    <div
+                      className="tags-container"
+                      style={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                        display: "flex",
+                        flexDirection: "column",
+                        width: "100%",
+                      }}
+                    >
+                      <div
+                        className="tags-div"
+                        style={{
+                          paddingLeft: "5%",
+                          width: "100%",
+                        }}
+                      >
+                        {allTags.map((tag, index) => {
+                          const isSelected = tags.has(tag);
+                          const tagClass = isSelected
+                            ? "selected-tag" + " " + classNameTag(index)
+                            : classNameTag(index);
+
+                          return (
+                            <div
+                              key={tag}
+                              className={tagClass}
+                              onClick={() => onClick(tag)}
+                            >
+                              {tag}
+                            </div>
+                          );
+                        })}
+                      </div>
+                      <Button
+                        className="final-upload-button"
+                        onClick={() => setShowTags(false)}
+                        width={"40%"}
+                        marginTop={"3%"}
+                      >
+                        Add Tags to Search
+                      </Button>
+                    </div>
+                  </ModalContent>
+                </ModalBody>
+              </Modal>
+            )}
           </Box>
         </div>
         <div className="tags">

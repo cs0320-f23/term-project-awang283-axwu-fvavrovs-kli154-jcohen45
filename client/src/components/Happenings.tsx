@@ -1,5 +1,15 @@
 // import React from "react";
-import { Box, IconButton, Select } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  IconButton,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalHeader,
+  Select,
+} from "@chakra-ui/react";
 import "../styles/Happenings.css";
 import {
   Search2Icon,
@@ -10,7 +20,7 @@ import { useCallback, useEffect, useState } from "react";
 import ViewPosterModal from "./ViewPosterModal";
 import axios from "axios";
 import { useRecoilState } from "recoil";
-import { searchState } from "./atoms/atoms";
+import { searchState, tagsState } from "./atoms/atoms";
 import { fetchTags } from "../functions/fetch";
 
 const scrollToTop = () => {
@@ -88,6 +98,7 @@ export const ImageCard: React.FC<ImageCardProps> = ({
   const month = monthName.substring(0, 3);
   const fullDate = `${monthName} ${startDate[2]}, ${startDate[0]}`;
   const weekday = listWeekdays[new Date(fullDate).getDay()];
+
   function time(date) {
     let minutes = date[4];
     if (date[4] === 0) {
@@ -165,11 +176,12 @@ export async function getPosters() {
 }
 
 export default function Happenings() {
-  const [searchTags, setSearchTags] = useState<string>("");
   const [sortPosters, setSortPosters] = useState<string>("");
   const [searchInput, setSearchInput] = useRecoilState(searchState);
   const [searchResults, setSearchResults] = useState<IPoster[]>([]);
-  const [allTags, setAllTags] = useState<string[]>([]);
+  const [showTags, setShowTags] = useState<boolean>(false); //shows the tags modal
+  const [allTags, setAllTags] = useState<string[]>([]); //all tags in database
+  const [tags, setTags] = useRecoilState<Set<string>>(tagsState); //list of tags user clicked
 
   useEffect(() => {
     const fetchAllTags = async () => {
@@ -181,20 +193,71 @@ export default function Happenings() {
       }
     };
     fetchAllTags();
-    if (searchInput.length > 0) {
+    if (searchInput.length > 0 || tags.size > 0) {
       getSearchResults();
     } else {
       getPosters().then((data) => setSearchResults(data));
     }
   }, []);
 
-  const getSearchResults = async () => {
-    if (searchInput == "" || searchInput == " ") {
-      getPosters().then((data) => setSearchResults(data));
+  //onclick
+  const onClick = (tag: string) => {
+    //if in tagslist, take out
+    const updatedTags = new Set(tags); // Create a new set from the current tags
+
+    if (updatedTags.has(tag)) {
+      updatedTags.delete(tag); // If the tag exists, remove it from the set
     } else {
+      updatedTags.add(tag); // If the tag doesn't exist, add it to the set
+    }
+
+    setTags(updatedTags);
+  };
+
+  const classNameTag = (index: number) => {
+    if (index % 3 == 0) {
+      return "magenta-tag";
+    } else if (index % 3 == 1) {
+      return "green-tag";
+    } else {
+      return "blue-tag";
+    }
+  };
+
+  const getSearchResults = async () => {
+    if ((searchInput == "" || searchInput == " ") && tags.size == 0) {
+      getPosters().then((data) => setSearchResults(data));
+    } else if ((searchInput == "" || searchInput == " ") && tags.size > 0) {
+      let tagString = "";
+      tags.forEach((tag) => {
+        tagString += tag + ",";
+      });
+      tagString = tagString.slice(0, -1);
+
       try {
         const response = await fetch(
-          `http://localhost:8080/posters/term?term=${searchInput}&tags=${searchTags}`
+          `http://localhost:8080/posters/tag?tag=${tagString}`
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch data");
+        }
+        const results: IPoster[] = await response.json();
+        console.log(results);
+        setSearchResults(results);
+      } catch (error) {
+        console.error("Error fetching search results:", error);
+      }
+    } else {
+      try {
+        let tagString = "";
+        tags.forEach((tag) => {
+          tagString += tag + ",";
+        });
+        tagString = tagString.slice(0, -1);
+
+        const response = await fetch(
+          `http://localhost:8080/posters/term?term=${searchInput}&tags=${tagString}`
         );
 
         if (!response.ok) {
@@ -214,7 +277,10 @@ export default function Happenings() {
     <>
       <main className="happenings">
         <div className="search-filter-fixed">
-          <div className="browse-search-bar">
+          <div
+            className="browse-search-bar"
+            style={{ justifyContent: "space-between" }}
+          >
             <Search2Icon boxSize={5} width={14} />
             <input
               className="browse-input"
@@ -229,30 +295,19 @@ export default function Happenings() {
                 }
               }}
             />
-            <Box w="10vw">
-              <Select
+            <Box w="10vw" display="flex" justifyContent="right">
+              <Button
                 marginLeft="1vw"
                 className="browse-select"
                 fontSize="18px"
                 height="6vh"
                 color="white"
-                placeholder="Tags"
                 alignItems="center"
                 border="none"
-                icon={
-                  <TriangleDownIcon id="triangle-icon" marginRight={"1vw"} />
-                }
-                value={searchTags}
-                onChange={(ev) => setSearchTags(ev.target.value)}
+                onClick={() => setShowTags(true)}
               >
-                {allTags.map((tag, index) => {
-                  return (
-                    <option key={index} value={tag}>
-                      {tag}
-                    </option>
-                  );
-                })}
-              </Select>
+                Tags
+              </Button>
             </Box>
           </div>
           <Box w="8.1vw">
@@ -278,6 +333,65 @@ export default function Happenings() {
           padding={4}
           sx={{ columnCount: [1, 2, 3], columnGap: "3vw" }}
         >
+          {showTags && (
+            <Modal isOpen={true} onClose={() => setShowTags(false)}>
+              <ModalBody>
+                <ModalContent>
+                  <ModalHeader className="modal-header">
+                    Choose Tags
+                  </ModalHeader>
+                  <ModalCloseButton
+                    className="close-button"
+                    onClick={() => setShowTags(false)}
+                  />
+                  <div
+                    className="tags-container"
+                    style={{
+                      justifyContent: "center",
+                      alignItems: "center",
+                      display: "flex",
+                      flexDirection: "column",
+                      width: "100%",
+                    }}
+                  >
+                    <div
+                      className="tags-div"
+                      style={{
+                        paddingLeft: "5%",
+                        width: "100%",
+                      }}
+                    >
+                      {allTags.map((tag, index) => {
+                        const isSelected = tags.has(tag);
+                        const tagClass = isSelected
+                          ? "selected-tag" + " " + classNameTag(index)
+                          : classNameTag(index);
+
+                        return (
+                          <div
+                            key={tag}
+                            className={tagClass}
+                            onClick={() => onClick(tag)}
+                          >
+                            {tag}
+                          </div>
+                        );
+                      })}
+                    </div>
+                    <Button
+                      className="final-upload-button"
+                      onClick={() => setShowTags(false)}
+                      width={"40%"}
+                      marginTop={"3%"}
+                    >
+                      Add Tags to Search
+                    </Button>
+                  </div>
+                </ModalContent>
+              </ModalBody>
+            </Modal>
+          )}
+
           {searchResults.map((item, index) => (
             <Box key={index}>
               <ImageCard

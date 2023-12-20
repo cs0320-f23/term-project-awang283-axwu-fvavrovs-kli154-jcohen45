@@ -63,7 +63,8 @@ article {
 
 #sign-up,
 #create,
-#profile {
+#profile,
+#logout {
   border-radius: 12px;
   color: white;
   margin-bottom: 1vh;
@@ -103,7 +104,8 @@ article {
 }
 
 #sign-up,
-#profile {
+#profile,
+#logout, #login {
   padding: 14px 36px 16px;
   font-size: 18px;
 }
