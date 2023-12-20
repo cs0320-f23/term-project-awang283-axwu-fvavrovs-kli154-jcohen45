@@ -22,6 +22,7 @@ import axios from "axios";
 import { useRecoilState } from "recoil";
 import { searchState, tagsState } from "./atoms/atoms";
 import { fetchTags } from "../functions/fetch";
+import Masonry from "react-responsive-masonry";
 
 const scrollToTop = () => {
   window.scrollTo({
@@ -98,9 +99,8 @@ export const ImageCard: React.FC<ImageCardProps> = ({
   const month = monthName.substring(0, 3);
   const fullDate = `${monthName} ${startDate[2]}, ${startDate[0]}`;
   const weekday = listWeekdays[new Date(fullDate).getDay()];
-
-  function time(date) {
-    let minutes = date[4];
+  function time(date: number[]) {
+    let minutes = JSON.stringify(date[4]);
     if (date[4] === 0) {
       minutes = "00";
     }
@@ -131,7 +131,10 @@ export const ImageCard: React.FC<ImageCardProps> = ({
             </div>
             <div className="weekday-time">
               <p id="weekday">{weekday}</p>
-              <p id="time">{startTime}</p>
+              <p id="time">
+                {startTime}
+                {endTime && "-" + endTime}
+              </p>
             </div>
           </div>
           <div className="title-location">
@@ -145,7 +148,8 @@ export const ImageCard: React.FC<ImageCardProps> = ({
             title={title}
             path={content}
             date={fullDate}
-            time={startTime}
+            startTime={startTime}
+            endTime={endTime!}
             location={location!}
             link={link!}
             description={description!}
@@ -159,10 +163,9 @@ export const ImageCard: React.FC<ImageCardProps> = ({
 
 export async function getPosters() {
   try {
-    const url = "http://localhost:8080/posters/";
+    const url = "http://localhost:8080/posters/upcoming";
     const res = await axios.get<IPoster[]>(url);
-    const allValidPosters = res.data.filter((poster) => poster.title);
-    return Promise.resolve(allValidPosters);
+    return Promise.resolve(res.data);
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
       console.log(error.response.data.message);
@@ -328,10 +331,10 @@ export default function Happenings() {
             </Select>
           </Box>
         </div>
-        <Box
+        <Masonry
           className="grid"
-          padding={4}
-          sx={{ columnCount: [1, 2, 3], columnGap: "3vw" }}
+          columnsCount={3}
+          style={{ margin: "16.5vh 4vw" }}
         >
           {showTags && (
             <Modal isOpen={true} onClose={() => setShowTags(false)}>
@@ -406,7 +409,7 @@ export default function Happenings() {
               />
             </Box>
           ))}
-        </Box>
+        </Masonry>
         <IconButton
           className="scroll-top"
           color="white"

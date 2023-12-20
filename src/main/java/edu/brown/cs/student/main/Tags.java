@@ -161,7 +161,6 @@ public class Tags {
                 "free food",
                 "party",
                 "outdoors",
-                "nature",
                 "volunteering",
                 "arts",
                 "crafts",
@@ -186,9 +185,17 @@ public class Tags {
                 "premed",
                 "prelaw",
                 "women",
-                "rsvp required",
+                "rsvp",
                 "dug",
-                "languages"));
+                "languages",
+                "semiformal",
+                "career",
+                "application",
+                "publication",
+                "cultural",
+                "STEM",
+                "Brown/RISD",
+                "Brown-only"));
     return tags;
   }
 

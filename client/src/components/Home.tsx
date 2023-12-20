@@ -159,137 +159,148 @@ export default function Home() {
   };
 
   return (
-    <main className="posters">
-      <div className="home-content">
-        <label className="label">
-          <div className="text-wrapper">Posters @ Brown</div>
-        </label>
-        <div className="search-bar">
-          <Search2Icon boxSize={5} width={14} />
-          <input
-            className="search-input"
-            placeholder="Search"
-            type="text"
-            value={searchInput}
-            onChange={(ev) => setSearchInput(ev.target.value)}
-            onKeyDown={(ev) => handleKeyPress(ev)}
-          />{" "}
-          <Box w="11.5vw" display="flex" justifyContent="right">
-            <Button
-              marginLeft="1vw"
-              className="browse-select"
-              fontSize="18px"
-              height="6.9vh"
-              color="white"
-              alignItems="center"
-              border="none"
-              onClick={() => setShowTags(true)}
-            >
-              Tags
-            </Button>
+    <>
+      <main className="posters">
+        <div className="home-content">
+          <label className="label">
+            <div className="text-wrapper">Posters @ Brown</div>
+          </label>
+          <div className="search-bar">
+            <Search2Icon boxSize={5} width={14} />
+            <input
+              className="search-input"
+              placeholder="Search"
+              type="text"
+              value={searchInput}
+              onChange={(ev) => setSearchInput(ev.target.value)}
+              onKeyDown={(ev) => handleKeyPress(ev)}
+            />{" "}
+            <Box w="11.5vw" display="flex" justifyContent="right">
+              <Button
+                marginLeft="1vw"
+                className="browse-select"
+                fontSize="18px"
+                height="6.9vh"
+                color="white"
+                alignItems="center"
+                border="none"
+                onClick={() => setShowTags(true)}
+              >
+                Tags
+              </Button>
 
-            {showTags && (
-              <Modal isOpen={true} onClose={() => setShowTags(false)}>
-                <ModalBody>
-                  <ModalContent>
-                    <ModalHeader className="modal-header">
-                      Choose Tags
-                    </ModalHeader>
-                    <ModalCloseButton
-                      className="close-button"
-                      onClick={() => setShowTags(false)}
-                    />
-                    <div
-                      className="tags-container"
-                      style={{
-                        justifyContent: "center",
-                        alignItems: "center",
-                        display: "flex",
-                        flexDirection: "column",
-                        width: "100%",
-                      }}
-                    >
+              {showTags && (
+                <Modal isOpen={true} onClose={() => setShowTags(false)}>
+                  <ModalBody>
+                    <ModalContent>
+                      <ModalHeader className="modal-header">
+                        Choose Tags
+                      </ModalHeader>
+                      <ModalCloseButton
+                        className="close-button"
+                        onClick={() => setShowTags(false)}
+                      />
                       <div
-                        className="tags-div"
+                        className="tags-container"
                         style={{
-                          paddingLeft: "5%",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          display: "flex",
+                          flexDirection: "column",
                           width: "100%",
                         }}
                       >
-                        {allTags.map((tag, index) => {
-                          const isSelected = tags.has(tag);
-                          const tagClass = isSelected
-                            ? "selected-tag" + " " + classNameTag(index)
-                            : classNameTag(index);
+                        <div
+                          className="tags-div"
+                          style={{
+                            paddingLeft: "5%",
+                            width: "100%",
+                          }}
+                        >
+                          {allTags.map((tag, index) => {
+                            const isSelected = tags.has(tag);
+                            const tagClass = isSelected
+                              ? "selected-tag" + " " + classNameTag(index)
+                              : classNameTag(index);
 
-                          return (
-                            <div
-                              key={tag}
-                              className={tagClass}
-                              onClick={() => onClick(tag)}
-                            >
-                              {tag}
-                            </div>
-                          );
-                        })}
+                            return (
+                              <div
+                                key={tag}
+                                className={tagClass}
+                                onClick={() => onClick(tag)}
+                              >
+                                {tag}
+                              </div>
+                            );
+                          })}
+                        </div>
+                        <Button
+                          className="final-upload-button"
+                          onClick={() => setShowTags(false)}
+                          width={"40%"}
+                          marginTop={"3%"}
+                        >
+                          Add Tags to Search
+                        </Button>
                       </div>
-                      <Button
-                        className="final-upload-button"
-                        onClick={() => setShowTags(false)}
-                        width={"40%"}
-                        marginTop={"3%"}
-                      >
-                        Add Tags to Search
-                      </Button>
-                    </div>
-                  </ModalContent>
-                </ModalBody>
-              </Modal>
-            )}
-          </Box>
-        </div>
-        <div className="tags">
-          <span className="tag-text">Suggested tags:</span>{" "}
-          <div className="tag-holder">
-            <div className="magenta-tag">Free Food</div>
-            <div className="green-tag">Party</div>
-            <div className="blue-tag">Outdoor</div>
-          </div>
-        </div>
-        {/* map each poster to an img w/in a div  */}
-      </div>
-      <div className="happenings">
-        <div className="happenings-label">Happening Soon</div>
-        <HStack
-          spacing="3vw"
-          alignItems="flex-start"
-          overflowX="auto"
-          padding="1.5vh 4vw"
-          id="scroll"
-        >
-          {allPosters.map((item, index) => (
-            <Box key={index}>
-              <ImageCard
-                title={item.title}
-                content={item.content}
-                startDate={item.startDate}
-                endDate={item.endDate}
-                location={item.location}
-                link={item.link}
-                description={item.description}
-                tags={item.tags}
-              />
+                    </ModalContent>
+                  </ModalBody>
+                </Modal>
+              )}
+
+              {allTags.map((tag, index) => {
+                return (
+                  <option key={index} value={tag}>
+                    {tag}
+                  </option>
+                );
+              })}
+              {/* </Select> */}
             </Box>
-          ))}
-        </HStack>
-      </div>
-      <IconButton
-        className="scroll-bottom"
-        color="white"
-        icon={<TriangleDownIcon id="triangle-icon-down" />}
-        aria-label={"scrolls user to bottom of page"}
-        onClick={scrollToBottom}
-      />
-    </main>
+          </div>
+          <div className="tags">
+            <span className="tag-text">Suggested tags:</span>{" "}
+            <div className="tag-holder">
+              <div className="magenta-tag">Free Food</div>
+              <div className="green-tag">Party</div>
+              <div className="blue-tag">Outdoor</div>
+            </div>
+          </div>
+          {/* map each poster to an img w/in a div  */}
+        </div>
+        <div className="happenings">
+          <div className="happenings-label">Happening Soon</div>
+          <HStack
+            spacing="3vw"
+            alignItems="flex-start"
+            overflowX="auto"
+            padding="1.5vh 4vw"
+            id="scroll"
+          >
+            {allPosters.slice(0, 9).map((item, index) => (
+              <Box key={index}>
+                <ImageCard
+                  title={item.title}
+                  content={item.content}
+                  startDate={item.startDate}
+                  endDate={item.endDate}
+                  location={item.location}
+                  link={item.link}
+                  description={item.description}
+                  tags={item.tags}
+                />
+              </Box>
+            ))}
+          </HStack>
+        </div>
+        <IconButton
+          className="scroll-bottom"
+          color="white"
+          icon={<TriangleDownIcon id="triangle-icon-down" />}
+          aria-label={"scrolls user to bottom of page"}
+          onClick={scrollToBottom}
+        />
+      </main>
+    </>
   );
 }
