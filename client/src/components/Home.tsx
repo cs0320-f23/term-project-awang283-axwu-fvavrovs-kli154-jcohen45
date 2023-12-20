@@ -9,7 +9,6 @@ import {
   ModalCloseButton,
   ModalContent,
   ModalHeader,
-  Select,
 } from "@chakra-ui/react";
 import { Search2Icon, TriangleDownIcon } from "@chakra-ui/icons";
 import "../styles/Home.css";
@@ -105,10 +104,10 @@ export default function Home() {
             />{" "}
             <Box w="11.5vw" display="flex" justifyContent="right">
               <Button
-                marginLeft="1vw"
                 className="browse-select"
                 fontSize="18px"
-                height="6.9vh"
+                width="8vw"
+                height="7vh"
                 color="white"
                 alignItems="center"
                 border="none"
@@ -116,7 +115,6 @@ export default function Home() {
               >
                 Tags
               </Button>
-
               {showTags && (
                 <Modal isOpen={true} onClose={() => setShowTags(false)}>
                   <ModalBody>

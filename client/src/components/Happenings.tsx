@@ -297,6 +297,7 @@ export default function Happenings() {
             <Box w="10vw" display="flex" justifyContent="right">
               <Button
                 marginLeft="1vw"
+                width="7vw"
                 className="browse-select"
                 fontSize="18px"
                 height="6vh"
