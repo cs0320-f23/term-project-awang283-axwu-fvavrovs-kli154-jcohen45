@@ -112,7 +112,7 @@ export default function App() {
                   <Button id="create" onClick={handleCreatePoster}>
                     +
                   </Button>
-                  <Button id="profile">User Profile</Button>
+                  {/* <Button id="profile">User Profile</Button> */}
                   <Button id="logout" onClick={logOut} color={"white"}>
                     Log Out
                   </Button>

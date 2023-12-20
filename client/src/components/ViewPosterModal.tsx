@@ -73,10 +73,13 @@ export default function ViewPosterModal({
                       {endTime && "-" + endTime}
                     </div>
                   </div>
-                  <div className="info-row">
-                    <div className="field-name">Recurs</div>
-                    <div id="field-text">{recurs.toLowerCase()}</div>
-                  </div>
+                  {recurs && (
+                    <div className="info-row">
+                      <div className="field-name">Recurs</div>
+                      <div id="field-text">{recurs.toLowerCase()}</div>
+                    </div>
+                  )}
+
                   {location && (
                     <div className="info-row">
                       <div className="field-name">Where</div>
