@@ -33,7 +33,7 @@ export interface IPoster {
   location?: string;
   startDate: number[];
   endDate?: number[];
-  isRecurring: boolean;
+  isRecurring: string;
   link?: string;
   description?: string;
   tags?: string[];
@@ -51,6 +51,7 @@ interface ImageCardProps {
   link?: string;
   description?: string;
   tags?: string[];
+  recurs: string;
 }
 
 export const ImageCard: React.FC<ImageCardProps> = ({
@@ -62,6 +63,7 @@ export const ImageCard: React.FC<ImageCardProps> = ({
   link,
   description,
   tags,
+  recurs,
 }) => {
   const listMonths = [
     "January",
@@ -150,6 +152,7 @@ export const ImageCard: React.FC<ImageCardProps> = ({
             link={link!}
             description={description!}
             tags={tags!}
+            recurs={recurs}
           />
         )}
       </div>
@@ -402,6 +405,7 @@ export default function Happenings() {
                 link={item.link}
                 description={item.description}
                 tags={item.tags}
+                recurs={item.isRecurring}
               />
             </Box>
           ))}

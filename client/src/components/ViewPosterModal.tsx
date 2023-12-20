@@ -18,6 +18,7 @@ interface viewProps {
   link: string;
   description: string;
   tags: string[];
+  recurs: string;
 }
 
 export default function ViewPosterModal({
@@ -31,6 +32,7 @@ export default function ViewPosterModal({
   link,
   description,
   tags,
+  recurs,
 }: viewProps) {
   const [weekday, month, day] = date.split(" ");
 
@@ -70,6 +72,10 @@ export default function ViewPosterModal({
                       {weekday + ", " + month + " " + day + ", " + startTime}
                       {endTime && "-" + endTime}
                     </div>
+                  </div>
+                  <div className="info-row">
+                    <div className="field-name">Recurs</div>
+                    <div id="field-text">{recurs.toLowerCase()}</div>
                   </div>
                   {location && (
                     <div className="info-row">
