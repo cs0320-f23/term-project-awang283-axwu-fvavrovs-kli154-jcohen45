@@ -10,7 +10,7 @@ import { useCallback, useEffect, useState } from "react";
 import ViewPosterModal from "./ViewPosterModal";
 import axios from "axios";
 import { useRecoilState } from "recoil";
-import { searchState } from "./atoms/atoms";
+import { searchResultsState, searchState } from "./atoms/atoms";
 import { fetchTags } from "../functions/fetch";
 import Masonry from "react-responsive-masonry";
 
@@ -172,7 +172,7 @@ export default function Happenings() {
   const [searchTags, setSearchTags] = useState<string>("");
   const [sortPosters, setSortPosters] = useState<string>("");
   const [searchInput, setSearchInput] = useRecoilState(searchState);
-  const [searchResults, setSearchResults] = useState<IPoster[]>([]);
+  const [searchResults, setSearchResults] = useRecoilState(searchResultsState);
   const [allTags, setAllTags] = useState<string[]>([]);
 
   useEffect(() => {
