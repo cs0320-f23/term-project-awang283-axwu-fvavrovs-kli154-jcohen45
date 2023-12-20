@@ -1,0 +1,12 @@
+main {
+  position: relative;
+  top: 2vh;
+}
+
+#year {
+  margin-top: 6vh;
+  font-size: 6vh;
+  margin-left: 4vw;
+  text-align: left;
+  margin-bottom: 4vh;
+}

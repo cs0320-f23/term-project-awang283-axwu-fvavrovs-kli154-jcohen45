@@ -24,13 +24,13 @@ public class OCRParser {
     System.out.println("Tags: " + tags);
 
     HashMap suggestedFields = new HashMap();
-    LocalDateTime nullTime = null;
+    LocalDateTime defaultStart = LocalDateTime.now();
 
     suggestedFields.put("title", title);
     suggestedFields.put("description", description);
     suggestedFields.put("link", link);
     suggestedFields.put("tags", tags);
-    suggestedFields.put("startDate", nullTime);
+    suggestedFields.put("startDate", defaultStart);
     return suggestedFields;
   }
 
