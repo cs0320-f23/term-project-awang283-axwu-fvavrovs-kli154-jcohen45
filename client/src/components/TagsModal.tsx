@@ -3,10 +3,14 @@ import "../styles/Modal.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { fetchTags } from "../functions/fetch";
+import { searchResultsState } from "./atoms/atoms";
+import { useRecoilState } from "recoil";
+import { getPosters } from "./Happenings";
 
 export default function TagsModal({ onClose, onBack, posterId, handleChange }) {
   const [allTags, setAllTags] = useState<string[]>([]);
   const [tags, setTags] = useState<Set<string>>(new Set());
+  const [searchResults, setSearchResults] = useRecoilState(searchResultsState);
 
   useEffect(() => {
     const fetchAllTags = async () => {
@@ -19,6 +23,7 @@ export default function TagsModal({ onClose, onBack, posterId, handleChange }) {
     };
 
     fetchAllTags();
+    // setTags(new Set(poster.tags));
   }, []);
 
   const classNameTag = (index: number) => {
@@ -56,8 +61,7 @@ export default function TagsModal({ onClose, onBack, posterId, handleChange }) {
       // ... Other code that depends on the updated poster state
     });
 
-    // console.log(JSON.stringify(Array.from(tags)) + " tags");
-    // console.log(JSON.stringify(newPoster) + " new poster");
+    console.log(JSON.stringify(newPoster) + " new poster");
     //call put endpoint
     try {
       //add to database
@@ -68,7 +72,6 @@ export default function TagsModal({ onClose, onBack, posterId, handleChange }) {
       };
       const url = "http://localhost:8080/posters/update/" + posterId;
       const formData = new FormData();
-      // const tagArr = [];
       tags.forEach((tag) => {
         formData.append("tags[]", tag);
       });
@@ -78,8 +81,8 @@ export default function TagsModal({ onClose, onBack, posterId, handleChange }) {
           formData.append(key, newPoster[key]);
         }
       }
-      //console.log(JSON.stringify(Array.from(formData)) + " formdata");
       const res = await axios.put(url, formData, config);
+      getPosters().then((data) => setSearchResults(data));
       return Promise.resolve(res.data.data);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {

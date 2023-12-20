@@ -107,6 +107,7 @@ h1 {
   display: flex;
   flex-flow: row;
   justify-content: center;
+  align-items: center;
 }
 
 .card-backing {

@@ -20,7 +20,11 @@ import { useCallback, useEffect, useState } from "react";
 import ViewPosterModal from "./ViewPosterModal";
 import axios from "axios";
 import { useRecoilState } from "recoil";
+<<<<<<< HEAD
+import { searchResultsState, searchState, tagsState } from "./atoms/atoms";
+=======
 import { searchState, tagsState } from "./atoms/atoms";
+>>>>>>> 2f7e175cc1a19da70bc65e43b840e3e2c8982eb6
 import { fetchTags } from "../functions/fetch";
 import Masonry from "react-responsive-masonry";
 
@@ -181,7 +185,7 @@ export async function getPosters() {
 export default function Happenings() {
   const [sortPosters, setSortPosters] = useState<string>("");
   const [searchInput, setSearchInput] = useRecoilState(searchState);
-  const [searchResults, setSearchResults] = useState<IPoster[]>([]);
+  const [searchResults, setSearchResults] = useRecoilState(searchResultsState);
   const [showTags, setShowTags] = useState<boolean>(false); //shows the tags modal
   const [allTags, setAllTags] = useState<string[]>([]); //all tags in database
   const [tags, setTags] = useRecoilState<Set<string>>(tagsState); //list of tags user clicked
