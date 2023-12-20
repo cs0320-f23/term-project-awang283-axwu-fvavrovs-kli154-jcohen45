@@ -7,13 +7,7 @@ import { searchResultsState } from "./atoms/atoms";
 import { useRecoilState } from "recoil";
 import { getPosters } from "./Happenings";
 
-export default function TagsModal({
-  onClose,
-  onBack,
-  poster,
-  posterId,
-  handleChange,
-}) {
+export default function TagsModal({ onClose, onBack, posterId, handleChange }) {
   const [allTags, setAllTags] = useState<string[]>([]);
   const [tags, setTags] = useState<Set<string>>(new Set());
   const [searchResults, setSearchResults] = useRecoilState(searchResultsState);
@@ -63,7 +57,7 @@ export default function TagsModal({
     const newPoster = handleChange(tags, "tags", () => {
       // Call the put endpoint or perform other operations that need the updated poster state
       // This will ensure you're working with the updated poster state after the change
-      console.log(JSON.stringify(poster) + " after updating tags");
+      // console.log(JSON.stringify(poster) + " after updating tags");
       // ... Other code that depends on the updated poster state
     });
 
@@ -123,7 +117,7 @@ export default function TagsModal({
             Back
           </Button>
           <Button className="final-upload-button" onClick={createPoster}>
-            Upload Poster
+            Create Poster
           </Button>
         </div>
       </div>

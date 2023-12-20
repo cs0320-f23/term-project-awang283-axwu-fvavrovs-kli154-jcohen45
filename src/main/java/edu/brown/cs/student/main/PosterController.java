@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 /** This class defines the mappings and endpoints for poster management */
 @RestController
 @RequestMapping(value = "/posters") // maps the controller to the "/posters" endpoint.
+@CrossOrigin(origins = "http://localhost:5173")
 public class PosterController {
 
   private final PosterService posterService; // instance of the class that does all the dirty work

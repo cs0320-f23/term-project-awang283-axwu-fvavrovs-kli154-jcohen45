@@ -2,13 +2,14 @@ package edu.brown.cs.student.main.user;
 
 import edu.brown.cs.student.main.responses.ServiceResponse;
 import edu.brown.cs.student.main.types.Poster;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
@@ -26,19 +27,19 @@ public class UserService {
 
     // Validate user data
     if (user == null
-        || isNullOrEmpty(user.getUsername())
+
         || isNullOrEmpty(user.getEmail())
         || isNullOrEmpty(user.getName())) {
       response = new ServiceResponse<>("Invalid user data");
     } else {
       // Check if the username is already taken
-      if (userRepository.findByUsername(user.getUsername()).isPresent()) {
-        response = new ServiceResponse<>("Username is already taken");
+      if (userRepository.findById(user.getId()).isPresent()) {
+        response = new ServiceResponse<>("User is already created");
       } else {
         // Check if the email is already taken
-        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-          response = new ServiceResponse<>("Email is already taken");
-        } else {
+//        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+//          response = new ServiceResponse<>("Email is already taken");
+//        } else {
 
           // Save the User object to the database
           User savedUser = userRepository.save(user);
@@ -51,7 +52,7 @@ public class UserService {
           response = new ServiceResponse<>(savedUser, message);
         }
       }
-    }
+    //}
 
     // CompletableFuture is basically a Promise
     return CompletableFuture.completedFuture(response);

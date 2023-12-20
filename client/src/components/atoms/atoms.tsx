@@ -10,3 +10,8 @@ export const searchResultsState = atom<IPoster[]>({
   key: "searchResultState",
   default: [],
 });
+
+export const tagsState = atom<Set<string>>({
+  key: "tagsState",
+  default: new Set(),
+});
