@@ -1,16 +1,17 @@
 package edu.brown.cs.student.main.user;
 
 import edu.brown.cs.student.main.responses.ServiceResponse;
+
+import org.springframework.http.HttpHeaders;
+
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 @RestController
 @RequestMapping(value = "/users")
-@CrossOrigin(origins = "http://localhost:5173")
 public class UserController {
   private final UserService userService;
 
@@ -35,7 +36,21 @@ public class UserController {
     return userService.createUser(user).thenApply(response -> ResponseEntity.ok(response));
   }
 
-  @DeleteMapping("/delete/{id}")
+
+    @RequestMapping(value = "/create", method = RequestMethod.OPTIONS)
+    public ResponseEntity<?> handleOptionsRequest() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Access-Control-Allow-Origin", "http://localhost:5173");
+        headers.add("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE");
+        headers.add("Access-Control-Allow-Headers", "Content-Type");
+        headers.add("Access-Control-Allow-Credentials", "true");
+        headers.add("Access-Control-Max-Age", "3600"); // Optional, sets preflight request cache duration
+
+        return new ResponseEntity<>(headers, HttpStatus.OK);
+    }
+
+
+    @DeleteMapping("/delete/{id}")
   public CompletableFuture<ResponseEntity<ServiceResponse<Object>>> deleteUser(
       @PathVariable String id) {
     return userService

@@ -17,6 +17,20 @@ public class CorsConfig {
             .addMapping("/**")
             .allowedOrigins("http://localhost:5173") // Add your frontend URL here
             .allowedMethods("GET", "POST", "PUT", "DELETE")
+
+            .allowedHeaders("*")
+                .allowCredentials(true);
+        registry.addMapping("/users/**")
+                .allowedOrigins("http://localhost:5173")
+                .allowedMethods("GET", "POST", "PUT", "DELETE")
+                .allowedHeaders("Content-Type")
+                .allowCredentials(true);
+        registry.addMapping("/users/create") // Map specific endpoint
+                .allowedOrigins("http://localhost:5173")
+                .allowedMethods("GET", "POST", "PUT", "DELETE")
+                .allowedHeaders("Content-Type")
+                .allowCredentials(true)
+                .maxAge(3600)
             .allowedHeaders("*");
         registry
             .addMapping("/users/**")
