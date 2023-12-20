@@ -2,14 +2,13 @@ package edu.brown.cs.student.main.user;
 
 import edu.brown.cs.student.main.responses.ServiceResponse;
 import edu.brown.cs.student.main.types.Poster;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
@@ -26,10 +25,8 @@ public class UserService {
     ServiceResponse<User> response;
 
     // Validate user data
-    if (user == null
+    if (user == null || isNullOrEmpty(user.getEmail()) || isNullOrEmpty(user.getName())) {
 
-        || isNullOrEmpty(user.getEmail())
-        || isNullOrEmpty(user.getName())) {
       response = new ServiceResponse<>("Invalid user data");
     } else {
       // Check if the username is already taken
@@ -37,22 +34,22 @@ public class UserService {
         response = new ServiceResponse<>("User is already created");
       } else {
         // Check if the email is already taken
-//        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
-//          response = new ServiceResponse<>("Email is already taken");
-//        } else {
+        //        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+        //          response = new ServiceResponse<>("Email is already taken");
+        //        } else {
 
-          // Save the User object to the database
-          User savedUser = userRepository.save(user);
+        // Save the User object to the database
+        User savedUser = userRepository.save(user);
 
-          // Determine the response message based on whether the user was inserted or updated
-          String message =
-              userRepository.existsById(user.getId()) ? "saved to database" : "added to database";
+        // Determine the response message based on whether the user was inserted or updated
+        String message =
+            userRepository.existsById(user.getId()) ? "saved to database" : "added to database";
 
-          // Create a response object
-          response = new ServiceResponse<>(savedUser, message);
-        }
+        // Create a response object
+        response = new ServiceResponse<>(savedUser, message);
       }
-    //}
+    }
+    // }
 
     // CompletableFuture is basically a Promise
     return CompletableFuture.completedFuture(response);
@@ -100,25 +97,25 @@ public class UserService {
 
   @Async
   public CompletableFuture<ServiceResponse<User>> associatePosterWithUser(
-          String userId, Poster poster) {
+      String userId, Poster poster) {
     // Find the user by ID
     System.out.println("reached associatePosterWithUser function");
     return userRepository
-            .findById(userId)
-            .map(
-                    user -> {
-                      // Set the user ID in the poster
-                      poster.setUserId(userId);
-                      // Add the poster to the user's list of posters
-                      user.getPosters().add(poster);
-                      // Save the updated user
-                      System.out.println("Trying to save");
-                      userRepository.save(user);
-                      // Create a response object
-                      System.out.println("Trying to return service response");
-                      return new ServiceResponse<>(user, "Poster associated with user");
-                    })
-            .map(CompletableFuture::completedFuture) // Remove this line
-            .orElse(CompletableFuture.completedFuture(new ServiceResponse<>("User not found")));
+        .findById(userId)
+        .map(
+            user -> {
+              // Set the user ID in the poster
+              poster.setUserId(userId);
+              // Add the poster to the user's list of posters
+              user.getPosters().add(poster);
+              // Save the updated user
+              System.out.println("Trying to save");
+              userRepository.save(user);
+              // Create a response object
+              System.out.println("Trying to return service response");
+              return new ServiceResponse<>(user, "Poster associated with user");
+            })
+        .map(CompletableFuture::completedFuture) // Remove this line
+        .orElse(CompletableFuture.completedFuture(new ServiceResponse<>("User not found")));
   }
 }

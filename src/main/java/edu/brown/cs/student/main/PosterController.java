@@ -3,12 +3,6 @@ package edu.brown.cs.student.main;
 import edu.brown.cs.student.main.imgur.ImgurService;
 import edu.brown.cs.student.main.responses.ServiceResponse;
 import edu.brown.cs.student.main.types.Poster;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.bind.annotation.CrossOrigin;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -16,6 +10,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.multipart.MultipartFile;
 
 /** This class defines the mappings and endpoints for poster management */
 @RestController
@@ -51,15 +50,15 @@ public class PosterController {
   @GetMapping("/upcoming")
   public CompletableFuture<ResponseEntity<List<Poster>>> getUpcoming() {
     return posterService
-            .getPosters()
-            .thenApply(
-                    posters ->
-                            posters.stream()
-                                    .filter(poster -> poster.getStartDate().isAfter(LocalDateTime.now()))
-                                    .sorted(Comparator.nullsLast(Comparator.comparing(Poster::getStartDate)))
-                                    .collect(Collectors.toList()))
-            .thenApply(ResponseEntity::ok)
-            .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+        .getPosters()
+        .thenApply(
+            posters ->
+                posters.stream()
+                    .filter(poster -> poster.getStartDate().isAfter(LocalDateTime.now()))
+                    .sorted(Comparator.nullsLast(Comparator.comparing(Poster::getStartDate)))
+                    .collect(Collectors.toList()))
+        .thenApply(ResponseEntity::ok)
+        .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
   }
 
   /**
@@ -70,23 +69,25 @@ public class PosterController {
   @GetMapping("/archive")
   public CompletableFuture<ResponseEntity<List<Poster>>> getArchive() {
     return posterService
-            .getPosters()
-            .thenApply(
-                    posters ->
-                            posters.stream()
-                                    .filter(poster -> {
-                                      LocalDateTime currentDate = LocalDateTime.now();
-                                      if (poster.getEndDate() != null) {
-                                        // Check if the endDate has passed
-                                        return poster.getEndDate().isBefore(currentDate);
-                                      }
-                                      // Check if the startDate has passed
-                                      return poster.getStartDate().isBefore(currentDate);
-                                    })
-                                    .sorted(Comparator.nullsLast(Comparator.comparing(Poster::getStartDate)).reversed())
-                                    .collect(Collectors.toList()))
-            .thenApply(ResponseEntity::ok)
-            .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+        .getPosters()
+        .thenApply(
+            posters ->
+                posters.stream()
+                    .filter(
+                        poster -> {
+                          LocalDateTime currentDate = LocalDateTime.now();
+                          if (poster.getEndDate() != null) {
+                            // Check if the endDate has passed
+                            return poster.getEndDate().isBefore(currentDate);
+                          }
+                          // Check if the startDate has passed
+                          return poster.getStartDate().isBefore(currentDate);
+                        })
+                    .sorted(
+                        Comparator.nullsLast(Comparator.comparing(Poster::getStartDate)).reversed())
+                    .collect(Collectors.toList()))
+        .thenApply(ResponseEntity::ok)
+        .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
   }
 
   /**
@@ -306,12 +307,12 @@ public class PosterController {
                         Comparator.nullsLast(Comparator.comparing(Poster::getStartDate).reversed()))
                     .collect(Collectors.toList()));
     CompletableFuture<List<Poster>> afterPosters =
-            myPosters.thenApply(
-                posters ->
-                    posters.stream()
-                        .filter(poster -> poster.getStartDate().isAfter(LocalDateTime.now()))
-                        .sorted(Comparator.nullsLast(Comparator.comparing(Poster::getStartDate)))
-                        .collect(Collectors.toList()));
+        myPosters.thenApply(
+            posters ->
+                posters.stream()
+                    .filter(poster -> poster.getStartDate().isAfter(LocalDateTime.now()))
+                    .sorted(Comparator.nullsLast(Comparator.comparing(Poster::getStartDate)))
+                    .collect(Collectors.toList()));
     CompletableFuture<List<Poster>> allPosters =
         afterPosters.thenCombine(
             beforePosters,

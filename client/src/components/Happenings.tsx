@@ -11,20 +11,12 @@ import {
   Select,
 } from "@chakra-ui/react";
 import "../styles/Happenings.css";
-import {
-  Search2Icon,
-  TriangleDownIcon,
-  TriangleUpIcon,
-} from "@chakra-ui/icons";
+import { Search2Icon, TriangleUpIcon } from "@chakra-ui/icons";
 import { useCallback, useEffect, useState } from "react";
 import ViewPosterModal from "./ViewPosterModal";
 import axios from "axios";
 import { useRecoilState } from "recoil";
-<<<<<<< HEAD
 import { searchResultsState, searchState, tagsState } from "./atoms/atoms";
-=======
-import { searchState, tagsState } from "./atoms/atoms";
->>>>>>> 2f7e175cc1a19da70bc65e43b840e3e2c8982eb6
 import { fetchTags } from "../functions/fetch";
 import Masonry from "react-responsive-masonry";
 
