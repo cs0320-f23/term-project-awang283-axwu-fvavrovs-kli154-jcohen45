@@ -32,7 +32,7 @@
   min-height: 90%;
   margin: auto !important;
   border-radius: 25px !important;
-  font-family: "quicksand, sans-serif";
+  font-family: "quicksand", sans-serif;
 }
 
 .modal-body {
@@ -41,9 +41,27 @@
   padding: 0vw !important;
 }
 
+.loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.loading-gif {
+  width: 14vw;
+}
+
 .create-div {
   display: flex;
   width: 100%;
+  justify-content: center;
 }
 
 .view-image {
@@ -188,7 +206,6 @@ input::placeholder {
 }
 
 #view-title {
-  font-family: "quicksand", sans-serif;
   font-size: 44px;
   overflow: wrap;
   line-height: 115%;
@@ -200,40 +217,39 @@ input::placeholder {
   margin: 1.5vw 1.5vw 1.5vw 0vw;
   gap: 2vh;
   overflow-y: scroll;
+  overflow-x: hidden;
   max-height: 90vh;
   z-index: 1;
 }
 
 .poster-details {
   display: flex;
-  flex-flow: row;
-  gap: 3vw;
+  flex-flow: column;
+  gap: 1.5vh;
 }
 
-.poster-field {
+.info-row {
   display: flex;
-  flex-flow: column;
-  gap: 2vh;
+  flex-flow: row;
+}
+
+.field-name {
   color: var(--dark-purple70);
+  width: 5vw;
+}
+
+#field-text {
+  flex: 1;
+  color: var(--dark-purple100);
+  overflow-x: auto;
 }
 
 #description-field {
   color: var(--dark-purple70);
 }
 
-#description-text {
-  font-family: "quicksand", sans-serif;
-}
-
-.poster-info {
-  display: flex;
-  flex-flow: column;
-  gap: 2vh;
-  color: var(--dark-purple100);
-}
-
 #description-input {
-  height: 19vh !important;
+  height: 21vh !important;
   text-align: left;
   padding: 5px 10px !important;
   border-radius: 10px !important;
@@ -266,7 +282,6 @@ input::placeholder {
 
 #poster-link {
   margin: 0;
-  font-family: "quicksand", sans-serif;
 }
 
 #poster-link:hover {

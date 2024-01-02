@@ -12,11 +12,13 @@ interface viewProps {
   title: string;
   path: string;
   date: string;
-  time: string;
+  startTime: string;
+  endTime: string;
   location: string;
   link: string;
   description: string;
   tags: string[];
+  recurs: string;
 }
 
 export default function ViewPosterModal({
@@ -24,11 +26,13 @@ export default function ViewPosterModal({
   title,
   path,
   date,
-  time,
+  startTime,
+  endTime,
   location,
   link,
   description,
   tags,
+  recurs,
 }: viewProps) {
   const [weekday, month, day] = date.split(" ");
 
@@ -62,32 +66,50 @@ export default function ViewPosterModal({
               <div className="view-info">
                 <p id="view-title">{title}</p>
                 <div className="poster-details">
-                  <div className="poster-field">
-                    <p>Date</p>
-                    {time && <p>Time</p>}
-                    {location && <p>Where</p>}
-                    {link && <p>Link</p>}
-                    {tags.length > 0 && <p>Tags</p>}
-                  </div>
-                  <div className="poster-info">
-                    <p>{weekday + ", " + month + " " + day}</p>
-                    {time && <p>{time}</p>}
-                    {location && <p>{location}</p>}
-                    {link && (
-                      <a href={link} id="poster-link" target="_blank">
-                        {link}
-                      </a>
-                    )}
-                    <div id="row">
-                      {tags.map((tag, index) => {
-                        return (
-                          <div key={tag} className={classNameTag(index)}>
-                            {tag}
-                          </div>
-                        );
-                      })}
+                  <div className="info-row">
+                    <div className="field-name">When</div>
+                    <div id="field-text">
+                      {weekday + ", " + month + " " + day + ", " + startTime}
+                      {endTime && "-" + endTime}
                     </div>
                   </div>
+                  {recurs && (
+                    <div className="info-row">
+                      <div className="field-name">Recurs</div>
+                      <div id="field-text">{recurs.toLowerCase()}</div>
+                    </div>
+                  )}
+
+                  {location && (
+                    <div className="info-row">
+                      <div className="field-name">Where</div>
+                      <div id="field-text">{location}</div>
+                    </div>
+                  )}
+                  {link && (
+                    <div className="info-row">
+                      <div className="field-name">Link</div>
+                      <div id="field-text">
+                        <a href={link} id="poster-link" target="_blank">
+                          {link}
+                        </a>
+                      </div>
+                    </div>
+                  )}
+                  {tags.length > 0 && (
+                    <div className="info-row">
+                      <div className="field-name">Tags</div>
+                      <div id="field-text">
+                        {tags.map((tag, index) => {
+                          return (
+                            <div key={tag} className={classNameTag(index)}>
+                              {tag}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
                 </div>
                 <div id="description">
                   {description && <p id="description-field">Description</p>}

@@ -30,15 +30,12 @@ interface IPoster {
 }
 
 export default function CreateImageModal({ onClose }) {
-  const [imgUrl, setImgUrl] = useState<string>("");
   const [showTags, setShowTags] = useState<boolean>(false);
   const [posterSrc, setPosterSrc] = useState<string>("");
   const [poster, setPoster] = useState<IPoster>({});
   const [posterId, setPosterId] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [posterTitle, setPosterTitle] = useState<string>("");
-  const [posterDesc, setPosterDesc] = useState<string>("");
-  const [posterStartDate, setPosterStartDate] = useState<string>("");
+  const [intervalID, setIntervalID] = useState<number>();
 
   useEffect(() => {
     var today = new Date();
@@ -48,8 +45,6 @@ export default function CreateImageModal({ onClose }) {
     //defaults to current date at 11:59PM + ensures startDate will always be filled with some value
     const todayDateTime = yyyy + "-" + mm + "-" + dd + "T23:59";
     setPoster({ ...poster, startDate: todayDateTime, isRecurring: "NEVER" });
-    // handleChange(todayDateTime, "startDate");
-    // setPosterRecurring("NEVER");
   }, []);
 
   const handleChange = (
@@ -65,23 +60,7 @@ export default function CreateImageModal({ onClose }) {
 
       console.log(JSON.stringify(Array.from(value)) + " updated tags");
     } else {
-      // if (property === "title" && typeof value == "string") {
-      //   setPosterTitle(value);
-      //   console.log(posterTitle);
-      //   updatedValue = { [property]: value };
-      // } else if (property === "description" && typeof value == "string") {
-      //   setPosterDesc(value);
-      //   updatedValue = { [property]: value };
-      // } else if (property === "content" && typeof value == "string") {
-      //   setImgUrl(value);
-      //   updatedValue = { [property]: value };
-      // } else if (property === "startDate" && typeof value == "string") {
-      //   setPosterStartDate(value);
-      //   console.log(value);
-      //   updatedValue = { [property]: value };
-      // } else {
       updatedValue = { [property]: value };
-      // }
     }
     setPoster((prevPoster) => ({
       ...prevPoster,
@@ -96,26 +75,29 @@ export default function CreateImageModal({ onClose }) {
 
   console.log(poster);
 
-  //call this on an interval
   const setCVFields = async (id: string) => {
+    setIsLoading(true);
     try {
+      console.log("fetching cv fields");
       const url = "http://localhost:8080/posters/" + id;
       const response = await fetch(url);
 
       if (!response.ok) {
-        setIsLoading(false);
+        // setIsLoading(false);
         throw new Error("Failed to fetch data");
       }
 
       const res = await response.json();
-      console.log(poster.title);
-      setPoster({
-        ...poster,
-        title: res.data.title,
-        description: res.data.description,
-      });
-      setIsLoading(false);
-      return Promise.resolve(res.data.data);
+      console.log(res.data.title);
+      if (res.data.title) {
+        setPoster({
+          ...poster,
+          title: res.data.title,
+          description: res.data.description,
+        });
+        setIsLoading(false);
+      }
+      return Promise.resolve(res.data);
     } catch (error) {
       setIsLoading(false);
       if (axios.isAxiosError(error) && error.response) {
@@ -156,7 +138,7 @@ export default function CreateImageModal({ onClose }) {
         setIsLoading(true);
         const res = await axios.post(url, formData, config);
         setPosterSrc(inputElement.value);
-        //need at least 3 seconds to give enough time for the poster to be created + id to exist
+        //need to give enough time for the poster to be created + id to exist
         await new Promise((resolve) => setTimeout(resolve, 3000));
         setPosterId(res.data.data.id);
         setCVFields(res.data.data.id);
@@ -208,6 +190,7 @@ export default function CreateImageModal({ onClose }) {
   };
 
   const handlePosterUpload = async (target: EventTarget & HTMLInputElement) => {
+    console.log("called poster upload");
     if (target.files) {
       const file = target.files[0]; //getting the file object
 
@@ -223,20 +206,36 @@ export default function CreateImageModal({ onClose }) {
       }
 
       const output = await createImgurLink(file);
-      //need at least 3 seconds to give enough time for the poster to be created + id to exist
+      // fetchPosterData(output.id);
       await new Promise((resolve) => setTimeout(resolve, 10000));
-      // const intervalId = setInterval(async () => {
-      //   const posterData = await setCVFields(output.id);
-      //   if (posterData.title !== undefined || poster.title !== undefined) {
-      //     // Poster.title is defined, clear the interval
-      //     clearInterval(intervalId);
-      //   }
-      // }, 1000);
       setCVFields(output.id);
       setPoster({ ...poster, content: output.content });
-      // setImgUrl(output.content);
     }
   };
+
+  function fetchPosterData(id: string) {
+    console.log("made it here!");
+    makeInterval(id);
+    if (!intervalID) {
+      const intId = setInterval(() => {
+        makeInterval(id);
+      }, 1000);
+      setIntervalID(intId);
+      console.log(intId);
+    }
+  }
+
+  async function makeInterval(id: string) {
+    if (!poster.title) {
+      const posterData = await setCVFields(id);
+      if (posterData.title) {
+        // Poster.title is defined, clear the interval
+        console.log(intervalID);
+        clearInterval(intervalID);
+        console.log("cleared interval");
+      }
+    }
+  }
 
   const onSaveSelectTags = () => {
     setShowTags(true);

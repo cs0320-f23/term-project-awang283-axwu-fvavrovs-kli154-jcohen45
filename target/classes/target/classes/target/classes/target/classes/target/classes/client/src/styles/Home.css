@@ -65,6 +65,7 @@
   caret-color: var(--dark-purple100);
   border: none !important;
   box-shadow: none !important;
+  outline: none;
 }
 
 .search-input::placeholder {
@@ -111,7 +112,7 @@
   white-space: nowrap;
   font-family: "quicksand", sans-serif;
   font-weight: 600;
-  z-index: 5;
+  z-index: 1;
 }
 
 .magenta-tag {

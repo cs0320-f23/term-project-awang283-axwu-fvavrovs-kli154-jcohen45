@@ -38,9 +38,12 @@ export default function App() {
           }
         )
         .then(async (res) => {
+          console.log("Google API response:", res);
           if (res.data.hd == "brown.edu" || res.data.hd == "risd.edu") {
             setProfile(res.data);
-          } else {
+          } 
+          else {
+            console.log("Invalid email domain");
             window.alert("Please use a valid Brown or RISD email");
             setProfile(null);
           }
@@ -49,22 +52,24 @@ export default function App() {
       //check if user exists in database w get user by id
       console.log(profile);
       const findUser = async () => {
-        if (profile) {
+        if (profile) { 
           try {
             const userID = profile.id;
             const foundUser = await fetch(
               "http://localhost:8080/users/" + userID
             );
+            console.log("founduser", foundUser)
             if (foundUser.ok) {
               const userValid = await foundUser.json();
 
-              if (userValid.data) {
-                setProfile(profile);
+              if (userValid.message === "User found") {
+                setProfile(profile); 
               } else {
                 //if not, call create user
+                console.log("user didn't already exist, profile here",profile)
                 return await createUser(profile);
               }
-            }
+            } 
           } catch (e) {
             console.log("error fetching user" + e);
           }

@@ -18,9 +18,9 @@ import { createUser } from "./functions/fetch";
 export default function App() {
   const [modalOpen, setModalOpen] = useState<string>("");
   const [user, setUser] = useState<CredentialResponse>();
-  const [profile, setProfile] = useState<any>([]);
+  const [profile, setProfile] = useState<any>(null);
 
-  const login = useGoogleLogin({
+  const login = useGoogleLogin({ 
     onSuccess: (codeResponse) => setUser(codeResponse),
     onError: (error) => console.log("Login Failed:", error),
   });
@@ -40,16 +40,17 @@ export default function App() {
         .then(async (res) => {
           if (res.data.hd == "brown.edu" || res.data.hd == "risd.edu") {
             setProfile(res.data);
-          } else {
+          } 
+          else {
+            console.log("Invalid email domain");
             window.alert("Please use a valid Brown or RISD email");
             setProfile(null);
           }
         })
         .catch((err) => console.log(err));
       //check if user exists in database w get user by id
-      console.log(profile);
       const findUser = async () => {
-        if (profile) {
+        if (profile) { 
           try {
             const userID = profile.id;
             const foundUser = await fetch(
@@ -58,13 +59,14 @@ export default function App() {
             if (foundUser.ok) {
               const userValid = await foundUser.json();
 
-              if (userValid.data) {
-                setProfile(profile);
+              if (userValid.message === "User found") {
+                setProfile(profile); 
               } else {
                 //if not, call create user
+                console.log("user didn't already exist, profile here",profile)
                 return await createUser(profile);
               }
-            }
+            } 
           } catch (e) {
             console.log("error fetching user" + e);
           }
@@ -74,7 +76,7 @@ export default function App() {
         return p;
       });
     }
-  }, [user]);
+  }, [user,profile]);
 
   // log out function to log the user out of google and set the profile array to null
   const logOut = () => {

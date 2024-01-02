@@ -13,30 +13,18 @@ public class CorsConfig {
     return new WebMvcConfigurer() {
       @Override
       public void addCorsMappings(CorsRegistry registry) {
-        registry
-            .addMapping("/**")
-            .allowedOrigins("http://localhost:5173") // Add your frontend URL here
-            .allowedMethods("GET", "POST", "PUT", "DELETE")
-
-            .allowedHeaders("*")
-                .allowCredentials(true);
-        registry.addMapping("/users/**")
-                .allowedOrigins("http://localhost:5173")
-                .allowedMethods("GET", "POST", "PUT", "DELETE")
-                .allowedHeaders("Content-Type")
-                .allowCredentials(true);
         registry.addMapping("/users/create") // Map specific endpoint
                 .allowedOrigins("http://localhost:5173")
-                .allowedMethods("GET", "POST", "PUT", "DELETE")
-                .allowedHeaders("Content-Type")
+                .allowedMethods("GET", "POST", "PUT", "DELETE","PATCH")
+                .allowedHeaders("*")
                 .allowCredentials(true)
-                .maxAge(3600)
-            .allowedHeaders("*");
-        registry
-            .addMapping("/users/**")
-            .allowedOrigins("http://localhost:5173")
-            .allowedMethods("GET", "POST", "PUT", "DELETE")
-            .allowedHeaders("Content-Type");
+                .maxAge(3600);
+
+        registry.addMapping("/users/{id}")
+                .allowedOrigins("http://localhost:5173")
+                .allowedMethods("GET", "POST", "PUT", "DELETE")
+                .allowedHeaders("*") // Allow any headers
+                .allowCredentials(true);
       }
     };
   }

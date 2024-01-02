@@ -64,14 +64,14 @@ article {
 #sign-up,
 #create,
 #profile,
-#logout {
+#login {
   border-radius: 12px;
   color: white;
   margin-bottom: 1vh;
   box-shadow: var(--tag-shadow) !important;
 }
 
-#sign-up:hover,
+#login:hover,
 #profile:hover {
   background-color: var(--dark-purple70) !important;
   transition: 0.3s;
@@ -84,15 +84,15 @@ article {
   transform: scale(1.08) !important;
 }
 
-#login {
+#logout {
   background-color: transparent !important;
   font-size: 18px;
   margin-bottom: 1vh;
   color: var(--dark-purple100) !important;
 }
 
-#login:hover {
-  color: var(--dark-purple70);
+#logout:hover {
+  color: var(--dark-purple70) !important;
   transition: 0.3s;
 }
 
@@ -105,8 +105,24 @@ article {
 
 #sign-up,
 #profile,
-#logout, #login {
+#logout {
   padding: 14px 36px 16px;
+  font-size: 18px;
+}
+
+#logout {
+  padding: 14px 24px 16px;
+  font-size: 18px;
+}
+
+#login {
+  padding: 14px 24px;
+  font-size: 18px;
+  margin-left: 2vw;
+}
+
+#profile {
+  padding: 14px 48px;
   font-size: 18px;
 }
 
