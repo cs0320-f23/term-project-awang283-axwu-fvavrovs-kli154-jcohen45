@@ -27,6 +27,14 @@ export default function App() {
   });
 
   useEffect(() => {
+    const userProfile = localStorage.getItem("userProfile");
+    if (userProfile) {
+      // Set the user profile in state
+      setProfile(JSON.parse(userProfile));
+    }
+  }, []);
+
+  useEffect(() => {
     if (user) {
       axios
         .get(
@@ -41,6 +49,7 @@ export default function App() {
         .then(async (res) => {
           if (res.data.hd == "brown.edu" || res.data.hd == "risd.edu") {
             setProfile(res.data);
+            localStorage.setItem("userProfile", JSON.stringify(res.data));
           } else {
             console.log("Invalid email domain");
             window.alert("Please use a valid Brown or RISD email");
@@ -82,6 +91,7 @@ export default function App() {
   const logOut = () => {
     googleLogout();
     setProfile(null);
+    localStorage.removeItem("userProfile");
   };
 
   const handleCreatePoster = useCallback(() => {
