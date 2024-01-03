@@ -88,12 +88,12 @@
   font-family: "quicksand", sans-serif;
   font-weight: 500;
   width: 50%;
-  padding: 0vw 1.5vw 1.5vw 0vw;
+  padding: 0vw 1.5vw 0vw 0vw;
 }
 
 .tags-div {
   justify-content: space-around;
-  height: 90.7%;
+  height: 87%;
   width: 100%;
   overflow-y: scroll;
   gap: 5vh;
@@ -102,10 +102,10 @@
 .input-fields {
   display: flex;
   flex-flow: column;
-  gap: 0.7%;
   height: 100%;
   max-height: 74vh !important;
   font-size: 16px;
+  overflow-y: scroll;
 }
 
 input {
@@ -144,6 +144,7 @@ input::placeholder {
   bottom: 0;
   padding: 15px 18px !important;
   margin: 0px;
+  box-shadow: var(--tag-shadow);
 }
 
 .save-div {
@@ -157,7 +158,7 @@ input::placeholder {
   color: transparent;
   display: flex;
   justify-content: space-between;
-  margin: 2vw 1vw 1vw 1vw;
+  margin: 2vw 0vw 1vw;
 }
 
 .final-upload-button {

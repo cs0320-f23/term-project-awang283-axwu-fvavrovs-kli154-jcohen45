@@ -14,6 +14,7 @@ import {
 } from "@react-oauth/google";
 import axios from "axios";
 import { createUser } from "./functions/fetch";
+import Profile from "./components/Profile";
 
 export default function App() {
   const [modalOpen, setModalOpen] = useState<string>("");
@@ -24,14 +25,6 @@ export default function App() {
     onSuccess: (codeResponse) => setUser(codeResponse),
     onError: (error) => console.log("Login Failed:", error),
   });
-
-  useEffect(() => {
-    const userProfile = localStorage.getItem("userProfile");
-    if (userProfile) {
-      // Set the user profile in state
-      setProfile(JSON.parse(userProfile));
-    }
-  }, []);
 
   useEffect(() => {
     if (user) {
@@ -48,7 +41,6 @@ export default function App() {
         .then(async (res) => {
           if (res.data.hd == "brown.edu" || res.data.hd == "risd.edu") {
             setProfile(res.data);
-            localStorage.setItem("userProfile", JSON.stringify(res.data));
           } else {
             console.log("Invalid email domain");
             window.alert("Please use a valid Brown or RISD email");
@@ -90,7 +82,6 @@ export default function App() {
   const logOut = () => {
     googleLogout();
     setProfile(null);
-    localStorage.removeItem("userProfile");
   };
 
   const handleCreatePoster = useCallback(() => {
@@ -123,7 +114,11 @@ export default function App() {
                   <Button id="create" onClick={handleCreatePoster}>
                     +
                   </Button>
-                  {/* <Button id="profile">User Profile</Button> */}
+                  <div id="profile">
+                    <NavLink to="/profile" className="profile-link">
+                      {profile.name}
+                    </NavLink>
+                  </div>
                   <Button id="logout" onClick={logOut} color={"white"}>
                     Log Out
                   </Button>
@@ -147,6 +142,7 @@ export default function App() {
             <Route path="/happenings" element={<Happenings />} />
             <Route path="/archive" element={<Archive />} />
             <Route path="/about" element={<About />} />
+            <Route path="/profile" element={<Profile />} />
           </Routes>
           {modalOpen && <CreateImageModal onClose={() => setModalOpen("")} />}
         </main>

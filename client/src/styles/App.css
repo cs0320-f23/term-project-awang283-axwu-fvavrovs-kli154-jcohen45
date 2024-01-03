@@ -57,8 +57,18 @@ article {
 .left-links,
 .right-links {
   display: flex;
+  flex-flow: row;
   justify-content: space-between;
   font-size: 18px;
+  gap: 30px;
+}
+
+.left-links {
+  margin-left: 2vw;
+}
+
+.right-links {
+  align-items: center;
 }
 
 #sign-up,
@@ -85,8 +95,9 @@ article {
 }
 
 #logout {
-  background-color: transparent !important;
   font-size: 18px;
+  padding: 14px 32px 16px 0px;
+  background-color: transparent !important;
   margin-bottom: 1vh;
   color: var(--dark-purple100) !important;
 }
@@ -97,21 +108,14 @@ article {
 }
 
 #create {
-  padding: 12px 15px 18px;
+  padding: 14px 15px 18px !important;
+  min-height: 42px !important;
   font-size: 26px;
   font-weight: 500;
-  outline: none;
 }
 
-#sign-up,
-#profile,
-#logout {
+#sign-up {
   padding: 14px 36px 16px;
-  font-size: 18px;
-}
-
-#logout {
-  padding: 14px 24px 16px;
   font-size: 18px;
 }
 
@@ -122,13 +126,15 @@ article {
 }
 
 #profile {
-  padding: 14px 48px;
   font-size: 18px;
-}
-
-a,
-button {
-  margin-left: 10%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7.5px 18px;
+  font-family: "quicksand", sans-serif;
+  background-color: var(--dark-purple100);
+  color: white;
+  box-shadow: var(--tag-shadow);
 }
 
 main {
