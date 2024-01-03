@@ -408,7 +408,9 @@ export default function CreateImageModal({ onClose }) {
                         <Button
                           onClick={onSaveSelectTags}
                           className={"save-button"}
-                          isDisabled={isLoading || !poster.title}
+                          isDisabled={
+                            isLoading || !poster.title || !poster.content
+                          }
                         >
                           Save and Select Tags
                         </Button>

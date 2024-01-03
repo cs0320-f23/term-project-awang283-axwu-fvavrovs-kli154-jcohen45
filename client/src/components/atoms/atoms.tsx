@@ -15,3 +15,8 @@ export const tagsState = atom<Set<string>>({
   key: "tagsState",
   default: new Set(),
 });
+
+export const loadState = atom<boolean>({
+  key: "loadState",
+  default: true,
+});

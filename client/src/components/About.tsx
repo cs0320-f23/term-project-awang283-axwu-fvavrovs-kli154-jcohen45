@@ -1,7 +1,32 @@
 // import React from "react";
+import { useRecoilState } from "recoil";
 import "../styles/About.css";
+import { loadState } from "./atoms/atoms";
+import { useEffect } from "react";
 
 export default function About() {
+  const [isLoading, setIsLoading] = useRecoilState(loadState);
+
+  useEffect(() => {
+    const checkPostersDisplayed = () => {
+      const imageElements = document.querySelectorAll("#about-image");
+      if (isLoading) {
+        console.log("images loading...");
+
+        if (imageElements.length === 3) {
+          setIsLoading(false);
+          console.log("done loading");
+        }
+      }
+
+      if (imageElements.length !== 3) {
+        setIsLoading(true);
+      }
+    };
+
+    checkPostersDisplayed();
+  }, [isLoading]);
+
   return (
     <>
       <main>
@@ -41,6 +66,7 @@ export default function About() {
                   className="norm-img"
                   src="/pabnorm.png"
                   alt="Photo of 5 people sitting on a couch"
+                  id="about-image"
                 />
               </div>
               <div
@@ -51,6 +77,7 @@ export default function About() {
                   className="zoom-img"
                   src="/silly.png"
                   alt="Photo of 5 people on a Zoom call"
+                  id="about-image"
                 />
               </div>
             </div>
@@ -64,6 +91,7 @@ export default function About() {
                   className="pab-img"
                   src="/pab_alt.png"
                   alt="Photo of 4 people on a couch and one person on their lap"
+                  id="about-image"
                 />
               </div>
             </div>

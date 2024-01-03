@@ -16,7 +16,12 @@ import { useCallback, useEffect, useState } from "react";
 import ViewPosterModal from "./ViewPosterModal";
 import axios from "axios";
 import { useRecoilState } from "recoil";
-import { searchResultsState, searchState, tagsState } from "./atoms/atoms";
+import {
+  loadState,
+  searchResultsState,
+  searchState,
+  tagsState,
+} from "./atoms/atoms";
 import { fetchTags } from "../functions/fetch";
 import Masonry from "react-responsive-masonry";
 
@@ -119,7 +124,7 @@ export const ImageCard: React.FC<ImageCardProps> = ({
     <>
       <div className="image-card" onClick={handleViewPoster}>
         <div className="card-backing">
-          <img src={content} alt={title} />
+          <img src={content} alt={title} className="poster-image" />
         </div>
         <div className="image-overlay">
           <div className="top-info">
@@ -184,6 +189,7 @@ export default function Happenings() {
   const [showTags, setShowTags] = useState<boolean>(false); //shows the tags modal
   const [allTags, setAllTags] = useState<string[]>([]); //all tags in database
   const [tags, setTags] = useRecoilState<Set<string>>(tagsState); //list of tags user clicked
+  const [isLoading, setIsLoading] = useRecoilState(loadState);
 
   useEffect(() => {
     const fetchAllTags = async () => {
@@ -202,7 +208,35 @@ export default function Happenings() {
     }
   }, []);
 
-  //onclick
+  useEffect(() => {
+    const checkPostersDisplayed = () => {
+      const posterElements = document.querySelectorAll(".image-card");
+      const numberOfPosters = searchResults.length;
+      if (isLoading) {
+        console.log("posters loading...");
+        console.log("currently " + posterElements.length + " image cards");
+        console.log("should be " + numberOfPosters + " many posters");
+
+        if (
+          posterElements.length !== 0 &&
+          posterElements.length === numberOfPosters
+        ) {
+          setIsLoading(false);
+          console.log("done loading");
+        }
+      }
+
+      if (
+        (posterElements.length === 0 && numberOfPosters === 0) ||
+        posterElements.length !== numberOfPosters
+      ) {
+        setIsLoading(true);
+      }
+    };
+
+    checkPostersDisplayed();
+  }, [isLoading, searchResults]);
+
   const onClick = (tag: string) => {
     //if in tagslist, take out
     const updatedTags = new Set(tags); // Create a new set from the current tags
@@ -244,8 +278,9 @@ export default function Happenings() {
         if (!response.ok) {
           throw new Error("Failed to fetch data");
         }
+
         const results: IPoster[] = await response.json();
-        console.log(results);
+
         setSearchResults(results);
       } catch (error) {
         console.error("Error fetching search results:", error);

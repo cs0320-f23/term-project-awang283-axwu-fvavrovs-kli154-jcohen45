@@ -15,11 +15,14 @@ import {
 import axios from "axios";
 import { createUser } from "./functions/fetch";
 import Profile from "./components/Profile";
+import { loadState } from "./components/atoms/atoms";
+import { useRecoilState } from "recoil";
 
 export default function App() {
   const [modalOpen, setModalOpen] = useState<string>("");
   const [user, setUser] = useState<CredentialResponse>();
   const [profile, setProfile] = useState<any>(null);
+  const [isLoading, setIsLoading] = useRecoilState(loadState);
 
   const login = useGoogleLogin({
     onSuccess: (codeResponse) => setUser(codeResponse),
@@ -101,6 +104,11 @@ export default function App() {
 
   return (
     <>
+      {isLoading && (
+        <div className="loading-screen">
+          <img className="loading-gif" src="/loading.gif" />
+        </div>
+      )}
       <article>
         <header>
           <nav>
