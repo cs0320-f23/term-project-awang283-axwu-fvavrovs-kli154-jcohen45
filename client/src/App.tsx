@@ -20,10 +20,18 @@ export default function App() {
   const [user, setUser] = useState<CredentialResponse>();
   const [profile, setProfile] = useState<any>(null);
 
-  const login = useGoogleLogin({ 
+  const login = useGoogleLogin({
     onSuccess: (codeResponse) => setUser(codeResponse),
     onError: (error) => console.log("Login Failed:", error),
   });
+
+  useEffect(() => {
+    const userProfile = localStorage.getItem("userProfile");
+    if (userProfile) {
+      // Set the user profile in state
+      setProfile(JSON.parse(userProfile));
+    }
+  }, []);
 
   useEffect(() => {
     if (user) {
@@ -40,8 +48,8 @@ export default function App() {
         .then(async (res) => {
           if (res.data.hd == "brown.edu" || res.data.hd == "risd.edu") {
             setProfile(res.data);
-          } 
-          else {
+            localStorage.setItem("userProfile", JSON.stringify(res.data));
+          } else {
             console.log("Invalid email domain");
             window.alert("Please use a valid Brown or RISD email");
             setProfile(null);
@@ -50,7 +58,7 @@ export default function App() {
         .catch((err) => console.log(err));
       //check if user exists in database w get user by id
       const findUser = async () => {
-        if (profile) { 
+        if (profile) {
           try {
             const userID = profile.id;
             const foundUser = await fetch(
@@ -60,13 +68,13 @@ export default function App() {
               const userValid = await foundUser.json();
 
               if (userValid.message === "User found") {
-                setProfile(profile); 
+                setProfile(profile);
               } else {
                 //if not, call create user
-                console.log("user didn't already exist, profile here",profile)
+                console.log("user didn't already exist, profile here", profile);
                 return await createUser(profile);
               }
-            } 
+            }
           } catch (e) {
             console.log("error fetching user" + e);
           }
@@ -76,12 +84,13 @@ export default function App() {
         return p;
       });
     }
-  }, [user,profile]);
+  }, [user, profile]);
 
   // log out function to log the user out of google and set the profile array to null
   const logOut = () => {
     googleLogout();
     setProfile(null);
+    localStorage.removeItem("userProfile");
   };
 
   const handleCreatePoster = useCallback(() => {

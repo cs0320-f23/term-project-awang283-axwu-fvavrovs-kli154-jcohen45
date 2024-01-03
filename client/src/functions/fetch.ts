@@ -28,23 +28,23 @@ export async function createUser(profile) {
     const user: IUser = {
       id: profile.id,
       name: profile.name,
-      email: profile.email, 
+      email: profile.email,
     };
 
-    console.log("inside createUser",profile); 
-    //add to database 
+    console.log("inside createUser", user);
+    //add to database
     const config = {
       headers: {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH",
       },
-      withCredentials: true, 
+      withCredentials: true,
     };
     const url = "http://localhost:8080/users/create";
 
     const res = await axios.post(url, user, config);
-    console.log("inside creatUser res",res);
+    console.log("inside creatUser res", res);
     return Promise.resolve(res.data.data);
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
