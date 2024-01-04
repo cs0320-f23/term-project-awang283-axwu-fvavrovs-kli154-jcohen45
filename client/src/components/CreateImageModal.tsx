@@ -139,7 +139,7 @@ export default function CreateImageModal({ onClose }) {
         const res = await axios.post(url, formData, config);
         setPosterSrc(inputElement.value);
         //need to give enough time for the poster to be created + id to exist
-        await new Promise((resolve) => setTimeout(resolve, 3000));
+        await new Promise((resolve) => setTimeout(resolve, 10000));
         setPosterId(res.data.data.id);
         setCVFields(res.data.data.id);
         return Promise.resolve(res.data.data);
@@ -213,29 +213,29 @@ export default function CreateImageModal({ onClose }) {
     }
   };
 
-  function fetchPosterData(id: string) {
-    console.log("made it here!");
-    makeInterval(id);
-    if (!intervalID) {
-      const intId = setInterval(() => {
-        makeInterval(id);
-      }, 1000);
-      setIntervalID(intId);
-      console.log(intId);
-    }
-  }
+  // function fetchPosterData(id: string) {
+  //   console.log("made it here!");
+  //   makeInterval(id);
+  //   if (!intervalID) {
+  //     const intId = setInterval(() => {
+  //       makeInterval(id);
+  //     }, 1000);
+  //     setIntervalID(intId);
+  //     console.log(intId);
+  //   }
+  // }
 
-  async function makeInterval(id: string) {
-    if (!poster.title) {
-      const posterData = await setCVFields(id);
-      if (posterData.title) {
-        // Poster.title is defined, clear the interval
-        console.log(intervalID);
-        clearInterval(intervalID);
-        console.log("cleared interval");
-      }
-    }
-  }
+  // async function makeInterval(id: string) {
+  //   if (!poster.title) {
+  //     const posterData = await setCVFields(id);
+  //     if (posterData.title) {
+  //       // Poster.title is defined, clear the interval
+  //       console.log(intervalID);
+  //       clearInterval(intervalID);
+  //       console.log("cleared interval");
+  //     }
+  //   }
+  // }
 
   const onSaveSelectTags = () => {
     setShowTags(true);
