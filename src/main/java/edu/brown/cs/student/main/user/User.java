@@ -1,11 +1,12 @@
 package edu.brown.cs.student.main.user;
 
 import edu.brown.cs.student.main.types.Poster;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "user")
 public class User {
@@ -13,6 +14,7 @@ public class User {
   // private String username;
   private String name;
   private String email;
+  private String picture;
   private Set<Poster> posters; // Assuming a user can have multiple posters
 
   /** a no argument constructor so that Jackson can deserialize the json */
@@ -59,5 +61,13 @@ public class User {
 
   public void setPosters(Set<Poster> posters) {
     this.posters = posters;
+  }
+
+  public String getPicture() {
+    return picture;
+  }
+
+  public void setPicture(String picture) {
+    this.picture = picture;
   }
 }
