@@ -117,7 +117,7 @@ export default function CreateImageModal({ onClose }) {
     //setURL
     // setImgUrl(inputElement.value);
     setPoster({ ...poster, content: inputElement.value });
-    console.log(inputElement.value + " imgurl");
+    // console.log(inputElement.value + " imgurl");
     //if link not imgur
     //const pattern: RegExp = /^.*\.(png|jpg|jpeg)$/i;
 
@@ -408,9 +408,7 @@ export default function CreateImageModal({ onClose }) {
                         <Button
                           onClick={onSaveSelectTags}
                           className={"save-button"}
-                          isDisabled={
-                            isLoading || !poster.title || !poster.content
-                          }
+                          isDisabled={isLoading || !poster.title || !posterSrc}
                         >
                           Save and Select Tags
                         </Button>
