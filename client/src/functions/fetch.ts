@@ -7,6 +7,7 @@ interface IUser {
   name?: string;
   email?: string;
   posters?: string[];
+  picture?: string;
 }
 
 export async function fetchTags() {
@@ -29,6 +30,7 @@ export async function createUser(profile) {
       id: profile.id,
       name: profile.name,
       email: profile.email,
+      picture: profile.picture,
     };
 
     console.log("inside createUser", user);

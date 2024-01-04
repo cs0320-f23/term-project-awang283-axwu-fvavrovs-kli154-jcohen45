@@ -139,7 +139,7 @@ export default function CreateImageModal({ onClose }) {
         const res = await axios.post(url, formData, config);
         setPosterSrc(inputElement.value);
         //need to give enough time for the poster to be created + id to exist
-        await new Promise((resolve) => setTimeout(resolve, 3000));
+        await new Promise((resolve) => setTimeout(resolve, 10000));
         setPosterId(res.data.data.id);
         setCVFields(res.data.data.id);
         return Promise.resolve(res.data.data);
@@ -283,7 +283,9 @@ export default function CreateImageModal({ onClose }) {
                 ) : (
                   <div className="input-fields">
                     <div>
-                      <h3>Image</h3>
+                      <h3>
+                        Image <span style={{ color: "red" }}>*</span>
+                      </h3>
                       <div className="input-text-input">
                         <Input
                           id="image-url"
@@ -313,7 +315,9 @@ export default function CreateImageModal({ onClose }) {
                       </div>
                     </div>
                     <div className="title-div">
-                      <h3>Title</h3>
+                      <h3>
+                        Title <span style={{ color: "red" }}>*</span>
+                      </h3>
                       <Input
                         placeholder="Enter Title"
                         value={poster.title}
