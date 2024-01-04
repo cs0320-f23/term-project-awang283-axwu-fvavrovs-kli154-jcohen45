@@ -139,7 +139,7 @@ export default function CreateImageModal({ onClose }) {
         const res = await axios.post(url, formData, config);
         setPosterSrc(inputElement.value);
         //need to give enough time for the poster to be created + id to exist
-        await new Promise((resolve) => setTimeout(resolve, 10000));
+        await new Promise((resolve) => setTimeout(resolve, 3000));
         setPosterId(res.data.data.id);
         setCVFields(res.data.data.id);
         return Promise.resolve(res.data.data);
