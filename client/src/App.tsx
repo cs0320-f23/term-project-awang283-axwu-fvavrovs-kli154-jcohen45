@@ -15,13 +15,13 @@ import {
 import axios from "axios";
 import { createUser } from "./functions/fetch";
 import Profile from "./components/Profile";
-import { loadState } from "./components/atoms/atoms";
+import { loadState, profileState } from "./components/atoms/atoms";
 import { useRecoilState } from "recoil";
 
 export default function App() {
   const [modalOpen, setModalOpen] = useState<string>("");
   const [user, setUser] = useState<CredentialResponse>();
-  const [profile, setProfile] = useState<any>(null);
+  const [profile, setProfile] = useRecoilState<any>(profileState);
   const [isLoading, setIsLoading] = useRecoilState(loadState);
 
   const login = useGoogleLogin({

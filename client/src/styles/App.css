@@ -135,6 +135,7 @@ article {
   background-color: var(--dark-purple100);
   color: white;
   box-shadow: var(--tag-shadow);
+  gap: 6px;
 }
 
 main {
