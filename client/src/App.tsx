@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Routes, Route, NavLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Home from "./components/Home";
 import Happenings from "./components/Happenings";
 import Archive from "./components/Archive";
@@ -23,6 +24,7 @@ export default function App() {
   const [user, setUser] = useState<CredentialResponse>();
   const [profile, setProfile] = useRecoilState<any>(profileState);
   const [isLoading, setIsLoading] = useRecoilState(loadState);
+  const navigate = useNavigate();
 
   const login = useGoogleLogin({
     onSuccess: (codeResponse) => setUser(codeResponse),
@@ -96,6 +98,7 @@ export default function App() {
     googleLogout();
     setProfile(null);
     localStorage.removeItem("userProfile");
+    navigate("/home");
   };
 
   const handleCreatePoster = useCallback(() => {

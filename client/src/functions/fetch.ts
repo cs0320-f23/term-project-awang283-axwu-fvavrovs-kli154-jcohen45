@@ -33,7 +33,7 @@ export async function createUser(profile) {
       picture: profile.picture,
     };
 
-    console.log("inside createUser", user);
+    // console.log("inside createUser", user);
     //add to database
     const config = {
       headers: {
