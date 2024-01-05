@@ -11,16 +11,17 @@ import java.util.UUID;
 @Document(collection = "user")
 public class User {
   @Id private String id; // or some identifier
-  // private String username;
   private String name;
   private String email;
   private String picture;
-  private Set<Poster> posters; // Assuming a user can have multiple posters
+  private Set<Poster> createdPosters; // Assuming a user can have multiple posters
+  private Set<Poster> savedPosters;
 
   /** a no argument constructor so that Jackson can deserialize the json */
   public User() {
     this.id = UUID.randomUUID().toString();
-    this.posters = new HashSet<>();
+    this.createdPosters = new HashSet<>();
+    this.savedPosters = new HashSet<>();
   }
   // Getters and Setters
   public String getId() {
@@ -30,14 +31,6 @@ public class User {
   public void setId(String id) {
     this.id = id;
   }
-
-  // public String getUsername() {
-  // return username;
-  // }
-
-  // public void setUsername(String username) {
-  // this.username = username;
-  // }
 
   public String getName() {
     return name;
@@ -55,12 +48,12 @@ public class User {
     this.email = email;
   }
 
-  public Set<Poster> getPosters() {
-    return posters;
+  public Set<Poster> getCreatedPosters() {
+    return createdPosters;
   }
 
-  public void setPosters(Set<Poster> posters) {
-    this.posters = posters;
+  public void setCreatedPosters(Set<Poster> createdPosters) {
+    this.createdPosters = createdPosters;
   }
 
   public String getPicture() {
@@ -69,5 +62,13 @@ public class User {
 
   public void setPicture(String picture) {
     this.picture = picture;
+  }
+
+  public Set<Poster> getSavedPosters() {
+    return savedPosters;
+  }
+
+  public void setSavedPosters(Set<Poster> savedPosters) {
+    this.savedPosters = savedPosters;
   }
 }

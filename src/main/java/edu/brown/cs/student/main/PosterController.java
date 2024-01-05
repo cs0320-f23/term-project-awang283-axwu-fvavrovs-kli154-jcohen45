@@ -3,6 +3,11 @@ package edu.brown.cs.student.main;
 import edu.brown.cs.student.main.imgur.ImgurService;
 import edu.brown.cs.student.main.responses.ServiceResponse;
 import edu.brown.cs.student.main.types.Poster;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -10,11 +15,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.multipart.MultipartFile;
 
 /** This class defines the mappings and endpoints for poster management */
 @RestController
@@ -202,7 +202,7 @@ public class PosterController {
       @RequestBody Content content, @RequestParam(required = false) String userId) {
     Poster poster = new Poster();
     poster.setContent(content.getContent());
-    this.posterService.createPoster(poster, "1");
+    this.posterService.createPoster(poster, userId);
     return CompletableFuture.completedFuture(
         new ServiceResponse<Poster>(poster, "created new poster using existing link"));
   }
@@ -219,7 +219,7 @@ public class PosterController {
     Poster poster = new Poster();
     ServiceResponse<String> imgurResponse = imgurService.uploadToImgur(content);
     poster.setContent(imgurResponse.getData());
-    this.posterService.createPoster(poster, "1");
+    this.posterService.createPoster(poster, userId);
     return CompletableFuture.completedFuture(
         new ServiceResponse<Poster>(poster, "uploaded to imgur"));
   }

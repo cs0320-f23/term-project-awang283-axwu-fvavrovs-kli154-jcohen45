@@ -99,6 +99,7 @@ export default function App() {
     setProfile(null);
     localStorage.removeItem("userProfile");
     navigate("/home");
+    console.log("wth");
   };
 
   const handleCreatePoster = useCallback(() => {

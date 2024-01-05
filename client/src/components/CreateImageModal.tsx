@@ -16,6 +16,8 @@ import "../styles/Modal.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import TagsModal from "./TagsModal";
+import { profileState } from "./atoms/atoms";
+import { useRecoilState } from "recoil";
 
 interface IPoster {
   content?: string;
@@ -36,6 +38,7 @@ export default function CreateImageModal({ onClose }) {
   const [posterId, setPosterId] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [intervalID, setIntervalID] = useState<number>();
+  const [profile] = useRecoilState(profileState);
 
   useEffect(() => {
     var today = new Date();
@@ -135,6 +138,7 @@ export default function CreateImageModal({ onClose }) {
         const url = "http://localhost:8080/posters/create/fromlink";
         const formData = new FormData();
         formData.append("content", inputElement.value);
+        formData.append("userId", profile.id);
         setIsLoading(true);
         const res = await axios.post(url, formData, config);
         setPosterSrc(inputElement.value);
@@ -169,6 +173,7 @@ export default function CreateImageModal({ onClose }) {
       const url = "http://localhost:8080/posters/create/imgur";
       const formData = new FormData();
       formData.append("content", file);
+      formData.append("userId", profile.id);
       console.log("Before axios request");
       setIsLoading(true);
       const res = await axios.post(url, formData, config);
