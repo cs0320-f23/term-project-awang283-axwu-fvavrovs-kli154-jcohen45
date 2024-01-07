@@ -4,7 +4,7 @@ import { useRecoilState } from "recoil";
 import { profileState } from "./atoms/atoms";
 
 export default function Profile() {
-  const [profile, setProfile] = useRecoilState<any>(profileState);
+  const [profile] = useRecoilState(profileState);
 
   return (
     <main>

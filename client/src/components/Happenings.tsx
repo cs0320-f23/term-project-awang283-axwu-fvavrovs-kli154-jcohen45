@@ -57,6 +57,7 @@ interface ImageCardProps {
   description?: string;
   tags?: string[];
   recurs: string;
+  id: string;
 }
 
 export const ImageCard: React.FC<ImageCardProps> = ({
@@ -69,6 +70,7 @@ export const ImageCard: React.FC<ImageCardProps> = ({
   description,
   tags,
   recurs,
+  id,
 }) => {
   const listMonths = [
     "January",
@@ -122,7 +124,7 @@ export const ImageCard: React.FC<ImageCardProps> = ({
 
   return (
     <>
-      <div className="image-card" onClick={handleViewPoster}>
+      <div className="image-card" onClick={handleViewPoster} id={id}>
         <div className="card-backing">
           <img src={content} alt={title} className="poster-image" />
         </div>
@@ -158,6 +160,7 @@ export const ImageCard: React.FC<ImageCardProps> = ({
             description={description!}
             tags={tags!}
             recurs={recurs}
+            id={id}
           />
         )}
       </div>
@@ -442,6 +445,7 @@ export default function Happenings() {
                 description={item.description}
                 tags={item.tags}
                 recurs={item.isRecurring}
+                id={item.id}
               />
             </Box>
           ))}

@@ -119,4 +119,54 @@ public class UserService {
         .map(CompletableFuture::completedFuture) // Remove this line
         .orElse(CompletableFuture.completedFuture(new ServiceResponse<>("User not found")));
   }
+
+
+  @Async
+  public CompletableFuture<ServiceResponse<User>> savePoster(
+          String userId, Poster poster) {
+    // Find the user by ID
+   // System.out.println("reached associatePosterWithUser function");
+    return userRepository
+            .findById(userId)
+            .map(
+                    user -> {
+                      // Add the poster to the user's list of posters
+                      user.getSavedPosters().add(poster);
+                      // Save the updated user
+                      //System.out.println("Trying to save");
+                      userRepository.save(user);
+                      // Create a response object
+                     // System.out.println("Trying to return service response");
+                      return new ServiceResponse<>(user, "Poster associated with user");
+                    })
+            .map(CompletableFuture::completedFuture) // Remove this line
+            .orElse(CompletableFuture.completedFuture(new ServiceResponse<>("User not found")));
+  }
+
+
+  @Async
+  public CompletableFuture<ServiceResponse<User>> unsavePoster(
+          String userId, Poster poster) {
+    // Find the user by ID
+    // System.out.println("reached associatePosterWithUser function");
+    return userRepository
+            .findById(userId)
+            .map(
+                    user -> {
+                      // Add the poster to the user's list of posters
+                      if (user.getSavedPosters().contains(poster)) {
+                        user.getSavedPosters().remove(poster);
+                        // Save the updated user
+                        System.out.println("Trying to unsave");
+                      }
+                      userRepository.save(user);
+                      // Create a response object
+                      // System.out.println("Trying to return service response");
+                      return new ServiceResponse<>(user, "Poster associated with user");
+                    })
+            .map(CompletableFuture::completedFuture) // Remove this line
+            .orElse(CompletableFuture.completedFuture(new ServiceResponse<>("User not found")));
+  }
+
+
 }

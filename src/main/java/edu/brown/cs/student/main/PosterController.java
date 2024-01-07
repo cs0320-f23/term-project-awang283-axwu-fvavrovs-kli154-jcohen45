@@ -3,6 +3,7 @@ package edu.brown.cs.student.main;
 import edu.brown.cs.student.main.imgur.ImgurService;
 import edu.brown.cs.student.main.responses.ServiceResponse;
 import edu.brown.cs.student.main.types.Poster;
+import edu.brown.cs.student.main.user.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,10 +25,12 @@ public class PosterController {
 
   private final PosterService posterService; // instance of the class that does all the dirty work
   private final ImgurService imgurService;
+  private final UserService userService;
 
-  public PosterController(PosterService posterService, ImgurService imgurService) {
+  public PosterController(PosterService posterService, ImgurService imgurService, UserService userService) {
     this.posterService = posterService;
     this.imgurService = imgurService;
+    this.userService = userService;
   }
 
   /**
@@ -246,13 +249,26 @@ public class PosterController {
    */
   @DeleteMapping("/delete/{id}")
   public CompletableFuture<ResponseEntity<ServiceResponse<Object>>> deletePoster(
-      @PathVariable String id) {
+      @PathVariable String id, String userId) {
 
     return posterService
         .getPosterById(id)
         .thenCompose(
             existingPoster -> {
-              if (existingPoster.getData() != null) {
+              if (existingPoster.getData() != null && existingPoster.getData().getUserId() == userId) {
+                //remove from user's createdposters
+                userService.getUserById(userId).thenCompose(user -> {
+                  if(user.getData() != null) {
+                    user.getData().getCreatedPosters().remove(existingPoster);
+                    return CompletableFuture.completedFuture(
+                            new ServiceResponse<>("Poster with id " + id + "removed from users created posters"));
+
+                  } else {
+                    return CompletableFuture.completedFuture(
+                            new ServiceResponse<>("Poster with id " + id + "not removed from users created posters"));
+
+                  }
+                });
                 return posterService
                     .deletePosterById(id)
                     .thenApply(

@@ -44,6 +44,7 @@ export default function Home() {
 
   useEffect(() => {
     getPosters().then((data) => setSearchResults(data));
+    console.log(searchResults);
     const fetchAllTags = async () => {
       try {
         const tagsData = await fetchTags();
@@ -230,6 +231,7 @@ export default function Home() {
                   description={item.description}
                   tags={item.tags}
                   recurs={item.isRecurring}
+                  id={item.id}
                 />
               </Box>
             ))}
