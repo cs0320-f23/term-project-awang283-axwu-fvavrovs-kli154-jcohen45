@@ -1,7 +1,6 @@
 import {
   Box,
   Button,
-  Img,
   Input,
   Modal,
   ModalBody,
@@ -16,10 +15,16 @@ import "../styles/Modal.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import TagsModal from "./TagsModal";
-import { profileState } from "./atoms/atoms";
+import {
+  modalOpenState,
+  posterSrcState,
+  posterState,
+  profileState,
+} from "./atoms/atoms";
 import { useRecoilState } from "recoil";
+import PopupModal from "./PopupModal";
 
-interface IPoster {
+export interface IPoster {
   content?: string;
   title?: string;
   location?: string;
@@ -31,20 +36,21 @@ interface IPoster {
   tags?: Set<string>;
 }
 
-export default function CreateImageModal({ onClose }) {
+export default function CreateImageModal() {
   const [showTags, setShowTags] = useState<boolean>(false);
-  const [posterSrc, setPosterSrc] = useState<string>("");
-  const [poster, setPoster] = useState<IPoster>({});
+  const [posterSrc, setPosterSrc] = useRecoilState(posterSrcState);
+  const [poster, setPoster] = useRecoilState<IPoster>(posterState);
   const [posterId, setPosterId] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [intervalID, setIntervalID] = useState<number>();
+  const [modalOpen, setModalOpen] = useRecoilState<string>(modalOpenState);
+  // const [intervalID, setIntervalID] = useState<number>();
   const [profile] = useRecoilState(profileState);
 
   useEffect(() => {
-    var today = new Date();
-    var dd = String(today.getDate()).padStart(2, "0");
-    var mm = String(today.getMonth() + 1).padStart(2, "0");
-    var yyyy = today.getFullYear();
+    const today = new Date();
+    const dd = String(today.getDate()).padStart(2, "0");
+    const mm = String(today.getMonth() + 1).padStart(2, "0");
+    const yyyy = today.getFullYear();
     //defaults to current date at 11:59PM + ensures startDate will always be filled with some value
     const todayDateTime = yyyy + "-" + mm + "-" + dd + "T23:59";
     setPoster({ ...poster, startDate: todayDateTime, isRecurring: "NEVER" });
@@ -118,16 +124,9 @@ export default function CreateImageModal({ onClose }) {
     const inputElement = target as HTMLInputElement;
 
     //setURL
-    // setImgUrl(inputElement.value);
     setPoster({ ...poster, content: inputElement.value });
-    // console.log(inputElement.value + " imgurl");
-    //if link not imgur
-    //const pattern: RegExp = /^.*\.(png|jpg|jpeg)$/i;
 
-    if (
-      !inputElement.value.includes("https://i.imgur.com") // &&
-      //pattern.test(inputElement.value)
-    ) {
+    if (!inputElement.value.includes("https://i.imgur.com")) {
       try {
         //add to database
         const config = {
@@ -171,14 +170,16 @@ export default function CreateImageModal({ onClose }) {
 
     try {
       const url = "http://localhost:8080/posters/create/imgur";
+
       const formData = new FormData();
       formData.append("content", file);
       formData.append("userId", profile.id);
-      console.log("Before axios request");
+      //console.log("Before axios request");
       setIsLoading(true);
       const res = await axios.post(url, formData, config);
-      console.log("After axios request");
+      //console.log("After axios request");
       setPosterId(res.data.data.id);
+
       return Promise.resolve(res.data.data);
     } catch (error) {
       setIsLoading(false);
@@ -250,9 +251,31 @@ export default function CreateImageModal({ onClose }) {
     setShowTags(false);
   };
 
+  const onClose = () => {
+    //if any field is filled out
+    if (Object.keys(poster).length > 0) {
+      //popup u sure u wanna del this?
+      setModalOpen("popup");
+    } else {
+      setModalOpen("popup");
+    }
+  };
+
+  useEffect(() => {
+    console.log(modalOpen);
+    console.log(Object.keys(poster).length);
+  }, [Object.keys(poster).length]);
+
   return (
     <>
-      <Modal closeOnOverlayClick={false} isOpen={true} onClose={onClose}>
+      {modalOpen == "popup" && (
+        <PopupModal posterID={posterId} setPosterSrc={setPosterSrc} />
+      )}
+      <Modal
+        closeOnOverlayClick={false}
+        isOpen={modalOpen == "createImage"}
+        onClose={onClose}
+      >
         <div className="modal-font">
           <ModalOverlay className="modal-overlay" />
           <ModalContent className="modal-content">
@@ -277,11 +300,12 @@ export default function CreateImageModal({ onClose }) {
                 ) : (
                   <div className="image-container"></div>
                 )}
+
                 {showTags ? (
                   <TagsModal
                     onClose={onClose}
                     onBack={onBack}
-                    poster={poster}
+                    // poster={poster}
                     posterId={posterId}
                     handleChange={handleChange}
                   />

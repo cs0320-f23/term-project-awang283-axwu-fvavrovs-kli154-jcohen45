@@ -7,7 +7,7 @@ import Archive from "./components/Archive";
 import About from "./components/About";
 import "./styles/App.css";
 import { Button } from "@chakra-ui/react";
-import CreateImageModal from "./components/CreateImageModal";
+import CreateImageModal, { IPoster } from "./components/CreateImageModal";
 import {
   CredentialResponse,
   googleLogout,
@@ -16,14 +16,20 @@ import {
 import axios from "axios";
 import { createUser } from "./functions/fetch";
 import Profile from "./components/Profile";
-import { loadState, profileState } from "./components/atoms/atoms";
+import {
+  loadState,
+  modalOpenState,
+  posterState,
+  profileState,
+} from "./components/atoms/atoms";
 import { useRecoilState } from "recoil";
 
 export default function App() {
-  const [modalOpen, setModalOpen] = useState<string>("");
+  const [modalOpen, setModalOpen] = useRecoilState<string>(modalOpenState);
   const [user, setUser] = useState<CredentialResponse>();
   const [profile, setProfile] = useRecoilState<any>(profileState);
-  const [isLoading, setIsLoading] = useRecoilState(loadState);
+  const [isLoading] = useRecoilState(loadState);
+  const [poster] = useRecoilState<IPoster>(posterState);
   const navigate = useNavigate();
 
   const login = useGoogleLogin({
@@ -167,7 +173,7 @@ export default function App() {
             <Route path="/about" element={<About />} />
             <Route path="/profile" element={<Profile />} />
           </Routes>
-          {modalOpen && <CreateImageModal onClose={() => setModalOpen("")} />}
+          {modalOpen == "createImage" && <CreateImageModal />}
         </main>
       </article>
     </>
