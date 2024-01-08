@@ -17,8 +17,6 @@ export default function PopupModal({ posterID, setPosterSrc }) {
   //user wants to delete draft
   const onYes = async () => {
     //if poster state has ID
-    console.log(posterID);
-    console.log(profile.id);
     if (posterID != null && posterID != "" && posterID != " ") {
       //yes? delete from database(posterID, userID)
       try {
@@ -28,7 +26,6 @@ export default function PopupModal({ posterID, setPosterSrc }) {
             "Content-Type": "application/json",
           },
         };
-        console.log(posterID);
         const url =
           "http://localhost:8080/posters/delete/" +
           posterID +

@@ -60,7 +60,7 @@ export default function TagsModal({ onClose, onBack, posterId, handleChange }) {
     //add list to poster obj w handlechange
     const newPoster = handleChange(tags, "tags", () => {});
 
-    console.log(JSON.stringify(newPoster) + " new poster");
+    // console.log(JSON.stringify(newPoster) + " new poster");
     //call put endpoint
     try {
       //add to database

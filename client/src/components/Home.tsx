@@ -44,7 +44,7 @@ export default function Home() {
 
   useEffect(() => {
     getPosters().then((data) => setSearchResults(data));
-    console.log(searchResults);
+    // console.log(searchResults);
     const fetchAllTags = async () => {
       try {
         const tagsData = await fetchTags();

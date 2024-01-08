@@ -46,7 +46,7 @@ export async function createUser(profile) {
     const url = "http://localhost:8080/users/create";
 
     const res = await axios.post(url, user, config);
-    console.log("inside creatUser res", res);
+    // console.log("inside creatUser res", res);
     return Promise.resolve(res.data.data);
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {

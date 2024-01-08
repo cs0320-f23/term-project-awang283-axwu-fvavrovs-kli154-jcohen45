@@ -47,7 +47,6 @@ export default function App() {
 
   useEffect(() => {
     if (user) {
-      //console.log("why?");
       axios
         .get(
           `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`,
@@ -63,7 +62,6 @@ export default function App() {
             setProfile(res.data);
             localStorage.setItem("userProfile", JSON.stringify(res.data));
           } else {
-            console.log("Invalid email domain");
             window.alert("Please use a valid Brown or RISD email");
             setProfile(null);
           }
@@ -84,7 +82,7 @@ export default function App() {
                 setProfile(profile);
               } else {
                 //if not, call create user
-                console.log("user didn't already exist, profile here", profile);
+                // console.log("user didn't already exist, profile here", profile);
                 return await createUser(profile);
               }
             }
@@ -105,7 +103,6 @@ export default function App() {
     setProfile(null);
     localStorage.removeItem("userProfile");
     navigate("/home");
-    console.log("wth");
   };
 
   const handleCreatePoster = useCallback(() => {
