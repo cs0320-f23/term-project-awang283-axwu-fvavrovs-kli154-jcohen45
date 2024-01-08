@@ -173,7 +173,7 @@ export default function App() {
             <Route path="/about" element={<About />} />
             <Route path="/profile" element={<Profile />} />
           </Routes>
-          {modalOpen == "createImage" && <CreateImageModal />}
+          {modalOpen && <CreateImageModal />}
         </main>
       </article>
     </>

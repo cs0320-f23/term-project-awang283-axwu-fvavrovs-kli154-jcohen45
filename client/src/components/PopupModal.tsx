@@ -12,12 +12,14 @@ import axios from "axios";
 export default function PopupModal({ posterID, setPosterSrc }) {
   const profile = useRecoilValue(profileState);
   const setPoster = useSetRecoilState(posterState);
-  const [modalOpen, setModalOpen] = useRecoilState<string>(modalOpenState);
+  const [, setModalOpen] = useRecoilState<string>(modalOpenState);
 
   //user wants to delete draft
   const onYes = async () => {
     //if poster state has ID
-    if (posterID != null) {
+    console.log(posterID);
+    console.log(profile.id);
+    if (posterID != null && posterID != "" && posterID != " ") {
       //yes? delete from database(posterID, userID)
       try {
         //add to database
@@ -27,12 +29,20 @@ export default function PopupModal({ posterID, setPosterSrc }) {
           },
         };
         console.log(posterID);
-        const url = "http://localhost:8080/posters/delete/" + posterID;
-        const formData = new FormData();
-        formData.append("id", posterID);
-        formData.append("userId", profile.id);
+        const url =
+          "http://localhost:8080/posters/delete/" +
+          posterID +
+          "?userId=" +
+          profile.id;
 
-        const res = await axios.post(url, formData, config);
+        const res = await axios.delete(url, config);
+
+        //sets global state to nothing (no more draft)
+        setPoster({});
+        setPosterSrc("");
+
+        //goes to whatever page user was on (no more modal)
+        setModalOpen("");
 
         //need to give enough time for the poster to be created + id to exist
         return Promise.resolve(res.data.data);
@@ -48,12 +58,6 @@ export default function PopupModal({ posterID, setPosterSrc }) {
         }
       }
     }
-    //sets global state to nothing (no more draft)
-    setPoster({});
-    setPosterSrc("");
-
-    //goes to whatever page user was on (no more modal)
-    setModalOpen("");
   };
 
   //user does not want to delete draft

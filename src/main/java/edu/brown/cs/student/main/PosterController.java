@@ -10,10 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -249,20 +246,28 @@ public class PosterController {
    */
   @DeleteMapping("/delete/{id}")
   public CompletableFuture<ResponseEntity<ServiceResponse<Object>>> deletePoster(
-      @PathVariable String id, String userId) {
-
+      @PathVariable String id, @RequestParam(required = false) String userId) {
     return posterService
         .getPosterById(id)
         .thenCompose(
             existingPoster -> {
-              if (existingPoster.getData() != null && existingPoster.getData().getUserId() == userId) {
+              if (existingPoster.getData().getID().equals(id) && existingPoster.getData().getUserId().equals(userId)) {
                 //remove from user's createdposters
                 userService.getUserById(userId).thenCompose(user -> {
                   if(user.getData() != null) {
-                    user.getData().getCreatedPosters().remove(existingPoster);
-                    return CompletableFuture.completedFuture(
-                            new ServiceResponse<>("Poster with id " + id + "removed from users created posters"));
-
+                    Set<Poster> userPosters = user.getData().getCreatedPosters();
+                    userPosters.removeIf(poster -> poster.getID().equals(id));
+                    user.getData().setCreatedPosters(userPosters);
+                    // Update the user entity in the database
+                    return userService.updateUser(user.getData())
+                            .thenApply(updatedUser -> {
+                              System.out.println(updatedUser);
+                              if (updatedUser.getData() != null) {
+                                return new ServiceResponse<>("Poster with id " + id + " removed from user's created posters");
+                              } else {
+                                return new ServiceResponse<>("Failed to remove poster from user's created posters");
+                              }
+                            });
                   } else {
                     return CompletableFuture.completedFuture(
                             new ServiceResponse<>("Poster with id " + id + "not removed from users created posters"));
@@ -275,7 +280,7 @@ public class PosterController {
                         deleted -> new ServiceResponse<>("Poster with id " + id + "deleted"));
               } else {
                 return CompletableFuture.completedFuture(
-                    new ServiceResponse<>("Poster with id " + id + "not found"));
+                    new ServiceResponse<>("Poster with id " + id + " not found"));
               }
             })
         .thenApply(response -> ResponseEntity.ok(response))

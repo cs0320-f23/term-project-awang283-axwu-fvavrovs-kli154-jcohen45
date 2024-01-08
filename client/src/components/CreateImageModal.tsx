@@ -253,207 +253,221 @@ export default function CreateImageModal() {
 
   const onClose = () => {
     //if any field is filled out
-    if (Object.keys(poster).length > 0) {
+    if (Object.keys(poster).length > 3) {
       //popup u sure u wanna del this?
       setModalOpen("popup");
-    } else {
-      setModalOpen("popup");
-    }
+    } //else {
+    //   setModalOpen("");
+    // }
+
+    console.log(modalOpen);
+    console.log(Object.keys(poster).length);
   };
 
   useEffect(() => {
-    console.log(modalOpen);
-    console.log(Object.keys(poster).length);
-  }, [Object.keys(poster).length]);
+    const popup = () => {
+      if (modalOpen === "popup" && Object.keys(poster).length > 3) {
+        return <PopupModal posterID={posterId} setPosterSrc={setPosterSrc} />;
+      }
+    };
+    () => popup;
+  }, [Object.keys(poster).length, modalOpen]);
 
   return (
     <>
-      {modalOpen == "popup" && (
+      {modalOpen === "popup" && Object.keys(poster).length > 1 && (
         <PopupModal posterID={posterId} setPosterSrc={setPosterSrc} />
       )}
-      <Modal
-        closeOnOverlayClick={false}
-        isOpen={modalOpen == "createImage"}
-        onClose={onClose}
-      >
-        <div className="modal-font">
-          <ModalOverlay className="modal-overlay" />
-          <ModalContent className="modal-content">
-            {isLoading && (
-              <div className="loading-screen">
-                <img className="loading-gif" src="/loading.gif" />
-              </div>
-            )}
-            <ModalHeader className="modal-header">Upload a Poster</ModalHeader>
-            <ModalCloseButton className="close-button" onClick={onClose} />
+      {modalOpen == "createImage" && (
+        <Modal closeOnOverlayClick={false} isOpen={true} onClose={onClose}>
+          <div className="modal-font">
+            <ModalOverlay className="modal-overlay" />
+            <ModalContent className="modal-content">
+              {isLoading && (
+                <div className="loading-screen">
+                  <img className="loading-gif" src="/loading.gif" />
+                </div>
+              )}
+              <ModalHeader className="modal-header">
+                Upload a Poster
+              </ModalHeader>
+              <ModalCloseButton className="close-button" onClick={onClose} />
 
-            <ModalBody className="modal-body">
-              <div className="create-div">
-                {posterSrc ? (
-                  <Box
-                    className="view-image"
-                    maxHeight={"76vh"}
-                    overflowY={"scroll"}
-                  >
-                    <img src={posterSrc}></img>
-                  </Box>
-                ) : (
-                  <div className="image-container"></div>
-                )}
+              <ModalBody className="modal-body">
+                <div className="create-div">
+                  {posterSrc ? (
+                    <Box
+                      className="view-image"
+                      maxHeight={"76vh"}
+                      overflowY={"scroll"}
+                    >
+                      <img src={posterSrc}></img>
+                    </Box>
+                  ) : (
+                    <div className="image-container"></div>
+                  )}
 
-                {showTags ? (
-                  <TagsModal
-                    onClose={onClose}
-                    onBack={onBack}
-                    // poster={poster}
-                    posterId={posterId}
-                    handleChange={handleChange}
-                  />
-                ) : (
-                  <div className="input-fields">
-                    <div>
-                      <h3>
-                        Image <span style={{ color: "red" }}>*</span>
-                      </h3>
-                      <div className="input-text-input">
-                        <Input
-                          id="image-url"
-                          placeholder="Enter URL - .PNG or .JPG/JPEG"
-                          value={poster.content}
-                          onChange={(ev) =>
-                            handleChange(ev.target.value, "content")
-                          }
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") {
-                              setUserLink(e.target);
+                  {showTags ? (
+                    <TagsModal
+                      onClose={onClose}
+                      onBack={onBack}
+                      // poster={poster}
+                      posterId={posterId}
+                      handleChange={handleChange}
+                    />
+                  ) : (
+                    <div className="input-fields">
+                      <div>
+                        <h3>
+                          Image <span style={{ color: "red" }}>*</span>
+                        </h3>
+                        <div className="input-text-input">
+                          <Input
+                            id="image-url"
+                            placeholder="Enter URL - .PNG or .JPG/JPEG"
+                            value={poster.content}
+                            onChange={(ev) =>
+                              handleChange(ev.target.value, "content")
                             }
-                          }}
-                          // needs to be able to take in a user link and call backend to create poster
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                setUserLink(e.target);
+                              }
+                            }}
+                            // needs to be able to take in a user link and call backend to create poster
+                          ></Input>
+                          <h3>or</h3>
+                          <label
+                            htmlFor="image-upload"
+                            className="upload-button"
+                          >
+                            Upload
+                          </label>
+                          <Input
+                            type="file"
+                            onChange={(ev) => handlePosterUpload(ev.target)}
+                            id="image-upload"
+                            accept="image/png, image/jpeg, image/jpg"
+                            display="none"
+                          ></Input>
+                        </div>
+                      </div>
+                      <div className="title-div">
+                        <h3>
+                          Title <span style={{ color: "red" }}>*</span>
+                        </h3>
+                        <Input
+                          placeholder="Enter Title"
+                          value={poster.title}
+                          onChange={(ev) =>
+                            handleChange(ev.target.value, "title")
+                          }
                         ></Input>
-                        <h3>or</h3>
-                        <label htmlFor="image-upload" className="upload-button">
-                          Upload
-                        </label>
-                        <Input
-                          type="file"
-                          onChange={(ev) => handlePosterUpload(ev.target)}
-                          id="image-upload"
-                          accept="image/png, image/jpeg, image/jpg"
-                          display="none"
-                        ></Input>
                       </div>
-                    </div>
-                    <div className="title-div">
-                      <h3>
-                        Title <span style={{ color: "red" }}>*</span>
-                      </h3>
-                      <Input
-                        placeholder="Enter Title"
-                        value={poster.title}
-                        onChange={(ev) =>
-                          handleChange(ev.target.value, "title")
-                        }
-                      ></Input>
-                    </div>
-                    <div className="location-div">
-                      <div>
-                        <h3>Location</h3>
+                      <div className="location-div">
+                        <div>
+                          <h3>Location</h3>
+                          <Input
+                            placeholder="Enter Location"
+                            width="23.4vw"
+                            value={poster.location}
+                            onChange={(ev) =>
+                              handleChange(ev.target.value, "location")
+                            }
+                          />
+                        </div>
+                        <div>
+                          <h3>Repeats</h3>
+                          <Select
+                            placeholder="Repeats"
+                            id="recur-select"
+                            width="8vw"
+                            color="white"
+                            value={poster.isRecurring}
+                            onChange={(ev) =>
+                              handleChange(ev.target.value, "isRecurring")
+                            }
+                          >
+                            <option value="NEVER">Never</option>
+                            <option value="DAILY">Daily</option>
+                            <option value="WEEKLY">Weekly</option>
+                            <option value="MONTHLY">Monthly</option>
+                          </Select>
+                        </div>
+                      </div>
+                      <div className="date-div">
+                        <h3>Date</h3>
+                        <div className="input-text-input">
+                          <Input
+                            id="date-time-input"
+                            placeholder="Select Date and Time"
+                            type="datetime-local"
+                            width="15.2vw"
+                            color="white"
+                            value={poster.startDate}
+                            onChange={(ev) =>
+                              handleChange(ev.target.value, "startDate")
+                            }
+                          />
+                          <h3>to</h3>
+                          <Input
+                            id="date-time-input"
+                            placeholder="Select Date and Time"
+                            type="datetime-local"
+                            width="15.2vw"
+                            color="white"
+                            value={poster.endDate}
+                            onChange={(ev) =>
+                              handleChange(ev.target.value, "endDate")
+                            }
+                          />
+                        </div>
+                      </div>
+                      <div className="link-div">
+                        <h3>Link</h3>
                         <Input
-                          placeholder="Enter Location"
-                          width="23.4vw"
-                          value={poster.location}
+                          placeholder="Enter Link"
+                          value={poster.link}
                           onChange={(ev) =>
-                            handleChange(ev.target.value, "location")
+                            handleChange(ev.target.value, "link")
                           }
                         />
                       </div>
-                      <div>
-                        <h3>Repeats</h3>
-                        <Select
-                          placeholder="Repeats"
-                          id="recur-select"
-                          width="8vw"
-                          color="white"
-                          value={poster.isRecurring}
+                      <div className="desc-div">
+                        <h3>Description</h3>
+                        <Textarea
+                          id="description-input"
+                          placeholder="Enter Description"
+                          wordBreak="break-word"
+                          resize="none"
+                          value={poster.description}
                           onChange={(ev) =>
-                            handleChange(ev.target.value, "isRecurring")
-                          }
-                        >
-                          <option value="NEVER">Never</option>
-                          <option value="DAILY">Daily</option>
-                          <option value="WEEKLY">Weekly</option>
-                          <option value="MONTHLY">Monthly</option>
-                        </Select>
-                      </div>
-                    </div>
-                    <div className="date-div">
-                      <h3>Date</h3>
-                      <div className="input-text-input">
-                        <Input
-                          id="date-time-input"
-                          placeholder="Select Date and Time"
-                          type="datetime-local"
-                          width="15.2vw"
-                          color="white"
-                          value={poster.startDate}
-                          onChange={(ev) =>
-                            handleChange(ev.target.value, "startDate")
-                          }
-                        />
-                        <h3>to</h3>
-                        <Input
-                          id="date-time-input"
-                          placeholder="Select Date and Time"
-                          type="datetime-local"
-                          width="15.2vw"
-                          color="white"
-                          value={poster.endDate}
-                          onChange={(ev) =>
-                            handleChange(ev.target.value, "endDate")
+                            handleChange(ev.target.value, "description")
                           }
                         />
                       </div>
-                    </div>
-                    <div className="link-div">
-                      <h3>Link</h3>
-                      <Input
-                        placeholder="Enter Link"
-                        value={poster.link}
-                        onChange={(ev) => handleChange(ev.target.value, "link")}
-                      />
-                    </div>
-                    <div className="desc-div">
-                      <h3>Description</h3>
-                      <Textarea
-                        id="description-input"
-                        placeholder="Enter Description"
-                        wordBreak="break-word"
-                        resize="none"
-                        value={poster.description}
-                        onChange={(ev) =>
-                          handleChange(ev.target.value, "description")
-                        }
-                      />
-                    </div>
-                    <div className="save-div">
-                      <div>
-                        <h3>potato</h3>
-                        <Button
-                          onClick={onSaveSelectTags}
-                          className={"save-button"}
-                          isDisabled={isLoading || !poster.title || !posterSrc}
-                        >
-                          Save and Select Tags
-                        </Button>
+                      <div className="save-div">
+                        <div>
+                          <h3>potato</h3>
+                          <Button
+                            onClick={onSaveSelectTags}
+                            className={"save-button"}
+                            isDisabled={
+                              isLoading || !poster.title || !posterSrc
+                            }
+                          >
+                            Save and Select Tags
+                          </Button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
-              </div>
-            </ModalBody>
-          </ModalContent>
-        </div>
-      </Modal>
+                  )}
+                </div>
+              </ModalBody>
+            </ModalContent>
+          </div>
+        </Modal>
+      )}
     </>
   );
 }
