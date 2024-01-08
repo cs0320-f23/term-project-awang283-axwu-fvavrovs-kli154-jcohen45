@@ -58,6 +58,13 @@ export default function PopupModal({ posterID, setPosterSrc }) {
         }
       }
     }
+    //if no image was ever uploaded:
+    //sets global state to nothing (no more draft)
+    setPoster({});
+    setPosterSrc("");
+
+    //goes to whatever page user was on (no more modal)
+    setModalOpen("");
   };
 
   //user does not want to delete draft
