@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -134,10 +135,10 @@ public class UserService {
                       user.getSavedPosters().add(poster);
                       // Save the updated user
                       //System.out.println("Trying to save");
-                      userRepository.save(user);
+                      this.updateUser(user);
                       // Create a response object
                      // System.out.println("Trying to return service response");
-                      return new ServiceResponse<>(user, "Poster associated with user");
+                      return new ServiceResponse<>(user, "Poster saved");
                     })
             .map(CompletableFuture::completedFuture) // Remove this line
             .orElse(CompletableFuture.completedFuture(new ServiceResponse<>("User not found")));
@@ -155,11 +156,13 @@ public class UserService {
                     user -> {
                       // Add the poster to the user's list of posters
                       if (user.getSavedPosters().contains(poster)) {
-                        user.getSavedPosters().remove(poster);
+                          Set<Poster> userPosters = user.getCreatedPosters();
+                          userPosters.removeIf(foundPoster -> foundPoster.getID().equals(poster.getID()));
+                          user.setCreatedPosters(userPosters);
                         // Save the updated user
                         System.out.println("Trying to unsave");
                       }
-                      userRepository.save(user);
+                      this.updateUser(user);
                       // Create a response object
                       // System.out.println("Trying to return service response");
                       return new ServiceResponse<>(user, "Poster associated with user");
