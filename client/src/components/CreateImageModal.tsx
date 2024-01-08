@@ -253,12 +253,12 @@ export default function CreateImageModal() {
 
   const onClose = () => {
     //if any field is filled out
-    if (Object.keys(poster).length > 3) {
+    if (Object.keys(poster).length > 2) {
       //popup u sure u wanna del this?
       setModalOpen("popup");
-    } //else {
-    //   setModalOpen("");
-    // }
+    } else {
+      setModalOpen("");
+    }
 
     console.log(modalOpen);
     console.log(Object.keys(poster).length);
@@ -266,7 +266,7 @@ export default function CreateImageModal() {
 
   useEffect(() => {
     const popup = () => {
-      if (modalOpen === "popup" && Object.keys(poster).length > 3) {
+      if (modalOpen === "popup" && Object.keys(poster).length > 2) {
         return <PopupModal posterID={posterId} setPosterSrc={setPosterSrc} />;
       }
     };
@@ -275,7 +275,7 @@ export default function CreateImageModal() {
 
   return (
     <>
-      {modalOpen === "popup" && Object.keys(poster).length > 1 && (
+      {modalOpen === "popup" && Object.keys(poster).length > 2 && (
         <PopupModal posterID={posterId} setPosterSrc={setPosterSrc} />
       )}
       {modalOpen == "createImage" && (
