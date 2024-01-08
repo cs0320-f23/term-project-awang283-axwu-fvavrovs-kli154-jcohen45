@@ -143,6 +143,7 @@ export default function CreateImageModal() {
         setPosterSrc(inputElement.value);
         //need to give enough time for the poster to be created + id to exist
         await new Promise((resolve) => setTimeout(resolve, 10000));
+        console.log(res.data.data);
         setPosterId(res.data.data.id);
         setCVFields(res.data.data.id);
         return Promise.resolve(res.data.data);

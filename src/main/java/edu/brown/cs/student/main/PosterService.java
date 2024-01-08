@@ -266,6 +266,28 @@ public class PosterService {
   //  }
 
   @Async
+  public CompletableFuture<List<Poster>> searchByName(String name) {
+    return this.getPosters()
+            .thenCompose(posters ->
+                    CompletableFuture.allOf(posters.stream()
+                                    .map(poster ->
+                                            userService.getUserById(poster.getUserId())
+                                                    .thenApply(userResponse -> {
+                                                      if (userResponse.getData() != null && userResponse.getData().getName().equals(name)) {
+                                                        return poster;
+                                                      }
+                                                      return null;
+                                                    })
+                                    )
+                                    .toArray(CompletableFuture<?>[]::new))
+                            .thenApply(__ -> posters.stream()
+                                    .filter(Objects::nonNull)
+                                    .collect(Collectors.toList()))
+            );
+  }
+
+
+  @Async
   public CompletableFuture<List<Poster>> searchByTerm(String term, String[] tags) {
     if (tags.length == 0) {
       return this.getPosters()
