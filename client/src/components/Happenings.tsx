@@ -220,19 +220,13 @@ export default function Happenings() {
         console.log("currently " + posterElements.length + " image cards");
         console.log("should be " + numberOfPosters + " many posters");
 
-        if (
-          posterElements.length !== 0 &&
-          posterElements.length === numberOfPosters
-        ) {
+        if (posterElements.length === numberOfPosters) {
           setIsLoading(false);
           console.log("done loading");
         }
       }
 
-      if (
-        (posterElements.length === 0 && numberOfPosters === 0) ||
-        posterElements.length !== numberOfPosters
-      ) {
+      if (posterElements.length !== numberOfPosters) {
         setIsLoading(true);
       }
     };
@@ -433,22 +427,27 @@ export default function Happenings() {
             </Modal>
           )}
 
-          {searchResults.map((item, index) => (
-            <Box key={index}>
-              <ImageCard
-                title={item.title}
-                content={item.content}
-                startDate={item.startDate}
-                endDate={item.endDate}
-                location={item.location}
-                link={item.link}
-                description={item.description}
-                tags={item.tags}
-                recurs={item.isRecurring}
-                id={item.id}
-              />
-            </Box>
-          ))}
+          {searchResults.length === 0 && (
+            <h1 className="none">No results to diplay for this search term</h1>
+          )}
+
+          {searchResults.length > 0 &&
+            searchResults.map((item, index) => (
+              <Box key={index}>
+                <ImageCard
+                  title={item.title}
+                  content={item.content}
+                  startDate={item.startDate}
+                  endDate={item.endDate}
+                  location={item.location}
+                  link={item.link}
+                  description={item.description}
+                  tags={item.tags}
+                  recurs={item.isRecurring}
+                  id={item.id}
+                />
+              </Box>
+            ))}
         </Masonry>
         <IconButton
           className="scroll-top"
