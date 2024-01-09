@@ -318,7 +318,7 @@ public class PosterService {
   }
 
   private boolean searchTermHelper(Poster poster, String term) {
-    String haystack = poster.returnHaystack();
+    String haystack = poster.returnHaystack(userService);
     BMSearch searcher = new BMSearch();
     return searcher.getSearchResult(term, haystack);
   }

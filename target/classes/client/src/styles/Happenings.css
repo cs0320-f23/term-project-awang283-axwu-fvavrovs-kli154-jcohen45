@@ -44,6 +44,10 @@ h1 {
   background: #fbf8ff;
 }
 
+.none {
+  font-family: "quicksand", sans-serif;
+}
+
 .browse-select {
   background-color: var(--dark-purple100) !important;
   font-family: "quicksand", sans-serif;
