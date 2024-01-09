@@ -235,7 +235,7 @@ public class Poster {
     }
     if (!this.userId.equals("")) {
       CompletableFuture<ServiceResponse<User>> reqUser = userService.getUserById(this.userId);
-      ServiceResponse<User> userResponse = reqUser.join(); // Wait for completion
+      ServiceResponse<User> userResponse = reqUser.join();
 
       if (userResponse.getData() != null) {
         String name = userResponse.getData().getName();
