@@ -243,7 +243,6 @@ public class Poster {
       }
     }
 
-    System.out.println(haystack);
     return haystack.toString();
   }
 
