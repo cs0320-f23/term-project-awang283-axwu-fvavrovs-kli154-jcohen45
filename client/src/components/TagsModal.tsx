@@ -3,16 +3,23 @@ import "../styles/Modal.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { fetchTags } from "../functions/fetch";
-import { posterState, searchResultsState } from "./atoms/atoms";
+import { posterSrcState, posterState, searchResultsState } from "./atoms/atoms";
 import { useRecoilState } from "recoil";
 import { getPosters } from "./Happenings";
 import { IPoster } from "./CreateImageModal";
 
-export default function TagsModal({ onClose, onBack, posterId, handleChange }) {
+export default function TagsModal({
+  onClose,
+  onBack,
+  posterId,
+  handleChange,
+  setShowTags,
+}) {
   const [allTags, setAllTags] = useState<string[]>([]);
   const [tags, setTags] = useState<Set<string>>(new Set());
   const [, setSearchResults] = useRecoilState(searchResultsState);
   const [, setPoster] = useRecoilState<IPoster>(posterState);
+  const [, setPosterSrc] = useRecoilState(posterSrcState);
 
   useEffect(() => {
     const fetchAllTags = async () => {
@@ -82,6 +89,8 @@ export default function TagsModal({ onClose, onBack, posterId, handleChange }) {
       }
       const res = await axios.put(url, formData, config);
       getPosters().then((data) => setSearchResults(data));
+      setShowTags(false);
+      setPosterSrc("");
       return Promise.resolve(res.data.data);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {

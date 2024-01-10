@@ -134,10 +134,11 @@ export default function CreateImageModal() {
             "Content-Type": "application/json",
           },
         };
-        const url = "http://localhost:8080/posters/create/fromlink";
+        const url =
+          "http://localhost:8080/posters/create/fromlink?userId=" + profile.id;
         const formData = new FormData();
         formData.append("content", inputElement.value);
-        formData.append("userId", profile.id);
+        // formData.append("userId", profile.id);
         setIsLoading(true);
         const res = await axios.post(url, formData, config);
         setPosterSrc(inputElement.value);
@@ -312,6 +313,7 @@ export default function CreateImageModal() {
                       // poster={poster}
                       posterId={posterId}
                       handleChange={handleChange}
+                      setShowTags={setShowTags}
                     />
                   ) : (
                     <div className="input-fields">

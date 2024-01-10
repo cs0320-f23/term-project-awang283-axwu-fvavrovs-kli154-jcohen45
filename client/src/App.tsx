@@ -27,9 +27,9 @@ import { useRecoilState } from "recoil";
 export default function App() {
   const [modalOpen, setModalOpen] = useRecoilState<string>(modalOpenState);
   const [user, setUser] = useState<CredentialResponse>();
-  const [profile, setProfile] = useRecoilState<any>(profileState);
+  const [profile, setProfile] = useRecoilState(profileState);
   const [isLoading] = useRecoilState(loadState);
-  const [poster] = useRecoilState<IPoster>(posterState);
+  // const [poster] = useRecoilState<IPoster>(posterState);
   const navigate = useNavigate();
 
   const login = useGoogleLogin({

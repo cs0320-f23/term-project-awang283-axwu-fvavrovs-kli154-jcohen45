@@ -194,9 +194,10 @@ h1 {
   margin-right: 2vw;
 }
 #title {
-  font-size: 2.2vw;
+  font-size: 165%;
   line-height: 4.5vh;
 }
+
 #location {
   font-size: 1.5vw;
   font-weight: 450;
