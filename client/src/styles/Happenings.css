@@ -98,7 +98,8 @@ h1 {
 }
 
 .grid {
-  margin: 16.5vh 0vw 4vw 4vw;
+  margin-top: 16.5vh;
+  margin-left: 4vw;
   z-index: 1;
 }
 
