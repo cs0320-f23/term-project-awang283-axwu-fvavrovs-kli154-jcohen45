@@ -218,9 +218,6 @@ export default function ViewPosterModal({
                     <div
                       className="info-row"
                       style={{
-                        // display: "flex",
-                        // justifyContent: "space-between",
-                        // width: "100%",
                         marginBottom: "2%",
                       }}
                     >
@@ -232,7 +229,7 @@ export default function ViewPosterModal({
                             marginRight: "3%",
                           }}
                           src={picture}
-                        ></img>
+                        />
                       )}
                       {name && (
                         <div id="field-text" style={{ paddingTop: "1%" }}>

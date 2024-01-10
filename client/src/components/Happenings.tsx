@@ -18,7 +18,6 @@ import axios from "axios";
 import { useRecoilState } from "recoil";
 import { searchResultsState, searchState, tagsState } from "./atoms/atoms";
 import { fetchTags } from "../functions/fetch";
-// import Masonry from "react-responsive-masonry";
 import Masonry from "masonry-layout";
 import imagesLoaded from "imagesloaded";
 
@@ -160,7 +159,7 @@ export const ImageCard: React.FC<ImageCardProps> = ({
             location={location!}
             link={link!}
             description={description!}
-            tags={tags}
+            tags={tags!}
             recurs={recurs}
             id={id}
           />
@@ -207,22 +206,30 @@ export default function Happenings() {
       }
     };
     fetchAllTags();
+    if (searchInput.length > 0 || tags.size > 0) {
+      getSearchResults();
+    } else {
+      getPosters().then((data) => {
+        setSearchResults(data);
+        setIsLoading(false);
+      });
+    }
   }, []);
 
-  useEffect(() => {
-    const debounceSearch = setTimeout(() => {
-      setIsLoading(true);
-      if (searchInput.length > 0 || tags.size > 0) {
-        getSearchResults();
-      } else {
-        getPosters().then((data) => {
-          setSearchResults(data);
-          setIsLoading(false);
-        });
-      }
-    }, 500);
-    return () => clearTimeout(debounceSearch);
-  }, [searchInput]);
+  // useEffect(() => {
+  //   const debounceSearch = setTimeout(() => {
+  //     setIsLoading(true);
+  //     if (searchInput.length > 0 || tags.size > 0) {
+  //       getSearchResults();
+  //     } else {
+  //       getPosters().then((data) => {
+  //         setSearchResults(data);
+  //         setIsLoading(false);
+  //       });
+  //     }
+  //   }, 500);
+  //   return () => clearTimeout(debounceSearch);
+  // }, [searchInput]);
 
   useEffect(() => {
     if (gridRef.current) {
@@ -237,15 +244,6 @@ export default function Happenings() {
         }
       });
     }
-    // setTimeout(() => {
-    //   if (gridRef.current && searchResults.length > 0) {
-    //     const masonry = new Masonry(gridRef.current, {
-    //       columnWidth: 30,
-    //       itemSelector: ".image-card",
-    //       gutter: 1,
-    //     });
-    //   }
-    // }, 100);
   }, [searchResults]);
 
   const onClick = (tag: string) => {
@@ -302,6 +300,7 @@ export default function Happenings() {
       }
     } else {
       try {
+        setIsLoading(true);
         let tagString = "";
         tags.forEach((tag) => {
           tagString += tag + ",";
@@ -387,11 +386,6 @@ export default function Happenings() {
             </Select>
           </Box>
         </div>
-        {/* <Masonry
-          className="grid"
-          columnsCount={3}
-          style={{ margin: "16.5vh 4vw" }}
-        > */}
         <div className="grid" ref={gridRef}>
           {showTags && (
             <Modal isOpen={true} onClose={() => setShowTags(false)}>
@@ -474,7 +468,6 @@ export default function Happenings() {
               </Box>
             ))}
         </div>
-        {/* </Masonry> */}
         <IconButton
           className="scroll-top"
           color="white"
