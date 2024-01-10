@@ -7,6 +7,7 @@ import {
   ModalOverlay,
 } from "@chakra-ui/react";
 import "../styles/Modal.css";
+import { useEffect, useState } from "react";
 
 interface viewProps {
   onClose: () => void;
@@ -38,6 +39,16 @@ export default function ViewPosterModal({
   id,
 }: viewProps) {
   const [weekday, month, day] = date.split(" ");
+  const [name, setName] = useState<string>("");
+  const [picture, setPicture] = useState<string>("");
+
+  useEffect(() => {
+    getUser();
+  }, []);
+
+  useEffect(() => {
+    console.log(name);
+  }, [name]);
 
   const classNameTag = (index: number) => {
     if (index % 3 == 0) {
@@ -46,6 +57,28 @@ export default function ViewPosterModal({
       return "green-tag";
     } else {
       return "blue-tag";
+    }
+  };
+
+  const getUser = async () => {
+    //use poster id to get user id
+    try {
+      const posterRes = await fetch("http://localhost:8080/posters/" + id);
+      if (posterRes.ok) {
+        const poster = await posterRes.json();
+        if (poster.data.userId) {
+          const userRes = await fetch(
+            "http://localhost:8080/users/" + poster.data.userId
+          );
+          if (userRes.ok) {
+            const user = await userRes.json();
+            setName(user.data.name);
+            setPicture(user.data.picture);
+          }
+        }
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
   return (
@@ -85,7 +118,35 @@ export default function ViewPosterModal({
               </Box>
               <div className="view-info">
                 <p id="view-title">{title}</p>
+
                 <div className="poster-details">
+                  {picture && name && (
+                    <div
+                      className="info-row"
+                      style={{
+                        // display: "flex",
+                        // justifyContent: "space-between",
+                        // width: "100%",
+                        marginBottom: "2%",
+                      }}
+                    >
+                      {picture && (
+                        <img
+                          className="field-name"
+                          style={{
+                            width: "8%",
+                            marginRight: "3%",
+                          }}
+                          src={picture}
+                        ></img>
+                      )}
+                      {name && (
+                        <div id="field-text" style={{ paddingTop: "1%" }}>
+                          {name}
+                        </div>
+                      )}
+                    </div>
+                  )}
                   <div className="info-row">
                     <div className="field-name">When</div>
                     <div id="field-text">
