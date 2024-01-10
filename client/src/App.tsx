@@ -1,12 +1,13 @@
 import { useCallback, useEffect, useState } from "react";
 import { Routes, Route, NavLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Home from "./components/Home";
 import Happenings from "./components/Happenings";
 import Archive from "./components/Archive";
 import About from "./components/About";
 import "./styles/App.css";
 import { Button } from "@chakra-ui/react";
-import CreateImageModal from "./components/CreateImageModal";
+import CreateImageModal, { IPoster } from "./components/CreateImageModal";
 import {
   CredentialResponse,
   googleLogout,
@@ -15,14 +16,21 @@ import {
 import axios from "axios";
 import { createUser } from "./functions/fetch";
 import Profile from "./components/Profile";
-import { loadState, profileState } from "./components/atoms/atoms";
+import {
+  loadState,
+  modalOpenState,
+  posterState,
+  profileState,
+} from "./components/atoms/atoms";
 import { useRecoilState } from "recoil";
 
 export default function App() {
-  const [modalOpen, setModalOpen] = useState<string>("");
+  const [modalOpen, setModalOpen] = useRecoilState<string>(modalOpenState);
   const [user, setUser] = useState<CredentialResponse>();
-  const [profile, setProfile] = useRecoilState<any>(profileState);
-  const [isLoading, setIsLoading] = useRecoilState(loadState);
+  const [profile, setProfile] = useRecoilState(profileState);
+  const [isLoading] = useRecoilState(loadState);
+  // const [poster] = useRecoilState<IPoster>(posterState);
+  const navigate = useNavigate();
 
   const login = useGoogleLogin({
     onSuccess: (codeResponse) => setUser(codeResponse),
@@ -39,7 +47,6 @@ export default function App() {
 
   useEffect(() => {
     if (user) {
-      //console.log("why?");
       axios
         .get(
           `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`,
@@ -55,7 +62,6 @@ export default function App() {
             setProfile(res.data);
             localStorage.setItem("userProfile", JSON.stringify(res.data));
           } else {
-            console.log("Invalid email domain");
             window.alert("Please use a valid Brown or RISD email");
             setProfile(null);
           }
@@ -76,7 +82,7 @@ export default function App() {
                 setProfile(profile);
               } else {
                 //if not, call create user
-                console.log("user didn't already exist, profile here", profile);
+                // console.log("user didn't already exist, profile here", profile);
                 return await createUser(profile);
               }
             }
@@ -96,6 +102,7 @@ export default function App() {
     googleLogout();
     setProfile(null);
     localStorage.removeItem("userProfile");
+    navigate("/home");
   };
 
   const handleCreatePoster = useCallback(() => {
@@ -163,7 +170,7 @@ export default function App() {
             <Route path="/about" element={<About />} />
             <Route path="/profile" element={<Profile />} />
           </Routes>
-          {modalOpen && <CreateImageModal onClose={() => setModalOpen("")} />}
+          {modalOpen && <CreateImageModal />}
         </main>
       </article>
     </>

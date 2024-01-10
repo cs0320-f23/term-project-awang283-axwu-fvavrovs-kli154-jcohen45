@@ -2,12 +2,18 @@ package edu.brown.cs.student.main.types;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import edu.brown.cs.student.main.responses.ServiceResponse;
 import edu.brown.cs.student.main.user.User;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+
+import edu.brown.cs.student.main.user.UserRepository;
+import edu.brown.cs.student.main.user.UserService;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.scheduling.annotation.Async;
 
 /**
  * The Poster model defines the necessary set of properties for a poster object and contains getters
@@ -32,6 +38,7 @@ public class Poster {
   private String userId;
   private String isRecurring;
   private User user;
+  private UserService userService;
 
   // @JsonPropertyOrder({"id", "title", "description"})
 
@@ -47,6 +54,7 @@ public class Poster {
     this.createdAt = LocalDateTime.now();
     this.startDate = null;
     this.endDate = null;
+    this.userId = "";
     //    this.isRecurring = Recurrence.NEVER;
     //    this.location = location;
     //    this.link = link;
@@ -64,6 +72,7 @@ public class Poster {
     this.createdAt = LocalDateTime.now();
     this.startDate = null;
     this.endDate = null;
+    this.userId = "";
     //    this.location = location;
     //    this.link = link;
   }
@@ -86,6 +95,7 @@ public class Poster {
     this.createdAt = LocalDateTime.now();
     this.startDate = null;
     this.endDate = null;
+    this.userId = "";
   }
 
   @JsonProperty("id")
@@ -211,7 +221,9 @@ public class Poster {
     this.endDate = endDate;
   }
 
-  public String returnHaystack() {
+  @Async
+  public String returnHaystack(UserService userService) {
+    this.userService = userService;
     StringBuilder haystack = new StringBuilder(this.title);
     if (this.description != "") {
       haystack.append(this.description);
@@ -221,6 +233,16 @@ public class Poster {
         haystack.append(tag);
       }
     }
+    if (!this.userId.equals("")) {
+      CompletableFuture<ServiceResponse<User>> reqUser = userService.getUserById(this.userId);
+      ServiceResponse<User> userResponse = reqUser.join();
+
+      if (userResponse.getData() != null) {
+        String name = userResponse.getData().getName();
+        haystack.append(name);
+      }
+    }
+
     return haystack.toString();
   }
 

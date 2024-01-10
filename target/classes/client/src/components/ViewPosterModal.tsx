@@ -19,6 +19,7 @@ interface viewProps {
   description: string;
   tags: string[];
   recurs: string;
+  id: string;
 }
 
 export default function ViewPosterModal({
@@ -33,6 +34,7 @@ export default function ViewPosterModal({
   description,
   tags,
   recurs,
+  id,
 }: viewProps) {
   const [weekday, month, day] = date.split(" ");
 
@@ -60,8 +62,25 @@ export default function ViewPosterModal({
           >
             <ModalCloseButton className="close-button" onClick={onClose} />
             <ModalBody className="modal-body" flexDirection={"row"}>
-              <div className="view-image">
+              <div className="view-image" id={id}>
                 <img src={path}></img>
+                <div
+                  className="heart-icon"
+                  style={{
+                    position: "absolute",
+                    top: "5%",
+                    left: "42%",
+                    width: "20px",
+                    height: "20px",
+                    backgroundImage: `url('public/heart-svgrepo-com.svg')`,
+                    backgroundColor: "rgba(255, 255, 255, 0.8)",
+                    borderRadius: "10%",
+                    padding: "1%",
+                    boxSizing: "content-box",
+                    backgroundSize: "contain",
+                    backgroundRepeat: "no-repeat",
+                  }} //partially fill on hover, fully fill on click
+                ></div>
               </div>
               <div className="view-info">
                 <p id="view-title">{title}</p>

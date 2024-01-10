@@ -2,13 +2,15 @@ package edu.brown.cs.student.main.user;
 
 import edu.brown.cs.student.main.responses.ServiceResponse;
 import edu.brown.cs.student.main.types.Poster;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 @Service
 public class UserService {
@@ -107,7 +109,7 @@ public class UserService {
               // Set the user ID in the poster
               poster.setUserId(userId);
               // Add the poster to the user's list of posters
-              user.getPosters().add(poster);
+              user.getCreatedPosters().add(poster);
               // Save the updated user
               System.out.println("Trying to save");
               userRepository.save(user);
@@ -118,4 +120,56 @@ public class UserService {
         .map(CompletableFuture::completedFuture) // Remove this line
         .orElse(CompletableFuture.completedFuture(new ServiceResponse<>("User not found")));
   }
+
+
+  @Async
+  public CompletableFuture<ServiceResponse<User>> savePoster(
+          String userId, Poster poster) {
+    // Find the user by ID
+   // System.out.println("reached associatePosterWithUser function");
+    return userRepository
+            .findById(userId)
+            .map(
+                    user -> {
+                      // Add the poster to the user's list of posters
+                      user.getSavedPosters().add(poster);
+                      // Save the updated user
+                      //System.out.println("Trying to save");
+                      this.updateUser(user);
+                      // Create a response object
+                     // System.out.println("Trying to return service response");
+                      return new ServiceResponse<>(user, "Poster saved");
+                    })
+            .map(CompletableFuture::completedFuture) // Remove this line
+            .orElse(CompletableFuture.completedFuture(new ServiceResponse<>("User not found")));
+  }
+
+
+  @Async
+  public CompletableFuture<ServiceResponse<User>> unsavePoster(
+          String userId, Poster poster) {
+    // Find the user by ID
+    // System.out.println("reached associatePosterWithUser function");
+    return userRepository
+            .findById(userId)
+            .map(
+                    user -> {
+                      // Add the poster to the user's list of posters
+                      if (user.getSavedPosters().contains(poster)) {
+                          Set<Poster> userPosters = user.getCreatedPosters();
+                          userPosters.removeIf(foundPoster -> foundPoster.getID().equals(poster.getID()));
+                          user.setCreatedPosters(userPosters);
+                        // Save the updated user
+                        System.out.println("Trying to unsave");
+                      }
+                      this.updateUser(user);
+                      // Create a response object
+                      // System.out.println("Trying to return service response");
+                      return new ServiceResponse<>(user, "Poster associated with user");
+                    })
+            .map(CompletableFuture::completedFuture) // Remove this line
+            .orElse(CompletableFuture.completedFuture(new ServiceResponse<>("User not found")));
+  }
+
+
 }

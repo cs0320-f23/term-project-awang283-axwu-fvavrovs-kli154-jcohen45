@@ -1,4 +1,3 @@
-// import React from "react";
 import {
   Box,
   Button,
@@ -12,12 +11,17 @@ import {
 } from "@chakra-ui/react";
 import { Search2Icon, TriangleDownIcon } from "@chakra-ui/icons";
 import "../styles/Home.css";
-import { IPoster, ImageCard, getPosters } from "./Happenings";
-import { useEffect, useState } from "react";
+import { ImageCard, getPosters } from "./Happenings";
+import { KeyboardEvent, useEffect, useState } from "react";
 import { fetchTags } from "../functions/fetch";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import { searchState, tagsState } from "./atoms/atoms";
+import {
+  loadState,
+  searchResultsState,
+  searchState,
+  tagsState,
+} from "./atoms/atoms";
 
 const scrollToBottom = () => {
   window.scrollTo({
@@ -31,18 +35,51 @@ const scrollToBottom = () => {
 
 export default function Home() {
   const [searchInput, setSearchInput] = useRecoilState(searchState);
-  const [allPosters, setAllPosters] = useState<IPoster[]>([]);
+  const [searchResults, setSearchResults] = useRecoilState(searchResultsState);
+  const [isLoading, setIsLoading] = useRecoilState(loadState);
   const [showTags, setShowTags] = useState<boolean>(false); //shows the tags modal
   const [allTags, setAllTags] = useState<string[]>([]); //all tags in database
   const [tags, setTags] = useRecoilState<Set<string>>(tagsState); //list of tags user clicked
   const navigate = useNavigate();
 
   useEffect(() => {
+    getPosters().then((data) => setSearchResults(data));
+    // console.log(searchResults);
+    const fetchAllTags = async () => {
+      try {
+        const tagsData = await fetchTags();
+        setAllTags(tagsData);
+      } catch (error) {
+        console.error("Error fetching tags:", error);
+      }
+    };
     setSearchInput("");
+    fetchAllTags();
   }, []);
 
+  useEffect(() => {
+    const checkPostersDisplayed = () => {
+      const posterElements = document.querySelectorAll(".image-card");
+      if (isLoading) {
+        console.log("posters loading...");
+        console.log("currently " + posterElements.length + " image cards");
+
+        if (posterElements.length === 9) {
+          setIsLoading(false);
+          console.log("done loading");
+        }
+      }
+
+      if (posterElements.length !== 9) {
+        setIsLoading(true);
+      }
+    };
+
+    checkPostersDisplayed();
+  }, [isLoading, searchResults]);
+
   // Handle Enter key press
-  const handleKeyPress = (ev) => {
+  const handleKeyPress = (ev: KeyboardEvent<HTMLInputElement>) => {
     if (ev.key === "Enter") {
       navigate("/happenings");
     }
@@ -58,20 +95,6 @@ export default function Home() {
     }
   };
 
-  useEffect(() => {
-    const fetchAllTags = async () => {
-      try {
-        const tagsData = await fetchTags();
-        setAllTags(tagsData);
-      } catch (error) {
-        console.error("Error fetching tags:", error);
-      }
-    };
-    getPosters().then((data) => setAllPosters(data));
-    fetchAllTags();
-  }, []);
-
-  //onclick
   const onClick = (tag: string) => {
     //if in tagslist, take out
     const updatedTags = new Set(tags); // Create a new set from the current tags
@@ -196,7 +219,7 @@ export default function Home() {
             padding="1.5vh 4vw"
             id="scroll"
           >
-            {allPosters.slice(0, 9).map((item, index) => (
+            {searchResults.slice(0, 9).map((item, index) => (
               <Box key={index}>
                 <ImageCard
                   title={item.title}
@@ -207,6 +230,8 @@ export default function Home() {
                   link={item.link}
                   description={item.description}
                   tags={item.tags}
+                  recurs={item.isRecurring}
+                  id={item.id}
                 />
               </Box>
             ))}

@@ -1,22 +1,24 @@
 package edu.brown.cs.student.main.user;
 
+import edu.brown.cs.student.main.PosterService;
 import edu.brown.cs.student.main.responses.ServiceResponse;
-
 import org.springframework.http.HttpHeaders;
-
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping(value = "/users")
 public class UserController {
   private final UserService userService;
+  private final PosterService posterService;
 
-  public UserController(UserService userService) {
+  public UserController(UserService userService, PosterService posterService) {
     this.userService = userService;
+    this.posterService = posterService;
   }
 
   @GetMapping("/")
@@ -88,4 +90,53 @@ public class UserController {
         .thenApply(response -> ResponseEntity.ok(response))
         .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
   }
+
+
+    @PutMapping("/savePoster")
+    public CompletableFuture<ResponseEntity<ServiceResponse<User>>> savePoster(
+          @RequestBody String posterId, @PathVariable String userId) {
+     return posterService.getPosterById(posterId).thenCompose( poster -> {
+        return userService.getUserById(userId).thenCompose( user -> {
+              if (user.getData() != null) {
+                  if (poster.getData() != null) {
+                      return userService.savePoster(userId, poster.getData());
+                  } else {
+                      return CompletableFuture.completedFuture(
+                              new ServiceResponse<>("poster not found " + posterId));
+                  }
+              } else {
+                  return CompletableFuture.completedFuture(
+                          new ServiceResponse<>("user not found " + userId));
+              }
+          });
+
+      }).thenApply(response -> ResponseEntity.ok(response))
+             .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+
+    }
+
+
+
+    @DeleteMapping("/unsavePoster")
+    public CompletableFuture<ResponseEntity<ServiceResponse<User>>> unsavePoster(
+            @RequestBody String posterId, @PathVariable String userId) {
+        return posterService.getPosterById(posterId).thenCompose( poster -> {
+                    return userService.getUserById(userId).thenCompose( user -> {
+                        if (user.getData() != null) {
+                            if (poster.getData() != null) {
+                                return userService.unsavePoster(userId, poster.getData());
+                            } else {
+                                return CompletableFuture.completedFuture(
+                                        new ServiceResponse<>("poster not found " + posterId));
+                            }
+                        } else {
+                            return CompletableFuture.completedFuture(
+                                    new ServiceResponse<>("user not found " + userId));
+                        }
+                    });
+
+                }).thenApply(response -> ResponseEntity.ok(response))
+                .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+
+    }
 }

@@ -1,5 +1,5 @@
 import { atom } from "recoil";
-import { IPoster } from "../Happenings";
+import { IPoster } from "../CreateImageModal";
 
 export const searchState = atom<string>({
   key: "searchState",
@@ -24,4 +24,20 @@ export const loadState = atom<boolean>({
 export const profileState = atom<any>({
   key: "profileState",
   default: null,
+});
+
+//keeps track of a poster's currently filled in fields in case a user decides to draft / hits x without meaning to delete it
+export const posterState = atom<IPoster>({
+  key: "posterState",
+  default: {},
+});
+
+export const posterSrcState = atom<string>({
+  key: "posterSrcState",
+  default: "",
+});
+
+export const modalOpenState = atom<string>({
+  key: "modalOpenState",
+  default: "",
 });

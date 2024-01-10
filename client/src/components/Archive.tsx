@@ -56,8 +56,8 @@ export default function Archive() {
       const numberOfPosters = searchResults.length;
       if (isLoading) {
         console.log("posters loading...");
-        console.log("currently " + posterElements.length + " image cards");
-        console.log("should be " + numberOfPosters + " many posters");
+        // console.log("currently " + posterElements.length + " image cards");
+        // console.log("should be " + numberOfPosters + " many posters");
 
         if (
           posterElements.length !== 0 &&

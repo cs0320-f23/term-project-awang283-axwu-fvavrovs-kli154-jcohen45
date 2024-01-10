@@ -3,18 +3,16 @@ package edu.brown.cs.student.main;
 import edu.brown.cs.student.main.imgur.ImgurService;
 import edu.brown.cs.student.main.responses.ServiceResponse;
 import edu.brown.cs.student.main.types.Poster;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
+import edu.brown.cs.student.main.user.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 /** This class defines the mappings and endpoints for poster management */
 @RestController
@@ -24,10 +22,12 @@ public class PosterController {
 
   private final PosterService posterService; // instance of the class that does all the dirty work
   private final ImgurService imgurService;
+  private final UserService userService;
 
-  public PosterController(PosterService posterService, ImgurService imgurService) {
+  public PosterController(PosterService posterService, ImgurService imgurService, UserService userService) {
     this.posterService = posterService;
     this.imgurService = imgurService;
+    this.userService = userService;
   }
 
   /**
@@ -202,7 +202,7 @@ public class PosterController {
       @RequestBody Content content, @RequestParam(required = false) String userId) {
     Poster poster = new Poster();
     poster.setContent(content.getContent());
-    this.posterService.createPoster(poster, "1");
+    this.posterService.createPoster(poster, userId);
     return CompletableFuture.completedFuture(
         new ServiceResponse<Poster>(poster, "created new poster using existing link"));
   }
@@ -219,7 +219,7 @@ public class PosterController {
     Poster poster = new Poster();
     ServiceResponse<String> imgurResponse = imgurService.uploadToImgur(content);
     poster.setContent(imgurResponse.getData());
-    this.posterService.createPoster(poster, "1");
+    this.posterService.createPoster(poster, userId);
     return CompletableFuture.completedFuture(
         new ServiceResponse<Poster>(poster, "uploaded to imgur"));
   }
@@ -246,20 +246,41 @@ public class PosterController {
    */
   @DeleteMapping("/delete/{id}")
   public CompletableFuture<ResponseEntity<ServiceResponse<Object>>> deletePoster(
-      @PathVariable String id) {
-
+      @PathVariable String id, @RequestParam(required = false) String userId) {
     return posterService
         .getPosterById(id)
         .thenCompose(
             existingPoster -> {
-              if (existingPoster.getData() != null) {
+              if (existingPoster.getData().getID().equals(id) && existingPoster.getData().getUserId().equals(userId)) {
+                //remove from user's createdposters
+                userService.getUserById(userId).thenCompose(user -> {
+                  if(user.getData() != null) {
+                    Set<Poster> userPosters = user.getData().getCreatedPosters();
+                    userPosters.removeIf(poster -> poster.getID().equals(id));
+                    user.getData().setCreatedPosters(userPosters);
+                    // Update the user entity in the database
+                    return userService.updateUser(user.getData())
+                            .thenApply(updatedUser -> {
+                              System.out.println(updatedUser);
+                              if (updatedUser.getData() != null) {
+                                return new ServiceResponse<>("Poster with id " + id + " removed from user's created posters");
+                              } else {
+                                return new ServiceResponse<>("Failed to remove poster from user's created posters");
+                              }
+                            });
+                  } else {
+                    return CompletableFuture.completedFuture(
+                            new ServiceResponse<>("Poster with id " + id + "not removed from users created posters"));
+
+                  }
+                });
                 return posterService
                     .deletePosterById(id)
                     .thenApply(
                         deleted -> new ServiceResponse<>("Poster with id " + id + "deleted"));
               } else {
                 return CompletableFuture.completedFuture(
-                    new ServiceResponse<>("Poster with id " + id + "not found"));
+                    new ServiceResponse<>("Poster with id " + id + " not found"));
               }
             })
         .thenApply(response -> ResponseEntity.ok(response))

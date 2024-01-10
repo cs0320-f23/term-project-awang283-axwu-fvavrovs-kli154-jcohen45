@@ -6,18 +6,15 @@ import edu.brown.cs.student.main.types.Poster;
 import edu.brown.cs.student.main.types.PosterRepository;
 import edu.brown.cs.student.main.user.User;
 import edu.brown.cs.student.main.user.UserService;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 /**
  * This class handles the logic of creating a poster. This involves validating the input data and
@@ -119,6 +116,7 @@ public class PosterService {
     return CompletableFuture.completedFuture(
         new ServiceResponse<>(poster, "Invalid user ID provided"));
   }
+
   //  @Async
   //  public CompletableFuture<ServiceResponse<Poster>> updatePoster(Poster updatedPoster) {
   //
@@ -268,6 +266,28 @@ public class PosterService {
   //  }
 
   @Async
+  public CompletableFuture<List<Poster>> searchByName(String name) {
+    return this.getPosters()
+            .thenCompose(posters ->
+                    CompletableFuture.allOf(posters.stream()
+                                    .map(poster ->
+                                            userService.getUserById(poster.getUserId())
+                                                    .thenApply(userResponse -> {
+                                                      if (userResponse.getData() != null && userResponse.getData().getName().equals(name)) {
+                                                        return poster;
+                                                      }
+                                                      return null;
+                                                    })
+                                    )
+                                    .toArray(CompletableFuture<?>[]::new))
+                            .thenApply(__ -> posters.stream()
+                                    .filter(Objects::nonNull)
+                                    .collect(Collectors.toList()))
+            );
+  }
+
+
+  @Async
   public CompletableFuture<List<Poster>> searchByTerm(String term, String[] tags) {
     if (tags.length == 0) {
       return this.getPosters()
@@ -298,7 +318,7 @@ public class PosterService {
   }
 
   private boolean searchTermHelper(Poster poster, String term) {
-    String haystack = poster.returnHaystack();
+    String haystack = poster.returnHaystack(userService);
     BMSearch searcher = new BMSearch();
     return searcher.getSearchResult(term, haystack);
   }
