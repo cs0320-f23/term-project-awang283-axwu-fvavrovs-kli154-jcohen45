@@ -1,4 +1,5 @@
 import {
+  Box,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -17,7 +18,7 @@ interface viewProps {
   location: string;
   link: string;
   description: string;
-  tags: string[];
+  tags: Set<string>;
   recurs: string;
   id: string;
 }
@@ -62,7 +63,7 @@ export default function ViewPosterModal({
           >
             <ModalCloseButton className="close-button" onClick={onClose} />
             <ModalBody className="modal-body" flexDirection={"row"}>
-              <div className="view-image" id={id}>
+              <Box className="view-image" overflowY={"scroll"} id={id}>
                 <img src={path}></img>
                 <div
                   className="heart-icon"
@@ -81,7 +82,7 @@ export default function ViewPosterModal({
                     backgroundRepeat: "no-repeat",
                   }} //partially fill on hover, fully fill on click
                 ></div>
-              </div>
+              </Box>
               <div className="view-info">
                 <p id="view-title">{title}</p>
                 <div className="poster-details">

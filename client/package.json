@@ -17,8 +17,8 @@
     "@emotion/styled": "^11.11.0",
     "@mui/material": "^5.14.19",
     "@orange_digital/chakra-datepicker": "^1.0.3",
-    "@tabler/icons": "^2.44.0",
     "@react-oauth/google": "^0.12.1",
+    "@tabler/icons": "^2.44.0",
     "@types/react-router-dom": "^5.3.3",
     "@vitejs/plugin-react": "^4.2.0",
     "axios": "^1.6.2",
@@ -38,6 +38,8 @@
     "sort-by": "^1.2.0"
   },
   "devDependencies": {
+    "@types/imagesloaded": "^4.1.6",
+    "@types/masonry-layout": "^4.2.7",
     "@types/react": "^18.2.37",
     "@types/react-dom": "^18.2.15",
     "@types/react-responsive-masonry": "^2.1.3",

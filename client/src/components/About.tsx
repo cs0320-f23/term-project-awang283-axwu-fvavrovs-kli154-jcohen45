@@ -1,32 +1,6 @@
-// import React from "react";
-import { useRecoilState } from "recoil";
 import "../styles/About.css";
-import { loadState } from "./atoms/atoms";
-import { useEffect } from "react";
 
 export default function About() {
-  const [isLoading, setIsLoading] = useRecoilState(loadState);
-
-  useEffect(() => {
-    const checkPostersDisplayed = () => {
-      const imageElements = document.querySelectorAll("#about-image");
-      if (isLoading) {
-        console.log("images loading...");
-
-        if (imageElements.length === 3) {
-          setIsLoading(false);
-          console.log("done loading");
-        }
-      }
-
-      if (imageElements.length !== 3) {
-        setIsLoading(true);
-      }
-    };
-
-    checkPostersDisplayed();
-  }, [isLoading]);
-
   return (
     <>
       <main>

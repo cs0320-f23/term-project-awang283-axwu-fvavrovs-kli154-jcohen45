@@ -7,13 +7,11 @@ import { useEffect, useState } from "react";
 import { fetchTags } from "../functions/fetch";
 import axios from "axios";
 import Masonry from "react-responsive-masonry";
-import { loadState } from "./atoms/atoms";
-import { useRecoilState } from "recoil";
 
 export default function Archive() {
   const [searchResults, setSearchResults] = useState<IPoster[]>([]);
   const [allTags, setAllTags] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useRecoilState(loadState);
+  const [isLoading, setIsLoading] = useState(true);
 
   async function getArchive() {
     try {
@@ -45,39 +43,13 @@ export default function Archive() {
     };
     fetchAllTags();
     const images = () => {
-      getArchive().then((data) => setSearchResults(data));
+      getArchive().then((data) => {
+        setSearchResults(data);
+        setIsLoading(false);
+      });
     };
     images();
   }, []);
-
-  useEffect(() => {
-    const checkPostersDisplayed = () => {
-      const posterElements = document.querySelectorAll(".image-card");
-      const numberOfPosters = searchResults.length;
-      if (isLoading) {
-        console.log("posters loading...");
-        // console.log("currently " + posterElements.length + " image cards");
-        // console.log("should be " + numberOfPosters + " many posters");
-
-        if (
-          posterElements.length !== 0 &&
-          posterElements.length === numberOfPosters
-        ) {
-          setIsLoading(false);
-          console.log("done loading");
-        }
-      }
-
-      if (
-        (posterElements.length === 0 && numberOfPosters === 0) ||
-        posterElements.length !== numberOfPosters
-      ) {
-        setIsLoading(true);
-      }
-    };
-
-    checkPostersDisplayed();
-  }, [isLoading, searchResults]);
 
   const scrollToTop = () => {
     window.scrollTo({
@@ -88,6 +60,11 @@ export default function Archive() {
 
   return (
     <>
+      {isLoading && (
+        <div className="loading-screen">
+          <img className="loading-gif" src="/loading.gif" />
+        </div>
+      )}
       <main className="happenings">
         <h1 id="year">2024</h1>
         <Masonry className="grid" columnsCount={3}>
@@ -96,15 +73,16 @@ export default function Archive() {
               item.startDate[0] === 2024 && (
                 <Box key={index}>
                   <ImageCard
-                    title={item.title}
-                    content={item.content}
-                    startDate={item.startDate}
-                    endDate={item.endDate}
+                    title={item.title!}
+                    content={item.content!}
+                    startDate={item.startDate!}
+                    endDate={item.endDate!}
                     location={item.location}
                     link={item.link}
                     description={item.description}
                     tags={item.tags}
-                    recurs={item.isRecurring}
+                    recurs={item.isRecurring!}
+                    id={item.id}
                   />
                 </Box>
               )
@@ -117,15 +95,16 @@ export default function Archive() {
               item.startDate[0] === 2023 && (
                 <Box key={index}>
                   <ImageCard
-                    title={item.title}
-                    content={item.content}
-                    startDate={item.startDate}
-                    endDate={item.endDate}
+                    title={item.title!}
+                    content={item.content!}
+                    startDate={item.startDate!}
+                    endDate={item.endDate!}
                     location={item.location}
                     link={item.link}
                     description={item.description}
                     tags={item.tags}
-                    recurs={item.isRecurring}
+                    recurs={item.isRecurring!}
+                    id={item.id}
                   />
                 </Box>
               )
@@ -138,15 +117,16 @@ export default function Archive() {
               item.startDate[0] === 2022 && (
                 <Box key={index}>
                   <ImageCard
-                    title={item.title}
-                    content={item.content}
-                    startDate={item.startDate}
-                    endDate={item.endDate}
+                    title={item.title!}
+                    content={item.content!}
+                    startDate={item.startDate!}
+                    endDate={item.endDate!}
                     location={item.location}
                     link={item.link}
                     description={item.description}
                     tags={item.tags}
-                    recurs={item.isRecurring}
+                    recurs={item.isRecurring!}
+                    id={item.id}
                   />
                 </Box>
               )

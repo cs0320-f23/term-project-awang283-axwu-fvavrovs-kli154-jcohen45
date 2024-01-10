@@ -36,15 +36,17 @@ const scrollToBottom = () => {
 export default function Home() {
   const [searchInput, setSearchInput] = useRecoilState(searchState);
   const [searchResults, setSearchResults] = useRecoilState(searchResultsState);
-  const [isLoading, setIsLoading] = useRecoilState(loadState);
+  const [isLoading, setIsLoading] = useState(true);
   const [showTags, setShowTags] = useState<boolean>(false); //shows the tags modal
   const [allTags, setAllTags] = useState<string[]>([]); //all tags in database
   const [tags, setTags] = useRecoilState<Set<string>>(tagsState); //list of tags user clicked
   const navigate = useNavigate();
 
   useEffect(() => {
-    getPosters().then((data) => setSearchResults(data));
-    // console.log(searchResults);
+    getPosters().then((data) => {
+      setSearchResults(data);
+      setIsLoading(false);
+    });
     const fetchAllTags = async () => {
       try {
         const tagsData = await fetchTags();
@@ -56,27 +58,6 @@ export default function Home() {
     setSearchInput("");
     fetchAllTags();
   }, []);
-
-  useEffect(() => {
-    const checkPostersDisplayed = () => {
-      const posterElements = document.querySelectorAll(".image-card");
-      if (isLoading) {
-        console.log("posters loading...");
-        console.log("currently " + posterElements.length + " image cards");
-
-        if (posterElements.length === 9) {
-          setIsLoading(false);
-          console.log("done loading");
-        }
-      }
-
-      if (posterElements.length !== 9) {
-        setIsLoading(true);
-      }
-    };
-
-    checkPostersDisplayed();
-  }, [isLoading, searchResults]);
 
   // Handle Enter key press
   const handleKeyPress = (ev: KeyboardEvent<HTMLInputElement>) => {
@@ -110,6 +91,11 @@ export default function Home() {
 
   return (
     <>
+      {isLoading && (
+        <div className="loading-screen">
+          <img className="loading-gif" src="/loading.gif" />
+        </div>
+      )}
       <main className="posters">
         <div className="home-content">
           <label className="label">
@@ -222,15 +208,15 @@ export default function Home() {
             {searchResults.slice(0, 9).map((item, index) => (
               <Box key={index}>
                 <ImageCard
-                  title={item.title}
-                  content={item.content}
-                  startDate={item.startDate}
-                  endDate={item.endDate}
+                  title={item.title!}
+                  content={item.content!}
+                  startDate={item.startDate!}
+                  endDate={item.endDate!}
                   location={item.location}
                   link={item.link}
                   description={item.description}
                   tags={item.tags}
-                  recurs={item.isRecurring}
+                  recurs={item.isRecurring!}
                   id={item.id}
                 />
               </Box>

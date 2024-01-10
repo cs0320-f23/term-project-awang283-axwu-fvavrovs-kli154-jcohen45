@@ -25,6 +25,7 @@ import { useRecoilState } from "recoil";
 import PopupModal from "./PopupModal";
 
 export interface IPoster {
+  id: string;
   content?: string;
   title?: string;
   location?: string;
@@ -143,7 +144,7 @@ export default function CreateImageModal() {
         const res = await axios.post(url, formData, config);
         setPosterSrc(inputElement.value);
         //need to give enough time for the poster to be created + id to exist
-        await new Promise((resolve) => setTimeout(resolve, 10000));
+        await new Promise((resolve) => setTimeout(resolve, 15000));
         console.log(res.data.data);
         setPosterId(res.data.data.id);
         setCVFields(res.data.data.id);
@@ -299,6 +300,7 @@ export default function CreateImageModal() {
                       className="view-image"
                       maxHeight={"76vh"}
                       overflowY={"scroll"}
+                      style={{ marginTop: 0 }}
                     >
                       <img src={posterSrc}></img>
                     </Box>
@@ -310,7 +312,6 @@ export default function CreateImageModal() {
                     <TagsModal
                       onClose={onClose}
                       onBack={onBack}
-                      // poster={poster}
                       posterId={posterId}
                       handleChange={handleChange}
                       setShowTags={setShowTags}

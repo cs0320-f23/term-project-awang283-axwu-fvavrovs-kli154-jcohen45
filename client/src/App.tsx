@@ -16,19 +16,13 @@ import {
 import axios from "axios";
 import { createUser } from "./functions/fetch";
 import Profile from "./components/Profile";
-import {
-  loadState,
-  modalOpenState,
-  posterState,
-  profileState,
-} from "./components/atoms/atoms";
+import { modalOpenState, profileState } from "./components/atoms/atoms";
 import { useRecoilState } from "recoil";
 
 export default function App() {
   const [modalOpen, setModalOpen] = useRecoilState<string>(modalOpenState);
   const [user, setUser] = useState<CredentialResponse>();
   const [profile, setProfile] = useRecoilState(profileState);
-  const [isLoading] = useRecoilState(loadState);
   // const [poster] = useRecoilState<IPoster>(posterState);
   const navigate = useNavigate();
 
@@ -112,11 +106,6 @@ export default function App() {
 
   return (
     <>
-      {isLoading && (
-        <div className="loading-screen">
-          <img className="loading-gif" src="/loading.gif" />
-        </div>
-      )}
       <article>
         <header>
           <nav>
