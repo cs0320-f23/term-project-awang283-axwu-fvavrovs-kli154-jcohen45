@@ -2,12 +2,14 @@ package edu.brown.cs.student.main.user;
 
 import edu.brown.cs.student.main.PosterService;
 import edu.brown.cs.student.main.responses.ServiceResponse;
+import edu.brown.cs.student.main.types.Poster;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 @RestController
@@ -27,12 +29,23 @@ public class UserController {
   }
 
   @GetMapping("/{id}")
-  public CompletableFuture<ResponseEntity<ServiceResponse<User>>> getUserById(
-      @PathVariable String id) {
-    return userService.getUserById(id).thenApply(ResponseEntity::ok);
-  }
+    public CompletableFuture<ResponseEntity<ServiceResponse<User>>> getUserById(
+            @PathVariable String id) {
+        return userService.getUserById(id).thenApply(ResponseEntity::ok);
+    }
 
-  @PostMapping(value = "/create", produces = "application/json")
+    @GetMapping("/savedPosters/{id}")
+    public CompletableFuture<ResponseEntity<ServiceResponse<Set<Poster>>>> getSavedPosters(
+            @PathVariable String id) {
+        return userService.getUserById(id).thenCompose(userServiceResponse -> {
+                    Set<Poster> savedPosters = userServiceResponse.getData().getSavedPosters();
+                    ServiceResponse<Set<Poster>> serviceResponse = new ServiceResponse<>(savedPosters, "Retrieved saved posters");
+                    return CompletableFuture.completedFuture(serviceResponse);
+                }).thenApply(response -> ResponseEntity.ok(response))
+                .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+    }
+
+    @PostMapping(value = "/create", produces = "application/json")
   public CompletableFuture<ResponseEntity<ServiceResponse<User>>> createUser(
       @RequestBody User user) {
     return userService.createUser(user).thenApply(response -> ResponseEntity.ok(response));
@@ -94,7 +107,7 @@ public class UserController {
 
     @PutMapping("/savePoster")
     public CompletableFuture<ResponseEntity<ServiceResponse<User>>> savePoster(
-          @RequestBody String posterId, @PathVariable String userId) {
+            @RequestParam(required = false) String posterId, @RequestParam(required = false) String userId) {
      return posterService.getPosterById(posterId).thenCompose( poster -> {
         return userService.getUserById(userId).thenCompose( user -> {
               if (user.getData() != null) {
@@ -117,14 +130,15 @@ public class UserController {
 
 
 
-    @DeleteMapping("/unsavePoster")
+    @PutMapping("/unsavePoster")
     public CompletableFuture<ResponseEntity<ServiceResponse<User>>> unsavePoster(
-            @RequestBody String posterId, @PathVariable String userId) {
+            @RequestParam(required = false) String posterId, @RequestParam(required = false) String userId) {
         return posterService.getPosterById(posterId).thenCompose( poster -> {
                     return userService.getUserById(userId).thenCompose( user -> {
                         if (user.getData() != null) {
                             if (poster.getData() != null) {
-                                return userService.unsavePoster(userId, poster.getData());
+                                System.out.println(posterId);
+                                return userService.unsavePoster(userId, posterId);
                             } else {
                                 return CompletableFuture.completedFuture(
                                         new ServiceResponse<>("poster not found " + posterId));

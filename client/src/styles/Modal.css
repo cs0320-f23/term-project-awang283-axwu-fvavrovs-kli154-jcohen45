@@ -307,3 +307,15 @@ input::placeholder {
   transition: 0.2s;
   filter: brightness(85%);
 }
+
+.heart-icon.clicked {
+  background-image: url("public/heart_filled.svg");
+}
+
+.heart-icon:hover {
+  background-image: url("public/heart_partial.svg");
+}
+
+.heart-icon {
+  background-image: url("public/heart.svg");
+}

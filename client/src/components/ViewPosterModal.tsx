@@ -8,6 +8,10 @@ import {
 } from "@chakra-ui/react";
 import "../styles/Modal.css";
 import { useEffect, useState } from "react";
+import axios from "axios";
+import { useRecoilState } from "recoil";
+import { profileState } from "./atoms/atoms";
+import { profile } from "console";
 
 interface viewProps {
   onClose: () => void;
@@ -41,14 +45,33 @@ export default function ViewPosterModal({
   const [weekday, month, day] = date.split(" ");
   const [name, setName] = useState<string>("");
   const [picture, setPicture] = useState<string>("");
+  const [userId] = useRecoilState(profileState);
 
   useEffect(() => {
     getUser();
+    const fetchSaved = async () => {
+      try {
+        //fetch savedposters
+        const savedPosters = await fetch(
+          "http://localhost:8080/users/savedPosters/" + userId.id
+        );
+        //if poster in saved , set class to clicked
+        if (savedPosters.ok) {
+          const posterSet = await savedPosters.json();
+          //compare id passed in to each poster in set
+          console.log(posterSet);
+          posterSet.data.forEach((poster) => {
+            if (poster.id === id) {
+              document.querySelector(".heart-icon")!.classList.add("clicked");
+            }
+          });
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchSaved();
   }, []);
-
-  useEffect(() => {
-    console.log(name);
-  }, [name]);
 
   const classNameTag = (index: number) => {
     if (index % 3 == 0) {
@@ -81,6 +104,78 @@ export default function ViewPosterModal({
       console.error(error);
     }
   };
+
+  const onClick = async () => {
+    const heartIcon = document.querySelector(".heart-icon");
+    if (heartIcon) {
+      if (heartIcon.classList.contains("clicked")) {
+        //if alredy clicked, un fill, un save
+        //unfill
+        heartIcon.classList.remove("clicked");
+        //unsave
+        try {
+          //add to database
+          const config = {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          };
+          const url =
+            "http://localhost:8080/users/unsavePoster?posterId=" +
+            id +
+            "&userId=" +
+            userId.id;
+
+          const res = await axios.put(url, null, config);
+
+          return Promise.resolve(res.data.data);
+        } catch (error) {
+          if (axios.isAxiosError(error) && error.response) {
+            return Promise.resolve(
+              `Error in fetch: ${error.response.data.message}`
+            );
+          } else {
+            return Promise.resolve(
+              "Error in fetch: Network error or other issue"
+            );
+          }
+        }
+      } else {
+        //if not yet clicked, fill and save
+        //fill
+        heartIcon.classList.add("clicked");
+        //save
+        try {
+          //add to database
+          const config = {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          };
+          const url =
+            "http://localhost:8080/users/savePoster?posterId=" +
+            id +
+            "&userId=" +
+            userId.id;
+
+          const res = await axios.put(url, null, config);
+          console.log(res.data.data);
+          return Promise.resolve(res.data.data);
+        } catch (error) {
+          if (axios.isAxiosError(error) && error.response) {
+            return Promise.resolve(
+              `Error in fetch: ${error.response.data.message}`
+            );
+          } else {
+            return Promise.resolve(
+              "Error in fetch: Network error or other issue"
+            );
+          }
+        }
+      }
+    }
+  };
+
   return (
     <>
       <Modal isOpen={true} onClose={onClose}>
@@ -100,20 +195,19 @@ export default function ViewPosterModal({
                 <img src={path}></img>
                 <div
                   className="heart-icon"
+                  onClick={onClick}
                   style={{
                     position: "absolute",
-                    top: "5%",
-                    left: "42%",
-                    width: "20px",
-                    height: "20px",
-                    backgroundImage: `url('public/heart-svgrepo-com.svg')`,
-                    backgroundColor: "rgba(255, 255, 255, 0.8)",
+                    top: "5.5%",
+                    left: "43%",
+                    width: "2%",
+                    height: "2%",
                     borderRadius: "10%",
                     padding: "1%",
                     boxSizing: "content-box",
                     backgroundSize: "contain",
                     backgroundRepeat: "no-repeat",
-                  }} //partially fill on hover, fully fill on click
+                  }}
                 ></div>
               </Box>
               <div className="view-info">
