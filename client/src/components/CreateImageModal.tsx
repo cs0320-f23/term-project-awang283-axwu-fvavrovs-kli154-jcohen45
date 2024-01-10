@@ -68,7 +68,7 @@ export default function CreateImageModal() {
     if (value instanceof Set) {
       updatedValue = { [property]: Array.from(value) };
 
-      // console.log(JSON.stringify(Array.from(value)) + " updated tags");
+      console.log(JSON.stringify(Array.from(value)) + " updated tags");
     } else {
       updatedValue = { [property]: value };
     }
@@ -79,11 +79,9 @@ export default function CreateImageModal() {
     if (callback) {
       callback();
     }
-    // console.log(JSON.stringify(poster));
+    console.log(JSON.stringify(poster));
     return poster;
   };
-
-  // console.log(poster);
 
   const setCVFields = async (id: string) => {
     setIsLoading(true);
@@ -104,6 +102,7 @@ export default function CreateImageModal() {
           ...poster,
           title: res.data.title,
           description: res.data.description,
+          tags: res.data.tags,
         });
         setIsLoading(false);
       }

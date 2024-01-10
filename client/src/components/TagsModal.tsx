@@ -18,7 +18,7 @@ export default function TagsModal({
   const [allTags, setAllTags] = useState<string[]>([]);
   const [tags, setTags] = useState<Set<string>>(new Set());
   const [, setSearchResults] = useRecoilState(searchResultsState);
-  const [, setPoster] = useRecoilState<IPoster>(posterState);
+  const [poster, setPoster] = useRecoilState<IPoster>(posterState);
   const [, setPosterSrc] = useRecoilState(posterSrcState);
 
   useEffect(() => {
@@ -32,7 +32,7 @@ export default function TagsModal({
     };
 
     fetchAllTags();
-    // setTags(new Set(poster.tags));
+    setTags(new Set(poster.tags));
   }, []);
 
   const classNameTag = (index: number) => {
@@ -57,6 +57,7 @@ export default function TagsModal({
     }
 
     setTags(updatedTags);
+    console.log(tags);
   };
 
   //on hit create button
