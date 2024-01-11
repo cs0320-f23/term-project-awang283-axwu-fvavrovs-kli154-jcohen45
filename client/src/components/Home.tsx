@@ -11,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { Search2Icon, TriangleDownIcon } from "@chakra-ui/icons";
 import "../styles/Home.css";
+import "../styles/Modal.css";
 import { ImageCard, getPosters } from "./Happenings";
 import { KeyboardEvent, useEffect, useState } from "react";
 import { fetchTags } from "../functions/fetch";
@@ -72,16 +73,20 @@ export default function Home() {
   };
 
   const onClick = (tag: string) => {
-    //if in tagslist, take out
-    const updatedTags = new Set(tags); // Create a new set from the current tags
+    // if in tags list, take out
+    setTags((prevTags) => {
+      // using functional form of setTags so that onClick is updating the actual latest state of tags; otherwise always a step behind
+      const updatedTags = new Set(prevTags); // Create a new set from the previous tags
 
-    if (updatedTags.has(tag)) {
-      updatedTags.delete(tag); // If the tag exists, remove it from the set
-    } else {
-      updatedTags.add(tag); // If the tag doesn't exist, add it to the set
-    }
+      if (updatedTags.has(tag)) {
+        updatedTags.delete(tag); // If the tag exists, remove it from the set
+      } else {
+        updatedTags.add(tag); // If the tag doesn't exist, add it to the set
+      }
 
-    setTags(updatedTags);
+      console.log(updatedTags);
+      return updatedTags; // Return the updated set
+    });
   };
 
   return (
@@ -121,8 +126,8 @@ export default function Home() {
               </Button>
               {showTags && (
                 <Modal isOpen={true} onClose={() => setShowTags(false)}>
-                  <ModalBody>
-                    <ModalContent>
+                  <ModalBody className="modal-body">
+                    <ModalContent className="tag-modal-content">
                       <ModalHeader className="modal-header">
                         Choose Tags
                       </ModalHeader>
@@ -133,11 +138,11 @@ export default function Home() {
                       <div
                         className="tags-container"
                         style={{
-                          justifyContent: "center",
                           alignItems: "center",
                           display: "flex",
                           flexDirection: "column",
                           width: "100%",
+                          gap: "2vw",
                         }}
                       >
                         <div
@@ -167,8 +172,7 @@ export default function Home() {
                         <Button
                           className="final-upload-button"
                           onClick={() => setShowTags(false)}
-                          width={"40%"}
-                          marginTop={"3%"}
+                          padding={"8px 18px"}
                         >
                           Add Tags to Search
                         </Button>
@@ -177,8 +181,6 @@ export default function Home() {
                   </ModalBody>
                 </Modal>
               )}
-
-              {/* </Select> */}
             </Box>
           </div>
           <div className="tags">

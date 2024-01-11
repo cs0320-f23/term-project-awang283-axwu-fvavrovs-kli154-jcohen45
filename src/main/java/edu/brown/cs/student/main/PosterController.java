@@ -62,6 +62,25 @@ public class PosterController {
   }
 
   /**
+   * Sends a GET request for all upcoming posters (start date in the future)
+   *
+   * @return all posters (JSONified)
+   */
+  @GetMapping("/upcomingnew")
+  public CompletableFuture<ResponseEntity<List<Poster>>> getUpcomingByNewest() {
+    return posterService
+        .getPosters()
+        .thenApply(
+            posters ->
+                posters.stream()
+                    .filter(poster -> poster.getStartDate().isAfter(LocalDateTime.now()))
+                    .sorted(Comparator.nullsLast(Comparator.comparing(Poster::getCreatedAt).reversed()))
+                    .collect(Collectors.toList()))
+        .thenApply(ResponseEntity::ok)
+        .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+  }
+
+  /**
    * Sends a GET request for all posters that ended (or started if endDate not available)
    *
    * @return all posters (JSONified)

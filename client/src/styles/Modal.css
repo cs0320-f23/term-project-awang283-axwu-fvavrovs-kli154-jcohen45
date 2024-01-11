@@ -35,6 +35,14 @@
   font-family: "quicksand", sans-serif;
 }
 
+.tag-modal-content {
+  margin: auto !important;
+  box-shadow: var(--modal-shadow);
+  border-radius: 25px !important;
+  min-height: 90%;
+  font-family: "quicksand", sans-serif;
+}
+
 .modal-body {
   display: flex;
   color: var(--dark-purple100);

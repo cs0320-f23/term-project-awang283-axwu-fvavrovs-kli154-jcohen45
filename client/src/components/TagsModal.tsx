@@ -58,7 +58,6 @@ export default function TagsModal({
     }
   };
 
-  //onclick
   const onClick = (tag: string) => {
     // if in tags list, take out
     setTags((prevTags) => {

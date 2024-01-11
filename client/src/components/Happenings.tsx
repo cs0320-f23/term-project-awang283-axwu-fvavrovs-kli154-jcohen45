@@ -10,6 +10,7 @@ import {
   Select,
 } from "@chakra-ui/react";
 import "../styles/Happenings.css";
+import "../styles/Modal.css";
 import { Search2Icon, TriangleUpIcon } from "@chakra-ui/icons";
 import { useCallback, useEffect, useRef, useState } from "react";
 import ViewPosterModal from "./ViewPosterModal";
@@ -185,8 +186,25 @@ export async function getPosters() {
   }
 }
 
+export async function getNewestPosters() {
+  try {
+    const url = "http://localhost:8080/posters/upcomingnew";
+    const res = await axios.get<IPoster[]>(url);
+    return Promise.resolve(res.data);
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      console.log(error.response.data.message);
+      console.log(error);
+      return Promise.resolve(`Error in fetch: ${error.response.data.message}`);
+    } else {
+      console.log("Network error or other issue:", error.message);
+      return Promise.resolve("Error in fetch: Network error or other issue");
+    }
+  }
+}
+
 export default function Happenings() {
-  const [sortPosters, setSortPosters] = useState<string>("");
+  const [sortPosters, setSortPosters] = useState<string>("soonest");
   const [searchInput, setSearchInput] = useRecoilState(searchState);
   const [searchResults, setSearchResults] = useRecoilState(searchResultsState);
   const [showTags, setShowTags] = useState<boolean>(false); //shows the tags modal
@@ -196,6 +214,7 @@ export default function Happenings() {
   const gridRef = useRef(null);
 
   useEffect(() => {
+    console.log(sortPosters);
     const fetchAllTags = async () => {
       try {
         const tagsData = await fetchTags();
@@ -215,20 +234,21 @@ export default function Happenings() {
     }
   }, []);
 
-  // useEffect(() => {
-  //   const debounceSearch = setTimeout(() => {
-  //     setIsLoading(true);
-  //     if (searchInput.length > 0 || tags.size > 0) {
-  //       getSearchResults();
-  //     } else {
-  //       getPosters().then((data) => {
-  //         setSearchResults(data);
-  //         setIsLoading(false);
-  //       });
-  //     }
-  //   }, 500);
-  //   return () => clearTimeout(debounceSearch);
-  // }, [searchInput]);
+  useEffect(() => {
+    setIsLoading(true);
+    if (sortPosters === "newest") {
+      getNewestPosters().then((data) => {
+        setSearchResults(data);
+        setIsLoading(false);
+      });
+    } else {
+      // if user selects soonest or sort, which should sort by soonest by default
+      getPosters().then((data) => {
+        setSearchResults(data);
+        setIsLoading(false);
+      });
+    }
+  }, [sortPosters]);
 
   useEffect(() => {
     if (gridRef.current) {
@@ -246,16 +266,20 @@ export default function Happenings() {
   }, [searchResults]);
 
   const onClick = (tag: string) => {
-    //if in tagslist, take out
-    const updatedTags = new Set(tags); // Create a new set from the current tags
+    // if in tags list, take out
+    setTags((prevTags) => {
+      // using functional form of setTags so that onClick is updating the actual latest state of tags; otherwise always a step behind
+      const updatedTags = new Set(prevTags); // Create a new set from the previous tags
 
-    if (updatedTags.has(tag)) {
-      updatedTags.delete(tag); // If the tag exists, remove it from the set
-    } else {
-      updatedTags.add(tag); // If the tag doesn't exist, add it to the set
-    }
+      if (updatedTags.has(tag)) {
+        updatedTags.delete(tag); // If the tag exists, remove it from the set
+      } else {
+        updatedTags.add(tag); // If the tag doesn't exist, add it to the set
+      }
 
-    setTags(updatedTags);
+      console.log(updatedTags);
+      return updatedTags; // Return the updated set
+    });
   };
 
   const classNameTag = (index: number) => {
@@ -380,16 +404,16 @@ export default function Happenings() {
               value={sortPosters}
               onChange={(ev) => setSortPosters(ev.target.value)}
             >
-              <option value="option1">Soonest</option>
-              <option value="option3">Newest</option>
+              <option value="soonest">Soonest</option>
+              <option value="newest">Newest</option>
             </Select>
           </Box>
         </div>
-        <div className="grid" ref={gridRef}>
+        <div className="modal-font">
           {showTags && (
             <Modal isOpen={true} onClose={() => setShowTags(false)}>
-              <ModalBody>
-                <ModalContent>
+              <ModalBody className="modal-body">
+                <ModalContent className="tag-modal-content">
                   <ModalHeader className="modal-header">
                     Choose Tags
                   </ModalHeader>
@@ -400,11 +424,11 @@ export default function Happenings() {
                   <div
                     className="tags-container"
                     style={{
-                      justifyContent: "center",
                       alignItems: "center",
                       display: "flex",
                       flexDirection: "column",
                       width: "100%",
+                      gap: "2vw",
                     }}
                   >
                     <div
@@ -434,8 +458,7 @@ export default function Happenings() {
                     <Button
                       className="final-upload-button"
                       onClick={() => setShowTags(false)}
-                      width={"40%"}
-                      marginTop={"3%"}
+                      padding={"8px 18px"}
                     >
                       Add Tags to Search
                     </Button>
@@ -444,7 +467,8 @@ export default function Happenings() {
               </ModalBody>
             </Modal>
           )}
-
+        </div>
+        <div className="grid" ref={gridRef}>
           {searchInput !== "" && searchResults.length === 0 && (
             <h1 className="none">No results to display for this search term</h1>
           )}
