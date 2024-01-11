@@ -45,6 +45,17 @@ public class UserController {
                 .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
     }
 
+    @GetMapping("/createdPosters/{id}")
+    public CompletableFuture<ResponseEntity<ServiceResponse<Set<Poster>>>> getCreatedPosters(
+            @PathVariable String id) {
+        return userService.getUserById(id).thenCompose(userServiceResponse -> {
+                    Set<Poster> createdPosters = userServiceResponse.getData().getCreatedPosters();
+                    ServiceResponse<Set<Poster>> serviceResponse = new ServiceResponse<>(createdPosters, "Retrieved saved posters");
+                    return CompletableFuture.completedFuture(serviceResponse);
+                }).thenApply(response -> ResponseEntity.ok(response))
+                .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+    }
+
     @PostMapping(value = "/create", produces = "application/json")
   public CompletableFuture<ResponseEntity<ServiceResponse<User>>> createUser(
       @RequestBody User user) {
