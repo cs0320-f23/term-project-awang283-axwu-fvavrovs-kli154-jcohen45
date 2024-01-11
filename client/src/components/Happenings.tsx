@@ -253,7 +253,7 @@ export default function Happenings() {
   useEffect(() => {
     if (gridRef.current) {
       imagesLoaded(gridRef.current, function () {
-        console.log("all images are loaded");
+        // console.log("all images are loaded");
         if (gridRef.current) {
           new Masonry(gridRef.current, {
             columnWidth: 34,
