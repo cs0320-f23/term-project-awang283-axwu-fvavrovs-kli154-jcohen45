@@ -98,7 +98,19 @@
   margin-top: 1vw;
   margin-right: 0.7vw;
 }
+.heart-icon-hap.clicked {
+  background-image: url("heart_filled.svg");
+}
 
+.heart-icon-hap:hover {
+  background-image: url("heart_partial.svg");
+}
+.heart-icon-hap {
+  background-image: url("heart.svg");
+  position: absolute;
+  margin-top: 1vw;
+  margin-right: 0.7vw;
+}
 .image-container {
   min-width: 45%;
   max-width: 45%;

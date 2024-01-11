@@ -58,7 +58,6 @@ export default function ViewPosterModal({
         if (savedPosters.ok) {
           const posterSet = await savedPosters.json();
           //compare id passed in to each poster in set
-          console.log(posterSet);
           posterSet.data.forEach((poster) => {
             if (poster.id === id) {
               document.querySelector(".heart-icon")!.classList.add("clicked");

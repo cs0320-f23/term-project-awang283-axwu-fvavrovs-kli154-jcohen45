@@ -56,3 +56,27 @@ export async function createUser(profile) {
     }
   }
 }
+
+export const fetchSaved = async (userId, id, className) => {
+  try {
+    //fetch savedposters
+    const savedPosters = await fetch(
+      "http://localhost:8080/users/savedPosters/" + userId.id
+    );
+    //if poster in saved , set class to clicked
+    if (savedPosters.ok) {
+      const posterSet = await savedPosters.json();
+      //compare id passed in to each poster in set
+
+      posterSet.data.forEach((poster) => {
+        console.log(poster.id === id);
+        if (poster.id === id) {
+          console.log("hello");
+          document.querySelector(className)!.classList.add("clicked");
+        }
+      });
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};

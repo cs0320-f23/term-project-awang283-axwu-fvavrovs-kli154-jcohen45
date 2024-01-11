@@ -16,10 +16,16 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import ViewPosterModal from "./ViewPosterModal";
 import axios from "axios";
 import { useRecoilState } from "recoil";
-import { searchResultsState, searchState, tagsState } from "./atoms/atoms";
+import {
+  profileState,
+  searchResultsState,
+  searchState,
+  tagsState,
+} from "./atoms/atoms";
 import { fetchTags } from "../functions/fetch";
 import Masonry from "masonry-layout";
 import imagesLoaded from "imagesloaded";
+import "../styles/Modal.css";
 
 const scrollToTop = () => {
   window.scrollTo({
@@ -100,6 +106,107 @@ export const ImageCard: React.FC<ImageCardProps> = ({
   const month = monthName.substring(0, 3);
   const fullDate = `${monthName} ${startDate[2]}, ${startDate[0]}`;
   const weekday = listWeekdays[new Date(fullDate).getDay()];
+  const [userId] = useRecoilState(profileState);
+  const [isClicked, setIsClicked] = useState<boolean>(false);
+
+  const fetchSaved = async (userId, id) => {
+    try {
+      //fetch savedposters
+      const savedPosters = await fetch(
+        "http://localhost:8080/users/savedPosters/" + userId.id
+      );
+      //if poster in saved , set class to clicked
+      if (savedPosters.ok) {
+        const posterSet = await savedPosters.json();
+        //compare id passed in to each poster in set
+
+        posterSet.data.forEach((poster) => {
+          if (poster.id === id) {
+            setIsClicked(true);
+          }
+        });
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const onClickHeart = async () => {
+    const heartIcon = document.querySelector(`.heart-icon-hap`);
+    if (heartIcon) {
+      if (isClicked) {
+        //if alredy clicked, un fill, un save
+        //unfill
+        setIsClicked(false);
+        //unsave
+        try {
+          //add to database
+          const config = {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          };
+          const url =
+            "http://localhost:8080/users/unsavePoster?posterId=" +
+            id +
+            "&userId=" +
+            userId.id;
+
+          const res = await axios.put(url, null, config);
+
+          return Promise.resolve(res.data.data);
+        } catch (error) {
+          if (axios.isAxiosError(error) && error.response) {
+            return Promise.resolve(
+              `Error in fetch: ${error.response.data.message}`
+            );
+          } else {
+            return Promise.resolve(
+              "Error in fetch: Network error or other issue"
+            );
+          }
+        }
+      } else {
+        //if not yet clicked, fill and save
+        //fill
+        setIsClicked(true);
+
+        //save
+        try {
+          //add to database
+          const config = {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          };
+          const url =
+            "http://localhost:8080/users/savePoster?posterId=" +
+            id +
+            "&userId=" +
+            userId.id;
+
+          const res = await axios.put(url, null, config);
+          console.log(res.data.data);
+          return Promise.resolve(res.data.data);
+        } catch (error) {
+          if (axios.isAxiosError(error) && error.response) {
+            return Promise.resolve(
+              `Error in fetch: ${error.response.data.message}`
+            );
+          } else {
+            return Promise.resolve(
+              "Error in fetch: Network error or other issue"
+            );
+          }
+        }
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchSaved(userId, id);
+  }, []);
+
   function time(date: number[]) {
     let minutes = JSON.stringify(date[4]);
     if (date[4] === 0) {
@@ -142,7 +249,25 @@ export const ImageCard: React.FC<ImageCardProps> = ({
                 {endTime && "-" + endTime}
               </p>
             </div>
+            <div
+              className={`heart-icon-hap ${isClicked ? "clicked" : ""}`}
+              id={id}
+              onClick={onClickHeart}
+              style={{
+                display: "flex",
+                width: "8%",
+                height: "8%",
+                borderRadius: "10%",
+                padding: "1%",
+                boxSizing: "content-box",
+                backgroundSize: "contain",
+                backgroundRepeat: "no-repeat",
+                left: "85%",
+                top: "3%",
+              }}
+            ></div>
           </div>
+
           <div className="title-location">
             <p id="title">{title}</p>
             <p id="location">{location}</p>
@@ -214,7 +339,6 @@ export default function Happenings() {
   const gridRef = useRef(null);
 
   useEffect(() => {
-    console.log(sortPosters);
     const fetchAllTags = async () => {
       try {
         const tagsData = await fetchTags();
@@ -232,6 +356,7 @@ export default function Happenings() {
         setIsLoading(false);
       });
     }
+    //fetchSaved(userId, id)
   }, []);
 
   useEffect(() => {
@@ -277,7 +402,7 @@ export default function Happenings() {
         updatedTags.add(tag); // If the tag doesn't exist, add it to the set
       }
 
-      console.log(updatedTags);
+      //  console.log(updatedTags);
       return updatedTags; // Return the updated set
     });
   };
