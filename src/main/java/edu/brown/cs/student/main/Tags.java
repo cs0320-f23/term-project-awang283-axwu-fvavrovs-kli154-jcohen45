@@ -97,7 +97,7 @@ public class Tags {
         new ArrayList<>(Arrays.asList("craft", "paint", "draw", "knit", "crochet", "decorat")));
     jumboTags.put("tech", new ArrayList<>(Arrays.asList("tech", "comput")));
     jumboTags.put(
-        "stem",
+        "STEM",
         new ArrayList<>(
             Arrays.asList("stem", "scien", "engin", "tech", "math", "biology", "chem", "physics")));
     jumboTags.put("entry fee", new ArrayList<>(Arrays.asList("entry fee")));

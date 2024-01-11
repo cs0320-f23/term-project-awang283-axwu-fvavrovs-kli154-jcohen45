@@ -25,6 +25,12 @@ public class CorsConfig {
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowedHeaders("*") // Allow any headers
                 .allowCredentials(true);
+        registry.addMapping("/users/savedPosters/{id}")
+            .allowedOrigins("http://localhost:5173")
+            .allowedMethods("GET")  // Adjust allowed methods based on your needs
+            .allowedHeaders("*")   // Allow any headers
+            .allowCredentials(true)
+            .maxAge(3600);
       }
     };
   }

@@ -62,24 +62,32 @@ export default function CreateImageModal() {
     property: keyof IPoster,
     callback?: () => void
   ) => {
-    let updatedValue: {
-      [x: string]: string[] | Set<string> | string;
-    };
-    if (value instanceof Set) {
-      updatedValue = { [property]: Array.from(value) };
+    // using functional form of setPoster so that it updates using the current stored state in poster
+    setPoster((prevPoster) => {
+      let updatedValue: {
+        [x: string]: string[] | Set<string> | string;
+      };
+      if (value instanceof Set) {
+        updatedValue = { [property]: Array.from(value) };
 
-      console.log(JSON.stringify(Array.from(value)) + " updated tags");
-    } else {
-      updatedValue = { [property]: value };
-    }
-    setPoster((prevPoster) => ({
-      ...prevPoster,
-      ...updatedValue,
-    }));
-    if (callback) {
-      callback();
-    }
-    console.log(JSON.stringify(poster));
+        console.log(JSON.stringify(Array.from(value)) + " updated tags");
+      } else {
+        updatedValue = { [property]: value };
+      }
+
+      const newPoster = {
+        ...prevPoster,
+        ...updatedValue,
+      };
+
+      if (callback) {
+        callback();
+      }
+
+      console.log(JSON.stringify(newPoster));
+      return newPoster;
+    });
+
     return poster;
   };
 
@@ -91,12 +99,10 @@ export default function CreateImageModal() {
       const response = await fetch(url);
 
       if (!response.ok) {
-        // setIsLoading(false);
         throw new Error("Failed to fetch data");
       }
 
       const res = await response.json();
-      // console.log(res.data.title);
       if (res.data.title) {
         setPoster({
           ...poster,

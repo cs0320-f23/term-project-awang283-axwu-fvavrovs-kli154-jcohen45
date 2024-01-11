@@ -16,12 +16,7 @@ import { KeyboardEvent, useEffect, useState } from "react";
 import { fetchTags } from "../functions/fetch";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import {
-  loadState,
-  searchResultsState,
-  searchState,
-  tagsState,
-} from "./atoms/atoms";
+import { searchResultsState, searchState, tagsState } from "./atoms/atoms";
 
 const scrollToBottom = () => {
   window.scrollTo({

@@ -71,6 +71,24 @@
   max-height: 90vh;
   margin: 1.5vw;
   border-radius: 20px;
+  display: flex;
+  justify-content: right;
+  align-items: start;
+}
+
+.heart-icon.clicked {
+  background-image: url("heart_filled.svg");
+}
+
+.heart-icon:hover {
+  background-image: url("heart_partial.svg");
+}
+
+.heart-icon {
+  background-image: url("heart.svg");
+  position: absolute;
+  margin-top: 1vw;
+  margin-right: 0.7vw;
 }
 
 .image-container {
@@ -209,7 +227,7 @@ input::placeholder {
 #view-title {
   font-size: 44px;
   overflow: wrap;
-  line-height: 115%;
+  line-height: 100%;
 }
 
 .view-info {

@@ -147,7 +147,7 @@ public class UserService {
 
   @Async
   public CompletableFuture<ServiceResponse<User>> unsavePoster(
-          String userId, Poster poster) {
+          String userId, String posterId) {
     // Find the user by ID
     // System.out.println("reached associatePosterWithUser function");
     return userRepository
@@ -155,17 +155,16 @@ public class UserService {
             .map(
                     user -> {
                       // Add the poster to the user's list of posters
-                      if (user.getSavedPosters().contains(poster)) {
-                          Set<Poster> userPosters = user.getCreatedPosters();
-                          userPosters.removeIf(foundPoster -> foundPoster.getID().equals(poster.getID()));
-                          user.setCreatedPosters(userPosters);
+                          Set<Poster> userPosters = user.getSavedPosters();
+                          userPosters.removeIf(foundPoster -> foundPoster.getID().equals(posterId));
+                          user.setSavedPosters(userPosters);
                         // Save the updated user
-                        System.out.println("Trying to unsave");
-                      }
+                        System.out.println(userPosters);
+
                       this.updateUser(user);
                       // Create a response object
                       // System.out.println("Trying to return service response");
-                      return new ServiceResponse<>(user, "Poster associated with user");
+                      return new ServiceResponse<>(user, "Poster removed from user");
                     })
             .map(CompletableFuture::completedFuture) // Remove this line
             .orElse(CompletableFuture.completedFuture(new ServiceResponse<>("User not found")));
