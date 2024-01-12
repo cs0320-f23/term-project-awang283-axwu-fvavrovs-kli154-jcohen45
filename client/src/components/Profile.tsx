@@ -139,7 +139,7 @@ export default function Profile() {
         )}
       </div>
 
-      <div className="posters" style={{ width: "60%", marginTop: "2%" }}>
+      <div className="posters" style={{ width: "65%", marginTop: "2%" }}>
         <Tabs variant="soft-rounded">
           <TabList style={{ color: "white" }}>
             <Tab
