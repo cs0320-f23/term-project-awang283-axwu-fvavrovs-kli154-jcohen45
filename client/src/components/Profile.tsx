@@ -104,8 +104,8 @@ export default function Profile() {
           backgroundColor: "white",
           width: "25%",
           height: "85vh",
-          margin: "5%",
-          marginTop: "2%",
+          marginTop: "5%",
+          margin: "2%",
           borderRadius: "30px",
           boxShadow: "0px 3px 10px 4px rgba(63, 49, 94, 0.15)",
           position: "fixed",
@@ -214,7 +214,7 @@ export default function Profile() {
               width: "75%",
               padding: "1%",
               top: "10%",
-              left: "30%",
+              left: "28%",
             }}
           >
             <Tab
@@ -247,7 +247,7 @@ export default function Profile() {
             <TabPanel>
               <div
                 className="saved-grid"
-                style={{ marginTop: "5%", left: "50%" }}
+                style={{ marginTop: "5%", left: "45%" }}
               >
                 {savedPosters.map((poster, index) => (
                   <Box key={index}>
@@ -270,7 +270,7 @@ export default function Profile() {
             <TabPanel>
               <div
                 className="created-grid"
-                style={{ marginTop: "5%", left: "50%" }}
+                style={{ marginTop: "5%", left: "45%" }}
               >
                 {createdPosters.map((poster, index) => (
                   <Box key={index}>
