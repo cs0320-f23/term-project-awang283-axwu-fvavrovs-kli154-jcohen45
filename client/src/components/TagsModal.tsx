@@ -2,7 +2,7 @@ import { Button } from "@chakra-ui/react";
 import "../styles/Modal.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { fetchTags } from "../functions/fetch";
+import { classNameTag, fetchTags } from "../functions/fetch";
 import { posterSrcState, posterState, searchResultsState } from "./atoms/atoms";
 import { useRecoilState } from "recoil";
 import { getPosters } from "./Happenings";
@@ -48,16 +48,6 @@ export default function TagsModal({
     });
   }
 
-  const classNameTag = (index: number) => {
-    if (index % 3 == 0) {
-      return "magenta-tag";
-    } else if (index % 3 == 1) {
-      return "green-tag";
-    } else {
-      return "blue-tag";
-    }
-  };
-
   const onClick = (tag: string) => {
     // if in tags list, take out
     setTags((prevTags) => {
@@ -78,7 +68,7 @@ export default function TagsModal({
   //on hit create button
   const createPoster = async () => {
     onClose();
-    //reset global poster state when we nolonger need access to the draft
+    //reset global poster state when we no longer need access to the draft
     setPoster({});
     //add list to poster obj w handlechange
     const newPoster = handleChange(tags, "tags", () => {});

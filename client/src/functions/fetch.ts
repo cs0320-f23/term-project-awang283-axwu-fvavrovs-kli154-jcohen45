@@ -80,3 +80,13 @@ export const fetchSaved = async (userId, id, className) => {
     console.error(error);
   }
 };
+
+export const classNameTag = (index: number) => {
+  if (index % 3 == 0) {
+    return "magenta-tag";
+  } else if (index % 3 == 1) {
+    return "green-tag";
+  } else {
+    return "blue-tag";
+  }
+};

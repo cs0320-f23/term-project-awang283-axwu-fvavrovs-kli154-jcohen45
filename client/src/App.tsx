@@ -7,7 +7,7 @@ import Archive from "./components/Archive";
 import About from "./components/About";
 import "./styles/App.css";
 import { Button } from "@chakra-ui/react";
-import CreateImageModal, { IPoster } from "./components/CreateImageModal";
+import CreateImageModal from "./components/CreateImageModal";
 import {
   CredentialResponse,
   googleLogout,
@@ -18,11 +18,13 @@ import { createUser } from "./functions/fetch";
 import Profile from "./components/Profile";
 import { modalOpenState, profileState } from "./components/atoms/atoms";
 import { useRecoilState } from "recoil";
+import InterestsModal from "./components/InterestsModal";
 
 export default function App() {
   const [modalOpen, setModalOpen] = useRecoilState<string>(modalOpenState);
   const [user, setUser] = useState<CredentialResponse>();
   const [profile, setProfile] = useRecoilState(profileState);
+  const [interestsState, setInterestsState] = useState<boolean>(false);
   // const [poster] = useRecoilState<IPoster>(posterState);
   const navigate = useNavigate();
 
@@ -36,6 +38,7 @@ export default function App() {
     if (userProfile) {
       // Set the user profile in state
       setProfile(JSON.parse(userProfile));
+      console.log(profile);
     }
   }, []);
 
@@ -74,10 +77,10 @@ export default function App() {
 
               if (userValid.message === "User found") {
                 setProfile(profile);
+                setInterestsState(false);
               } else {
-                //if not, call create user
-                // console.log("user didn't already exist, profile here", profile);
-                return await createUser(profile);
+                setInterestsState(true);
+                //return <InterestsModal createUser={createUser} />;
               }
             }
           } catch (e) {
@@ -162,6 +165,7 @@ export default function App() {
           {modalOpen && <CreateImageModal />}
         </main>
       </article>
+      {interestsState && <InterestsModal createUser={createUser} />}
     </>
   );
 }

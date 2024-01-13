@@ -15,6 +15,7 @@ export default function Profile() {
   const [createdCount, setCreatedCount] = useState<number>(0);
   const [createdPosters, setCreatedPosters] = useState<IPoster[]>([]);
   const [savedPosters, setSavedPosters] = useState<IPoster[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // Check if profile is not null before trying to access properties
@@ -39,6 +40,7 @@ export default function Profile() {
         gutter: 23,
       });
     });
+    setIsLoading(false);
   }, [createdPosters, savedPosters]);
 
   const getUserLikes = async () => {
@@ -98,6 +100,11 @@ export default function Profile() {
       className="user-page"
       style={{ top: "6.5%", display: "flex", justifyContent: "space-between" }}
     >
+      {isLoading && (
+        <div className="loading-screen">
+          <img className="loading-gif" src="/loading.gif" />
+        </div>
+      )}
       <div
         className="profile"
         style={{
@@ -110,7 +117,7 @@ export default function Profile() {
           boxShadow: "0px 3px 10px 4px rgba(63, 49, 94, 0.15)",
           position: "fixed",
           zIndex: "101",
-          top: "2%",
+          top: "7%",
         }}
       >
         {profile ? (
