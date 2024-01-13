@@ -35,6 +35,14 @@
   font-family: "quicksand", sans-serif;
 }
 
+.tag-modal-content {
+  margin: auto !important;
+  box-shadow: var(--modal-shadow);
+  border-radius: 25px !important;
+  min-height: 90%;
+  font-family: "quicksand", sans-serif;
+}
+
 .modal-body {
   display: flex;
   color: var(--dark-purple100);
@@ -71,8 +79,38 @@
   max-height: 90vh;
   margin: 1.5vw;
   border-radius: 20px;
+  display: flex;
+  justify-content: right;
+  align-items: start;
 }
 
+.heart-icon.clicked {
+  background-image: url("heart_filled.svg");
+}
+
+.heart-icon:hover {
+  background-image: url("heart_partial.svg");
+}
+
+.heart-icon {
+  background-image: url("heart.svg");
+  position: absolute;
+  margin-top: 1vw;
+  margin-right: 0.7vw;
+}
+.heart-icon-hap.clicked {
+  background-image: url("heart_filled.svg");
+}
+
+.heart-icon-hap:hover {
+  background-image: url("heart_partial.svg");
+}
+.heart-icon-hap {
+  background-image: url("heart.svg");
+  position: absolute;
+  margin-top: 1vw;
+  margin-right: 0.7vw;
+}
 .image-container {
   min-width: 45%;
   max-width: 45%;
@@ -88,12 +126,12 @@
   font-family: "quicksand", sans-serif;
   font-weight: 500;
   width: 50%;
-  padding: 0vw 1.5vw 1.5vw 0vw;
+  padding: 0vw 1.5vw 0vw 0vw;
 }
 
 .tags-div {
   justify-content: space-around;
-  height: 90.7%;
+  height: 87%;
   width: 100%;
   overflow-y: scroll;
   gap: 5vh;
@@ -102,10 +140,10 @@
 .input-fields {
   display: flex;
   flex-flow: column;
-  gap: 0.7%;
   height: 100%;
   max-height: 74vh !important;
   font-size: 16px;
+  overflow-y: scroll;
 }
 
 input {
@@ -144,6 +182,7 @@ input::placeholder {
   bottom: 0;
   padding: 15px 18px !important;
   margin: 0px;
+  box-shadow: var(--tag-shadow);
 }
 
 .save-div {
@@ -157,7 +196,7 @@ input::placeholder {
   color: transparent;
   display: flex;
   justify-content: space-between;
-  margin: 2vw 1vw 1vw 1vw;
+  margin: 2vw 0vw 1vw;
 }
 
 .final-upload-button {
@@ -208,7 +247,7 @@ input::placeholder {
 #view-title {
   font-size: 44px;
   overflow: wrap;
-  line-height: 115%;
+  line-height: 100%;
 }
 
 .view-info {
@@ -305,4 +344,14 @@ input::placeholder {
   transform: scale(1.05);
   transition: 0.2s;
   filter: brightness(85%);
+}
+
+.field-data {
+  width: 10%;
+}
+
+.info-rows {
+  justify-content: space-between;
+  width: 100%;
+  display: flex;
 }

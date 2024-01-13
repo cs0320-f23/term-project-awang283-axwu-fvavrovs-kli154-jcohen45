@@ -164,4 +164,21 @@ public class UserController {
                 .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
 
     }
+
+    @PutMapping("/addInterest")
+    public CompletableFuture<ResponseEntity<ServiceResponse<User>>> addInterests(
+            @RequestParam String userId, @RequestParam Set<String> interests){
+      return this.userService.addInterests(userId,interests)
+              .thenApply(response -> ResponseEntity.ok(response))
+              .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+    }
+
+    @PutMapping("/removeInterest")
+    public CompletableFuture<ResponseEntity<ServiceResponse<User>>> removeInterests(
+            @RequestParam String userId, @RequestParam Set<String> interests){
+        return this.userService.removeInterests(userId,interests)
+                .thenApply(response -> ResponseEntity.ok(response))
+                .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+    }
+
 }

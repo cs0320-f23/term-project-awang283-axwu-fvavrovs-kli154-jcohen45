@@ -1,4 +1,5 @@
 import {
+  Box,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -6,6 +7,10 @@ import {
   ModalOverlay,
 } from "@chakra-ui/react";
 import "../styles/Modal.css";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useRecoilState } from "recoil";
+import { profileState } from "./atoms/atoms";
 
 interface viewProps {
   onClose: () => void;
@@ -17,7 +22,7 @@ interface viewProps {
   location: string;
   link: string;
   description: string;
-  tags: string[];
+  tags: Set<string>;
   recurs: string;
   id: string;
 }
@@ -37,6 +42,34 @@ export default function ViewPosterModal({
   id,
 }: viewProps) {
   const [weekday, month, day] = date.split(" ");
+  const [name, setName] = useState<string>("");
+  const [picture, setPicture] = useState<string>("");
+  const [userId] = useRecoilState(profileState);
+
+  useEffect(() => {
+    getUser();
+    const fetchSaved = async () => {
+      try {
+        //fetch savedposters
+        const savedPosters = await fetch(
+          "http://localhost:8080/users/savedPosters/" + userId.id
+        );
+        //if poster in saved , set class to clicked
+        if (savedPosters.ok) {
+          const posterSet = await savedPosters.json();
+          //compare id passed in to each poster in set
+          posterSet.data.forEach((poster) => {
+            if (poster.id === id) {
+              document.querySelector(".heart-icon")!.classList.add("clicked");
+            }
+          });
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchSaved();
+  }, []);
 
   const classNameTag = (index: number) => {
     if (index % 3 == 0) {
@@ -47,6 +80,100 @@ export default function ViewPosterModal({
       return "blue-tag";
     }
   };
+
+  const getUser = async () => {
+    //use poster id to get user id
+    try {
+      const posterRes = await fetch("http://localhost:8080/posters/" + id);
+      if (posterRes.ok) {
+        const poster = await posterRes.json();
+        if (poster.data.userId) {
+          const userRes = await fetch(
+            "http://localhost:8080/users/" + poster.data.userId
+          );
+          if (userRes.ok) {
+            const user = await userRes.json();
+            setName(user.data.name);
+            setPicture(user.data.picture);
+          }
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const onClick = async () => {
+    const heartIcon = document.querySelector(".heart-icon");
+    if (heartIcon) {
+      if (heartIcon.classList.contains("clicked")) {
+        //if alredy clicked, un fill, un save
+        //unfill
+        heartIcon.classList.remove("clicked");
+        //unsave
+        try {
+          //add to database
+          const config = {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          };
+          const url =
+            "http://localhost:8080/users/unsavePoster?posterId=" +
+            id +
+            "&userId=" +
+            userId.id;
+
+          const res = await axios.put(url, null, config);
+
+          return Promise.resolve(res.data.data);
+        } catch (error) {
+          if (axios.isAxiosError(error) && error.response) {
+            return Promise.resolve(
+              `Error in fetch: ${error.response.data.message}`
+            );
+          } else {
+            return Promise.resolve(
+              "Error in fetch: Network error or other issue"
+            );
+          }
+        }
+      } else {
+        //if not yet clicked, fill and save
+        //fill
+        heartIcon.classList.add("clicked");
+        //save
+        try {
+          //add to database
+          const config = {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          };
+          const url =
+            "http://localhost:8080/users/savePoster?posterId=" +
+            id +
+            "&userId=" +
+            userId.id;
+
+          const res = await axios.put(url, null, config);
+          console.log(res.data.data);
+          return Promise.resolve(res.data.data);
+        } catch (error) {
+          if (axios.isAxiosError(error) && error.response) {
+            return Promise.resolve(
+              `Error in fetch: ${error.response.data.message}`
+            );
+          } else {
+            return Promise.resolve(
+              "Error in fetch: Network error or other issue"
+            );
+          }
+        }
+      }
+    }
+  };
+
   return (
     <>
       <Modal isOpen={true} onClose={onClose}>
@@ -62,29 +189,51 @@ export default function ViewPosterModal({
           >
             <ModalCloseButton className="close-button" onClick={onClose} />
             <ModalBody className="modal-body" flexDirection={"row"}>
-              <div className="view-image" id={id}>
-                <img src={path}></img>
+              <Box className="view-image" overflowY={"scroll"} id={id}>
+                <img src={path} />
                 <div
                   className="heart-icon"
+                  onClick={onClick}
                   style={{
                     position: "absolute",
-                    top: "5%",
-                    left: "42%",
-                    width: "20px",
-                    height: "20px",
-                    backgroundImage: `url('public/heart-svgrepo-com.svg')`,
-                    backgroundColor: "rgba(255, 255, 255, 0.8)",
+                    width: "2%",
+                    height: "2%",
                     borderRadius: "10%",
                     padding: "1%",
                     boxSizing: "content-box",
                     backgroundSize: "contain",
                     backgroundRepeat: "no-repeat",
-                  }} //partially fill on hover, fully fill on click
+                  }}
                 ></div>
-              </div>
+              </Box>
               <div className="view-info">
                 <p id="view-title">{title}</p>
+
                 <div className="poster-details">
+                  {picture && name && (
+                    <div
+                      className="info-row"
+                      style={{
+                        marginBottom: "2%",
+                      }}
+                    >
+                      {picture && (
+                        <img
+                          className="field-name"
+                          style={{
+                            width: "8%",
+                            marginRight: "3%",
+                          }}
+                          src={picture}
+                        />
+                      )}
+                      {name && (
+                        <div id="field-text" style={{ paddingTop: "1%" }}>
+                          {name}
+                        </div>
+                      )}
+                    </div>
+                  )}
                   <div className="info-row">
                     <div className="field-name">When</div>
                     <div id="field-text">

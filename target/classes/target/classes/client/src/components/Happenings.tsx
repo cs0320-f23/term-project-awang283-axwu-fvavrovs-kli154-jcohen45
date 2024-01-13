@@ -1,4 +1,3 @@
-// import React from "react";
 import {
   Box,
   Button,
@@ -11,19 +10,22 @@ import {
   Select,
 } from "@chakra-ui/react";
 import "../styles/Happenings.css";
+import "../styles/Modal.css";
 import { Search2Icon, TriangleUpIcon } from "@chakra-ui/icons";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import ViewPosterModal from "./ViewPosterModal";
 import axios from "axios";
 import { useRecoilState } from "recoil";
 import {
-  loadState,
+  profileState,
   searchResultsState,
   searchState,
   tagsState,
 } from "./atoms/atoms";
 import { fetchTags } from "../functions/fetch";
-import Masonry from "react-responsive-masonry";
+import Masonry from "masonry-layout";
+import imagesLoaded from "imagesloaded";
+import "../styles/Modal.css";
 
 const scrollToTop = () => {
   window.scrollTo({
@@ -41,7 +43,7 @@ export interface IPoster {
   isRecurring: string;
   link?: string;
   description?: string;
-  tags?: string[];
+  tags?: Set<string>;
   id: string;
   createdAt: number[];
   poster: boolean;
@@ -55,7 +57,7 @@ interface ImageCardProps {
   location?: string;
   link?: string;
   description?: string;
-  tags?: string[];
+  tags?: Set<string>;
   recurs: string;
   id: string;
 }
@@ -104,6 +106,107 @@ export const ImageCard: React.FC<ImageCardProps> = ({
   const month = monthName.substring(0, 3);
   const fullDate = `${monthName} ${startDate[2]}, ${startDate[0]}`;
   const weekday = listWeekdays[new Date(fullDate).getDay()];
+  const [userId] = useRecoilState(profileState);
+  const [isClicked, setIsClicked] = useState<boolean>(false);
+
+  const fetchSaved = async (userId, id) => {
+    try {
+      //fetch savedposters
+      const savedPosters = await fetch(
+        "http://localhost:8080/users/savedPosters/" + userId.id
+      );
+      //if poster in saved , set class to clicked
+      if (savedPosters.ok) {
+        const posterSet = await savedPosters.json();
+        //compare id passed in to each poster in set
+
+        posterSet.data.forEach((poster) => {
+          if (poster.id === id) {
+            setIsClicked(true);
+          }
+        });
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const onClickHeart = async () => {
+    const heartIcon = document.querySelector(`.heart-icon-hap`);
+    if (heartIcon) {
+      if (isClicked) {
+        //if alredy clicked, un fill, un save
+        //unfill
+        setIsClicked(false);
+        //unsave
+        try {
+          //add to database
+          const config = {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          };
+          const url =
+            "http://localhost:8080/users/unsavePoster?posterId=" +
+            id +
+            "&userId=" +
+            userId.id;
+
+          const res = await axios.put(url, null, config);
+
+          return Promise.resolve(res.data.data);
+        } catch (error) {
+          if (axios.isAxiosError(error) && error.response) {
+            return Promise.resolve(
+              `Error in fetch: ${error.response.data.message}`
+            );
+          } else {
+            return Promise.resolve(
+              "Error in fetch: Network error or other issue"
+            );
+          }
+        }
+      } else {
+        //if not yet clicked, fill and save
+        //fill
+        setIsClicked(true);
+
+        //save
+        try {
+          //add to database
+          const config = {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          };
+          const url =
+            "http://localhost:8080/users/savePoster?posterId=" +
+            id +
+            "&userId=" +
+            userId.id;
+
+          const res = await axios.put(url, null, config);
+          console.log(res.data.data);
+          return Promise.resolve(res.data.data);
+        } catch (error) {
+          if (axios.isAxiosError(error) && error.response) {
+            return Promise.resolve(
+              `Error in fetch: ${error.response.data.message}`
+            );
+          } else {
+            return Promise.resolve(
+              "Error in fetch: Network error or other issue"
+            );
+          }
+        }
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchSaved(userId, id);
+  }, []);
+
   function time(date: number[]) {
     let minutes = JSON.stringify(date[4]);
     if (date[4] === 0) {
@@ -126,7 +229,12 @@ export const ImageCard: React.FC<ImageCardProps> = ({
     <>
       <div className="image-card" onClick={handleViewPoster} id={id}>
         <div className="card-backing">
-          <img src={content} alt={title} className="poster-image" />
+          <img
+            src={content}
+            alt={title}
+            loading="lazy"
+            className="poster-image"
+          />
         </div>
         <div className="image-overlay">
           <div className="top-info">
@@ -141,7 +249,25 @@ export const ImageCard: React.FC<ImageCardProps> = ({
                 {endTime && "-" + endTime}
               </p>
             </div>
+            <div
+              className={`heart-icon-hap ${isClicked ? "clicked" : ""}`}
+              id={id}
+              onClick={onClickHeart}
+              style={{
+                display: "flex",
+                width: "8%",
+                height: "8%",
+                borderRadius: "10%",
+                padding: "1%",
+                boxSizing: "content-box",
+                backgroundSize: "contain",
+                backgroundRepeat: "no-repeat",
+                left: "85%",
+                top: "3%",
+              }}
+            ></div>
           </div>
+
           <div className="title-location">
             <p id="title">{title}</p>
             <p id="location">{location}</p>
@@ -185,14 +311,32 @@ export async function getPosters() {
   }
 }
 
+export async function getNewestPosters() {
+  try {
+    const url = "http://localhost:8080/posters/upcomingnew";
+    const res = await axios.get<IPoster[]>(url);
+    return Promise.resolve(res.data);
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      console.log(error.response.data.message);
+      console.log(error);
+      return Promise.resolve(`Error in fetch: ${error.response.data.message}`);
+    } else {
+      console.log("Network error or other issue:", error.message);
+      return Promise.resolve("Error in fetch: Network error or other issue");
+    }
+  }
+}
+
 export default function Happenings() {
-  const [sortPosters, setSortPosters] = useState<string>("");
+  const [sortPosters, setSortPosters] = useState<string>("soonest");
   const [searchInput, setSearchInput] = useRecoilState(searchState);
   const [searchResults, setSearchResults] = useRecoilState(searchResultsState);
   const [showTags, setShowTags] = useState<boolean>(false); //shows the tags modal
   const [allTags, setAllTags] = useState<string[]>([]); //all tags in database
   const [tags, setTags] = useRecoilState<Set<string>>(tagsState); //list of tags user clicked
-  const [isLoading, setIsLoading] = useRecoilState(loadState);
+  const [isLoading, setIsLoading] = useState(true);
+  const gridRef = useRef(null);
 
   useEffect(() => {
     const fetchAllTags = async () => {
@@ -207,44 +351,60 @@ export default function Happenings() {
     if (searchInput.length > 0 || tags.size > 0) {
       getSearchResults();
     } else {
-      getPosters().then((data) => setSearchResults(data));
+      getPosters().then((data) => {
+        setSearchResults(data);
+        setIsLoading(false);
+      });
     }
+    //fetchSaved(userId, id)
   }, []);
 
   useEffect(() => {
-    const checkPostersDisplayed = () => {
-      const posterElements = document.querySelectorAll(".image-card");
-      const numberOfPosters = searchResults.length;
-      if (isLoading) {
-        console.log("posters loading...");
-        console.log("currently " + posterElements.length + " image cards");
-        console.log("should be " + numberOfPosters + " many posters");
+    setIsLoading(true);
+    if (sortPosters === "newest") {
+      getNewestPosters().then((data) => {
+        setSearchResults(data);
+        setIsLoading(false);
+      });
+    } else {
+      // if user selects soonest or sort, which should sort by soonest by default
+      getPosters().then((data) => {
+        setSearchResults(data);
+        setIsLoading(false);
+      });
+    }
+  }, [sortPosters]);
 
-        if (posterElements.length === numberOfPosters) {
-          setIsLoading(false);
-          console.log("done loading");
+  useEffect(() => {
+    if (gridRef.current) {
+      imagesLoaded(gridRef.current, function () {
+        // console.log("all images are loaded");
+        if (gridRef.current) {
+          new Masonry(gridRef.current, {
+            columnWidth: 34,
+            itemSelector: ".image-card",
+            gutter: 23,
+          });
         }
-      }
-
-      if (posterElements.length !== numberOfPosters) {
-        setIsLoading(true);
-      }
-    };
-
-    checkPostersDisplayed();
-  }, [isLoading, searchResults]);
+      });
+    }
+  }, [searchResults]);
 
   const onClick = (tag: string) => {
-    //if in tagslist, take out
-    const updatedTags = new Set(tags); // Create a new set from the current tags
+    // if in tags list, take out
+    setTags((prevTags) => {
+      // using functional form of setTags so that onClick is updating the actual latest state of tags; otherwise always a step behind
+      const updatedTags = new Set(prevTags); // Create a new set from the previous tags
 
-    if (updatedTags.has(tag)) {
-      updatedTags.delete(tag); // If the tag exists, remove it from the set
-    } else {
-      updatedTags.add(tag); // If the tag doesn't exist, add it to the set
-    }
+      if (updatedTags.has(tag)) {
+        updatedTags.delete(tag); // If the tag exists, remove it from the set
+      } else {
+        updatedTags.add(tag); // If the tag doesn't exist, add it to the set
+      }
 
-    setTags(updatedTags);
+      //  console.log(updatedTags);
+      return updatedTags; // Return the updated set
+    });
   };
 
   const classNameTag = (index: number) => {
@@ -259,7 +419,10 @@ export default function Happenings() {
 
   const getSearchResults = async () => {
     if ((searchInput == "" || searchInput == " ") && tags.size == 0) {
-      getPosters().then((data) => setSearchResults(data));
+      getPosters().then((data) => {
+        setSearchResults(data);
+        setIsLoading(false);
+      });
     } else if ((searchInput == "" || searchInput == " ") && tags.size > 0) {
       let tagString = "";
       tags.forEach((tag) => {
@@ -279,11 +442,13 @@ export default function Happenings() {
         const results: IPoster[] = await response.json();
 
         setSearchResults(results);
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching search results:", error);
       }
     } else {
       try {
+        setIsLoading(true);
         let tagString = "";
         tags.forEach((tag) => {
           tagString += tag + ",";
@@ -301,6 +466,7 @@ export default function Happenings() {
         const results: IPoster[] = await response.json();
 
         setSearchResults(results);
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching search results:", error);
       }
@@ -309,6 +475,11 @@ export default function Happenings() {
 
   return (
     <>
+      {isLoading && (
+        <div className="loading-screen">
+          <img className="loading-gif" src="/loading.gif" />
+        </div>
+      )}
       <main className="happenings">
         <div className="search-filter-fixed">
           <div
@@ -358,20 +529,16 @@ export default function Happenings() {
               value={sortPosters}
               onChange={(ev) => setSortPosters(ev.target.value)}
             >
-              <option value="option1">Soonest</option>
-              <option value="option3">Newest</option>
+              <option value="soonest">Soonest</option>
+              <option value="newest">Newest</option>
             </Select>
           </Box>
         </div>
-        <Masonry
-          className="grid"
-          columnsCount={3}
-          style={{ margin: "16.5vh 4vw" }}
-        >
+        <div className="modal-font">
           {showTags && (
             <Modal isOpen={true} onClose={() => setShowTags(false)}>
-              <ModalBody>
-                <ModalContent>
+              <ModalBody className="modal-body">
+                <ModalContent className="tag-modal-content">
                   <ModalHeader className="modal-header">
                     Choose Tags
                   </ModalHeader>
@@ -382,11 +549,11 @@ export default function Happenings() {
                   <div
                     className="tags-container"
                     style={{
-                      justifyContent: "center",
                       alignItems: "center",
                       display: "flex",
                       flexDirection: "column",
                       width: "100%",
+                      gap: "2vw",
                     }}
                   >
                     <div
@@ -416,8 +583,7 @@ export default function Happenings() {
                     <Button
                       className="final-upload-button"
                       onClick={() => setShowTags(false)}
-                      width={"40%"}
-                      marginTop={"3%"}
+                      padding={"8px 18px"}
                     >
                       Add Tags to Search
                     </Button>
@@ -426,29 +592,30 @@ export default function Happenings() {
               </ModalBody>
             </Modal>
           )}
-
-          {searchResults.length === 0 && (
-            <h1 className="none">No results to diplay for this search term</h1>
+        </div>
+        <div className="grid" ref={gridRef}>
+          {searchInput !== "" && searchResults.length === 0 && (
+            <h1 className="none">No results to display for this search term</h1>
           )}
 
           {searchResults.length > 0 &&
             searchResults.map((item, index) => (
               <Box key={index}>
                 <ImageCard
-                  title={item.title}
-                  content={item.content}
-                  startDate={item.startDate}
-                  endDate={item.endDate}
+                  title={item.title!}
+                  content={item.content!}
+                  startDate={item.startDate!}
+                  endDate={item.endDate!}
                   location={item.location}
                   link={item.link}
                   description={item.description}
                   tags={item.tags}
-                  recurs={item.isRecurring}
+                  recurs={item.isRecurring!}
                   id={item.id}
                 />
               </Box>
             ))}
-        </Masonry>
+        </div>
         <IconButton
           className="scroll-top"
           color="white"

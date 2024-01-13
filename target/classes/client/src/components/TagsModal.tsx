@@ -3,16 +3,23 @@ import "../styles/Modal.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { fetchTags } from "../functions/fetch";
-import { posterState, searchResultsState } from "./atoms/atoms";
+import { posterSrcState, posterState, searchResultsState } from "./atoms/atoms";
 import { useRecoilState } from "recoil";
 import { getPosters } from "./Happenings";
 import { IPoster } from "./CreateImageModal";
 
-export default function TagsModal({ onClose, onBack, posterId, handleChange }) {
+export default function TagsModal({
+  onClose,
+  onBack,
+  posterId,
+  handleChange,
+  setShowTags,
+}) {
   const [allTags, setAllTags] = useState<string[]>([]);
   const [tags, setTags] = useState<Set<string>>(new Set());
   const [, setSearchResults] = useRecoilState(searchResultsState);
-  const [, setPoster] = useRecoilState<IPoster>(posterState);
+  const [poster, setPoster] = useRecoilState<IPoster>(posterState);
+  const [, setPosterSrc] = useRecoilState(posterSrcState);
 
   useEffect(() => {
     const fetchAllTags = async () => {
@@ -25,8 +32,21 @@ export default function TagsModal({ onClose, onBack, posterId, handleChange }) {
     };
 
     fetchAllTags();
-    // setTags(new Set(poster.tags));
+    selectSuggestedTags(poster.tags!);
   }, []);
+
+  function selectSuggestedTags(currTags: Set<string>) {
+    //using functional form of setTags so that all suggested tags by cv api are actually selected upon mounting
+    setTags((prevTags) => {
+      const updatedTags = new Set(prevTags); // Create a new set from the previous tags
+
+      for (const tag of currTags) {
+        updatedTags.add(tag); // Add each tag from currTags to the updated set
+      }
+
+      return updatedTags;
+    });
+  }
 
   const classNameTag = (index: number) => {
     if (index % 3 == 0) {
@@ -38,18 +58,21 @@ export default function TagsModal({ onClose, onBack, posterId, handleChange }) {
     }
   };
 
-  //onclick
   const onClick = (tag: string) => {
-    //if in tagslist, take out
-    const updatedTags = new Set(tags); // Create a new set from the current tags
+    // if in tags list, take out
+    setTags((prevTags) => {
+      // using functional form of setTags so that onClick is updating the actual latest state of tags; otherwise always a step behind
+      const updatedTags = new Set(prevTags); // Create a new set from the previous tags
 
-    if (updatedTags.has(tag)) {
-      updatedTags.delete(tag); // If the tag exists, remove it from the set
-    } else {
-      updatedTags.add(tag); // If the tag doesn't exist, add it to the set
-    }
+      if (updatedTags.has(tag)) {
+        updatedTags.delete(tag); // If the tag exists, remove it from the set
+      } else {
+        updatedTags.add(tag); // If the tag doesn't exist, add it to the set
+      }
 
-    setTags(updatedTags);
+      console.log(updatedTags);
+      return updatedTags; // Return the updated set
+    });
   };
 
   //on hit create button
@@ -71,17 +94,22 @@ export default function TagsModal({ onClose, onBack, posterId, handleChange }) {
       };
       const url = "http://localhost:8080/posters/update/" + posterId;
       const formData = new FormData();
+      console.log(tags);
+
       tags.forEach((tag) => {
-        formData.append("tags[]", tag);
+        formData.append("tags", tag);
       });
 
       for (const key in newPoster) {
-        if (newPoster[key]) {
+        if (newPoster[key] && key !== "tags") {
           formData.append(key, newPoster[key]);
         }
       }
+      console.log(formData);
       const res = await axios.put(url, formData, config);
       getPosters().then((data) => setSearchResults(data));
+      setShowTags(false);
+      setPosterSrc("");
       return Promise.resolve(res.data.data);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {

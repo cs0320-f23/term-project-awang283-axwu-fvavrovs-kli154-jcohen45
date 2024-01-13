@@ -1,4 +1,3 @@
-// import React from "react";
 import "../styles/About.css";
 
 export default function About() {
@@ -41,6 +40,7 @@ export default function About() {
                   className="norm-img"
                   src="/pabnorm.png"
                   alt="Photo of 5 people sitting on a couch"
+                  id="about-image"
                 />
               </div>
               <div
@@ -51,6 +51,7 @@ export default function About() {
                   className="zoom-img"
                   src="/silly.png"
                   alt="Photo of 5 people on a Zoom call"
+                  id="about-image"
                 />
               </div>
             </div>
@@ -64,6 +65,7 @@ export default function About() {
                   className="pab-img"
                   src="/pab_alt.png"
                   alt="Photo of 4 people on a couch and one person on their lap"
+                  id="about-image"
                 />
               </div>
             </div>

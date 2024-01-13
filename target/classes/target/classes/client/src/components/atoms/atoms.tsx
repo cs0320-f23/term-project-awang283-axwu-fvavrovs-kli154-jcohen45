@@ -16,11 +16,6 @@ export const tagsState = atom<Set<string>>({
   default: new Set(),
 });
 
-export const loadState = atom<boolean>({
-  key: "loadState",
-  default: true,
-});
-
 export const profileState = atom<any>({
   key: "profileState",
   default: null,
@@ -40,4 +35,9 @@ export const posterSrcState = atom<string>({
 export const modalOpenState = atom<string>({
   key: "modalOpenState",
   default: "",
+});
+
+export const clickState = atom<boolean>({
+  key: "clickState",
+  default: false,
 });
