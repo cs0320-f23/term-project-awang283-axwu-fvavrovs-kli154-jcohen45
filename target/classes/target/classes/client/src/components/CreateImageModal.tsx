@@ -25,6 +25,7 @@ import { useRecoilState } from "recoil";
 import PopupModal from "./PopupModal";
 
 export interface IPoster {
+  id: string;
   content?: string;
   title?: string;
   location?: string;
@@ -61,28 +62,34 @@ export default function CreateImageModal() {
     property: keyof IPoster,
     callback?: () => void
   ) => {
-    let updatedValue: {
-      [x: string]: string[] | Set<string> | string;
-    };
-    if (value instanceof Set) {
-      updatedValue = { [property]: Array.from(value) };
+    // using functional form of setPoster so that it updates using the current stored state in poster
+    setPoster((prevPoster) => {
+      let updatedValue: {
+        [x: string]: string[] | Set<string> | string;
+      };
+      if (value instanceof Set) {
+        updatedValue = { [property]: Array.from(value) };
 
-      // console.log(JSON.stringify(Array.from(value)) + " updated tags");
-    } else {
-      updatedValue = { [property]: value };
-    }
-    setPoster((prevPoster) => ({
-      ...prevPoster,
-      ...updatedValue,
-    }));
-    if (callback) {
-      callback();
-    }
-    // console.log(JSON.stringify(poster));
+        console.log(JSON.stringify(Array.from(value)) + " updated tags");
+      } else {
+        updatedValue = { [property]: value };
+      }
+
+      const newPoster = {
+        ...prevPoster,
+        ...updatedValue,
+      };
+
+      if (callback) {
+        callback();
+      }
+
+      console.log(JSON.stringify(newPoster));
+      return newPoster;
+    });
+
     return poster;
   };
-
-  // console.log(poster);
 
   const setCVFields = async (id: string) => {
     setIsLoading(true);
@@ -92,17 +99,16 @@ export default function CreateImageModal() {
       const response = await fetch(url);
 
       if (!response.ok) {
-        // setIsLoading(false);
         throw new Error("Failed to fetch data");
       }
 
       const res = await response.json();
-      // console.log(res.data.title);
       if (res.data.title) {
         setPoster({
           ...poster,
           title: res.data.title,
           description: res.data.description,
+          tags: res.data.tags,
         });
         setIsLoading(false);
       }
@@ -134,15 +140,16 @@ export default function CreateImageModal() {
             "Content-Type": "application/json",
           },
         };
-        const url = "http://localhost:8080/posters/create/fromlink";
+        const url =
+          "http://localhost:8080/posters/create/fromlink?userId=" + profile.id;
         const formData = new FormData();
         formData.append("content", inputElement.value);
-        formData.append("userId", profile.id);
+        // formData.append("userId", profile.id);
         setIsLoading(true);
         const res = await axios.post(url, formData, config);
         setPosterSrc(inputElement.value);
         //need to give enough time for the poster to be created + id to exist
-        await new Promise((resolve) => setTimeout(resolve, 10000));
+        await new Promise((resolve) => setTimeout(resolve, 15000));
         console.log(res.data.data);
         setPosterId(res.data.data.id);
         setCVFields(res.data.data.id);
@@ -298,6 +305,7 @@ export default function CreateImageModal() {
                       className="view-image"
                       maxHeight={"76vh"}
                       overflowY={"scroll"}
+                      style={{ marginTop: 0 }}
                     >
                       <img src={posterSrc}></img>
                     </Box>
@@ -309,9 +317,9 @@ export default function CreateImageModal() {
                     <TagsModal
                       onClose={onClose}
                       onBack={onBack}
-                      // poster={poster}
                       posterId={posterId}
                       handleChange={handleChange}
+                      setShowTags={setShowTags}
                     />
                   ) : (
                     <div className="input-fields">

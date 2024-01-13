@@ -170,5 +170,53 @@ public class UserService {
             .orElse(CompletableFuture.completedFuture(new ServiceResponse<>("User not found")));
   }
 
+    @Async
+    public CompletableFuture<ServiceResponse<User>> addInterests(
+            String userId, Set<String> interests) {
+        // Find the user by ID
+        // System.out.println("reached associatePosterWithUser function");
+        return userRepository
+                .findById(userId)
+                .map(
+                        user -> {
+                            Set<String> currInterests = user.getInterests();
+                            currInterests.addAll(interests);
+                            user.setInterests(currInterests);
+                            this.updateUser(user);
+
+                            return new ServiceResponse<>(user, "Interest(s) added");
+                        })
+                .map(CompletableFuture::completedFuture) // Remove this line
+                .orElse(CompletableFuture.completedFuture(new ServiceResponse<>("User not found")));
+    }
+
+    @Async
+    public CompletableFuture<ServiceResponse<User>> removeInterests(
+            String userId, Set<String> interests) {
+        // Find the user by ID
+        // System.out.println("reached associatePosterWithUser function");
+        return userRepository
+                .findById(userId)
+                .map(
+                        user -> {
+                            Set<String> currInterests = user.getInterests();
+                            for (String interest : interests){
+                                if (currInterests.contains(interest)){
+                                    currInterests.remove(interest);
+                                }
+                                else {
+                                    return new ServiceResponse<>(user,
+                                            "Interest to be removed is not in user's selected interests");
+                                }
+                            }
+                            user.setInterests(currInterests);
+                            this.updateUser(user);
+
+                            return new ServiceResponse<>(user, "Interest(s) removed");
+                        })
+                .map(CompletableFuture::completedFuture) // Remove this line
+                .orElse(CompletableFuture.completedFuture(new ServiceResponse<>("User not found")));
+    }
+
 
 }

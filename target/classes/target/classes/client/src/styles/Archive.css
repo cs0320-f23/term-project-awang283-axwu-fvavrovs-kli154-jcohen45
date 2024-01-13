@@ -10,3 +10,8 @@ main {
   text-align: left;
   margin-bottom: 4vh;
 }
+
+.archive-grid {
+  margin-left: 4vw;
+  z-index: 1;
+}
