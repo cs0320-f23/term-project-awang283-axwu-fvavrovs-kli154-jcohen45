@@ -75,6 +75,24 @@ export default function Profile() {
     }
   };
 
+  const handleTabChange = () => {
+    // Explicitly trigger Masonry layout update when the tab becomes visible
+    imagesLoaded(`.saved-grid`, function () {
+      new Masonry(`.saved-grid`, {
+        columnWidth: 34,
+        itemSelector: ".image-card",
+        gutter: 23,
+      });
+    });
+    imagesLoaded(`.created-grid`, function () {
+      new Masonry(`.created-grid`, {
+        columnWidth: 34,
+        itemSelector: ".image-card",
+        gutter: 23,
+      });
+    });
+  };
+
   return (
     <main
       className="user-page"
@@ -86,10 +104,13 @@ export default function Profile() {
           backgroundColor: "white",
           width: "25%",
           height: "85vh",
-          marginLeft: "5%",
+          margin: "5%",
           marginTop: "2%",
           borderRadius: "30px",
           boxShadow: "0px 3px 10px 4px rgba(63, 49, 94, 0.15)",
+          position: "fixed",
+          zIndex: "101",
+          top: "2%",
         }}
       >
         {profile ? (
@@ -176,9 +197,26 @@ export default function Profile() {
         )}
       </div>
 
-      <div className="posters" style={{ width: "65%", marginTop: "2%" }}>
-        <Tabs variant="soft-rounded">
-          <TabList style={{ color: "white" }}>
+      <div
+        className="posters"
+        style={{
+          width: "65%",
+          marginTop: "2%",
+        }}
+      >
+        <Tabs variant="soft-rounded" onChange={handleTabChange}>
+          <TabList
+            style={{
+              color: "white",
+              position: "fixed",
+              zIndex: "100",
+              backgroundColor: "rgba(249, 238, 255, .85)",
+              width: "75%",
+              padding: "1%",
+              top: "10%",
+              left: "30%",
+            }}
+          >
             <Tab
               backgroundColor={"transparent !important"}
               style={{
@@ -207,7 +245,10 @@ export default function Profile() {
           </TabList>
           <TabPanels>
             <TabPanel>
-              <div className="saved-grid">
+              <div
+                className="saved-grid"
+                style={{ marginTop: "5%", left: "50%" }}
+              >
                 {savedPosters.map((poster, index) => (
                   <Box key={index}>
                     <ImageCard
@@ -227,7 +268,10 @@ export default function Profile() {
               </div>
             </TabPanel>
             <TabPanel>
-              <div className="created-grid">
+              <div
+                className="created-grid"
+                style={{ marginTop: "5%", left: "50%" }}
+              >
                 {createdPosters.map((poster, index) => (
                   <Box key={index}>
                     <ImageCard
