@@ -11,7 +11,7 @@ import React from "react";
 
 export default function Archive() {
   const [searchResults, setSearchResults] = useState<IPoster[]>([]);
-  const [allTags, setAllTags] = useState<string[]>([]);
+  const [, setAllTags] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [posters, setPosters] = useState<{ [key: string]: IPoster[] }>({});
 

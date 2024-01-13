@@ -32,7 +32,7 @@ export default function TagsModal({
     };
 
     fetchAllTags();
-    selectSuggestedTags(poster.tags);
+    selectSuggestedTags(poster.tags!);
   }, []);
 
   function selectSuggestedTags(currTags: Set<string>) {

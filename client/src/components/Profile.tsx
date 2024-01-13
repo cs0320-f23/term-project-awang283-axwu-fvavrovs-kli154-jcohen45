@@ -3,12 +3,18 @@ import { useRecoilState } from "recoil";
 import { profileState } from "./atoms/atoms";
 import "../styles/Modal.css";
 import { useEffect, useState } from "react";
-import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
+import { Tabs, TabList, TabPanels, Tab, TabPanel, Box } from "@chakra-ui/react";
+import Masonry from "masonry-layout";
+import { IPoster } from "./CreateImageModal";
+import imagesLoaded from "imagesloaded";
+import { ImageCard } from "./Happenings";
 
 export default function Profile() {
   const [profile] = useRecoilState(profileState);
   const [likeCount, setLikeCount] = useState<number>(0);
   const [createdCount, setCreatedCount] = useState<number>(0);
+  const [createdPosters, setCreatedPosters] = useState<IPoster[]>([]);
+  const [savedPosters, setSavedPosters] = useState<IPoster[]>([]);
 
   useEffect(() => {
     // Check if profile is not null before trying to access properties
@@ -18,12 +24,30 @@ export default function Profile() {
     }
   }, [profile]);
 
+  useEffect(() => {
+    imagesLoaded(`.saved-grid`, function () {
+      new Masonry(`.saved-grid`, {
+        columnWidth: 34,
+        itemSelector: ".image-card",
+        gutter: 23,
+      });
+    });
+    imagesLoaded(`.created-grid`, function () {
+      new Masonry(`.created-grid`, {
+        columnWidth: 34,
+        itemSelector: ".image-card",
+        gutter: 23,
+      });
+    });
+  }, [createdPosters, savedPosters]);
+
   const getUserLikes = async () => {
     const likesResp = await fetch(
       "http://localhost:8080/users/savedPosters/" + profile.id
     );
     if (likesResp.ok) {
       const likes = await likesResp.json();
+      setSavedPosters(likes.data);
       setLikeCount(likes.data.length);
     }
   };
@@ -35,6 +59,19 @@ export default function Profile() {
     if (createdResp.ok) {
       const created = await createdResp.json();
       setCreatedCount(created.data.length);
+      //get each poster given id then set created
+      created.data.map(async (poster) => {
+        const postersResp = await fetch(
+          "http://localhost:8080/posters/" + poster.id
+        );
+        if (postersResp.ok) {
+          const poster = await postersResp.json();
+          setCreatedPosters((prevCreatedPosters) => [
+            ...prevCreatedPosters,
+            poster.data,
+          ]);
+        }
+      });
     }
   };
 
@@ -170,10 +207,44 @@ export default function Profile() {
           </TabList>
           <TabPanels>
             <TabPanel>
-              <p>Display Saved Posters</p>
+              <div className="saved-grid">
+                {savedPosters.map((poster, index) => (
+                  <Box key={index}>
+                    <ImageCard
+                      title={poster.title!}
+                      content={poster.content!}
+                      startDate={poster.startDate!}
+                      endDate={poster.endDate!}
+                      location={poster.location}
+                      link={poster.link}
+                      description={poster.description}
+                      tags={poster.tags}
+                      recurs={poster.isRecurring!}
+                      id={poster.id}
+                    />
+                  </Box>
+                ))}
+              </div>
             </TabPanel>
             <TabPanel>
-              <p>Disp created Posters</p>
+              <div className="created-grid">
+                {createdPosters.map((poster, index) => (
+                  <Box key={index}>
+                    <ImageCard
+                      title={poster.title!}
+                      content={poster.content!}
+                      startDate={poster.startDate!}
+                      endDate={poster.endDate!}
+                      location={poster.location}
+                      link={poster.link}
+                      description={poster.description}
+                      tags={poster.tags}
+                      recurs={poster.isRecurring!}
+                      id={poster.id}
+                    />
+                  </Box>
+                ))}
+              </div>
             </TabPanel>
           </TabPanels>
         </Tabs>
