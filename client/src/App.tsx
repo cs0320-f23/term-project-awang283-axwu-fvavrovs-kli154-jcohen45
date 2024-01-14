@@ -38,7 +38,7 @@ export default function App() {
     if (userProfile) {
       // Set the user profile in state
       setProfile(JSON.parse(userProfile));
-      console.log(profile);
+      // console.log(profile);
     }
   }, []);
 
@@ -129,7 +129,11 @@ export default function App() {
             <div className="right-links">
               {profile ? (
                 <>
-                  <Button id="create" onClick={handleCreatePoster}>
+                  <Button
+                    id="create"
+                    onClick={handleCreatePoster}
+                    backgroundColor={"var(--dark-purple100)"}
+                  >
                     +
                   </Button>
                   <div id="profile">
@@ -177,7 +181,7 @@ export default function App() {
             fontFamily: "'quicksand', sans-serif",
             display: "flex",
             justifyContent: "space-between",
-            backgroundColor: "rgba(202, 226, 255, .85)",
+            // backgroundColor: "rgba(202, 226, 255, .85)",
           }}
         >
           <div className="left">email / feedback</div>

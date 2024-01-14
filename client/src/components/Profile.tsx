@@ -17,7 +17,8 @@ import { IPoster } from "./CreateImageModal";
 import imagesLoaded from "imagesloaded";
 import { ImageCard } from "./Happenings";
 import { TriangleUpIcon } from "@chakra-ui/icons";
-import { scrollToTop } from "../functions/fetch";
+import { classNameTag, scrollToTop } from "../functions/fetch";
+import CalendarModal from "./CalendarModal";
 
 export default function Profile() {
   const [profile] = useRecoilState(profileState);
@@ -26,6 +27,8 @@ export default function Profile() {
   const [createdPosters, setCreatedPosters] = useState<IPoster[]>([]);
   const [savedPosters, setSavedPosters] = useState<IPoster[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [interests, setInterests] = useState<string[]>([]);
+  const [calOpen, setCalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     // Check if profile is not null before trying to access properties
@@ -33,6 +36,7 @@ export default function Profile() {
     if (profile) {
       getUserCreated();
       getUserLikes();
+      getUserInterests();
     }
     setIsLoading(false);
   }, [profile]);
@@ -90,6 +94,16 @@ export default function Profile() {
     }
   };
 
+  const getUserInterests = async () => {
+    //find user by id
+    const userResp = await fetch("http://localhost:8080/users/" + profile.id);
+    if (userResp.ok) {
+      const user = await userResp.json();
+      setInterests(user.data.interests);
+    }
+    //mpa each interest to tag w class name tag
+  };
+
   const handleTabChange = () => {
     // Explicitly trigger Masonry layout update when the tab becomes visible
     imagesLoaded(`.saved-grid`, function () {
@@ -123,6 +137,9 @@ export default function Profile() {
           <img className="loading-gif" src="/loading.gif" />
         </div>
       )}
+
+      {calOpen && <CalendarModal />}
+
       <div
         className="profile"
         style={{
@@ -184,6 +201,7 @@ export default function Profile() {
                   backgroundColor: "white",
                   width: "60%",
                 }}
+                onClick={() => setCalOpen(true)}
                 src="public/calendar-day-svgrepo-com.svg"
                 alt=""
               />
@@ -213,7 +231,13 @@ export default function Profile() {
                 <div className="field-name" style={{ width: "35%" }}>
                   Interests
                 </div>
-                <div id="field-data">{/* num of saved events */}</div>
+              </div>
+              <div id="field-data">
+                {interests.map((interest, indx) => (
+                  <div className={classNameTag(indx)} key={indx}>
+                    {interest}
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -246,7 +270,7 @@ export default function Profile() {
               backgroundColor={"transparent !important"}
               style={{
                 color: "rgba(63, 49, 94, 1)",
-                marginRight: "2%",
+                marginRight: "1%",
               }}
               _selected={{
                 backgroundColor: "rgba(63, 49, 94, 1) !important",
@@ -321,6 +345,7 @@ export default function Profile() {
       <IconButton
         className="scroll-top"
         color="white"
+        backgroundColor="var(--dark-purple100)"
         icon={<TriangleUpIcon id="triangle-icon-up" />}
         aria-label={"scrolls user to bottom of page"}
         onClick={scrollToTop}

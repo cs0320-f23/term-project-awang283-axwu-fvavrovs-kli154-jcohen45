@@ -58,7 +58,7 @@ h1 {
 }
 
 button {
-  background-color: var(--dark-purple100) !important;
+  background-color: var(--dark-purple100);
   border-radius: 12px;
   font-family: "quicksand", sans-serif;
   cursor: pointer;
