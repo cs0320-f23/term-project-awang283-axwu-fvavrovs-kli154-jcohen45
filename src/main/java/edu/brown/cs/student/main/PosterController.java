@@ -4,15 +4,14 @@ import edu.brown.cs.student.main.imgur.ImgurService;
 import edu.brown.cs.student.main.responses.ServiceResponse;
 import edu.brown.cs.student.main.types.Poster;
 import edu.brown.cs.student.main.user.UserService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /** This class defines the mappings and endpoints for poster management */
 @RestController
@@ -24,7 +23,8 @@ public class PosterController {
   private final ImgurService imgurService;
   private final UserService userService;
 
-  public PosterController(PosterService posterService, ImgurService imgurService, UserService userService) {
+  public PosterController(
+      PosterService posterService, ImgurService imgurService, UserService userService) {
     this.posterService = posterService;
     this.imgurService = imgurService;
     this.userService = userService;
@@ -74,7 +74,8 @@ public class PosterController {
             posters ->
                 posters.stream()
                     .filter(poster -> poster.getStartDate().isAfter(LocalDateTime.now()))
-                    .sorted(Comparator.nullsLast(Comparator.comparing(Poster::getCreatedAt).reversed()))
+                    .sorted(
+                        Comparator.nullsLast(Comparator.comparing(Poster::getCreatedAt).reversed()))
                     .collect(Collectors.toList()))
         .thenApply(ResponseEntity::ok)
         .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
@@ -270,29 +271,41 @@ public class PosterController {
         .getPosterById(id)
         .thenCompose(
             existingPoster -> {
-              if (existingPoster.getData().getID().equals(id) && existingPoster.getData().getUserId().equals(userId)) {
-                //remove from user's createdposters
-                userService.getUserById(userId).thenCompose(user -> {
-                  if(user.getData() != null) {
-                    Set<Poster> userPosters = user.getData().getCreatedPosters();
-                    userPosters.removeIf(poster -> poster.getID().equals(id));
-                    user.getData().setCreatedPosters(userPosters);
-                    // Update the user entity in the database
-                    return userService.updateUser(user.getData())
-                            .thenApply(updatedUser -> {
-                              System.out.println(updatedUser);
-                              if (updatedUser.getData() != null) {
-                                return new ServiceResponse<>("Poster with id " + id + " removed from user's created posters");
-                              } else {
-                                return new ServiceResponse<>("Failed to remove poster from user's created posters");
-                              }
-                            });
-                  } else {
-                    return CompletableFuture.completedFuture(
-                            new ServiceResponse<>("Poster with id " + id + "not removed from users created posters"));
-
-                  }
-                });
+              if (existingPoster.getData().getID().equals(id)
+                  && existingPoster.getData().getUserId().equals(userId)) {
+                // remove from user's createdposters
+                userService
+                    .getUserById(userId)
+                    .thenCompose(
+                        user -> {
+                          if (user.getData() != null) {
+                            Set<Poster> userPosters = user.getData().getCreatedPosters();
+                            userPosters.removeIf(poster -> poster.getID().equals(id));
+                            user.getData().setCreatedPosters(userPosters);
+                            // Update the user entity in the database
+                            return userService
+                                .updateUser(user.getData())
+                                .thenApply(
+                                    updatedUser -> {
+                                      System.out.println(updatedUser);
+                                      if (updatedUser.getData() != null) {
+                                        return new ServiceResponse<>(
+                                            "Poster with id "
+                                                + id
+                                                + " removed from user's created posters");
+                                      } else {
+                                        return new ServiceResponse<>(
+                                            "Failed to remove poster from user's created posters");
+                                      }
+                                    });
+                          } else {
+                            return CompletableFuture.completedFuture(
+                                new ServiceResponse<>(
+                                    "Poster with id "
+                                        + id
+                                        + "not removed from users created posters"));
+                          }
+                        });
                 return posterService
                     .deletePosterById(id)
                     .thenApply(

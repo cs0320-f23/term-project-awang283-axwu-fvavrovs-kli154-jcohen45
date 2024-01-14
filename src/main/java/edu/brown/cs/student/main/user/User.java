@@ -1,12 +1,11 @@
 package edu.brown.cs.student.main.user;
 
 import edu.brown.cs.student.main.types.Poster;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "user")
 public class User {
@@ -74,8 +73,11 @@ public class User {
     this.savedPosters = savedPosters;
   }
 
-  public Set<String> getInterests(){return this.interests;}
-  public void setInterests(Set<String> selectedInterests){
+  public Set<String> getInterests() {
+    return this.interests;
+  }
+
+  public void setInterests(Set<String> selectedInterests) {
     this.interests = selectedInterests;
   }
 }

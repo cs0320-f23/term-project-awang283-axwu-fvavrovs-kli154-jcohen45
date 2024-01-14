@@ -1,13 +1,13 @@
-//package edu.brown.cs.student.main;
+// package edu.brown.cs.student.main;
 //
 //
-//import org.springframework.stereotype.Component;
-//import org.springframework.web.cors.CorsConfiguration;
-//import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+// import org.springframework.stereotype.Component;
+// import org.springframework.web.cors.CorsConfiguration;
+// import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 //
 //
-//@Component
-//public class CorsFilter{
+// @Component
+// public class CorsFilter{
 //    public CorsFilter corsFilter(){
 //
 //        UrlBasedCorsConfigurationSource source=new UrlBasedCorsConfigurationSource();

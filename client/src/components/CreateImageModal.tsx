@@ -103,7 +103,8 @@ export default function CreateImageModal() {
       }
 
       const res = await response.json();
-      if (res.data.title) {
+      // commented out the following if-statement so that if the image has no text and the CV API returns empty fields, then it will stop loading
+      //if (res.data.title) {
         setPoster({
           ...poster,
           title: res.data.title,
@@ -111,7 +112,7 @@ export default function CreateImageModal() {
           tags: res.data.tags,
         });
         setIsLoading(false);
-      }
+      //}
       return Promise.resolve(res.data);
     } catch (error) {
       setIsLoading(false);
@@ -221,7 +222,7 @@ export default function CreateImageModal() {
 
       const output = await createImgurLink(file);
       // fetchPosterData(output.id);
-      await new Promise((resolve) => setTimeout(resolve, 10000));
+      console.log("output.id is: " + output.id)
       setCVFields(output.id);
       setPoster({ ...poster, content: output.content });
     }

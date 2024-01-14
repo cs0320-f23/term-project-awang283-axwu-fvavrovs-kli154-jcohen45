@@ -2,15 +2,14 @@ package edu.brown.cs.student.main.user;
 
 import edu.brown.cs.student.main.responses.ServiceResponse;
 import edu.brown.cs.student.main.types.Poster;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
@@ -121,102 +120,95 @@ public class UserService {
         .orElse(CompletableFuture.completedFuture(new ServiceResponse<>("User not found")));
   }
 
-
   @Async
-  public CompletableFuture<ServiceResponse<User>> savePoster(
-          String userId, Poster poster) {
-    // Find the user by ID
-   // System.out.println("reached associatePosterWithUser function");
-    return userRepository
-            .findById(userId)
-            .map(
-                    user -> {
-                      // Add the poster to the user's list of posters
-                      user.getSavedPosters().add(poster);
-                      // Save the updated user
-                      //System.out.println("Trying to save");
-                      this.updateUser(user);
-                      // Create a response object
-                     // System.out.println("Trying to return service response");
-                      return new ServiceResponse<>(user, "Poster saved");
-                    })
-            .map(CompletableFuture::completedFuture) // Remove this line
-            .orElse(CompletableFuture.completedFuture(new ServiceResponse<>("User not found")));
-  }
-
-
-  @Async
-  public CompletableFuture<ServiceResponse<User>> unsavePoster(
-          String userId, String posterId) {
+  public CompletableFuture<ServiceResponse<User>> savePoster(String userId, Poster poster) {
     // Find the user by ID
     // System.out.println("reached associatePosterWithUser function");
     return userRepository
-            .findById(userId)
-            .map(
-                    user -> {
-                      // Add the poster to the user's list of posters
-                          Set<Poster> userPosters = user.getSavedPosters();
-                          userPosters.removeIf(foundPoster -> foundPoster.getID().equals(posterId));
-                          user.setSavedPosters(userPosters);
-                        // Save the updated user
-                        System.out.println(userPosters);
-
-                      this.updateUser(user);
-                      // Create a response object
-                      // System.out.println("Trying to return service response");
-                      return new ServiceResponse<>(user, "Poster removed from user");
-                    })
-            .map(CompletableFuture::completedFuture) // Remove this line
-            .orElse(CompletableFuture.completedFuture(new ServiceResponse<>("User not found")));
+        .findById(userId)
+        .map(
+            user -> {
+              // Add the poster to the user's list of posters
+              user.getSavedPosters().add(poster);
+              // Save the updated user
+              // System.out.println("Trying to save");
+              this.updateUser(user);
+              // Create a response object
+              // System.out.println("Trying to return service response");
+              return new ServiceResponse<>(user, "Poster saved");
+            })
+        .map(CompletableFuture::completedFuture) // Remove this line
+        .orElse(CompletableFuture.completedFuture(new ServiceResponse<>("User not found")));
   }
 
-    @Async
-    public CompletableFuture<ServiceResponse<User>> addInterests(
-            String userId, Set<String> interests) {
-        // Find the user by ID
-        // System.out.println("reached associatePosterWithUser function");
-        return userRepository
-                .findById(userId)
-                .map(
-                        user -> {
-                            Set<String> currInterests = user.getInterests();
-                            currInterests.addAll(interests);
-                            user.setInterests(currInterests);
-                            this.updateUser(user);
+  @Async
+  public CompletableFuture<ServiceResponse<User>> unsavePoster(String userId, String posterId) {
+    // Find the user by ID
+    // System.out.println("reached associatePosterWithUser function");
+    return userRepository
+        .findById(userId)
+        .map(
+            user -> {
+              // Add the poster to the user's list of posters
+              Set<Poster> userPosters = user.getSavedPosters();
+              userPosters.removeIf(foundPoster -> foundPoster.getID().equals(posterId));
+              user.setSavedPosters(userPosters);
+              // Save the updated user
+              System.out.println(userPosters);
 
-                            return new ServiceResponse<>(user, "Interest(s) added");
-                        })
-                .map(CompletableFuture::completedFuture) // Remove this line
-                .orElse(CompletableFuture.completedFuture(new ServiceResponse<>("User not found")));
-    }
+              this.updateUser(user);
+              // Create a response object
+              // System.out.println("Trying to return service response");
+              return new ServiceResponse<>(user, "Poster removed from user");
+            })
+        .map(CompletableFuture::completedFuture) // Remove this line
+        .orElse(CompletableFuture.completedFuture(new ServiceResponse<>("User not found")));
+  }
 
-    @Async
-    public CompletableFuture<ServiceResponse<User>> removeInterests(
-            String userId, Set<String> interests) {
-        // Find the user by ID
-        // System.out.println("reached associatePosterWithUser function");
-        return userRepository
-                .findById(userId)
-                .map(
-                        user -> {
-                            Set<String> currInterests = user.getInterests();
-                            for (String interest : interests){
-                                if (currInterests.contains(interest)){
-                                    currInterests.remove(interest);
-                                }
-                                else {
-                                    return new ServiceResponse<>(user,
-                                            "Interest to be removed is not in user's selected interests");
-                                }
-                            }
-                            user.setInterests(currInterests);
-                            this.updateUser(user);
+  @Async
+  public CompletableFuture<ServiceResponse<User>> addInterests(
+      String userId, Set<String> interests) {
+    // Find the user by ID
+    // System.out.println("reached associatePosterWithUser function");
+    return userRepository
+        .findById(userId)
+        .map(
+            user -> {
+              Set<String> currInterests = user.getInterests();
+              currInterests.addAll(interests);
+              user.setInterests(currInterests);
+              this.updateUser(user);
 
-                            return new ServiceResponse<>(user, "Interest(s) removed");
-                        })
-                .map(CompletableFuture::completedFuture) // Remove this line
-                .orElse(CompletableFuture.completedFuture(new ServiceResponse<>("User not found")));
-    }
+              return new ServiceResponse<>(user, "Interest(s) added");
+            })
+        .map(CompletableFuture::completedFuture) // Remove this line
+        .orElse(CompletableFuture.completedFuture(new ServiceResponse<>("User not found")));
+  }
 
+  @Async
+  public CompletableFuture<ServiceResponse<User>> removeInterests(
+      String userId, Set<String> interests) {
+    // Find the user by ID
+    // System.out.println("reached associatePosterWithUser function");
+    return userRepository
+        .findById(userId)
+        .map(
+            user -> {
+              Set<String> currInterests = user.getInterests();
+              for (String interest : interests) {
+                if (currInterests.contains(interest)) {
+                  currInterests.remove(interest);
+                } else {
+                  return new ServiceResponse<>(
+                      user, "Interest to be removed is not in user's selected interests");
+                }
+              }
+              user.setInterests(currInterests);
+              this.updateUser(user);
 
+              return new ServiceResponse<>(user, "Interest(s) removed");
+            })
+        .map(CompletableFuture::completedFuture) // Remove this line
+        .orElse(CompletableFuture.completedFuture(new ServiceResponse<>("User not found")));
+  }
 }
