@@ -403,6 +403,8 @@ export default function Happenings() {
   const getAllResults = () => {
     getPosters().then((data) => {
       setSearchResults(data);
+      setSearchInput("");
+      setTags(new Set());
       setIsLoading(false);
     });
   };
