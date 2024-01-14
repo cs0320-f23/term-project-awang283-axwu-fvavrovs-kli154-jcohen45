@@ -153,7 +153,7 @@ export default function App() {
             </div>
           </nav>
         </header>
-        <main>
+        <main style={{ height: "fit-content" }}>
           <Routes>
             <Route path="/home" element={<Home />} />
             <Route path="/" element={<Home />} />
@@ -164,6 +164,25 @@ export default function App() {
           </Routes>
           {modalOpen && <CreateImageModal />}
         </main>
+        <footer
+          className="nav-link"
+          style={{
+            width: "90%",
+            position: "relative",
+            zIndex: "500",
+            marginTop: "5vh",
+            marginLeft: "2vw",
+            marginRight: "20vw",
+            height: "8vh",
+            fontFamily: "'quicksand', sans-serif",
+            display: "flex",
+            justifyContent: "space-between",
+            backgroundColor: "rgba(202, 226, 255, .85)",
+          }}
+        >
+          <div className="left">email / feedback</div>
+          <div className="right">Made with love</div>
+        </footer>
       </article>
       {interestsState && <InterestsModal createUser={createUser} />}
     </>

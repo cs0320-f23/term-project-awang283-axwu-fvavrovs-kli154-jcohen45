@@ -14,8 +14,8 @@ import "../styles/Home.css";
 import "../styles/Modal.css";
 import { ImageCard, getPosters } from "./Happenings";
 import { KeyboardEvent, useEffect, useState } from "react";
-import { fetchTags } from "../functions/fetch";
-import { useNavigate } from "react-router-dom";
+import { classNameTag, fetchTags } from "../functions/fetch";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { searchResultsState, searchState, tagsState } from "./atoms/atoms";
 
@@ -62,16 +62,6 @@ export default function Home() {
     }
   };
 
-  const classNameTag = (index: number) => {
-    if (index % 3 == 0) {
-      return "magenta-tag";
-    } else if (index % 3 == 1) {
-      return "green-tag";
-    } else {
-      return "blue-tag";
-    }
-  };
-
   const onClick = (tag: string) => {
     // if in tags list, take out
     setTags((prevTags) => {
@@ -89,6 +79,11 @@ export default function Home() {
     });
   };
 
+  const addTagsToSearch = () => {
+    setShowTags(false);
+    navigate("/happenings");
+  };
+
   return (
     <>
       {isLoading && (
@@ -96,7 +91,7 @@ export default function Home() {
           <img className="loading-gif" src="/loading.gif" />
         </div>
       )}
-      <main className="posters">
+      <main className="posters" style={{ height: "fit-content" }}>
         <div className="home-content">
           <label className="label">
             <div className="text-wrapper">Posters @ Brown</div>
@@ -171,7 +166,7 @@ export default function Home() {
                         </div>
                         <Button
                           className="final-upload-button"
-                          onClick={() => setShowTags(false)}
+                          onClick={addTagsToSearch}
                           padding={"8px 18px"}
                         >
                           Add Tags to Search
@@ -218,6 +213,17 @@ export default function Home() {
                 />
               </Box>
             ))}
+            <div style={{ width: "100%", padding: "1vw" }}>
+              <NavLink
+                to="/happenings"
+                style={{
+                  fontFamily: "'quicksand', sans-serif",
+                  width: "100px",
+                }}
+              >
+                See More
+              </NavLink>
+            </div>
           </HStack>
         </div>
         <IconButton

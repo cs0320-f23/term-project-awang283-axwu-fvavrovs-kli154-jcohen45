@@ -3,11 +3,21 @@ import { useRecoilState } from "recoil";
 import { profileState } from "./atoms/atoms";
 import "../styles/Modal.css";
 import { useEffect, useState } from "react";
-import { Tabs, TabList, TabPanels, Tab, TabPanel, Box } from "@chakra-ui/react";
+import {
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
+  Box,
+  IconButton,
+} from "@chakra-ui/react";
 import Masonry from "masonry-layout";
 import { IPoster } from "./CreateImageModal";
 import imagesLoaded from "imagesloaded";
 import { ImageCard } from "./Happenings";
+import { TriangleUpIcon } from "@chakra-ui/icons";
+import { scrollToTop } from "../functions/fetch";
 
 export default function Profile() {
   const [profile] = useRecoilState(profileState);
@@ -19,13 +29,16 @@ export default function Profile() {
 
   useEffect(() => {
     // Check if profile is not null before trying to access properties
+    setIsLoading(true);
     if (profile) {
       getUserCreated();
       getUserLikes();
     }
+    setIsLoading(false);
   }, [profile]);
 
   useEffect(() => {
+    setIsLoading(true);
     imagesLoaded(`.saved-grid`, function () {
       new Masonry(`.saved-grid`, {
         columnWidth: 34,
@@ -98,7 +111,12 @@ export default function Profile() {
   return (
     <main
       className="user-page"
-      style={{ top: "6.5%", display: "flex", justifyContent: "space-between" }}
+      style={{
+        top: "6.5%",
+        display: "flex",
+        justifyContent: "space-between",
+        height: "fit-content",
+      }}
     >
       {isLoading && (
         <div className="loading-screen">
@@ -111,13 +129,13 @@ export default function Profile() {
           backgroundColor: "white",
           width: "25%",
           height: "85vh",
-          marginTop: "5%",
           margin: "2%",
           borderRadius: "30px",
           boxShadow: "0px 3px 10px 4px rgba(63, 49, 94, 0.15)",
-          position: "fixed",
-          zIndex: "101",
-          top: "7%",
+          position: "sticky",
+          zIndex: "2",
+          top: "10%",
+          bottom: "1000vh",
         }}
       >
         {profile ? (
@@ -254,7 +272,7 @@ export default function Profile() {
             <TabPanel>
               <div
                 className="saved-grid"
-                style={{ marginTop: "5%", left: "45%" }}
+                style={{ marginTop: "10%", left: "-5%" }}
               >
                 {savedPosters.map((poster, index) => (
                   <Box key={index}>
@@ -277,7 +295,7 @@ export default function Profile() {
             <TabPanel>
               <div
                 className="created-grid"
-                style={{ marginTop: "5%", left: "45%" }}
+                style={{ marginTop: "10%", left: "-5%" }}
               >
                 {createdPosters.map((poster, index) => (
                   <Box key={index}>
@@ -300,6 +318,13 @@ export default function Profile() {
           </TabPanels>
         </Tabs>
       </div>
+      <IconButton
+        className="scroll-top"
+        color="white"
+        icon={<TriangleUpIcon id="triangle-icon-up" />}
+        aria-label={"scrolls user to bottom of page"}
+        onClick={scrollToTop}
+      />
     </main>
   );
 }

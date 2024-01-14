@@ -22,17 +22,10 @@ import {
   searchState,
   tagsState,
 } from "./atoms/atoms";
-import { fetchTags } from "../functions/fetch";
+import { classNameTag, fetchTags, scrollToTop } from "../functions/fetch";
 import Masonry from "masonry-layout";
 import imagesLoaded from "imagesloaded";
 import "../styles/Modal.css";
-
-const scrollToTop = () => {
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth",
-  });
-};
 
 export interface IPoster {
   content: string;
@@ -407,22 +400,21 @@ export default function Happenings() {
     });
   };
 
-  const classNameTag = (index: number) => {
-    if (index % 3 == 0) {
-      return "magenta-tag";
-    } else if (index % 3 == 1) {
-      return "green-tag";
-    } else {
-      return "blue-tag";
-    }
+  const getAllResults = () => {
+    getPosters().then((data) => {
+      setSearchResults(data);
+      setIsLoading(false);
+    });
+  };
+
+  const addTagsToSearch = () => {
+    setShowTags(false);
+    getSearchResults();
   };
 
   const getSearchResults = async () => {
     if ((searchInput == "" || searchInput == " ") && tags.size == 0) {
-      getPosters().then((data) => {
-        setSearchResults(data);
-        setIsLoading(false);
-      });
+      getAllResults();
     } else if ((searchInput == "" || searchInput == " ") && tags.size > 0) {
       let tagString = "";
       tags.forEach((tag) => {
@@ -480,42 +472,61 @@ export default function Happenings() {
           <img className="loading-gif" src="/loading.gif" />
         </div>
       )}
-      <main className="happenings">
+      <main
+        className="happenings"
+        style={{ height: "fit-content", minHeight: "87vh" }}
+      >
         <div className="search-filter-fixed">
-          <div
-            className="browse-search-bar"
-            style={{ justifyContent: "space-between" }}
-          >
-            <Search2Icon boxSize={5} width={14} />
-            <input
-              className="browse-input"
-              placeholder="Search"
-              type="text"
-              value={searchInput}
-              onChange={(ev) => setSearchInput(ev.target.value)}
-              onKeyDown={(ev) => {
-                if (ev.key === "Enter") {
-                  ev.preventDefault();
-                  getSearchResults();
-                }
+          <div style={{ display: "flex" }}>
+            <div
+              className="browse-search-bar"
+              style={{ justifyContent: "space-between" }}
+            >
+              <Search2Icon boxSize={5} width={14} />
+              <input
+                className="browse-input"
+                placeholder="Search"
+                type="text"
+                value={searchInput}
+                onChange={(ev) => setSearchInput(ev.target.value)}
+                onKeyDown={(ev) => {
+                  if (ev.key === "Enter") {
+                    ev.preventDefault();
+                    getSearchResults();
+                  }
+                }}
+              />
+              <Box w="10vw" display="flex" justifyContent="right">
+                <Button
+                  marginLeft="1vw"
+                  width="7vw"
+                  className="browse-select"
+                  fontSize="18px"
+                  height="6vh"
+                  color="white"
+                  alignItems="center"
+                  border="none"
+                  onClick={() => setShowTags(true)}
+                >
+                  Tags
+                </Button>
+              </Box>
+            </div>
+            <div
+              className="results"
+              style={{
+                fontFamily: "'quicksand', sans-serif",
+                marginLeft: "2%",
+                width: " 10%",
+                position: "relative",
+                top: "20%",
               }}
-            />
-            <Box w="10vw" display="flex" justifyContent="right">
-              <Button
-                marginLeft="1vw"
-                width="7vw"
-                className="browse-select"
-                fontSize="18px"
-                height="6vh"
-                color="white"
-                alignItems="center"
-                border="none"
-                onClick={() => setShowTags(true)}
-              >
-                Tags
-              </Button>
-            </Box>
+              onClick={getAllResults}
+            >
+              All Results
+            </div>
           </div>
+
           <Box w="8.1vw">
             <Select
               marginLeft="1vw"
@@ -534,6 +545,7 @@ export default function Happenings() {
             </Select>
           </Box>
         </div>
+
         <div className="modal-font">
           {showTags && (
             <Modal isOpen={true} onClose={() => setShowTags(false)}>
@@ -582,7 +594,7 @@ export default function Happenings() {
                     </div>
                     <Button
                       className="final-upload-button"
-                      onClick={() => setShowTags(false)}
+                      onClick={addTagsToSearch}
                       padding={"8px 18px"}
                     >
                       Add Tags to Search
@@ -593,6 +605,7 @@ export default function Happenings() {
             </Modal>
           )}
         </div>
+        {/* <div>All results</div> */}
         <div className="grid" ref={gridRef}>
           {searchInput !== "" && searchResults.length === 0 && (
             <h1 className="none">No results to display for this search term</h1>

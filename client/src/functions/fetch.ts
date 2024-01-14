@@ -90,3 +90,10 @@ export const classNameTag = (index: number) => {
     return "blue-tag";
   }
 };
+
+export const scrollToTop = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+};

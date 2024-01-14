@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useRecoilState } from "recoil";
 import { profileState } from "./atoms/atoms";
+import { classNameTag } from "../functions/fetch";
 
 interface viewProps {
   onClose: () => void;
@@ -70,16 +71,6 @@ export default function ViewPosterModal({
     };
     fetchSaved();
   }, []);
-
-  const classNameTag = (index: number) => {
-    if (index % 3 == 0) {
-      return "magenta-tag";
-    } else if (index % 3 == 1) {
-      return "green-tag";
-    } else {
-      return "blue-tag";
-    }
-  };
 
   const getUser = async () => {
     //use poster id to get user id

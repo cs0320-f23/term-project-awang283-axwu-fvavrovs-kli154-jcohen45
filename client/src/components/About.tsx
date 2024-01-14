@@ -3,7 +3,7 @@ import "../styles/About.css";
 export default function About() {
   return (
     <>
-      <main>
+      <main style={{ height: "fit-content" }}>
         <div
           className="about-content"
           style={{

@@ -3,7 +3,7 @@ import { TriangleUpIcon } from "@chakra-ui/icons";
 import { IPoster, ImageCard } from "./Happenings";
 import { Box, IconButton } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { fetchTags } from "../functions/fetch";
+import { fetchTags, scrollToTop } from "../functions/fetch";
 import axios from "axios";
 import Masonry from "masonry-layout";
 import imagesLoaded from "imagesloaded";
@@ -79,13 +79,6 @@ export default function Archive() {
     images();
   }, []);
 
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  };
-
   return (
     <>
       {isLoading && (
@@ -93,7 +86,7 @@ export default function Archive() {
           <img className="loading-gif" src="/loading.gif" />
         </div>
       )}
-      <main className="archive">
+      <main className="archive" style={{ height: "fit-content" }}>
         {Object.keys(posters)
           .reverse()
           .map((year, index) => {
