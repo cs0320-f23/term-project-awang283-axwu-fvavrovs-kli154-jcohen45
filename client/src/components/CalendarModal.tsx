@@ -98,81 +98,8 @@ export default function CalendarModal() {
     };
   };
 
-  const customComponents = {
-    // You can customize various components here
-    toolbar: (props) => (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          fontFamily: "'quicksand', sans-serif",
-        }}
-      >
-        <div style={{ padding: "10px" }}>
-          {/* Customize your toolbar components */}
-          <Button
-            color="var(--dark-purple100)"
-            backgroundColor="transparent !important"
-            onClick={props.onNavigate.bind(null, "TODAY")}
-          >
-            Today
-          </Button>
-          <Button
-            color="var(--dark-purple100)"
-            backgroundColor="transparent !important"
-            onClick={props.onNavigate.bind(null, "PREV")}
-          >
-            Previous
-          </Button>
-          <Button
-            color="var(--dark-purple100)"
-            backgroundColor="transparent !important"
-            onClick={props.onNavigate.bind(null, "NEXT")}
-          >
-            Next
-          </Button>
-        </div>
-        <h1
-          style={{
-            fontSize: "1.8vw",
-            fontWeight: "bold",
-            fontFamily: "'quicksand', sans-serif",
-            width: "30%",
-            transform: "translate(-1%, -50%)",
-          }}
-        >
-          {props.label}
-        </h1>
-        <div>
-          <Button
-            color="var(--dark-purple100)"
-            backgroundColor="transparent !important"
-            onClick={() => props.onView("day")}
-          >
-            Day
-          </Button>
-          <Button
-            color="var(--dark-purple100)"
-            backgroundColor="transparent !important"
-            onClick={() => props.onView("week")}
-          >
-            Week
-          </Button>
-          <Button
-            color="var(--dark-purple100)"
-            backgroundColor="transparent !important"
-            onClick={() => props.onView("month")}
-          >
-            Month
-          </Button>
-        </div>
-      </div>
-    ),
-  };
-
   return (
-    <Modal isOpen={true} onClose={false}>
+    <Modal isOpen={true} onClose={() => false}>
       <ModalOverlay />
       <ModalContent maxWidth={"fit-content"}>
         <ModalBody width={"fit-content"}>
@@ -186,7 +113,6 @@ export default function CalendarModal() {
                 startAccessor="start"
                 endAccessor="end"
                 style={customStyle}
-                components={customComponents}
                 dayPropGetter={dayPropGetter}
               />
             </ChakraProvider>
