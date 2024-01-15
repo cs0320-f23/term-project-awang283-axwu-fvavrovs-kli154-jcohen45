@@ -17,58 +17,85 @@ import { profileState } from "./atoms/atoms";
 
 export default function CalendarModal({ onClose }) {
   const [savedPosters, setSavedPosters] = useState<IPoster[]>([]);
-  const [profile] = useRecoilState(profileState);
+  const [profile, setProfile] = useRecoilState(profileState);
   const localizer = momentLocalizer(moment);
   const [isReady, setIsReady] = useState(false);
+  const [events, setEvents] = useState<
+    { title: string; start: Date; end: Date }[]
+  >([]);
 
   useEffect(() => {
-    if (profile) {
-      getUserLikes();
-      setIsReady(true);
+    setIsReady(false);
+    const storedProfile = localStorage.getItem("userProfile");
+    if (storedProfile) {
+      setProfile(JSON.parse(storedProfile));
+      fetchData();
     }
   }, []);
 
+  useEffect(() => {
+    makeEvents();
+  }, [isReady]);
+
+  const fetchData = async () => {
+    await getUserLikes();
+    makeEvents();
+    setIsReady(true);
+  };
+
   const getUserLikes = async () => {
-    const likesResp = await fetch(
-      "http://localhost:8080/users/savedPosters/" + profile.id
-    );
-    if (likesResp.ok) {
-      const likes = await likesResp.json();
-      setSavedPosters(likes.data);
+    try {
+      const likesResp = await fetch(
+        "http://localhost:8080/users/savedPosters/" + profile.id
+      );
+      if (likesResp.ok) {
+        const likes = await likesResp.json();
+        setSavedPosters(likes.data);
+      }
+    } catch (error) {
+      console.error("Error fetching likes:", error);
     }
   };
 
-  const events = [
-    ...savedPosters.map((poster) => {
-      const startDateArray = poster.startDate!;
+  const makeEvents = () => {
+    const newEvents = [
+      ...savedPosters.map((poster) => {
+        const startDateArray = poster.startDate!;
 
-      const startDate = new Date(
-        startDateArray[0],
-        parseInt(startDateArray[1]) - 1,
-        startDateArray[2],
-        startDateArray[3],
-        startDateArray[4]
-      );
+        const startDate = new Date(
+          startDateArray[0],
+          parseInt(startDateArray[1]) - 1,
+          startDateArray[2],
+          startDateArray[3],
+          startDateArray[4]
+        );
 
-      const endDateArray = poster.endDate ? poster.endDate : startDateArray;
-      const endDate = new Date(
-        endDateArray[0],
-        parseInt(endDateArray[1]) - 1,
-        endDateArray[2],
-        endDateArray[3],
-        endDateArray[4]
-      );
+        const endDateArray = poster.endDate ? poster.endDate : startDateArray;
+        const endDate = new Date(
+          endDateArray[0],
+          parseInt(endDateArray[1]) - 1,
+          endDateArray[2],
+          endDateArray[3],
+          endDateArray[4]
+        );
 
-      const event = {
-        title: poster.title,
-        start: startDate,
-        end: endDate,
-      };
-      return event;
-    }),
-  ];
+        const event = {
+          title: poster.title!,
+          start: startDate,
+          end: endDate,
+        };
+        return event;
+      }),
+      {
+        title: "hi",
+        start: new Date(2024, 0, 15, 2, 30, 0),
+        end: new Date(2024, 0, 15, 4, 30, 0),
+      },
+    ];
+    setEvents(newEvents);
+  };
   const customStyle = {
-    height: 600,
+    minHeight: 500,
     width: 700,
     fontFamily: "'quicksand', sans-serif",
   };
@@ -120,6 +147,7 @@ export default function CalendarModal({ onClose }) {
             </ChakraProvider>
           )}
         </ModalBody>
+        {/* {JSON.stringify(events)} */}
       </ModalContent>
     </Modal>
   );

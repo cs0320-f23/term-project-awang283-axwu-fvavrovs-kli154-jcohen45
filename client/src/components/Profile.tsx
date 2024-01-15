@@ -57,7 +57,7 @@ export default function Profile() {
       getUserCreated();
       getUserLikes();
       getUserInterests();
-      console.log(profile);
+      // console.log(profile);
     }
     setIsLoading(false);
   }, [profile]);
@@ -146,7 +146,7 @@ export default function Profile() {
   const handleProfilePictureUpload = async (
     target: EventTarget & HTMLInputElement
   ) => {
-    console.log("called poster upload");
+    //console.log("called poster upload");
     if (target.files) {
       const file = target.files[0]; //getting the file object
 
@@ -184,7 +184,7 @@ export default function Profile() {
         savedPosters: savedPosters,
       };
 
-      console.log("inside createUser", updatedUser);
+      // console.log("inside createUser", updatedUser);
       //add to database
       const config = {
         headers: {
@@ -197,7 +197,7 @@ export default function Profile() {
       const url = "http://localhost:8080/users/update/" + profile.id;
 
       const res = await axios.put(url, updatedUser, config);
-      console.log("inside creatUser res", res);
+      // console.log("inside creatUser res", res);
       const userProfile = localStorage.getItem("userProfile");
       if (userProfile) {
         // Set the user profile in state
@@ -329,7 +329,7 @@ export default function Profile() {
                     width: "60%",
                   }}
                   onClick={updateProfile}
-                  src="public/check.svg"
+                  src="/check.svg"
                   alt=""
                 />
 
@@ -340,7 +340,7 @@ export default function Profile() {
                     width: "60%",
                   }}
                   onClick={() => setCalOpen(true)}
-                  src="public/calendar-day-svgrepo-com.svg"
+                  src="/calendar-day-svgrepo-com.svg"
                   alt=""
                 />
               </div>
@@ -375,7 +375,7 @@ export default function Profile() {
                   >
                     <img
                       style={{ width: "15%" }}
-                      src="public/pencil-svgrepo-com.svg"
+                      src="/pencil-svgrepo-com.svg"
                       onClick={() => setInterestsState(true)}
                     />
                   </div>
@@ -428,7 +428,7 @@ export default function Profile() {
                     width: "60%",
                   }}
                   onClick={() => setEditingMode(true)}
-                  src="public/pencil-svgrepo-com.svg"
+                  src="/pencil-svgrepo-com.svg"
                   alt=""
                 />
 
@@ -439,7 +439,7 @@ export default function Profile() {
                     width: "60%",
                   }}
                   onClick={() => setCalOpen(true)}
-                  src="public/calendar-day-svgrepo-com.svg"
+                  src="/calendar-day-svgrepo-com.svg"
                   alt=""
                 />
               </div>
