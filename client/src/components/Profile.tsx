@@ -138,7 +138,7 @@ export default function Profile() {
         </div>
       )}
 
-      {calOpen && <CalendarModal />}
+      {calOpen && <CalendarModal onClose={() => setCalOpen(false)} />}
 
       <div
         className="profile"

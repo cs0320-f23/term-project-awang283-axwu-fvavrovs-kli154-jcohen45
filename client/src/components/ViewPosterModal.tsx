@@ -178,7 +178,11 @@ export default function ViewPosterModal({
             minH="60%"
             className="modal-content"
           >
-            <ModalCloseButton className="close-button" onClick={onClose} />
+            <ModalCloseButton
+              className="close-button"
+              onClick={onClose}
+              style={{ backgroundColor: "var(--dark-purple100)" }}
+            />
             <ModalBody className="modal-body" flexDirection={"row"}>
               <Box className="view-image" overflowY={"scroll"} id={id}>
                 <img src={path} />

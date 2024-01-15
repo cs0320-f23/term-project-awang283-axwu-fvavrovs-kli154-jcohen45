@@ -5,6 +5,7 @@ import {
   ModalContent,
   ModalOverlay,
   Button,
+  ModalCloseButton,
 } from "@chakra-ui/react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
@@ -14,7 +15,7 @@ import { IPoster } from "./CreateImageModal";
 import { useRecoilState } from "recoil";
 import { profileState } from "./atoms/atoms";
 
-export default function CalendarModal() {
+export default function CalendarModal({ onClose }) {
   const [savedPosters, setSavedPosters] = useState<IPoster[]>([]);
   const [profile] = useRecoilState(profileState);
   const localizer = momentLocalizer(moment);
@@ -23,7 +24,6 @@ export default function CalendarModal() {
   useEffect(() => {
     if (profile) {
       getUserLikes();
-      console.log(events);
       setIsReady(true);
     }
   }, []);
@@ -38,20 +38,9 @@ export default function CalendarModal() {
     }
   };
 
-  // const events = [
-  //   {
-  //     title: "Event 1",
-  //     //year month day hour
-  //     start: new Date(2024, 0, 1, 10, 0), // January 1, 2022, 10:00 AM
-  //     end: new Date(2024, 0, 1, 12, 0), // January 1, 2022, 12:00 PM
-  //   },
-  // ];
-
   const events = [
     ...savedPosters.map((poster) => {
       const startDateArray = poster.startDate!;
-      console.log("start");
-      console.log(startDateArray);
 
       const startDate = new Date(
         startDateArray[0],
@@ -75,19 +64,26 @@ export default function CalendarModal() {
         start: startDate,
         end: endDate,
       };
-      console.log(event);
       return event;
     }),
-    // {
-    //   title: "event1",
-    //   start: new Date(2024, 1, 10, 2, 0),
-    //   end: new Date(2024, 1, 10, 4, 0),
-    // },
   ];
   const customStyle = {
     height: 600,
     width: 700,
     fontFamily: "'quicksand', sans-serif",
+  };
+
+  const eventStyleGetter = (event, start, end, isSelected) => {
+    const style = {
+      border: "none",
+      borderRadius: "0",
+      backgroundColor: isSelected
+        ? "var(--dark-purple70)"
+        : "var(--dark-purple100)",
+    };
+    return {
+      style,
+    };
   };
 
   const dayPropGetter = (date) => {
@@ -99,9 +95,14 @@ export default function CalendarModal() {
   };
 
   return (
-    <Modal isOpen={true} onClose={() => false}>
+    <Modal isOpen={true} onClose={onClose}>
       <ModalOverlay />
       <ModalContent maxWidth={"fit-content"}>
+        <ModalCloseButton
+          className="close-button"
+          onClick={onClose}
+          style={{ backgroundColor: "var(--dark-purple100)" }}
+        />
         <ModalBody width={"fit-content"}>
           {isReady && (
             <ChakraProvider>
@@ -114,6 +115,7 @@ export default function CalendarModal() {
                 endAccessor="end"
                 style={customStyle}
                 dayPropGetter={dayPropGetter}
+                eventPropGetter={eventStyleGetter}
               />
             </ChakraProvider>
           )}

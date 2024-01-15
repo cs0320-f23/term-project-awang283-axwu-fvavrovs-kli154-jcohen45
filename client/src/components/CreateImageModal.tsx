@@ -105,13 +105,13 @@ export default function CreateImageModal() {
       const res = await response.json();
       // commented out the following if-statement so that if the image has no text and the CV API returns empty fields, then it will stop loading
       //if (res.data.title) {
-        setPoster({
-          ...poster,
-          title: res.data.title,
-          description: res.data.description,
-          tags: res.data.tags,
-        });
-        setIsLoading(false);
+      setPoster({
+        ...poster,
+        title: res.data.title,
+        description: res.data.description,
+        tags: res.data.tags,
+      });
+      setIsLoading(false);
       //}
       return Promise.resolve(res.data);
     } catch (error) {
@@ -222,7 +222,7 @@ export default function CreateImageModal() {
 
       const output = await createImgurLink(file);
       // fetchPosterData(output.id);
-      console.log("output.id is: " + output.id)
+      console.log("output.id is: " + output.id);
       setCVFields(output.id);
       setPoster({ ...poster, content: output.content });
     }
@@ -297,7 +297,11 @@ export default function CreateImageModal() {
               <ModalHeader className="modal-header">
                 Upload a Poster
               </ModalHeader>
-              <ModalCloseButton className="close-button" onClick={onClose} />
+              <ModalCloseButton
+                className="close-button"
+                onClick={onClose}
+                style={{ backgroundColor: "var(--dark-purple100)" }}
+              />
 
               <ModalBody className="modal-body">
                 <div className="create-div">
@@ -459,6 +463,7 @@ export default function CreateImageModal() {
                           <Button
                             onClick={onSaveSelectTags}
                             className={"save-button"}
+                            style={{ backgroundColor: "var(--dark-purple100)" }}
                             isDisabled={
                               isLoading || !poster.title || !posterSrc
                             }
