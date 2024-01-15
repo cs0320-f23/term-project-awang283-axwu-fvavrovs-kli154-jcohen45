@@ -11,32 +11,53 @@ import {
   TabPanel,
   Box,
   IconButton,
+  Input,
 } from "@chakra-ui/react";
 import Masonry from "masonry-layout";
 import { IPoster } from "./CreateImageModal";
 import imagesLoaded from "imagesloaded";
 import { ImageCard } from "./Happenings";
 import { TriangleUpIcon } from "@chakra-ui/icons";
-import { classNameTag, scrollToTop } from "../functions/fetch";
+import {
+  IUser,
+  classNameTag,
+  createUser,
+  scrollToTop,
+} from "../functions/fetch";
 import CalendarModal from "./CalendarModal";
+import InterestsModal from "./InterestsModal";
+import axios from "axios";
 
 export default function Profile() {
-  const [profile] = useRecoilState(profileState);
+  const [profile, setProfile] = useRecoilState(profileState);
   const [likeCount, setLikeCount] = useState<number>(0);
   const [createdCount, setCreatedCount] = useState<number>(0);
   const [createdPosters, setCreatedPosters] = useState<IPoster[]>([]);
   const [savedPosters, setSavedPosters] = useState<IPoster[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [interests, setInterests] = useState<string[]>([]);
+  const [interests, setInterests] = useState<Set<string>>(new Set());
   const [calOpen, setCalOpen] = useState<boolean>(false);
+  const [editingMode, setEditingMode] = useState<boolean>(false);
+  const [interestsState, setInterestsState] = useState<boolean>(false);
+
+  useEffect(() => {
+    setIsLoading(true);
+    const storedProfile = localStorage.getItem("userProfile");
+    if (storedProfile) {
+      setProfile(JSON.parse(storedProfile));
+    }
+  }, []);
 
   useEffect(() => {
     // Check if profile is not null before trying to access properties
     setIsLoading(true);
+    //setProfile(JSON.parse(localStorage.getItem("userProfile")!));
+    // console.log(profile);
     if (profile) {
       getUserCreated();
       getUserLikes();
       getUserInterests();
+      console.log(profile);
     }
     setIsLoading(false);
   }, [profile]);
@@ -79,18 +100,19 @@ export default function Profile() {
       const created = await createdResp.json();
       setCreatedCount(created.data.length);
       //get each poster given id then set created
-      created.data.map(async (poster) => {
+      const newCreatedPosters = [];
+      for (const poster of created.data) {
         const postersResp = await fetch(
           "http://localhost:8080/posters/" + poster.id
         );
         if (postersResp.ok) {
-          const poster = await postersResp.json();
-          setCreatedPosters((prevCreatedPosters) => [
-            ...prevCreatedPosters,
-            poster.data,
-          ]);
+          const posterData = await postersResp.json();
+          // console.log("poster data");
+          // console.log(posterData.data);
+          newCreatedPosters.push(posterData.data);
         }
-      });
+      }
+      setCreatedPosters(newCreatedPosters);
     }
   };
 
@@ -101,7 +123,6 @@ export default function Profile() {
       const user = await userResp.json();
       setInterests(user.data.interests);
     }
-    //mpa each interest to tag w class name tag
   };
 
   const handleTabChange = () => {
@@ -121,6 +142,82 @@ export default function Profile() {
       });
     });
   };
+
+  const handleProfilePictureUpload = async (
+    target: EventTarget & HTMLInputElement
+  ) => {
+    console.log("called poster upload");
+    if (target.files) {
+      const file = target.files[0]; //getting the file object
+
+      if (file && file.type.startsWith("image/")) {
+        //convert our image file into a format that can be fed into img component's src property to be displayed after upload
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          if (e.target && typeof e.target.result === "string") {
+            setProfile({ ...profile, picture: e.target.result });
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+  };
+
+  const updateValue = (property, value) => {
+    if (value && typeof value === "string") {
+      setProfile({ ...profile, [property]: value });
+    } else if (value instanceof Set) {
+      setProfile({ [property]: Array.from(value) });
+    }
+  };
+
+  async function updateProfile(): Promise<void> {
+    //update profile in database put req
+    try {
+      const updatedUser: IUser = {
+        id: profile.id,
+        name: profile.name,
+        email: profile.email,
+        picture: profile.picture,
+        interests: profile.interests,
+        createdPosters: createdPosters,
+        savedPosters: savedPosters,
+      };
+
+      console.log("inside createUser", updatedUser);
+      //add to database
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          // "Access-Control-Allow-Origin": "*",
+          // "Access-Control-Allow-Methods": "GET,PUT,POST,DELETE,PATCH",
+        },
+        withCredentials: true,
+      };
+      const url = "http://localhost:8080/users/update/" + profile.id;
+
+      const res = await axios.put(url, updatedUser, config);
+      console.log("inside creatUser res", res);
+      const userProfile = localStorage.getItem("userProfile");
+      if (userProfile) {
+        // Set the user profile in state
+        setProfile(updatedUser);
+        localStorage.setItem("userProfile", JSON.stringify(updatedUser));
+      }
+      setEditingMode(false);
+      return Promise.resolve(res.data.data);
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        console.error(
+          Promise.resolve(`Error in fetch: ${error.response.data.message}`)
+        );
+      } else {
+        console.error(
+          Promise.resolve("Error in fetch: Network error or other issue")
+        );
+      }
+    }
+  }
 
   return (
     <main
@@ -155,94 +252,233 @@ export default function Profile() {
           bottom: "1000vh",
         }}
       >
-        {profile ? (
-          <div
-            className="profile-content"
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            <img
-              src={profile.picture}
-              style={{ width: "40%", marginTop: "10%", borderRadius: "50%" }}
-              alt=""
-            />
-            <h1
-              className="name"
-              style={{ marginTop: "1vh", marginBottom: "3vh" }}
-            >
-              {profile.name}
-            </h1>
-            <p>{profile.email}</p>
+        {editingMode ? (
+          <>
             <div
-              className="icons"
+              className="profile-content"
               style={{
-                alignContent: "center",
-                width: "20%",
                 display: "flex",
-                justifyContent: "space-around",
+                flexDirection: "column",
+                alignItems: "center",
               }}
             >
-              <img
+              <div
+                className="pfp-pic"
                 style={{
-                  color: "white",
-                  backgroundColor: "white",
-                  width: "60%",
+                  width: "40%",
+                  marginTop: "10%",
                 }}
-                src="public/pencil-svgrepo-com.svg"
-                alt=""
-              />
+              >
+                <label
+                  htmlFor="profile-upload"
+                  className="upload-pfp"
+                  style={{
+                    width: "40%",
+                    position: "absolute",
+                    height: "24.5%",
+                    backgroundColor: "gray",
+                    opacity: ".85",
+                    justifyContent: "space-around",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    color: "white",
+                  }}
+                >
+                  <p>Upload</p>
+                </label>
+                <Input
+                  type="file"
+                  onChange={(ev) => handleProfilePictureUpload(ev.target)}
+                  id="profile-upload"
+                  accept="image/png, image/jpeg, image/jpg"
+                  display="none"
+                  style={{
+                    width: "100%",
+                    position: "absolute",
+                    borderRadius: "50% !important",
+                  }}
+                ></Input>
+                <img
+                  src={profile.picture}
+                  alt=""
+                  style={{ width: "100%", borderRadius: "50%" }}
+                />
+              </div>
 
-              <img
+              <Input
+                placeholder={profile.name}
+                value={profile.name}
+                onChange={(ev) => updateValue("name", ev.target.value)}
+                style={{ margin: "5%" }}
+              ></Input>
+
+              <p>{profile.email}</p>
+              <div
+                className="icons"
                 style={{
-                  color: "white",
-                  backgroundColor: "white",
-                  width: "60%",
+                  alignContent: "center",
+                  width: "20%",
+                  display: "flex",
+                  justifyContent: "space-around",
                 }}
-                onClick={() => setCalOpen(true)}
-                src="public/calendar-day-svgrepo-com.svg"
-                alt=""
-              />
+              >
+                <img
+                  style={{
+                    color: "white",
+                    backgroundColor: "white",
+                    width: "60%",
+                  }}
+                  onClick={updateProfile}
+                  src="public/check.svg"
+                  alt=""
+                />
+
+                <img
+                  style={{
+                    color: "white",
+                    backgroundColor: "white",
+                    width: "60%",
+                  }}
+                  onClick={() => setCalOpen(true)}
+                  src="public/calendar-day-svgrepo-com.svg"
+                  alt=""
+                />
+              </div>
+              <div
+                className="view-info"
+                style={{
+                  fontFamily: "'quicksand', sans-serif",
+                  width: "90%",
+                  marginLeft: "1.5vw",
+                  marginTop: "0vw",
+                }}
+              >
+                <div className="info-rows">
+                  <div className="field-name" style={{ width: "20%" }}>
+                    Likes
+                  </div>
+                  <div id="field-data">{likeCount}</div>
+                </div>
+                <div className="info-rows">
+                  <div className="field-name" style={{ width: "30%" }}>
+                    Posters
+                  </div>
+                  <div id="field-data">{createdCount}</div>
+                </div>
+                <div className="info-rows">
+                  <div className="field-name" style={{ width: "35%" }}>
+                    Interests
+                  </div>
+                  <div
+                    id="field-data"
+                    style={{ display: "flex", justifyContent: "end" }}
+                  >
+                    <img
+                      style={{ width: "15%" }}
+                      src="public/pencil-svgrepo-com.svg"
+                      onClick={() => setInterestsState(true)}
+                    />
+                  </div>
+                </div>
+                <div id="field-data">
+                  {Array.from(interests).map((interest, indx) => (
+                    <div className={classNameTag(indx)} key={indx}>
+                      {interest}
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
+          </>
+        ) : (
+          profile && (
             <div
-              className="view-info"
+              className="profile-content"
               style={{
-                fontFamily: "'quicksand', sans-serif",
-                width: "90%",
-                marginLeft: "1.5vw",
-                marginTop: "0vw",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
               }}
             >
-              <div className="info-rows">
-                <div className="field-name" style={{ width: "20%" }}>
-                  Likes
-                </div>
-                <div id="field-data">{likeCount}</div>
+              <img
+                src={profile.picture}
+                style={{ width: "40%", marginTop: "10%", borderRadius: "50%" }}
+                alt=""
+              />
+              <h1
+                className="name"
+                style={{ marginTop: "1vh", marginBottom: "3vh" }}
+              >
+                {profile.name}
+              </h1>
+              <p>{profile.email}</p>
+              <div
+                className="icons"
+                style={{
+                  alignContent: "center",
+                  width: "20%",
+                  display: "flex",
+                  justifyContent: "space-around",
+                }}
+              >
+                <img
+                  style={{
+                    color: "white",
+                    backgroundColor: "white",
+                    width: "60%",
+                  }}
+                  onClick={() => setEditingMode(true)}
+                  src="public/pencil-svgrepo-com.svg"
+                  alt=""
+                />
+
+                <img
+                  style={{
+                    color: "white",
+                    backgroundColor: "white",
+                    width: "60%",
+                  }}
+                  onClick={() => setCalOpen(true)}
+                  src="public/calendar-day-svgrepo-com.svg"
+                  alt=""
+                />
               </div>
-              <div className="info-rows">
-                <div className="field-name" style={{ width: "30%" }}>
-                  Posters
-                </div>
-                <div id="field-data">{createdCount}</div>
-              </div>
-              <div className="info-rows">
-                <div className="field-name" style={{ width: "35%" }}>
-                  Interests
-                </div>
-              </div>
-              <div id="field-data">
-                {interests.map((interest, indx) => (
-                  <div className={classNameTag(indx)} key={indx}>
-                    {interest}
+              <div
+                className="view-info"
+                style={{
+                  fontFamily: "'quicksand', sans-serif",
+                  width: "90%",
+                  marginLeft: "1.5vw",
+                  marginTop: "0vw",
+                }}
+              >
+                <div className="info-rows">
+                  <div className="field-name" style={{ width: "20%" }}>
+                    Likes
                   </div>
-                ))}
+                  <div id="field-data">{likeCount}</div>
+                </div>
+                <div className="info-rows">
+                  <div className="field-name" style={{ width: "30%" }}>
+                    Posters
+                  </div>
+                  <div id="field-data">{createdCount}</div>
+                </div>
+                <div className="info-rows">
+                  <div className="field-name" style={{ width: "35%" }}>
+                    Interests
+                  </div>
+                </div>
+                <div id="field-data">
+                  {Array.from(interests).map((interest, indx) => (
+                    <div className={classNameTag(indx)} key={indx}>
+                      {interest}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
-        ) : (
-          <p>Loading...</p>
+          )
         )}
       </div>
 
@@ -253,6 +489,13 @@ export default function Profile() {
           marginTop: "2%",
         }}
       >
+        {interestsState && (
+          <InterestsModal
+            createUser={createUser}
+            page={false}
+            onClose={() => setInterestsState(false)}
+          />
+        )}
         <Tabs variant="soft-rounded" onChange={handleTabChange}>
           <TabList
             style={{

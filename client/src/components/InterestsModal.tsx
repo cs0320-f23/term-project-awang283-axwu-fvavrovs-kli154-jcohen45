@@ -2,6 +2,7 @@ import {
   Button,
   Modal,
   ModalBody,
+  ModalCloseButton,
   ModalContent,
   ModalHeader,
   ModalOverlay,
@@ -12,10 +13,11 @@ import { profileState } from "./atoms/atoms";
 import { useRecoilState } from "recoil";
 import "../styles/Modal.css";
 
-export default function InterestsModal({ createUser }) {
+export default function InterestsModal({ createUser, page, onClose }) {
   const [allTags, setAllTags] = useState<string[]>([]);
   const [tags, setTags] = useState<Set<string>>(new Set());
   const [profile, setProfile] = useRecoilState(profileState);
+  const [refresh, setRefresh] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchAllTags = async () => {
@@ -28,7 +30,11 @@ export default function InterestsModal({ createUser }) {
     };
 
     fetchAllTags();
-  }, []);
+  }, [refresh]);
+
+  useEffect(() => {
+    console.log(profile);
+  }, [profile]);
 
   const onClick = (tag: string) => {
     // if in tags list, take out
@@ -55,22 +61,35 @@ export default function InterestsModal({ createUser }) {
       ...profile,
       interests: interests,
     };
-    setProfile(updatedProfile);
-    return await createUser(updatedProfile);
+    const userProfile = localStorage.getItem("userProfile");
+    if (userProfile) {
+      // Set the user profile in state
+      setProfile(updatedProfile);
+      localStorage.setItem("userProfile", JSON.stringify(updatedProfile));
+      // console.log(profile);
+      setRefresh(!refresh);
+    }
+    onClose();
+    //if on home page = false
+    if (!page) {
+      return await createUser(updatedProfile);
+    }
   };
+
   return (
-    <Modal
-      isOpen={true}
-      onClose={function (): void {
-        throw new Error("Function not implemented.");
-      }}
-    >
+    <Modal isOpen={true} onClose={onClose}>
       <div className="modal-font">
         <ModalOverlay />
         <ModalContent>
+          <ModalCloseButton
+            className="close-button"
+            style={{ backgroundColor: "var(--dark-purple100)", color: "white" }}
+            onClick={onClose}
+          />
           <ModalHeader className="modal-header">
             Select Up to 5 Interests
           </ModalHeader>
+
           <ModalBody>
             <div className="tags-container" style={{ width: "100%" }}>
               <div className="tags-div">
@@ -95,7 +114,10 @@ export default function InterestsModal({ createUser }) {
                 <Button
                   className="final-upload-button"
                   onClick={addToProfile}
-                  style={{ margin: "0vw 8vw 1vw" }}
+                  style={{
+                    margin: "0vw 8vw 1vw",
+                    backgroundColor: "var(--dark-purple100)",
+                  }}
                   isDisabled={tags.size < 1 || tags.size > 5}
                 >
                   Select Interests

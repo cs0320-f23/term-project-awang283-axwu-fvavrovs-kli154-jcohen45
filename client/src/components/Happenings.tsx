@@ -197,7 +197,9 @@ export const ImageCard: React.FC<ImageCardProps> = ({
   };
 
   useEffect(() => {
-    fetchSaved(userId, id);
+    if (userId) {
+      fetchSaved(userId, id);
+    }
   }, []);
 
   function time(date: number[]) {
@@ -242,7 +244,7 @@ export const ImageCard: React.FC<ImageCardProps> = ({
                 {endTime && "-" + endTime}
               </p>
             </div>
-            <div
+           {userId && <div
               className={`heart-icon-hap ${isClicked ? "clicked" : ""}`}
               id={id}
               onClick={onClickHeart}
@@ -258,7 +260,7 @@ export const ImageCard: React.FC<ImageCardProps> = ({
                 left: "85%",
                 top: "3%",
               }}
-            ></div>
+            ></div>}
           </div>
 
           <div className="title-location">

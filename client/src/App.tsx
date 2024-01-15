@@ -148,7 +148,11 @@ export default function App() {
               ) : (
                 <>
                   <div className="g-signin2" data-onsuccess="onSignIn">
-                    <Button id="login" onClick={() => login()}>
+                    <Button
+                      id="login"
+                      onClick={() => login()}
+                      style={{ backgroundColor: "var(--dark-purple100)" }}
+                    >
                       Login
                     </Button>
                   </div>
@@ -188,7 +192,13 @@ export default function App() {
           <div className="right">Made with love</div>
         </footer>
       </article>
-      {interestsState && <InterestsModal createUser={createUser} />}
+      {interestsState && (
+        <InterestsModal
+          createUser={createUser}
+          page={false}
+          onClose={() => setInterestsState(false)}
+        />
+      )}
     </>
   );
 }

@@ -73,6 +73,9 @@ button:hover {
 p {
   font-family: "quicksand", sans-serif;
 }
+label {
+  border-radius: 50%;
+}
 
 @media (prefers-color-scheme: light) {
   :root {

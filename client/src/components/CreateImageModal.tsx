@@ -69,8 +69,6 @@ export default function CreateImageModal() {
       };
       if (value instanceof Set) {
         updatedValue = { [property]: Array.from(value) };
-
-        console.log(JSON.stringify(Array.from(value)) + " updated tags");
       } else {
         updatedValue = { [property]: value };
       }

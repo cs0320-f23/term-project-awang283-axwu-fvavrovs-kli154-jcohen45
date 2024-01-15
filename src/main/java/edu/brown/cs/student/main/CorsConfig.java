@@ -34,6 +34,12 @@ public class CorsConfig {
             .allowedHeaders("*") // Allow any headers
             .allowCredentials(true)
             .maxAge(3600);
+        registry
+                .addMapping("/users/update/{id}")
+                .allowedOrigins("http://localhost:5173")
+                .allowedMethods("GET", "POST", "PUT", "DELETE")
+                .allowedHeaders("*") // Allow any headers
+                .allowCredentials(true);
       }
     };
   }

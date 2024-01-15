@@ -56,7 +56,7 @@ public class PosterService {
   //    return CompletableFuture.completedFuture(response);
   //  }
 
-  //@Async
+  // @Async
   public ServiceResponse<Poster> createPoster(Poster poster, String userID) {
     ServiceResponse<Poster> response;
     // Associate the poster with the user
@@ -112,8 +112,7 @@ public class PosterService {
       return (response);
     }
 
-    return (
-        new ServiceResponse<>(poster, "Invalid user ID provided"));
+    return (new ServiceResponse<>(poster, "Invalid user ID provided"));
   }
 
   //  @Async

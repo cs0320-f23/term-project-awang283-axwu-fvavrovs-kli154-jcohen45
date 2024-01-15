@@ -25,6 +25,7 @@ export default function TagsModal({
     const fetchAllTags = async () => {
       try {
         const tagsData = await fetchTags();
+        console.log(tagsData);
         setAllTags(tagsData);
       } catch (error) {
         console.error("Error fetching tags:", error);
@@ -130,10 +131,18 @@ export default function TagsModal({
           })}
         </div>
         <div className="final-save-div">
-          <Button onClick={onBack} className={"final-upload-button"}>
+          <Button
+            style={{ backgroundColor: "var(--dark-purple100)" }}
+            onClick={onBack}
+            className={"final-upload-button"}
+          >
             Back
           </Button>
-          <Button className="final-upload-button" onClick={createPoster}>
+          <Button
+            style={{ backgroundColor: "var(--dark-purple100)" }}
+            className="final-upload-button"
+            onClick={createPoster}
+          >
             Create Poster
           </Button>
         </div>

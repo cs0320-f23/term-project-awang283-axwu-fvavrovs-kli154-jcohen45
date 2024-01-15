@@ -1,13 +1,17 @@
 //for functions where we use the same backend call multiple times
 
 import axios from "axios";
+import { IPoster } from "../components/CreateImageModal";
 
-interface IUser {
+export interface IUser {
   id?: string;
   name?: string;
   email?: string;
   posters?: string[];
   picture?: string;
+  interests?: Set<string>;
+  createdPosters?: IPoster[];
+  savedPosters?: IPoster[];
 }
 
 export async function fetchTags() {
@@ -31,6 +35,7 @@ export async function createUser(profile) {
       name: profile.name,
       email: profile.email,
       picture: profile.picture,
+      interests: profile.interests,
     };
 
     // console.log("inside createUser", user);
@@ -43,6 +48,8 @@ export async function createUser(profile) {
       },
       withCredentials: true,
     };
+
+    //if home page:
     const url = "http://localhost:8080/users/create";
 
     const res = await axios.post(url, user, config);

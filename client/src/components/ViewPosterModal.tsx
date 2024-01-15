@@ -186,20 +186,22 @@ export default function ViewPosterModal({
             <ModalBody className="modal-body" flexDirection={"row"}>
               <Box className="view-image" overflowY={"scroll"} id={id}>
                 <img src={path} />
-                <div
-                  className="heart-icon"
-                  onClick={onClick}
-                  style={{
-                    position: "absolute",
-                    width: "2%",
-                    height: "2%",
-                    borderRadius: "10%",
-                    padding: "1%",
-                    boxSizing: "content-box",
-                    backgroundSize: "contain",
-                    backgroundRepeat: "no-repeat",
-                  }}
-                ></div>
+                {userId && (
+                  <div
+                    className="heart-icon"
+                    onClick={onClick}
+                    style={{
+                      position: "absolute",
+                      width: "2%",
+                      height: "2%",
+                      borderRadius: "10%",
+                      padding: "1%",
+                      boxSizing: "content-box",
+                      backgroundSize: "contain",
+                      backgroundRepeat: "no-repeat",
+                    }}
+                  ></div>
+                )}
               </Box>
               <div className="view-info">
                 <p id="view-title">{title}</p>
