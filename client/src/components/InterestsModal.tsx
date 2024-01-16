@@ -65,15 +65,15 @@ export default function InterestsModal({ createUser, page, onClose }) {
     if (userProfile) {
       // Set the user profile in state
       setProfile(updatedProfile);
-      localStorage.setItem("userProfile", JSON.stringify(updatedProfile));
+      localStorage.setItem("userProfile", updatedProfile.id);
       // console.log(profile);
       setRefresh(!refresh);
     }
-    onClose();
     //if on home page = false
     if (!page) {
-      return await createUser(updatedProfile);
+      return await createUser(updatedProfile, onClose);
     }
+    onClose();
   };
 
   return (

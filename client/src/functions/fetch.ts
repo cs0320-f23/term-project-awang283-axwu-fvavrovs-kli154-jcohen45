@@ -28,7 +28,7 @@ export async function fetchTags() {
   }
 } //notes : liking posts, making it an app, giving users recs by interests
 
-export async function createUser(profile) {
+export async function createUser(profile, onClose) {
   try {
     const user: IUser = {
       id: profile.id,
@@ -54,6 +54,7 @@ export async function createUser(profile) {
 
     const res = await axios.post(url, user, config);
     // console.log("inside creatUser res", res);
+    onClose()
     return Promise.resolve(res.data.data);
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {

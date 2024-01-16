@@ -42,10 +42,20 @@ export default function Profile() {
 
   useEffect(() => {
     setIsLoading(true);
-    const storedProfile = localStorage.getItem("userProfile");
-    if (storedProfile) {
-      setProfile(JSON.parse(storedProfile));
-    }
+    //get profile from databse??
+    const getUser = async () => {
+      const userresp = await fetch("http://localhost:8080/users/" + profile.id);
+      if (userresp.ok) {
+        const user = await userresp.json();
+        const storedProfile = localStorage.getItem("userProfile");
+        if (storedProfile == user.data.id) {
+          setProfile(user.data);
+        } else {
+          localStorage.setItem("userProfile", user.data);
+        }
+      }
+    };
+    getUser();
   }, []);
 
   useEffect(() => {
@@ -198,12 +208,11 @@ export default function Profile() {
 
       const res = await axios.put(url, updatedUser, config);
       // console.log("inside creatUser res", res);
-      const userProfile = localStorage.getItem("userProfile");
-      if (userProfile) {
-        // Set the user profile in state
-        setProfile(updatedUser);
-        localStorage.setItem("userProfile", JSON.stringify(updatedUser));
-      }
+
+      // Set the user profile in state
+      setProfile(updatedUser);
+      localStorage.setItem("userProfile", JSON.stringify(updatedUser));
+
       setEditingMode(false);
       return Promise.resolve(res.data.data);
     } catch (error) {

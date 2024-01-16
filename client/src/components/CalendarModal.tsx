@@ -147,7 +147,7 @@ export default function CalendarModal({ onClose }) {
             </ChakraProvider>
           )}
         </ModalBody>
-        {/* {JSON.stringify(events)} */}
+        {JSON.stringify(events)}
       </ModalContent>
     </Modal>
   );

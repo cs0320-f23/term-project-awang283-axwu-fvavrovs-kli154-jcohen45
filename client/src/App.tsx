@@ -25,6 +25,7 @@ export default function App() {
   const [user, setUser] = useState<CredentialResponse>();
   const [profile, setProfile] = useRecoilState(profileState);
   const [interestsState, setInterestsState] = useState<boolean>(false);
+  const [firstPfp, setFirstPfp] = useState();
   // const [poster] = useRecoilState<IPoster>(posterState);
   const navigate = useNavigate();
 
@@ -33,72 +34,96 @@ export default function App() {
     onError: (error) => console.log("Login Failed:", error),
   });
 
-  useEffect(() => {
-    const userProfile = localStorage.getItem("userProfile");
-    if (userProfile) {
-      // Set the user profile in state
-      setProfile(JSON.parse(userProfile));
-      // console.log(profile);
+  const findUser = async (id: string) => {
+    if (id) {
+      //if user id exists
+      const foundUser = await fetch("http://localhost:8080/users/" + id);
+
+      if (foundUser.ok) {
+        const userValid = await foundUser.json();
+
+        if (userValid.message === "User found") {
+          //user already exists
+          setProfile(userValid.data); // database info
+          localStorage.setItem("userProfile", JSON.stringify(userValid.data)); //user id
+          setInterestsState(false);
+        }
+      }
+      return true;
+    } else {
+      return false;
     }
-  }, []);
+  };
 
   useEffect(() => {
-    if (user) {
-      axios
-        .get(
-          `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`,
-          {
-            headers: {
-              Authorization: `Bearer ${user.access_token}`,
-              Accept: "application/json",
-            },
-          }
-        )
-        .then(async (res) => {
-          if (res.data.hd == "brown.edu" || res.data.hd == "risd.edu") {
-            setProfile(res.data);
-            localStorage.setItem("userProfile", JSON.stringify(res.data));
+    const fetchData = async () => {
+      if (user) {
+        try {
+          const userInfoResponse = await axios.get(
+            `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`,
+            {
+              headers: {
+                Authorization: `Bearer ${user.access_token}`,
+                Accept: "application/json",
+              },
+            }
+          );
+
+          const userInfo = userInfoResponse.data; //google response
+
+          if (userInfo.hd == "brown.edu" || userInfo.hd == "risd.edu") {
+            //check for valid brown / risd
+            setFirstPfp(userInfo);
+            localStorage.setItem(
+              "userProfileInitial",
+              JSON.stringify(userInfo)
+            );
+            localStorage.setItem("id", userInfo.id);
+
+            //check if user exists in the database with get user by id
+            const userID = userInfo.id;
+            const found = await findUser(userID); //does the user exist?
+            if (!found) {
+              //new user
+              localStorage.setItem(
+                "userProfile",
+                localStorage.getItem("userProfileInitial")!
+              );
+              setProfile(userInfo); //set prof to gooogle state
+              setInterestsState(true); //open interests modal
+            }
           } else {
+            //not a valid email
             window.alert("Please use a valid Brown or RISD email");
             setProfile(null);
           }
-        })
-        .catch((err) => console.log(err));
-      //check if user exists in database w get user by id
-      const findUser = async () => {
-        if (profile) {
-          try {
-            const userID = profile.id;
-            const foundUser = await fetch(
-              "http://localhost:8080/users/" + userID
-            );
-            if (foundUser.ok) {
-              const userValid = await foundUser.json();
-
-              if (userValid.message === "User found") {
-                setProfile(profile);
-                setInterestsState(false);
-              } else {
-                setInterestsState(true);
-                //return <InterestsModal createUser={createUser} />;
-              }
-            }
-          } catch (e) {
-            console.log("error fetching user" + e);
-          }
+        } catch (error) {
+          console.error("Error fetching user data:", error);
         }
-      };
-      findUser().then((p) => {
-        return p;
-      });
-    }
-  }, [user, profile]);
+      }
+    };
+    const onMount = async () => {
+      if (!localStorage.getItem("userProfile")) {
+        //if no local storage - logged out or first time
+        fetchData();
+      } else {
+        //existing local profile
+        const id = localStorage.getItem("id");
+        if (id) {
+          await findUser(id);
+        }
+      }
+    };
+    onMount();
+  }, [user, setProfile]);
 
   // log out function to log the user out of google and set the profile array to null
   const logOut = () => {
     googleLogout();
     setProfile(null);
     localStorage.removeItem("userProfile");
+    localStorage.removeItem("id");
+    localStorage.removeItem("userProfileInital");
     navigate("/home");
   };
 
