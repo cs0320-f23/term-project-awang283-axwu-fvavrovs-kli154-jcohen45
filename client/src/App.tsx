@@ -26,7 +26,6 @@ export default function App() {
   const [profile, setProfile] = useRecoilState(profileState);
   const [interestsState, setInterestsState] = useState<boolean>(false);
   const [firstPfp, setFirstPfp] = useState();
-  // const [poster] = useRecoilState<IPoster>(posterState);
   const navigate = useNavigate();
 
   const login = useGoogleLogin({
@@ -78,7 +77,6 @@ export default function App() {
               "userProfileInitial",
               JSON.stringify(userInfo)
             );
-            localStorage.setItem("id", userInfo.id);
 
             //check if user exists in the database with get user by id
             const userID = userInfo.id;
@@ -89,7 +87,7 @@ export default function App() {
                 "userProfile",
                 localStorage.getItem("userProfileInitial")!
               );
-              setProfile(userInfo); //set prof to gooogle state
+              setProfile(userInfo); //set prof to google state
               setInterestsState(true); //open interests modal
             }
           } else {
@@ -105,12 +103,16 @@ export default function App() {
     const onMount = async () => {
       if (!localStorage.getItem("userProfile")) {
         //if no local storage - logged out or first time
+        console.log("logged out");
         fetchData();
       } else {
         //existing local profile
-        const id = localStorage.getItem("id");
-        if (id) {
-          await findUser(id);
+        console.log("logged in");
+        const userProfileString = localStorage.getItem("userProfile");
+        const userProfile = JSON.parse(userProfileString!);
+        const userId = userProfile.id;
+        if (userId) {
+          await findUser(userId);
         }
       }
     };
@@ -122,7 +124,6 @@ export default function App() {
     googleLogout();
     setProfile(null);
     localStorage.removeItem("userProfile");
-    localStorage.removeItem("id");
     localStorage.removeItem("userProfileInital");
     navigate("/home");
   };
