@@ -303,13 +303,13 @@ public class PosterController {
                                 new ServiceResponse<>(
                                     "Poster with id "
                                         + id
-                                        + "not removed from users created posters"));
+                                        + " not removed from users created posters"));
                           }
                         });
                 return posterService
                     .deletePosterById(id)
                     .thenApply(
-                        deleted -> new ServiceResponse<>("Poster with id " + id + "deleted"));
+                        deleted -> new ServiceResponse<>("Poster with id " + id + " deleted"));
               } else {
                 return CompletableFuture.completedFuture(
                     new ServiceResponse<>("Poster with id " + id + " not found"));

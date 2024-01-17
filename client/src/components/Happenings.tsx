@@ -114,7 +114,6 @@ export const ImageCard: React.FC<ImageCardProps> = ({
       if (savedPosters.ok) {
         const posterSet = await savedPosters.json();
         //compare id passed in to each poster in set
-
         posterSet.data.forEach((poster) => {
           if (poster.id === id) {
             setIsClicked(true);
@@ -125,6 +124,13 @@ export const ImageCard: React.FC<ImageCardProps> = ({
       console.error(error);
     }
   };
+
+  useEffect(() => {
+    if (userId) {
+      fetchSaved(userId, id);
+      console.log("refresh");
+    }
+  }, [refresh, userId, id]);
 
   const onClickHeart = async () => {
     const heartIcon = document.querySelector(`.heart-icon-hap`);
@@ -199,13 +205,6 @@ export const ImageCard: React.FC<ImageCardProps> = ({
       }
     }
   };
-
-  useEffect(() => {
-    if (userId) {
-      fetchSaved(userId, id);
-      console.log("refresh");
-    }
-  }, [refresh, userId, id]);
 
   function time(date: number[]) {
     let minutes = JSON.stringify(date[4]);

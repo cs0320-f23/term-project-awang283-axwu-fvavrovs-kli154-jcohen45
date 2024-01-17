@@ -46,12 +46,14 @@ export default function App() {
           setProfile(userValid.data); // database info
           localStorage.setItem("userProfile", JSON.stringify(userValid.data)); //user id
           setInterestsState(false);
+          return true;
         }
+        return false;
+      } else {
+        return false;
       }
-      return true;
-    } else {
-      return false;
     }
+    return false;
   };
 
   useEffect(() => {
@@ -77,10 +79,11 @@ export default function App() {
               "userProfileInitial",
               JSON.stringify(userInfo)
             );
-
             //check if user exists in the database with get user by id
             const userID = userInfo.id;
+            console.log("user id is: " + userID);
             const found = await findUser(userID); //does the user exist?
+            console.log("is user found: " + found);
             if (!found) {
               //new user
               localStorage.setItem(
@@ -89,6 +92,7 @@ export default function App() {
               );
               setProfile(userInfo); //set prof to google state
               setInterestsState(true); //open interests modal
+              console.log(interestsState);
             }
           } else {
             //not a valid email

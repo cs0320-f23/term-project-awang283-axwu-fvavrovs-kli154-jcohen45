@@ -86,7 +86,6 @@ export default function TagsModal({
       const url = "http://localhost:8080/posters/update/" + posterId;
       const formData = new FormData();
       console.log(tags);
-
       tags.forEach((tag) => {
         formData.append("tags", tag);
       });
