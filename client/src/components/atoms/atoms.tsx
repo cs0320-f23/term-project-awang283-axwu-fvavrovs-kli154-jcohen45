@@ -37,7 +37,7 @@ export const modalOpenState = atom<string>({
   default: "",
 });
 
-export const clickState = atom<boolean>({
-  key: "clickState",
+export const refreshState = atom<boolean>({
+  key: "refreshState",
   default: false,
 });

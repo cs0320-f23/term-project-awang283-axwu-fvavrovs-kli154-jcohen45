@@ -41,21 +41,21 @@ export default function Profile() {
   const [interestsState, setInterestsState] = useState<boolean>(false);
 
   useEffect(() => {
-    setIsLoading(true);
-    //get profile from databse??
-    const getUser = async () => {
-      const userresp = await fetch("http://localhost:8080/users/" + profile.id);
-      if (userresp.ok) {
-        const user = await userresp.json();
-        const storedProfile = localStorage.getItem("userProfile");
-        if (storedProfile == user.data.id) {
-          setProfile(user.data);
-        } else {
-          localStorage.setItem("userProfile", user.data);
-        }
-      }
-    };
-    getUser();
+    // setIsLoading(true);
+    // //get profile from databse??
+    // const getUser = async () => {
+    //   const userresp = await fetch("http://localhost:8080/users/" + profile.id);
+    //   if (userresp.ok) {
+    //     const user = await userresp.json();
+    //     const storedProfile = localStorage.getItem("userProfile");
+    //     if (storedProfile == user.data.id) {
+    //       setProfile(user.data);
+    //     } else {
+    //       localStorage.setItem("userProfile", user.data);
+    //     }
+    //   }
+    // };
+    // getUser();
   }, []);
 
   useEffect(() => {

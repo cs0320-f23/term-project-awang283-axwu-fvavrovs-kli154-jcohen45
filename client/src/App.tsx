@@ -78,7 +78,6 @@ export default function App() {
               "userProfileInitial",
               JSON.stringify(userInfo)
             );
-            localStorage.setItem("id", userInfo.id);
 
             //check if user exists in the database with get user by id
             const userID = userInfo.id;
@@ -108,9 +107,11 @@ export default function App() {
         fetchData();
       } else {
         //existing local profile
-        const id = localStorage.getItem("id");
-        if (id) {
-          await findUser(id);
+        const userProfileString = localStorage.getItem("userProfile");
+        const userProfile = JSON.parse(userProfileString!);
+        const userId = userProfile.id;
+        if (userId) {
+          await findUser(userId);
         }
       }
     };
@@ -122,7 +123,6 @@ export default function App() {
     googleLogout();
     setProfile(null);
     localStorage.removeItem("userProfile");
-    localStorage.removeItem("id");
     localStorage.removeItem("userProfileInital");
     navigate("/home");
   };

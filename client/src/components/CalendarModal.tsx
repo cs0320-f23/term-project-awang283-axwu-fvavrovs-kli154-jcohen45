@@ -4,7 +4,6 @@ import {
   ModalBody,
   ModalContent,
   ModalOverlay,
-  Button,
   ModalCloseButton,
 } from "@chakra-ui/react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
@@ -17,29 +16,33 @@ import { profileState } from "./atoms/atoms";
 
 export default function CalendarModal({ onClose }) {
   const [savedPosters, setSavedPosters] = useState<IPoster[]>([]);
-  const [profile, setProfile] = useRecoilState(profileState);
+  const [profile] = useRecoilState(profileState);
   const localizer = momentLocalizer(moment);
   const [isReady, setIsReady] = useState(false);
   const [events, setEvents] = useState<
-    { title: string; start: Date; end: Date }[]
+    {
+      title: string;
+      start: Date;
+      end: Date;
+    }[]
   >([]);
 
   useEffect(() => {
     setIsReady(false);
     const storedProfile = localStorage.getItem("userProfile");
     if (storedProfile) {
-      setProfile(JSON.parse(storedProfile));
       fetchData();
     }
   }, []);
 
   useEffect(() => {
-    makeEvents();
+    if (isReady) {
+      makeEvents();
+    }
   }, [isReady]);
 
   const fetchData = async () => {
     await getUserLikes();
-    makeEvents();
     setIsReady(true);
   };
 
@@ -60,24 +63,11 @@ export default function CalendarModal({ onClose }) {
   const makeEvents = () => {
     const newEvents = [
       ...savedPosters.map((poster) => {
-        const startDateArray = poster.startDate!;
+        const startDate = moment(poster.startDate).toDate();
 
-        const startDate = new Date(
-          startDateArray[0],
-          parseInt(startDateArray[1]) - 1,
-          startDateArray[2],
-          startDateArray[3],
-          startDateArray[4]
-        );
-
-        const endDateArray = poster.endDate ? poster.endDate : startDateArray;
-        const endDate = new Date(
-          endDateArray[0],
-          parseInt(endDateArray[1]) - 1,
-          endDateArray[2],
-          endDateArray[3],
-          endDateArray[4]
-        );
+        const endDate = poster.endDate
+          ? moment(poster.endDate).toDate()
+          : moment(poster.startDate).toDate();
 
         const event = {
           title: poster.title!,
@@ -86,14 +76,18 @@ export default function CalendarModal({ onClose }) {
         };
         return event;
       }),
-      {
-        title: "hi",
-        start: new Date(2024, 0, 15, 2, 30, 0),
-        end: new Date(2024, 0, 15, 4, 30, 0),
-      },
     ];
+    console.log(newEvents);
     setEvents(newEvents);
   };
+  // const events = [
+  //   {
+  //     title: "hi",
+  //     start: new Date(2024, 1, 1, 3, 0),
+  //     end: new Date(2024, 1, 1, 4, 0),
+  //   },
+  // ];
+
   const customStyle = {
     minHeight: 500,
     width: 700,
@@ -131,7 +125,7 @@ export default function CalendarModal({ onClose }) {
           style={{ backgroundColor: "var(--dark-purple100)" }}
         />
         <ModalBody width={"fit-content"}>
-          {isReady && (
+          {events.length > 0 && (
             <ChakraProvider>
               <Calendar
                 localizer={localizer}
@@ -147,7 +141,6 @@ export default function CalendarModal({ onClose }) {
             </ChakraProvider>
           )}
         </ModalBody>
-        {JSON.stringify(events)}
       </ModalContent>
     </Modal>
   );

@@ -18,6 +18,7 @@ import axios from "axios";
 import { useRecoilState } from "recoil";
 import {
   profileState,
+  refreshState,
   searchResultsState,
   searchState,
   tagsState,
@@ -101,6 +102,7 @@ export const ImageCard: React.FC<ImageCardProps> = ({
   const weekday = listWeekdays[new Date(fullDate).getDay()];
   const [userId] = useRecoilState(profileState);
   const [isClicked, setIsClicked] = useState<boolean>(false);
+  const [refresh, setRefresh] = useRecoilState<boolean>(refreshState);
 
   const fetchSaved = async (userId, id) => {
     try {
@@ -131,6 +133,7 @@ export const ImageCard: React.FC<ImageCardProps> = ({
         //if alredy clicked, un fill, un save
         //unfill
         setIsClicked(false);
+
         //unsave
         try {
           //add to database
@@ -146,7 +149,7 @@ export const ImageCard: React.FC<ImageCardProps> = ({
             userId.id;
 
           const res = await axios.put(url, null, config);
-
+          setRefresh(!refresh);
           return Promise.resolve(res.data.data);
         } catch (error) {
           if (axios.isAxiosError(error) && error.response) {
@@ -179,7 +182,8 @@ export const ImageCard: React.FC<ImageCardProps> = ({
             userId.id;
 
           const res = await axios.put(url, null, config);
-          console.log(res.data.data);
+          // console.log(res.data.data);
+          setRefresh(!refresh);
           return Promise.resolve(res.data.data);
         } catch (error) {
           if (axios.isAxiosError(error) && error.response) {
@@ -199,8 +203,9 @@ export const ImageCard: React.FC<ImageCardProps> = ({
   useEffect(() => {
     if (userId) {
       fetchSaved(userId, id);
+      console.log("refresh");
     }
-  }, []);
+  }, [refresh, userId, id]);
 
   function time(date: number[]) {
     let minutes = JSON.stringify(date[4]);
@@ -244,23 +249,25 @@ export const ImageCard: React.FC<ImageCardProps> = ({
                 {endTime && "-" + endTime}
               </p>
             </div>
-           {userId && <div
-              className={`heart-icon-hap ${isClicked ? "clicked" : ""}`}
-              id={id}
-              onClick={onClickHeart}
-              style={{
-                display: "flex",
-                width: "8%",
-                height: "8%",
-                borderRadius: "10%",
-                padding: "1%",
-                boxSizing: "content-box",
-                backgroundSize: "contain",
-                backgroundRepeat: "no-repeat",
-                left: "85%",
-                top: "3%",
-              }}
-            ></div>}
+            {userId && (
+              <div
+                className={`heart-icon-hap ${isClicked ? "clicked" : ""}`}
+                id={id}
+                onClick={onClickHeart}
+                style={{
+                  display: "flex",
+                  width: "8%",
+                  height: "8%",
+                  borderRadius: "10%",
+                  padding: "1%",
+                  boxSizing: "content-box",
+                  backgroundSize: "contain",
+                  backgroundRepeat: "no-repeat",
+                  left: "85%",
+                  top: "3%",
+                }}
+              ></div>
+            )}
           </div>
 
           <div className="title-location">
