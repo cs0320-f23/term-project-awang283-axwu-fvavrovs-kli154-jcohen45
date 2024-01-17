@@ -1,7 +1,7 @@
 //for functions where we use the same backend call multiple times
 
 import axios from "axios";
-import { IPoster } from "../components/CreateImageModal";
+import { IPoster } from "../components/Happenings";
 
 export interface IUser {
   id?: string;
@@ -54,7 +54,7 @@ export async function createUser(profile, onClose) {
 
     const res = await axios.post(url, user, config);
     // console.log("inside creatUser res", res);
-    onClose()
+    onClose();
     return Promise.resolve(res.data.data);
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {

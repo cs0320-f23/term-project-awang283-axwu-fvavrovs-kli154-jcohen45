@@ -67,7 +67,7 @@ export default function InterestsModal({ createUser, page, onClose }) {
       setProfile(updatedProfile);
       localStorage.setItem("userProfile", updatedProfile.id);
       // console.log(profile);
-      setRefresh(!refresh);
+      //setRefresh(!refresh);
     }
     //if on home page = false
     if (!page) {

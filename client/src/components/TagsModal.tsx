@@ -6,7 +6,7 @@ import { classNameTag, fetchTags } from "../functions/fetch";
 import { posterSrcState, posterState, searchResultsState } from "./atoms/atoms";
 import { useRecoilState } from "recoil";
 import { getPosters } from "./Happenings";
-import { IPoster } from "./CreateImageModal";
+import { IPoster } from "./Happenings";
 
 export default function TagsModal({
   onClose,

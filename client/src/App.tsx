@@ -47,9 +47,12 @@ export default function App() {
           setProfile(userValid.data); // database info
           localStorage.setItem("userProfile", JSON.stringify(userValid.data)); //user id
           setInterestsState(false);
+          return true;
         }
+        return false;
+      } else {
+        return false;
       }
-      return true;
     } else {
       return false;
     }

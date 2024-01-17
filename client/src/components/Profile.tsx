@@ -14,7 +14,7 @@ import {
   Input,
 } from "@chakra-ui/react";
 import Masonry from "masonry-layout";
-import { IPoster } from "./CreateImageModal";
+import { IPoster } from "./Happenings";
 import imagesLoaded from "imagesloaded";
 import { ImageCard } from "./Happenings";
 import { TriangleUpIcon } from "@chakra-ui/icons";

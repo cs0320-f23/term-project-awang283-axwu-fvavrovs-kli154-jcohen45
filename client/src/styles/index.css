@@ -65,7 +65,7 @@ button {
 }
 
 button:hover {
-  background-color: var(--dark-purple70) !important;
+  /* background-color: var(--dark-purple70) !important; */
   transform: scale(1.03) !important;
   transition: 0.3s;
 }
@@ -87,4 +87,15 @@ label {
   button {
     background-color: #f9f9f9;
   }
+}
+
+.fc-button
+  .fc-button-primary
+  .fc-button-primary:disabled
+  .fc-button-primary:hover {
+  background-color: transparent;
+}
+
+.fc-direction-ltr {
+  font-family: "quicksand", sans-serif;
 }

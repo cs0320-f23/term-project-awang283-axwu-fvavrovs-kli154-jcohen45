@@ -10,7 +10,7 @@ import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useEffect, useState } from "react";
-import { IPoster } from "./CreateImageModal";
+import { IPoster } from "./Happenings";
 import { useRecoilState } from "recoil";
 import { profileState } from "./atoms/atoms";
 
