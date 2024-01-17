@@ -88,10 +88,20 @@ export default function PopupModal({ posterID, setPosterSrc }) {
                 marginTop: "5%",
               }}
             >
-              <Button onClick={() => onYes()} color={"white"} width={"40%"}>
+              <Button
+                onClick={() => onYes()}
+                backgroundColor={"var(--dark-purple100"}
+                color={"white"}
+                width={"40%"}
+              >
                 Yes
               </Button>
-              <Button onClick={() => onNo()} color={"white"} width={"40%"}>
+              <Button
+                onClick={() => onNo()}
+                backgroundColor={"var(--dark-purple100"}
+                color={"white"}
+                width={"40%"}
+              >
                 No
               </Button>
             </div>

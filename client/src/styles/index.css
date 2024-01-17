@@ -88,12 +88,37 @@ label {
     background-color: #f9f9f9;
   }
 }
-
-.fc-button
-  .fc-button-primary
-  .fc-button-primary:disabled
-  .fc-button-primary:hover {
+.fc .fc-button-primary:hover,
+.fc-button .fc-button-primary {
   background-color: transparent;
+  color: var(--dark-purple100);
+  border-color: transparent;
+}
+
+.fc .fc-button-primary:not(:disabled).fc-button-active,
+.fc .fc-button-primary:not(:disabled):active,
+.fc .fc-button-primary,
+.fc-button-primary:disabled,
+.fc .fc-button-primary:disabled {
+  background-color: transparent;
+  color: var(--dark-purple100);
+  border-color: transparent;
+}
+.fc-button-primary:hover::after,
+.fc .fc-button-primary:hover::after {
+  transition: 0.3s;
+  opacity: 1;
+  width: 100%;
+  content: "";
+  height: 2px;
+  width: 0%;
+  background-color: var(--light-blue);
+  left: 0;
+  bottom: 1.3vh;
+  border-radius: 10px;
+  opacity: 0;
+  transition: all 0.3s;
+  pointer-events: none;
 }
 
 .fc-direction-ltr {

@@ -41,39 +41,23 @@ export default function Profile() {
   const [interestsState, setInterestsState] = useState<boolean>(false);
 
   useEffect(() => {
-    // setIsLoading(true);
-    // //get profile from databse??
-    // const getUser = async () => {
-    //   const userresp = await fetch("http://localhost:8080/users/" + profile.id);
-    //   if (userresp.ok) {
-    //     const user = await userresp.json();
-    //     const storedProfile = localStorage.getItem("userProfile");
-    //     if (storedProfile == user.data.id) {
-    //       setProfile(user.data);
-    //     } else {
-    //       localStorage.setItem("userProfile", user.data);
-    //     }
-    //   }
-    // };
-    // getUser();
-  }, []);
-
-  useEffect(() => {
     // Check if profile is not null before trying to access properties
     setIsLoading(true);
     //setProfile(JSON.parse(localStorage.getItem("userProfile")!));
     // console.log(profile);
     if (profile) {
-      getUserCreated();
-      getUserLikes();
-      getUserInterests();
+      const get = async () => {
+        await getUserCreated();
+        await getUserLikes();
+        await getUserInterests();
+      };
+      get().then(() => setIsLoading(false));
       // console.log(profile);
     }
-    setIsLoading(false);
   }, [profile]);
 
   useEffect(() => {
-    setIsLoading(true);
+    // setIsLoading(true);
     imagesLoaded(`.saved-grid`, function () {
       new Masonry(`.saved-grid`, {
         columnWidth: 34,
@@ -88,7 +72,7 @@ export default function Profile() {
         gutter: 23,
       });
     });
-    setIsLoading(false);
+    // setIsLoading(false);
   }, [createdPosters, savedPosters]);
 
   const getUserLikes = async () => {
@@ -371,7 +355,7 @@ export default function Profile() {
                 </div>
                 <div className="info-rows">
                   <div className="field-name" style={{ width: "30%" }}>
-                    Posters
+                    Created
                   </div>
                   <div id="field-data">{createdCount}</div>
                 </div>
@@ -470,7 +454,7 @@ export default function Profile() {
                 </div>
                 <div className="info-rows">
                   <div className="field-name" style={{ width: "30%" }}>
-                    Posters
+                    Created
                   </div>
                   <div id="field-data">{createdCount}</div>
                 </div>
@@ -530,7 +514,7 @@ export default function Profile() {
                 color: "white !important",
               }}
             >
-              Saved
+              Liked
             </Tab>
             <Tab
               backgroundColor={"transparent !important"}

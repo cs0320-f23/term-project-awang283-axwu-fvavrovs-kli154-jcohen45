@@ -1,34 +1,31 @@
+import { useEffect, useState } from "react";
 import {
-  ChakraProvider,
   Modal,
   ModalBody,
   ModalContent,
   ModalOverlay,
   ModalCloseButton,
 } from "@chakra-ui/react";
-import { Calendar, momentLocalizer } from "react-big-calendar";
-import moment from "moment";
-import "react-big-calendar/lib/css/react-big-calendar.css";
-import { useEffect, useState } from "react";
-import { IPoster } from "./Happenings";
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import timeGridPlugin from "@fullcalendar/timegrid";
 import { useRecoilState } from "recoil";
 import { profileState } from "./atoms/atoms";
+import { IPoster } from "./Happenings";
 
 export default function CalendarModal({ onClose }) {
   const [savedPosters, setSavedPosters] = useState<IPoster[]>([]);
+  const [createdPosters, setCreatedPosters] = useState<IPoster[]>([]);
   const [profile] = useRecoilState(profileState);
-  const localizer = momentLocalizer(moment);
   const [isReady, setIsReady] = useState(false);
   const [events, setEvents] = useState<
-    {
-      title: string;
-      start: Date;
-      end: Date;
-    }[]
+    { title: string; start: number[]; end: number[] }[]
   >([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     setIsReady(false);
+    setIsLoading(true);
     const storedProfile = localStorage.getItem("userProfile");
     if (storedProfile) {
       fetchData();
@@ -37,12 +34,15 @@ export default function CalendarModal({ onClose }) {
 
   useEffect(() => {
     if (isReady) {
-      makeEvents();
+      makeEvents([...savedPosters, ...createdPosters]);
+      console.log(events);
+      setIsLoading(false);
     }
   }, [isReady]);
 
   const fetchData = async () => {
     await getUserLikes();
+    await getUserCreated();
     setIsReady(true);
   };
 
@@ -60,59 +60,55 @@ export default function CalendarModal({ onClose }) {
     }
   };
 
-  const makeEvents = () => {
-    const newEvents = [
-      ...savedPosters.map((poster) => {
-        const startDate = moment(poster.startDate).toDate();
+  const getUserCreated = async () => {
+    const createdResp = await fetch(
+      "http://localhost:8080/users/createdPosters/" + profile.id
+    );
+    if (createdResp.ok) {
+      const created = await createdResp.json();
+      //get each poster given id then set created
+      const newCreatedPosters = [];
+      for (const poster of created.data) {
+        const postersResp = await fetch(
+          "http://localhost:8080/posters/" + poster.id
+        );
+        if (postersResp.ok) {
+          const posterData = await postersResp.json();
+          newCreatedPosters.push(posterData.data);
+        }
+      }
+      setCreatedPosters(newCreatedPosters);
+    }
+  };
 
-        const endDate = poster.endDate
-          ? moment(poster.endDate).toDate()
-          : moment(poster.startDate).toDate();
+  const makeEvents = (posters) => {
+    const newEvents = posters.map((poster) => {
+      const newStartDate = [...poster.startDate];
+      newStartDate[1] -= 1;
 
-        const event = {
-          title: poster.title!,
-          start: startDate,
-          end: endDate,
-        };
-        return event;
-      }),
-    ];
-    console.log(newEvents);
+      const newEndDate = poster.endDate
+        ? [...poster.endDate]
+        : [...poster.startDate];
+      newEndDate[1] -= 1;
+
+      return {
+        title: poster.title!,
+        start: newStartDate,
+        end: newEndDate,
+      };
+    });
     setEvents(newEvents);
   };
-  // const events = [
-  //   {
-  //     title: "hi",
-  //     start: new Date(2024, 1, 1, 3, 0),
-  //     end: new Date(2024, 1, 1, 4, 0),
-  //   },
-  // ];
 
-  const customStyle = {
-    minHeight: 500,
-    width: 700,
-    fontFamily: "'quicksand', sans-serif",
-  };
+  const handleEventClick = (info) => {
+    const startDate = info.event.start;
 
-  const eventStyleGetter = (event, start, end, isSelected) => {
-    const style = {
-      border: "none",
-      borderRadius: "0",
-      backgroundColor: isSelected
-        ? "var(--dark-purple70)"
-        : "var(--dark-purple100)",
-    };
-    return {
-      style,
-    };
-  };
-
-  const dayPropGetter = (date) => {
-    return {
-      style: {
-        backgroundColor: "transparent !important",
-      },
-    };
+    // Assuming you want to navigate to the dayGrid view for the clicked event
+    if (startDate) {
+      // const formattedStartDate = startDate.toISOString(); // You might need to format it based on your API's requirements
+      info.view.calendar.gotoDate(startDate);
+      info.view.calendar.changeView("timeGridDay");
+    }
   };
 
   return (
@@ -125,20 +121,29 @@ export default function CalendarModal({ onClose }) {
           style={{ backgroundColor: "var(--dark-purple100)" }}
         />
         <ModalBody width={"fit-content"}>
-          {events.length > 0 && (
-            <ChakraProvider>
-              <Calendar
-                localizer={localizer}
-                events={events}
-                defaultView="week"
-                views={["day", "week", "month"]}
-                startAccessor="start"
-                endAccessor="end"
-                style={customStyle}
-                dayPropGetter={dayPropGetter}
-                eventPropGetter={eventStyleGetter}
-              />
-            </ChakraProvider>
+          {isLoading && (
+            <div className="loading-screen">
+              <img className="loading-gif" src="/loading.gif" />
+            </div>
+          )}
+          {isReady && (
+            <FullCalendar
+              plugins={[dayGridPlugin, timeGridPlugin]}
+              initialView="dayGridMonth"
+              events={events}
+              eventBackgroundColor="var(--dark-purple100)"
+              eventClick={(info) => handleEventClick(info)}
+              views={{
+                timeGrid: { buttonText: "Week" },
+                dayGrid: { buttonText: "Month" },
+                timeGridDay: { buttonText: "Day" },
+              }}
+              headerToolbar={{
+                left: "prev,next today",
+                center: "title",
+                right: "timeGridDay,timeGridWeek,dayGridMonth",
+              }}
+            />
           )}
         </ModalBody>
       </ModalContent>
