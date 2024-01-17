@@ -10,7 +10,7 @@ import "../styles/Modal.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useRecoilState } from "recoil";
-import { profileState } from "./atoms/atoms";
+import { profileState, refreshState } from "./atoms/atoms";
 import { classNameTag } from "../functions/fetch";
 
 interface viewProps {
@@ -46,6 +46,7 @@ export default function ViewPosterModal({
   const [name, setName] = useState<string>("");
   const [picture, setPicture] = useState<string>("");
   const [userId] = useRecoilState(profileState);
+  const [refresh, setRefresh] = useRecoilState(refreshState);
 
   useEffect(() => {
     if (userId) {
@@ -118,7 +119,7 @@ export default function ViewPosterModal({
             userId.id;
 
           const res = await axios.put(url, null, config);
-
+          setRefresh(!refresh);
           return Promise.resolve(res.data.data);
         } catch (error) {
           if (axios.isAxiosError(error) && error.response) {
