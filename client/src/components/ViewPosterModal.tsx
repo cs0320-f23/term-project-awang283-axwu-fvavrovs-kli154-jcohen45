@@ -49,28 +49,30 @@ export default function ViewPosterModal({
   const [refresh, setRefresh] = useRecoilState(refreshState);
 
   useEffect(() => {
-    getUser();
-    const fetchSaved = async () => {
-      try {
-        //fetch savedposters
-        const savedPosters = await fetch(
-          "http://localhost:8080/users/savedPosters/" + userId.id
-        );
-        //if poster in saved , set class to clicked
-        if (savedPosters.ok) {
-          const posterSet = await savedPosters.json();
-          //compare id passed in to each poster in set
-          posterSet.data.forEach((poster) => {
-            if (poster.id === id) {
-              document.querySelector(".heart-icon")!.classList.add("clicked");
-            }
-          });
+    if (userId) {
+      getUser();
+      const fetchSaved = async () => {
+        try {
+          //fetch savedposters
+          const savedPosters = await fetch(
+            "http://localhost:8080/users/savedPosters/" + userId.id
+          );
+          //if poster in saved , set class to clicked
+          if (savedPosters.ok) {
+            const posterSet = await savedPosters.json();
+            //compare id passed in to each poster in set
+            posterSet.data.forEach((poster) => {
+              if (poster.id === id) {
+                document.querySelector(".heart-icon")!.classList.add("clicked");
+              }
+            });
+          }
+        } catch (error) {
+          console.error(error);
         }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchSaved();
+      };
+      fetchSaved();
+    }
   }, []);
 
   const getUser = async () => {
@@ -179,11 +181,7 @@ export default function ViewPosterModal({
             minH="60%"
             className="modal-content"
           >
-            <ModalCloseButton
-              className="close-button"
-              onClick={onClose}
-              style={{ backgroundColor: "var(--dark-purple100)" }}
-            />
+            <ModalCloseButton className="close-button" onClick={onClose} />
             <ModalBody className="modal-body" flexDirection={"row"}>
               <Box className="view-image" overflowY={"scroll"} id={id}>
                 <img src={path} />

@@ -25,19 +25,6 @@ import { useRecoilState } from "recoil";
 import PopupModal from "./PopupModal";
 import { IPoster } from "./Happenings";
 
-// export interface IPoster {
-//   id: string;
-//   content?: string;
-//   title?: string;
-//   location?: string;
-//   startDate?: string;
-//   endDate?: string;
-//   isRecurring?: string;
-//   link?: string;
-//   description?: string;
-//   tags?: Set<string>;
-// }
-
 export default function CreateImageModal() {
   const [showTags, setShowTags] = useState<boolean>(false);
   const [posterSrc, setPosterSrc] = useRecoilState(posterSrcState);

@@ -122,6 +122,7 @@ export default function Profile() {
           newCreatedPosters.push(posterData.data);
         }
       }
+      console.log(newCreatedPosters);
       setCreatedPosters(newCreatedPosters);
     }
   };

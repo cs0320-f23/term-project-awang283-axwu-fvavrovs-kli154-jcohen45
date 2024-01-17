@@ -124,7 +124,7 @@ export default function Home() {
                   <ModalBody className="modal-body">
                     <ModalContent className="tag-modal-content">
                       <ModalHeader className="modal-header">
-                        Choose Tags
+                        Select Tags
                       </ModalHeader>
                       <ModalCloseButton
                         className="close-button"
@@ -134,16 +134,17 @@ export default function Home() {
                         className="tags-container"
                         style={{
                           alignItems: "center",
+                          justifyContent: "center",
                           display: "flex",
                           flexDirection: "column",
                           width: "100%",
                           gap: "2vw",
+                          paddingLeft: "1.5vw",
                         }}
                       >
                         <div
                           className="tags-div"
                           style={{
-                            paddingLeft: "5%",
                             width: "100%",
                           }}
                         >
@@ -186,7 +187,6 @@ export default function Home() {
               <div className="blue-tag">Outdoor</div>
             </div>
           </div>
-          {/* map each poster to an img w/in a div  */}
         </div>
         <div className="happenings">
           <div className="happenings-label">Happening Soon</div>

@@ -26,7 +26,6 @@ export default function App() {
   const [profile, setProfile] = useRecoilState(profileState);
   const [interestsState, setInterestsState] = useState<boolean>(false);
   const [firstPfp, setFirstPfp] = useState();
-  // const [poster] = useRecoilState<IPoster>(posterState);
   const navigate = useNavigate();
 
   const login = useGoogleLogin({
@@ -53,9 +52,8 @@ export default function App() {
       } else {
         return false;
       }
-    } else {
-      return false;
     }
+    return false;
   };
 
   useEffect(() => {
@@ -81,18 +79,20 @@ export default function App() {
               "userProfileInitial",
               JSON.stringify(userInfo)
             );
-
             //check if user exists in the database with get user by id
             const userID = userInfo.id;
+            console.log("user id is: " + userID);
             const found = await findUser(userID); //does the user exist?
+            console.log("is user found: " + found);
             if (!found) {
               //new user
               localStorage.setItem(
                 "userProfile",
                 localStorage.getItem("userProfileInitial")!
               );
-              setProfile(userInfo); //set prof to gooogle state
+              setProfile(userInfo); //set prof to google state
               setInterestsState(true); //open interests modal
+              console.log(interestsState);
             }
           } else {
             //not a valid email
@@ -107,9 +107,11 @@ export default function App() {
     const onMount = async () => {
       if (!localStorage.getItem("userProfile")) {
         //if no local storage - logged out or first time
+        console.log("logged out");
         fetchData();
       } else {
         //existing local profile
+        console.log("logged in");
         const userProfileString = localStorage.getItem("userProfile");
         const userProfile = JSON.parse(userProfileString!);
         const userId = userProfile.id;
