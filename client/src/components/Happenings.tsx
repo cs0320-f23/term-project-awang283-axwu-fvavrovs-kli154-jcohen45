@@ -128,7 +128,7 @@ export const ImageCard: React.FC<ImageCardProps> = ({
   useEffect(() => {
     if (userId) {
       fetchSaved(userId, id);
-      console.log("refresh");
+      //console.log("refresh");
     }
   }, [refresh, userId, id]);
 

@@ -321,7 +321,6 @@ export default function CreateImageModal() {
                       onClose={onClose}
                       onBack={onBack}
                       posterId={posterId}
-                      handleChange={handleChange}
                       setShowTags={setShowTags}
                     />
                   ) : (
@@ -360,6 +359,12 @@ export default function CreateImageModal() {
                             display="none"
                           ></Input>
                         </div>
+                      </div>
+                      <div
+                        className="instruction"
+                        style={{ fontSize: "small" }}
+                      >
+                        Press Enter to see preview
                       </div>
                       <div className="title-div">
                         <h3>
@@ -457,11 +462,13 @@ export default function CreateImageModal() {
                       </div>
                       <div className="save-div">
                         <div>
-                          <h3>potato</h3>
                           <Button
                             onClick={onSaveSelectTags}
                             className={"save-button"}
-                            style={{ backgroundColor: "var(--dark-purple100)" }}
+                            style={{
+                              backgroundColor: "var(--dark-purple100)",
+                              marginTop: "1vh",
+                            }}
                             isDisabled={
                               isLoading || !poster.title || !posterSrc
                             }

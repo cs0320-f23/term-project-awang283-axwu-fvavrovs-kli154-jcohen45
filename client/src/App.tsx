@@ -25,7 +25,7 @@ export default function App() {
   const [user, setUser] = useState<CredentialResponse>();
   const [profile, setProfile] = useRecoilState(profileState);
   const [interestsState, setInterestsState] = useState<boolean>(false);
-  const [firstPfp, setFirstPfp] = useState();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const login = useGoogleLogin({
@@ -46,6 +46,7 @@ export default function App() {
           setProfile(userValid.data); // database info
           localStorage.setItem("userProfile", JSON.stringify(userValid.data)); //user id
           setInterestsState(false);
+
           return true;
         }
         return false;
@@ -74,11 +75,11 @@ export default function App() {
 
           if (userInfo.hd == "brown.edu" || userInfo.hd == "risd.edu") {
             //check for valid brown / risd
-            setFirstPfp(userInfo);
             localStorage.setItem(
               "userProfileInitial",
               JSON.stringify(userInfo)
             );
+            setIsLoading(true);
             //check if user exists in the database with get user by id
             const userID = userInfo.id;
             console.log("user id is: " + userID);
@@ -91,8 +92,8 @@ export default function App() {
                 localStorage.getItem("userProfileInitial")!
               );
               setProfile(userInfo); //set prof to google state
+              setIsLoading(false);
               setInterestsState(true); //open interests modal
-              console.log(interestsState);
             }
           } else {
             //not a valid email
@@ -107,11 +108,11 @@ export default function App() {
     const onMount = async () => {
       if (!localStorage.getItem("userProfile")) {
         //if no local storage - logged out or first time
-        console.log("logged out");
+        // console.log("logged out");
         fetchData();
       } else {
         //existing local profile
-        console.log("logged in");
+        //console.log("logged in");
         const userProfileString = localStorage.getItem("userProfile");
         const userProfile = JSON.parse(userProfileString!);
         const userId = userProfile.id;
@@ -123,12 +124,16 @@ export default function App() {
     onMount();
   }, [user, setProfile]);
 
+  useEffect(() => {
+    setIsLoading(false);
+  }, [profile]);
+
   // log out function to log the user out of google and set the profile array to null
   const logOut = () => {
     googleLogout();
     setProfile(null);
     localStorage.removeItem("userProfile");
-    localStorage.removeItem("userProfileInital");
+    localStorage.removeItem("userProfileInitial");
     navigate("/home");
   };
 
@@ -140,6 +145,11 @@ export default function App() {
   return (
     <>
       <article>
+        {isLoading && (
+          <div className="loading-screen">
+            <img className="loading-gif" src="/loading.gif" />
+          </div>
+        )}
         <header>
           <nav>
             <div className="left-links">
