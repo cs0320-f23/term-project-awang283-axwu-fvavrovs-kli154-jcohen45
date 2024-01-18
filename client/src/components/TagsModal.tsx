@@ -69,8 +69,6 @@ export default function TagsModal({
   //on hit create button
   const createPoster = async () => {
     onClose();
-    //reset global poster state when we no longer need access to the draft
-    setPoster({});
     //add list to poster obj w handlechange
     const newPoster = handleChange(tags, "tags", () => {});
 
@@ -95,11 +93,13 @@ export default function TagsModal({
           formData.append(key, newPoster[key]);
         }
       }
-      console.log(formData);
+      console.log(Array.from(formData));
       const res = await axios.put(url, formData, config);
       getPosters().then((data) => setSearchResults(data));
       setShowTags(false);
       setPosterSrc("");
+      //reset global poster state when we no longer need access to the draft
+      setPoster({});
       return Promise.resolve(res.data.data);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {

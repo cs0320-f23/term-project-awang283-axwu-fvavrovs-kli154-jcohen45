@@ -226,7 +226,7 @@ export default function App() {
         <InterestsModal
           createUser={createUser}
           page={false}
-          onClose={() => setInterestsState(false)}
+          onClose={() => false}
         />
       )}
     </>

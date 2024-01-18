@@ -1,5 +1,6 @@
 import { atom } from "recoil";
 import { IPoster } from "../Happenings";
+import { IPosterObject } from "../CreateImageModal";
 
 export const searchState = atom<string>({
   key: "searchState",
@@ -22,7 +23,7 @@ export const profileState = atom<any>({
 });
 
 //keeps track of a poster's currently filled in fields in case a user decides to draft / hits x without meaning to delete it
-export const posterState = atom<IPoster>({
+export const posterState = atom<IPosterObject>({
   key: "posterState",
   default: {},
 });

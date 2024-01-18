@@ -23,12 +23,25 @@ import {
 } from "./atoms/atoms";
 import { useRecoilState } from "recoil";
 import PopupModal from "./PopupModal";
-import { IPoster } from "./Happenings";
+
+export interface IPosterObject {
+  id: string;
+  content?: string;
+  title?: string;
+  location?: string;
+  startDate?: string;
+  endDate?: string;
+  isRecurring?: string;
+  link?: string;
+  description?: string;
+  tags?: Set<string>;
+}
+
 
 export default function CreateImageModal() {
   const [showTags, setShowTags] = useState<boolean>(false);
   const [posterSrc, setPosterSrc] = useRecoilState(posterSrcState);
-  const [poster, setPoster] = useRecoilState<IPoster>(posterState);
+  const [poster, setPoster] = useRecoilState<IPosterObject>(posterState);
   const [posterId, setPosterId] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [modalOpen, setModalOpen] = useRecoilState<string>(modalOpenState);
