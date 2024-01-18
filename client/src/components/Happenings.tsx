@@ -442,7 +442,7 @@ export default function Happenings() {
         }
 
         const results: IPoster[] = await response.json();
-
+        console.log(results);
         setSearchResults(results);
         setIsLoading(false);
       } catch (error) {

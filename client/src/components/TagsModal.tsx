@@ -6,19 +6,13 @@ import { classNameTag, fetchTags } from "../functions/fetch";
 import { posterSrcState, posterState, searchResultsState } from "./atoms/atoms";
 import { useRecoilState } from "recoil";
 import { getPosters } from "./Happenings";
-import { IPoster } from "./Happenings";
+import { IPosterObject } from "./CreateImageModal";
 
-export default function TagsModal({
-  onClose,
-  onBack,
-  posterId,
-  handleChange,
-  setShowTags,
-}) {
+export default function TagsModal({ onClose, onBack, posterId, setShowTags }) {
   const [allTags, setAllTags] = useState<string[]>([]);
   const [tags, setTags] = useState<Set<string>>(new Set());
   const [, setSearchResults] = useRecoilState(searchResultsState);
-  const [poster, setPoster] = useRecoilState<IPoster>(posterState);
+  const [poster, setPoster] = useRecoilState<IPosterObject>(posterState);
   const [, setPosterSrc] = useRecoilState(posterSrcState);
 
   useEffect(() => {
@@ -35,6 +29,38 @@ export default function TagsModal({
     fetchAllTags();
     selectSuggestedTags(poster.tags!);
   }, []);
+
+  const handleChange = (
+    value: string[] | string | Set<string>,
+    property: keyof IPosterObject,
+    callback?: () => void
+  ) => {
+    // using functional form of setPoster so that it updates using the current stored state in poster
+    setPoster((prevPoster) => {
+      let updatedValue: {
+        [x: string]: string[] | Set<string> | string;
+      };
+      if (value instanceof Set) {
+        updatedValue = { [property]: Array.from(value) };
+      } else {
+        updatedValue = { [property]: value };
+      }
+
+      const newPoster = {
+        ...prevPoster,
+        ...updatedValue,
+      };
+
+      if (callback) {
+        callback();
+      }
+
+      console.log(JSON.stringify(newPoster));
+      return newPoster;
+    });
+
+    return poster;
+  };
 
   function selectSuggestedTags(currTags: Set<string>) {
     //using functional form of setTags so that all suggested tags by cv api are actually selected upon mounting
@@ -84,13 +110,17 @@ export default function TagsModal({
       const url = "http://localhost:8080/posters/update/" + posterId;
       const formData = new FormData();
       console.log(tags);
+
       tags.forEach((tag) => {
-        formData.append("tags", tag);
+        formData.append("tags[]", tag);
       });
 
       for (const key in newPoster) {
         if (newPoster[key] && key !== "tags") {
-          formData.append(key, newPoster[key]);
+          const value = newPoster[key];
+          if (typeof value === "string") {
+            formData.append(key, value);
+          }
         }
       }
       console.log(Array.from(formData));

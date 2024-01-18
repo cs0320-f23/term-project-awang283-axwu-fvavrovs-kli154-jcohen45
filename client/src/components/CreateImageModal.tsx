@@ -37,7 +37,6 @@ export interface IPosterObject {
   tags?: Set<string>;
 }
 
-
 export default function CreateImageModal() {
   const [showTags, setShowTags] = useState<boolean>(false);
   const [posterSrc, setPosterSrc] = useRecoilState(posterSrcState);
@@ -60,7 +59,7 @@ export default function CreateImageModal() {
 
   const handleChange = (
     value: string[] | string | Set<string>,
-    property: keyof IPoster,
+    property: keyof IPosterObject,
     callback?: () => void
   ) => {
     // using functional form of setPoster so that it updates using the current stored state in poster

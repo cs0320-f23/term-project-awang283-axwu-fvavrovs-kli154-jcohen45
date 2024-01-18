@@ -35,7 +35,6 @@ export default function CalendarModal({ onClose }) {
   useEffect(() => {
     if (isReady) {
       makeEvents([...savedPosters, ...createdPosters]);
-      console.log(events);
       setIsLoading(false);
     }
   }, [isReady]);
@@ -110,8 +109,11 @@ export default function CalendarModal({ onClose }) {
       info.view.calendar.changeView("timeGridDay");
     }
   };
-
-  return (
+  return isLoading ? (
+    <div className="loading-screen">
+      <img className="loading-gif" src="/loading.gif" />
+    </div>
+  ) : (
     <Modal isOpen={true} onClose={onClose}>
       <ModalOverlay />
       <ModalContent maxWidth={"fit-content"}>
@@ -121,11 +123,6 @@ export default function CalendarModal({ onClose }) {
           style={{ backgroundColor: "var(--dark-purple100)" }}
         />
         <ModalBody width={"fit-content"}>
-          {isLoading && (
-            <div className="loading-screen">
-              <img className="loading-gif" src="/loading.gif" />
-            </div>
-          )}
           {isReady && (
             <FullCalendar
               plugins={[dayGridPlugin, timeGridPlugin]}
