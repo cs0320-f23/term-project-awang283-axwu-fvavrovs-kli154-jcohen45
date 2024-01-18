@@ -23,7 +23,6 @@ import {
 } from "./atoms/atoms";
 import { useRecoilState } from "recoil";
 import PopupModal from "./PopupModal";
-import { IPoster } from "./Happenings";
 
 export interface IPosterObject {
   id: string;
@@ -60,7 +59,7 @@ export default function CreateImageModal() {
 
   const handleChange = (
     value: string[] | string | Set<string>,
-    property: keyof IPoster,
+    property: keyof IPosterObject,
     callback?: () => void
   ) => {
     // using functional form of setPoster so that it updates using the current stored state in poster
