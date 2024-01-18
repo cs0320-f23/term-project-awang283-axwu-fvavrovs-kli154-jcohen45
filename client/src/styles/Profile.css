@@ -1,6 +1,71 @@
-.profile-header {
+.user-page {
+  height: 100%;
+  display: flex;
+  flex-flow: row;
+  gap: 2vw;
+  padding-top: 7vh;
 }
 
-.profile-content {
+.profile {
+  z-index: 2;
+  margin-left: 4vw;
   display: flex;
+  flex-flow: column;
+  align-items: center;
+  gap: 1.5vh;
+  box-shadow: var(--modal-shadow);
+  background-color: white;
+  top: 11vh;
+  position: sticky;
+  height: 85vh;
+  width: 25vw;
+  border-radius: 30px;
+  padding: 2vw;
+}
+
+.profile-picture {
+  border-radius: 100px;
+  width: 11vw;
+}
+
+.name {
+  transform: translateY(-20%);
+  line-height: 45px;
+}
+
+.icons {
+  display: flex;
+  flex-flow: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  gap: 1vw;
+}
+
+.profile-icons {
+  width: 40px;
+}
+
+.profile-posters {
+  width: 70vw;
+  height: 100%;
+}
+
+.tabs-list {
+  background: rgba(249, 238, 255, 0.85);
+  padding: 1vh 1vw 1.5vh;
+  transform: translateY(-12%);
+  position: fixed;
+  z-index: 100;
+  width: 100%;
+}
+
+.profile-tabs {
+  font-size: 18px !important;
+  color: var(--dark-purple100) !important;
+}
+
+.saved-grid,
+.created-grid {
+  margin-top: 6.5vh;
 }

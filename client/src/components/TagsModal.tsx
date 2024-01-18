@@ -3,10 +3,27 @@ import "../styles/Modal.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { classNameTag, fetchTags } from "../functions/fetch";
-import { posterSrcState, posterState, searchResultsState } from "./atoms/atoms";
+import {
+  posterSrcState,
+  posterState,
+  refreshState,
+  searchResultsState,
+} from "./atoms/atoms";
 import { useRecoilState } from "recoil";
 import { getPosters } from "./Happenings";
-import { IPoster } from "./Happenings";
+import { IPosterObject } from "./CreateImageModal";
+
+interface tagsProps {
+  onClose: () => void;
+  onBack: () => void;
+  posterId: string;
+  handleChange: (
+    value: string[] | string | Set<string>,
+    property: keyof IPosterObject,
+    callback?: () => void
+  ) => IPosterObject;
+  setShowTags: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
 export default function TagsModal({
   onClose,
@@ -14,12 +31,13 @@ export default function TagsModal({
   posterId,
   handleChange,
   setShowTags,
-}) {
+}: tagsProps) {
   const [allTags, setAllTags] = useState<string[]>([]);
   const [tags, setTags] = useState<Set<string>>(new Set());
   const [, setSearchResults] = useRecoilState(searchResultsState);
-  const [poster, setPoster] = useRecoilState<IPoster>(posterState);
+  const [poster, setPoster] = useRecoilState<IPosterObject>(posterState);
   const [, setPosterSrc] = useRecoilState(posterSrcState);
+  const [refresh, setRefresh] = useRecoilState(refreshState);
 
   useEffect(() => {
     const fetchAllTags = async () => {
@@ -84,8 +102,9 @@ export default function TagsModal({
       const url = "http://localhost:8080/posters/update/" + posterId;
       const formData = new FormData();
       console.log(tags);
+
       tags.forEach((tag) => {
-        formData.append("tags", tag);
+        formData.append("tags[]", tag);
       });
 
       for (const key in newPoster) {
@@ -95,6 +114,7 @@ export default function TagsModal({
       }
       console.log(Array.from(formData));
       const res = await axios.put(url, formData, config);
+      setRefresh(!refresh);
       getPosters().then((data) => setSearchResults(data));
       setShowTags(false);
       setPosterSrc("");

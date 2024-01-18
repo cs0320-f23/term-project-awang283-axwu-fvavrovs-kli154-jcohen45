@@ -81,7 +81,7 @@ export default function CalendarModal({ onClose }) {
     }
   };
 
-  const makeEvents = (posters) => {
+  const makeEvents = (posters: any[]) => {
     const newEvents = posters.map((poster) => {
       const newStartDate = [...poster.startDate];
       newStartDate[1] -= 1;
