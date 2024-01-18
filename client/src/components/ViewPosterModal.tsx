@@ -15,6 +15,7 @@ import { classNameTag } from "../functions/fetch";
 
 interface viewProps {
   onClose: () => void;
+  setClicked: React.Dispatch<React.SetStateAction<boolean>>;
   title: string;
   path: string;
   date: string;
@@ -30,6 +31,7 @@ interface viewProps {
 
 export default function ViewPosterModal({
   onClose,
+  setClicked,
   title,
   path,
   date,
@@ -61,7 +63,7 @@ export default function ViewPosterModal({
           if (savedPosters.ok) {
             const posterSet = await savedPosters.json();
             //compare id passed in to each poster in set
-            posterSet.data.forEach((poster) => {
+            posterSet.data.forEach((poster: { id: string }) => {
               if (poster.id === id) {
                 document.querySelector(".heart-icon")!.classList.add("clicked");
               }
@@ -104,6 +106,7 @@ export default function ViewPosterModal({
         //if alredy clicked, un fill, un save
         //unfill
         heartIcon.classList.remove("clicked");
+        setClicked(false);
         //unsave
         try {
           //add to database
@@ -170,7 +173,7 @@ export default function ViewPosterModal({
 
   return (
     <>
-      <Modal isOpen={true} onClose={onClose}>
+      <Modal isOpen={true} onClose={() => onClose}>
         <div className="modal-font">
           <ModalOverlay className="modal-overlay" />
           <ModalContent
@@ -260,11 +263,11 @@ export default function ViewPosterModal({
                       </div>
                     </div>
                   )}
-                  {tags.length > 0 && (
+                  {Array.from(tags).length > 0 && (
                     <div className="info-row">
                       <div className="field-name">Tags</div>
-                      <div id="field-text">
-                        {tags.map((tag, index) => {
+                      <div id="field-tags">
+                        {Array.from(tags).map((tag, index) => {
                           return (
                             <div key={tag} className={classNameTag(index)}>
                               {tag}

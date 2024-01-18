@@ -1,6 +1,7 @@
 import "../styles/Archive.css";
 import { TriangleUpIcon } from "@chakra-ui/icons";
-import { IPoster, ImageCard } from "./Happenings";
+import "../styles/ImageCard.css";
+import { ImageCard } from "./ImageCard";
 import { Box, IconButton } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { fetchTags, scrollToTop } from "../functions/fetch";

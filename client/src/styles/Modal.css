@@ -105,12 +105,13 @@
 .heart-icon-hap:hover {
   background-image: url("heart_partial.svg");
 }
+
 .heart-icon-hap {
   background-image: url("heart.svg");
   position: absolute;
-  margin-top: 1vw;
-  margin-right: 0.7vw;
+  right: 2vw;
 }
+
 .image-container {
   min-width: 45%;
   max-width: 45%;
@@ -254,6 +255,7 @@ input::placeholder {
 }
 
 .view-info {
+  font-family: "quicksand", sans-serif;
   display: flex;
   flex-flow: column;
   margin: 1.5vw 1.5vw 1.5vw 0vw;
@@ -278,6 +280,7 @@ input::placeholder {
 .field-name {
   color: var(--dark-purple70);
   width: 5vw;
+  text-wrap: nowrap;
 }
 
 #field-text {
@@ -349,11 +352,12 @@ input::placeholder {
   filter: brightness(85%);
 }
 
-.field-data {
-  width: 10%;
+#field-tags {
+  transform: translateX(-2%);
 }
 
 .info-rows {
+  font-family: "quicksand", sans-serif;
   justify-content: space-between;
   width: 100%;
   display: flex;

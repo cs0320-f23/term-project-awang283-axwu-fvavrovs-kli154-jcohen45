@@ -11,8 +11,10 @@ import {
 } from "@chakra-ui/react";
 import { Search2Icon, TriangleDownIcon } from "@chakra-ui/icons";
 import "../styles/Home.css";
+import "../styles/ImageCard.css";
 import "../styles/Modal.css";
-import { ImageCard, getPosters } from "./Happenings";
+import { getPosters } from "./Happenings";
+import { ImageCard } from "./ImageCard";
 import { KeyboardEvent, useEffect, useState } from "react";
 import { classNameTag, fetchTags } from "../functions/fetch";
 import { NavLink, useNavigate } from "react-router-dom";

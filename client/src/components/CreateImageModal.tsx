@@ -92,7 +92,6 @@ export default function CreateImageModal() {
   const setCVFields = async (id: string) => {
     setIsLoading(true);
     try {
-      // console.log("fetching cv fields");
       const url = "http://localhost:8080/posters/" + id;
       const response = await fetch(url);
 
@@ -101,8 +100,6 @@ export default function CreateImageModal() {
       }
 
       const res = await response.json();
-      // commented out the following if-statement so that if the image has no text and the CV API returns empty fields, then it will stop loading
-      //if (res.data.title) {
       setPoster({
         ...poster,
         title: res.data.title,
@@ -110,7 +107,6 @@ export default function CreateImageModal() {
         tags: res.data.tags,
       });
       setIsLoading(false);
-      //}
       return Promise.resolve(res.data);
     } catch (error) {
       setIsLoading(false);
@@ -147,8 +143,6 @@ export default function CreateImageModal() {
         setIsLoading(true);
         const res = await axios.post(url, formData, config);
         setPosterSrc(inputElement.value);
-        //need to give enough time for the poster to be created + id to exist
-        await new Promise((resolve) => setTimeout(resolve, 15000));
         console.log(res.data.data);
         setPosterId(res.data.data.id);
         setCVFields(res.data.data.id);

@@ -11,22 +11,16 @@ import {
 } from "@chakra-ui/react";
 import "../styles/Happenings.css";
 import "../styles/Modal.css";
+import "../styles/ImageCard.css";
 import { Search2Icon, TriangleUpIcon } from "@chakra-ui/icons";
-import { useCallback, useEffect, useRef, useState } from "react";
-import ViewPosterModal from "./ViewPosterModal";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useRecoilState } from "recoil";
-import {
-  profileState,
-  refreshState,
-  searchResultsState,
-  searchState,
-  tagsState,
-} from "./atoms/atoms";
+import { searchResultsState, searchState, tagsState } from "./atoms/atoms";
 import { classNameTag, fetchTags, scrollToTop } from "../functions/fetch";
 import Masonry from "masonry-layout";
 import imagesLoaded from "imagesloaded";
-import "../styles/Modal.css";
+import { ImageCard } from "./ImageCard";
 
 export interface IPoster {
   content: string;
@@ -42,258 +36,6 @@ export interface IPoster {
   createdAt: number[];
   poster: boolean;
 }
-
-interface ImageCardProps {
-  title: string;
-  content: string;
-  startDate: number[];
-  endDate?: number[];
-  location?: string;
-  link?: string;
-  description?: string;
-  tags?: Set<string>;
-  recurs: string;
-  id: string;
-}
-
-export const ImageCard: React.FC<ImageCardProps> = ({
-  title,
-  content,
-  startDate,
-  endDate,
-  location,
-  link,
-  description,
-  tags,
-  recurs,
-  id,
-}) => {
-  const listMonths = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-  const listWeekdays = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ];
-  const [modalOpen, setModalOpen] = useState<string>("");
-  const handleViewPoster = useCallback(() => {
-    setModalOpen("viewImage");
-  }, []);
-  const monthName =
-    listMonths[new Date(JSON.stringify(startDate[1])).getMonth()];
-  const month = monthName.substring(0, 3);
-  const fullDate = `${monthName} ${startDate[2]}, ${startDate[0]}`;
-  const weekday = listWeekdays[new Date(fullDate).getDay()];
-  const [userId] = useRecoilState(profileState);
-  const [isClicked, setIsClicked] = useState<boolean>(false);
-  const [refresh, setRefresh] = useRecoilState<boolean>(refreshState);
-
-  const fetchSaved = async (userId, id) => {
-    try {
-      //fetch savedposters
-      const savedPosters = await fetch(
-        "http://localhost:8080/users/savedPosters/" + userId.id
-      );
-      //if poster in saved , set class to clicked
-      if (savedPosters.ok) {
-        const posterSet = await savedPosters.json();
-        //compare id passed in to each poster in set
-        posterSet.data.forEach((poster) => {
-          if (poster.id === id) {
-            setIsClicked(true);
-          }
-        });
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  useEffect(() => {
-    if (userId) {
-      fetchSaved(userId, id);
-      //console.log("refresh");
-    }
-  }, [refresh, userId, id]);
-
-  const onClickHeart = async () => {
-    const heartIcon = document.querySelector(`.heart-icon-hap`);
-    if (heartIcon) {
-      if (isClicked) {
-        //if alredy clicked, un fill, un save
-        //unfill
-        setIsClicked(false);
-
-        //unsave
-        try {
-          //add to database
-          const config = {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          };
-          const url =
-            "http://localhost:8080/users/unsavePoster?posterId=" +
-            id +
-            "&userId=" +
-            userId.id;
-
-          const res = await axios.put(url, null, config);
-          setRefresh(!refresh);
-          return Promise.resolve(res.data.data);
-        } catch (error) {
-          if (axios.isAxiosError(error) && error.response) {
-            return Promise.resolve(
-              `Error in fetch: ${error.response.data.message}`
-            );
-          } else {
-            return Promise.resolve(
-              "Error in fetch: Network error or other issue"
-            );
-          }
-        }
-      } else {
-        //if not yet clicked, fill and save
-        //fill
-        setIsClicked(true);
-
-        //save
-        try {
-          //add to database
-          const config = {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          };
-          const url =
-            "http://localhost:8080/users/savePoster?posterId=" +
-            id +
-            "&userId=" +
-            userId.id;
-
-          const res = await axios.put(url, null, config);
-          // console.log(res.data.data);
-          setRefresh(!refresh);
-          return Promise.resolve(res.data.data);
-        } catch (error) {
-          if (axios.isAxiosError(error) && error.response) {
-            return Promise.resolve(
-              `Error in fetch: ${error.response.data.message}`
-            );
-          } else {
-            return Promise.resolve(
-              "Error in fetch: Network error or other issue"
-            );
-          }
-        }
-      }
-    }
-  };
-
-  function time(date: number[]) {
-    let minutes = JSON.stringify(date[4]);
-    if (date[4] === 0) {
-      minutes = "00";
-    }
-    if (date[3] > 12) {
-      return date[3] - 12 + ":" + minutes + " PM";
-    } else {
-      return date[3] + ":" + minutes + " AM";
-    }
-  }
-  const startTime = time(startDate);
-  let endTime = null;
-  if (endDate) {
-    endTime = time(endDate);
-  }
-  const day = startDate[2];
-
-  return (
-    <>
-      <div className="image-card" onClick={handleViewPoster} id={id}>
-        <div className="card-backing">
-          <img
-            src={content}
-            alt={title}
-            loading="lazy"
-            className="poster-image"
-          />
-        </div>
-        <div className="image-overlay">
-          <div className="top-info">
-            <div className="month-date">
-              <p id="month">{month}</p>
-              <p id="day">{day}</p>
-            </div>
-            <div className="weekday-time">
-              <p id="weekday">{weekday}</p>
-              <p id="time">
-                {startTime}
-                {endTime && "-" + endTime}
-              </p>
-            </div>
-            {userId && (
-              <div
-                className={`heart-icon-hap ${isClicked ? "clicked" : ""}`}
-                id={id}
-                onClick={onClickHeart}
-                style={{
-                  display: "flex",
-                  width: "8%",
-                  height: "8%",
-                  borderRadius: "10%",
-                  padding: "1%",
-                  boxSizing: "content-box",
-                  backgroundSize: "contain",
-                  backgroundRepeat: "no-repeat",
-                  left: "85%",
-                  top: "3%",
-                }}
-              ></div>
-            )}
-          </div>
-
-          <div className="title-location">
-            <p id="title">{title}</p>
-            <p id="location">{location}</p>
-          </div>
-        </div>
-        {modalOpen === "viewImage" && (
-          <ViewPosterModal
-            onClose={() => setModalOpen("")}
-            title={title}
-            path={content}
-            date={fullDate}
-            startTime={startTime}
-            endTime={endTime!}
-            location={location!}
-            link={link!}
-            description={description!}
-            tags={tags!}
-            recurs={recurs}
-            id={id}
-          />
-        )}
-      </div>
-    </>
-  );
-};
 
 export async function getPosters() {
   try {
@@ -357,7 +99,6 @@ export default function Happenings() {
         setIsLoading(false);
       });
     }
-    //fetchSaved(userId, id)
   }, []);
 
   useEffect(() => {
