@@ -2,7 +2,6 @@ package edu.brown.cs.student.main.user;
 
 import edu.brown.cs.student.main.responses.ServiceResponse;
 import edu.brown.cs.student.main.types.Poster;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;

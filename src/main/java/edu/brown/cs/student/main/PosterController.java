@@ -82,17 +82,21 @@ public class PosterController {
   }
 
   /**
-   * Sends a GET request for upcoming posters (start date in future) sorted by relevance (user interest)
+   * Sends a GET request for upcoming posters (start date in future) sorted by relevance (user
+   * interest)
    *
    * @return all posters (JSONified)
    */
   @GetMapping("/relevant")
-  public CompletableFuture<ResponseEntity<List<Poster>>> getUpcomingByRelevance(@RequestParam String userId) {
-    return this.userService.getUserById(userId)
-            .thenApply(user -> user.getData().getInterests())
-            .thenApply(interests -> this.posterService.sortByRelevance(interests)).join()
-            .thenApply(ResponseEntity::ok)
-            .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+  public CompletableFuture<ResponseEntity<List<Poster>>> getUpcomingByRelevance(
+      @RequestParam String userId) {
+    return this.userService
+        .getUserById(userId)
+        .thenApply(user -> user.getData().getInterests())
+        .thenApply(interests -> this.posterService.sortByRelevance(interests))
+        .join()
+        .thenApply(ResponseEntity::ok)
+        .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
   }
 
   /**
@@ -243,11 +247,11 @@ public class PosterController {
 
   @PostMapping(value = "/uploadToImgur")
   public CompletableFuture<ServiceResponse<String>> uploadToImgur(
-          @RequestBody MultipartFile content, @RequestParam(required = false) String userId) {
+      @RequestBody MultipartFile content, @RequestParam(required = false) String userId) {
     ServiceResponse<String> imgurResponse = imgurService.uploadToImgur(content);
 
     return CompletableFuture.completedFuture(
-            new ServiceResponse<String>(imgurResponse.getData(), "uploaded to imgur"));
+        new ServiceResponse<String>(imgurResponse.getData(), "uploaded to imgur"));
   }
 
   /**
@@ -398,6 +402,4 @@ public class PosterController {
             });
     return allPosters;
   }
-
-  }
-
+}

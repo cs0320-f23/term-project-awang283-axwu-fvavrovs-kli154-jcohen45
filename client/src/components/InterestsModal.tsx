@@ -81,11 +81,7 @@ export default function InterestsModal({ createUser, page, onClose }) {
       <div className="modal-font">
         <ModalOverlay />
         <ModalContent>
-          <ModalCloseButton
-            className="close-button"
-            style={{ backgroundColor: "var(--dark-purple100)", color: "white" }}
-            onClick={onClose}
-          />
+          <ModalCloseButton className="close-button" onClick={onClose} />
           <ModalHeader className="modal-header">
             Select Up to 5 Interests
           </ModalHeader>

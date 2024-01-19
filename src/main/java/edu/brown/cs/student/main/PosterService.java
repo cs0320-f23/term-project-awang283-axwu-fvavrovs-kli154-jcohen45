@@ -196,14 +196,15 @@ public class PosterService {
   @Async
   public CompletableFuture<List<Poster>> sortByRelevance(HashSet<String> interests) {
     return this.getPosters()
-            .thenApply(
-                    posters ->
-                            posters.stream()
-                                    .filter(poster -> poster.getStartDate().isAfter(LocalDateTime.now()))
-                                    .sorted(Comparator.nullsLast(Comparator.comparing(Poster::getStartDate)))
-                                    .sorted(Comparator.<Poster>comparingInt(poster -> poster.numRelevantTags(interests)).reversed())
-                                    .collect(Collectors.toList()));
-
+        .thenApply(
+            posters ->
+                posters.stream()
+                    .filter(poster -> poster.getStartDate().isAfter(LocalDateTime.now()))
+                    .sorted(Comparator.nullsLast(Comparator.comparing(Poster::getStartDate)))
+                    .sorted(
+                        Comparator.<Poster>comparingInt(poster -> poster.numRelevantTags(interests))
+                            .reversed())
+                    .collect(Collectors.toList()));
   }
 
   @Async
