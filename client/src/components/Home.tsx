@@ -26,7 +26,7 @@ const scrollToBottom = () => {
     top:
       document.documentElement.scrollHeight -
       document.documentElement.clientHeight -
-      40,
+      50,
     behavior: "smooth",
   });
 };
