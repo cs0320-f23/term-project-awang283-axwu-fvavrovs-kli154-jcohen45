@@ -30,7 +30,9 @@ export default function InterestsModal({ createUser, page, onClose }) {
     };
 
     fetchAllTags();
-    setTags(new Set(profile.interests));
+    if (profile.interests) {
+      setTags(new Set(profile.interests));
+    }
     // setTags(profile.interests);
   }, []);
 
