@@ -33,29 +33,6 @@ public class PosterService {
     this.userService = userService;
   }
 
-  //  @Async
-  //  public CompletableFuture<ServiceResponse<Poster>> createPoster(Poster poster) {
-  //    ServiceResponse<Poster> response;
-  //    // Save the Poster object to the database
-  //    if (poster.isPoster()) {
-  //      if (posterRepository
-  //          .findById(poster.getID())
-  //          .isEmpty()) { // check if already exists in database
-  //        Poster savedPoster = posterRepository.insert(poster);
-  //        // Create a response object
-  //        response = new ServiceResponse<>(savedPoster, "added to database");
-  //      } else {
-  //        Poster savedPoster = posterRepository.save(poster);
-  //        // Create a response object
-  //        response = new ServiceResponse<>(savedPoster, "saved to database");
-  //      }
-  //    } else {
-  //      response = new ServiceResponse<>(poster, "not added to database");
-  //    }
-  //    // CompletableFuture is basically a Promise
-  //    return CompletableFuture.completedFuture(response);
-  //  }
-
   // @Async
   public ServiceResponse<Poster> createPoster(Poster poster, String userID) {
     ServiceResponse<Poster> response;
@@ -217,6 +194,19 @@ public class PosterService {
   }
 
   @Async
+  public CompletableFuture<List<Poster>> sortByRelevance(HashSet<String> interests) {
+    return this.getPosters()
+            .thenApply(
+                    posters ->
+                            posters.stream()
+                                    .filter(poster -> poster.getStartDate().isAfter(LocalDateTime.now()))
+                                    .sorted(Comparator.nullsLast(Comparator.comparing(Poster::getStartDate)))
+                                    .sorted(Comparator.<Poster>comparingInt(poster -> poster.numRelevantTags(interests)).reversed())
+                                    .collect(Collectors.toList()));
+
+  }
+
+  @Async
   public CompletableFuture<HashSet<Object>> getAllFields(String field) {
     return this.getPosters()
         .thenApply(
@@ -252,16 +242,6 @@ public class PosterService {
               }
             });
   }
-
-  //  @Async
-  //  public CompletableFuture<List<Poster>> searchByOrganization(String org) {
-  //    return this.getPosters()
-  //            .thenApply(
-  //                    posters ->
-  //                            posters.stream()
-  //                                    .filter(poster -> poster.getOrganization().equals(org))
-  //                                    .collect(Collectors.toList()));
-  //  }
 
   @Async
   public CompletableFuture<List<Poster>> searchByName(String name) {
@@ -326,6 +306,8 @@ public class PosterService {
   private boolean searchTermHelper(Poster poster, String term) {
     String haystack = poster.returnHaystack(userService);
     BMSearch searcher = new BMSearch();
-    return searcher.getSearchResult(term, haystack);
+
+    boolean result = searcher.getSearchResult(term, haystack);
+    return result;
   }
 }
