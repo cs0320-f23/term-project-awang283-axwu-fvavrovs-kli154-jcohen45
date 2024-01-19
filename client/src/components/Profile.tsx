@@ -332,7 +332,7 @@ export default function Profile() {
             >
               <div className="info-rows">
                 <div className="field-name" style={{ width: "20%" }}>
-                  Likes
+                  Liked
                 </div>
                 <div id="field-data">{likeCount}</div>
               </div>

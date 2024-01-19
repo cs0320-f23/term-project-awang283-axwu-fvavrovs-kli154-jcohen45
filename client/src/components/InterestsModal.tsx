@@ -33,7 +33,6 @@ export default function InterestsModal({ createUser, page, onClose }) {
     if (profile.interests) {
       setTags(new Set(profile.interests));
     }
-    // setTags(profile.interests);
   }, []);
 
   useEffect(() => {
