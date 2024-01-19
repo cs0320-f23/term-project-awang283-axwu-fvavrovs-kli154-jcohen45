@@ -135,23 +135,44 @@ export default function Profile() {
     });
   };
 
+  //takes in a file and returns an imgur link
+  const createImgurLink = async (file: File | string) => {
+    const config = {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    };
+
+    try {
+      const url = "http://localhost:8080/posters/uploadToImgur";
+
+      const formData = new FormData();
+      console.log(file);
+      formData.append("content", file);
+      const res = await axios.post(url, formData, config);
+
+      return Promise.resolve(res.data.data);
+    } catch (error) {
+      setIsLoading(false);
+      if (axios.isAxiosError(error) && error.response) {
+        console.log(error.response.data.message);
+        console.log(error);
+        return Promise.resolve(
+          `Error in fetch: ${error.response.data.message}`
+        );
+      } else {
+        return Promise.resolve("Error in fetch: Network error or other issue");
+      }
+    }
+  };
+
   const handleProfilePictureUpload = async (
     target: EventTarget & HTMLInputElement
   ) => {
-    //console.log("called poster upload");
     if (target.files) {
       const file = target.files[0]; //getting the file object
-
-      if (file && file.type.startsWith("image/")) {
-        //convert our image file into a format that can be fed into img component's src property to be displayed after upload
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          if (e.target && typeof e.target.result === "string") {
-            setProfile({ ...profile, picture: e.target.result });
-          }
-        };
-        reader.readAsDataURL(file);
-      }
+      const output = await createImgurLink(file);
+      setProfile({ ...profile, picture: output });
     }
   };
 

@@ -112,7 +112,6 @@ export default function TagsModal({
 
   //on hit create button
   const createPoster = async () => {
-    onClose();
     //add list to poster obj w handlechange
     const newPoster = handleChange(tags, "tags", () => {});
 
@@ -149,6 +148,7 @@ export default function TagsModal({
       setPosterSrc("");
       //reset global poster state when we no longer need access to the draft
       setPoster({});
+      onClose();
       return Promise.resolve(res.data.data);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
