@@ -3,6 +3,8 @@ package edu.brown.cs.student.main.user;
 import edu.brown.cs.student.main.PosterService;
 import edu.brown.cs.student.main.responses.ServiceResponse;
 import edu.brown.cs.student.main.types.Poster;
+
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -184,7 +186,7 @@ public class UserController {
 
   @PutMapping("/addInterest")
   public CompletableFuture<ResponseEntity<ServiceResponse<User>>> addInterests(
-      @RequestParam String userId, @RequestParam Set<String> interests) {
+      @RequestParam String userId, @RequestParam HashSet<String> interests) {
     return this.userService
         .addInterests(userId, interests)
         .thenApply(response -> ResponseEntity.ok(response))
@@ -193,7 +195,7 @@ public class UserController {
 
   @PutMapping("/removeInterest")
   public CompletableFuture<ResponseEntity<ServiceResponse<User>>> removeInterests(
-      @RequestParam String userId, @RequestParam Set<String> interests) {
+      @RequestParam String userId, @RequestParam HashSet<String> interests) {
     return this.userService
         .removeInterests(userId, interests)
         .thenApply(response -> ResponseEntity.ok(response))
