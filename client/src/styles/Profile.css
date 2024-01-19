@@ -15,12 +15,12 @@
   gap: 1.5vh;
   box-shadow: var(--modal-shadow);
   background-color: white;
-  top: 11vh;
+  top: 10vh;
   position: sticky;
-  height: 85vh;
+  height: 87vh;
   width: 25vw;
   border-radius: 30px;
-  padding: 2vw;
+  padding: 1.5vw;
 }
 
 .profile-picture {

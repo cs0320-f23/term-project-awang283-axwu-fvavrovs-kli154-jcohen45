@@ -15,7 +15,7 @@ public class User {
   private String picture;
   private Set<Poster> createdPosters; // Assuming a user can have multiple posters
   private Set<Poster> savedPosters;
-  private Set<String> interests;
+  private HashSet<String> interests;
 
   /** a no argument constructor so that Jackson can deserialize the json */
   public User() {
@@ -73,11 +73,11 @@ public class User {
     this.savedPosters = savedPosters;
   }
 
-  public Set<String> getInterests() {
+  public HashSet<String> getInterests() {
     return this.interests;
   }
 
-  public void setInterests(Set<String> selectedInterests) {
+  public void setInterests(HashSet<String> selectedInterests) {
     this.interests = selectedInterests;
   }
 }

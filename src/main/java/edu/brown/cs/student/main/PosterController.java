@@ -82,6 +82,20 @@ public class PosterController {
   }
 
   /**
+   * Sends a GET request for upcoming posters (start date in future) sorted by relevance (user interest)
+   *
+   * @return all posters (JSONified)
+   */
+  @GetMapping("/relevant")
+  public CompletableFuture<ResponseEntity<List<Poster>>> getUpcomingByRelevance(@RequestParam String userId) {
+    return this.userService.getUserById(userId)
+            .thenApply(user -> user.getData().getInterests())
+            .thenApply(interests -> this.posterService.sortByRelevance(interests)).join()
+            .thenApply(ResponseEntity::ok)
+            .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+  }
+
+  /**
    * Sends a GET request for all posters that ended (or started if endDate not available)
    *
    * @return all posters (JSONified)
@@ -225,6 +239,15 @@ public class PosterController {
     this.posterService.createPoster(poster, userId);
     return CompletableFuture.completedFuture(
         new ServiceResponse<Poster>(poster, "created new poster using existing link"));
+  }
+
+  @PostMapping(value = "/uploadToImgur")
+  public CompletableFuture<ServiceResponse<String>> uploadToImgur(
+          @RequestBody MultipartFile content, @RequestParam(required = false) String userId) {
+    ServiceResponse<String> imgurResponse = imgurService.uploadToImgur(content);
+
+    return CompletableFuture.completedFuture(
+            new ServiceResponse<String>(imgurResponse.getData(), "uploaded to imgur"));
   }
 
   /**
@@ -376,42 +399,5 @@ public class PosterController {
     return allPosters;
   }
 
-  //
-  //    @PutMapping("/update/{id}")
-  //    public CompletableFuture<ServiceResponse<Poster>> updatePoster(String id, Poster
-  // updatedPoster) {
-  //        return getPosterById(id)
-  //                .thenCompose(existingPosterResponse -> {
-  //                    Poster existingPoster = existingPosterResponse.getData();
-  //                    if (existingPoster != null) {
-  //                        // Exclude ID and content from the update
-  //                        existingPoster.setTitle(updatedPoster.getTitle());
-  //                        existingPoster.setDescription(updatedPoster.getDescription());
-  //                        existingPoster.setTags(updatedPoster.getTags());
-  //                        existingPoster.setIsRecurring(updatedPoster.getIsRecurring());
-  //
-  //                        return CompletableFuture.completedFuture(existingPoster);
-  //                    } else {
-  //                        return CompletableFuture.completedFuture(null);
-  //                    }
-  //                })
-  //                .thenCompose(updated -> {
-  //                    if (updated != null) {
-  //                        return CompletableFuture.completedFuture(
-  //                                posterRepository.save(updated)
-  //                        );
-  //                    } else {
-  //                        return CompletableFuture.completedFuture(null);
-  //                    }
-  //                })
-  //                .thenApply(updated -> {
-  //                    if (updated != null) {
-  //                        return new ServiceResponse<>(updated, "Poster updated");
-  //                    }
-  //                    return new ServiceResponse<>("Failed to update poster");
-  //
-  //                });
-  //
-  //    }
+  }
 
-}
