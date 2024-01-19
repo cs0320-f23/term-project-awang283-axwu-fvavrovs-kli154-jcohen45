@@ -275,7 +275,6 @@ public class PosterService {
 
   @Async
   public CompletableFuture<List<Poster>> searchByTerm(String term, String[] tags) {
-    System.out.println("inside searchByTerm");
     if (tags.length == 0) {
       return this.getPosters()
           .thenApply(
@@ -305,13 +304,10 @@ public class PosterService {
   }
 
   private boolean searchTermHelper(Poster poster, String term) {
-    System.out.println("inside searchTermHelper");
     String haystack = poster.returnHaystack(userService);
     BMSearch searcher = new BMSearch();
 
-    System.out.println("haystack: "+haystack);
     boolean result = searcher.getSearchResult(term, haystack);
-    System.out.println(result);
     return result;
   }
 }

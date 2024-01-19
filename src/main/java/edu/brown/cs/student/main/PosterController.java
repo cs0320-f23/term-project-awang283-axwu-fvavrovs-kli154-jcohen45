@@ -190,7 +190,6 @@ public class PosterController {
       @RequestParam String term,
       @RequestParam(required = false) String[] tags,
       @RequestParam(required = false) String date) {
-    System.out.println("inside getPosterByTerm");
     if (date != null && date.equals("createdAt")) {
       return posterService
           .searchByTerm(term, tags)
