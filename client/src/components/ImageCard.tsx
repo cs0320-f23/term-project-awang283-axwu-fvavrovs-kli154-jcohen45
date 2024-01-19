@@ -189,6 +189,8 @@ export const ImageCard: React.FC<ImageCardProps> = ({
     }
     if (date[3] > 12) {
       return date[3] - 12 + ":" + minutes + " PM";
+    } else if (date[3] === 0) {
+      return "12:" + minutes + " AM";
     } else {
       return date[3] + ":" + minutes + " AM";
     }
