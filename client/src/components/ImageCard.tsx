@@ -229,7 +229,6 @@ export const ImageCard: React.FC<ImageCardProps> = ({
                 style={{
                   width: "2.5vw",
                   height: "2.5vw",
-                  borderRadius: "10%",
                   boxSizing: "content-box",
                   backgroundSize: "contain",
                   backgroundRepeat: "no-repeat",

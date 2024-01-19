@@ -8,6 +8,94 @@
   align-items: center;
 }
 
+.profile-overlay {
+  position: absolute;
+  background-color: rgba(63, 49, 94, 0.7);
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  padding: 1.65vw;
+  color: white;
+  font-family: "quicksand", sans-serif;
+  opacity: 0;
+  container-type: size;
+}
+
+.profile-top-info {
+  display: flex;
+  flex-flow: row;
+  gap: 0.8vw;
+}
+
+.profile-month-date {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  min-width: 5vw;
+  max-width: 5vw;
+  min-height: 5vw;
+  max-height: 5vw;
+  color: var(--dark-purple100);
+  padding: 1vw;
+  border-radius: 10px;
+}
+
+#profile-month {
+  font-family: "pacifico", sans-serif;
+  font-size: 2.3vw;
+  transform: translateY(12%);
+}
+
+#profile-day {
+  font-family: "pacifico", sans-serif;
+  font-size: 2.3vw;
+  transform: translateY(-36%);
+}
+
+.profile-weekday-time {
+  height: 7vw;
+  display: flex;
+  flex-flow: column;
+  transform: translateY(7%);
+}
+
+#profile-weekday {
+  font-size: 1.6vw;
+  align-items: center;
+}
+
+#profile-time {
+  font-size: 1.2vw;
+  font-weight: 450;
+  align-items: center;
+  line-height: 2.3vh;
+}
+
+#profile-title {
+  position: absolute;
+  bottom: 0;
+  margin-bottom: 1.4vw;
+  margin-right: 1.3vw;
+  font-size: 115%;
+  line-height: 3vh;
+}
+
+.heart-icon-prof.clicked {
+  background-image: url("heart_filled.svg");
+}
+
+.heart-icon-prof:hover {
+  background-image: url("heart_partial.svg");
+}
+
+.heart-icon-prof {
+  background-image: url("heart.svg");
+  position: absolute;
+  right: 1.6vw;
+}
+
 .image-card {
   width: 28.5vw;
   position: relative;
@@ -41,7 +129,8 @@
   container-type: size;
 }
 
-.image-overlay:hover {
+.image-overlay:hover,
+.profile-overlay:hover {
   opacity: 1;
   transition: 0.5s;
 }
@@ -58,8 +147,10 @@
   align-items: center;
   justify-content: center;
   background-color: white;
-  width: 7vw;
-  height: 7vw;
+  min-width: 7vw;
+  max-width: 7vw;
+  min-height: 7vw;
+  max-height: 7vw;
   color: var(--dark-purple100);
   padding: 1vw;
   border-radius: 15px;
@@ -110,4 +201,18 @@
 #location {
   font-size: 1.5vw;
   font-weight: 450;
+}
+
+.heart-icon-hap.clicked {
+  background-image: url("heart_filled.svg");
+}
+
+.heart-icon-hap:hover {
+  background-image: url("heart_partial.svg");
+}
+
+.heart-icon-hap {
+  background-image: url("heart.svg");
+  position: absolute;
+  right: 1.9vw;
 }

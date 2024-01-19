@@ -108,7 +108,7 @@ export const ProfileImageCard: React.FC<ImageCardProps> = ({
   const onClickHeart = async (event) => {
     // stops the click event from propagating to its parent
     event.stopPropagation();
-    const heartIcon = document.querySelector(`.heart-icon-hap`);
+    const heartIcon = document.querySelector(`.heart-icon-prof`);
     if (heartIcon) {
       //if alredy clicked, un fill, un save
       if (isClicked) {
@@ -208,43 +208,35 @@ export const ProfileImageCard: React.FC<ImageCardProps> = ({
             className="poster-image"
           />
         </div>
-        <div className="image-overlay">
-          <div className="top-info">
-            <div className="month-date">
-              <p id="month">{month}</p>
-              <p id="day">{day}</p>
+        <div className="profile-overlay">
+          <div className="profile-top-info">
+            <div className="profile-month-date">
+              <p id="profile-month">{month}</p>
+              <p id="profile-day">{day}</p>
             </div>
-            <div className="weekday-time">
-              <p id="weekday">{weekday}</p>
-              <p id="time">
+            <div className="profile-weekday-time">
+              <p id="profile-weekday">{weekday}</p>
+              <p id="profile-time">
                 {startTime}
                 {endTime && "-" + endTime}
               </p>
             </div>
             {userId && (
               <div
-                className={`heart-icon-hap ${isClicked ? "clicked" : ""}`}
+                className={`heart-icon-prof ${isClicked ? "clicked" : ""}`}
                 id={id}
                 onClick={(event) => onClickHeart(event)}
                 style={{
-                  display: "flex",
-                  width: "8%",
-                  height: "8%",
-                  borderRadius: "10%",
-                  padding: "1%",
+                  width: "1.8vw",
+                  height: "1.8vw",
                   boxSizing: "content-box",
                   backgroundSize: "contain",
                   backgroundRepeat: "no-repeat",
-                  left: "85%",
-                  top: "3%",
                 }}
               ></div>
             )}
           </div>
-
-          <div className="title-location">
-            <p id="title">{title}</p>
-          </div>
+          <p id="profile-title">{title}</p>
         </div>
         {modalOpen === "viewImage" && (
           <ViewPosterModal

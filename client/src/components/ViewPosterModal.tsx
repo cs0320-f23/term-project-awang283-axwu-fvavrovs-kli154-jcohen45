@@ -193,11 +193,8 @@ export default function ViewPosterModal({
                     className="heart-icon"
                     onClick={onClick}
                     style={{
-                      position: "absolute",
-                      width: "2%",
-                      height: "2%",
-                      borderRadius: "10%",
-                      padding: "1%",
+                      width: "2.5vw",
+                      height: "2.5vw",
                       boxSizing: "content-box",
                       backgroundSize: "contain",
                       backgroundRepeat: "no-repeat",
