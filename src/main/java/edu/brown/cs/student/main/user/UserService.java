@@ -2,6 +2,8 @@ package edu.brown.cs.student.main.user;
 
 import edu.brown.cs.student.main.responses.ServiceResponse;
 import edu.brown.cs.student.main.types.Poster;
+
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -167,14 +169,14 @@ public class UserService {
 
   @Async
   public CompletableFuture<ServiceResponse<User>> addInterests(
-      String userId, Set<String> interests) {
+      String userId, HashSet<String> interests) {
     // Find the user by ID
     // System.out.println("reached associatePosterWithUser function");
     return userRepository
         .findById(userId)
         .map(
             user -> {
-              Set<String> currInterests = user.getInterests();
+              HashSet<String> currInterests = user.getInterests();
               currInterests.addAll(interests);
               user.setInterests(currInterests);
               this.updateUser(user);
@@ -194,7 +196,7 @@ public class UserService {
         .findById(userId)
         .map(
             user -> {
-              Set<String> currInterests = user.getInterests();
+              HashSet<String> currInterests = user.getInterests();
               for (String interest : interests) {
                 if (currInterests.contains(interest)) {
                   currInterests.remove(interest);

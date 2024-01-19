@@ -7,8 +7,11 @@ import edu.brown.cs.student.main.user.User;
 import edu.brown.cs.student.main.user.UserService;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.scheduling.annotation.Async;
@@ -172,6 +175,12 @@ public class Poster {
 
   public HashSet<String> getTags() {
     return tags;
+  }
+  public int numRelevantTags(HashSet<String> interests){
+    HashSet<String> intersection = (HashSet<String>) this.tags.stream()
+            .filter(interests::contains)
+            .collect(Collectors.toSet());
+    return intersection.size();
   }
 
   public void setTags(HashSet<String> tags) {
