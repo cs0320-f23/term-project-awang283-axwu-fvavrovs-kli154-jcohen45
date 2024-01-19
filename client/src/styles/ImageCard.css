@@ -33,10 +33,10 @@
   align-items: center;
   justify-content: center;
   background-color: white;
-  min-width: 5vw;
-  max-width: 5vw;
-  min-height: 5vw;
-  max-height: 5vw;
+  min-width: 4.8vw;
+  max-width: 4.8vw;
+  min-height: 4.8vw;
+  max-height: 4.8vw;
   color: var(--dark-purple100);
   padding: 1vw;
   border-radius: 10px;
@@ -58,7 +58,7 @@
   height: 7vw;
   display: flex;
   flex-flow: column;
-  transform: translateY(7%);
+  transform: translateY(6%);
 }
 
 #profile-weekday {
@@ -76,7 +76,7 @@
 #profile-title {
   position: absolute;
   bottom: 0;
-  margin-bottom: 1.4vw;
+  margin-bottom: 1.5vw;
   margin-right: 1.3vw;
   font-size: 115%;
   line-height: 3vh;
