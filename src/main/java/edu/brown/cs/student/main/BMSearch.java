@@ -12,6 +12,7 @@ public class BMSearch {
     this.needle = needle.toLowerCase().toCharArray();
     this.haystack = haystack.toLowerCase().toCharArray();
     int index = BMSearch.indexOf(this.haystack, this.needle);
+    System.out.println("inside getSearchResult");
     if (index >= 0) {
       return true;
     } else {
