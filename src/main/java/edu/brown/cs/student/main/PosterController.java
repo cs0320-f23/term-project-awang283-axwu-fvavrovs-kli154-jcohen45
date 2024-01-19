@@ -227,6 +227,15 @@ public class PosterController {
         new ServiceResponse<Poster>(poster, "created new poster using existing link"));
   }
 
+  @PostMapping(value = "/uploadToImgur")
+  public CompletableFuture<ServiceResponse<String>> uploadToImgur(
+          @RequestBody MultipartFile content, @RequestParam(required = false) String userId) {
+    ServiceResponse<String> imgurResponse = imgurService.uploadToImgur(content);
+
+    return CompletableFuture.completedFuture(
+            new ServiceResponse<String>(imgurResponse.getData(), "uploaded to imgur"));
+  }
+
   /**
    * sends a POST request to the mapping /poster/create
    *
