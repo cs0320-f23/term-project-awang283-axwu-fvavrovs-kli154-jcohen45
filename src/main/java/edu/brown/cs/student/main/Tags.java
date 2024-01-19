@@ -145,6 +145,7 @@ public class Tags {
     jumboTags.put("application", new ArrayList<>(Arrays.asList("apply", "application")));
     jumboTags.put("rsvp required", new ArrayList<>(Arrays.asList("rsvp required", "register")));
     jumboTags.put("movie", new ArrayList<>(Arrays.asList("movie", "screen")));
+    jumboTags.put("career", new ArrayList<>(Arrays.asList("career","job","hiring")));
   }
 
   public ArrayList<String> getTags() {
