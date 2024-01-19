@@ -201,7 +201,7 @@ public class PosterService {
                             posters.stream()
                                     .filter(poster -> poster.getStartDate().isAfter(LocalDateTime.now()))
                                     .sorted(Comparator.nullsLast(Comparator.comparing(Poster::getStartDate)))
-                                    .sorted(Comparator.comparingInt(poster -> poster.numRelevantTags(interests)))
+                                    .sorted(Comparator.<Poster>comparingInt(poster -> poster.numRelevantTags(interests)).reversed())
                                     .collect(Collectors.toList()));
 
   }
