@@ -61,8 +61,12 @@ export const ImageCard: React.FC<ImageCardProps> = ({
   const monthName =
     listMonths[new Date(JSON.stringify(startDate[1])).getMonth()];
   const month = monthName.substring(0, 3);
-  const fullDate = `${monthName} ${startDate[2]}, ${startDate[0]}`;
-  const weekday = listWeekdays[new Date(fullDate).getDay()];
+  const fullStartDate = `${monthName} ${startDate[2]}, ${startDate[0]}`;
+  let fullEndDate = null;
+  if (endDate) {
+    fullEndDate = `${monthName} ${endDate[2]}, ${endDate[0]}`;
+  }
+  const weekday = listWeekdays[new Date(fullStartDate).getDay()];
   const [userId] = useRecoilState(profileState);
   const [isClicked, setIsClicked] = useState<boolean>(false);
   const [refresh, setRefresh] = useRecoilState<boolean>(refreshState);
@@ -248,7 +252,8 @@ export const ImageCard: React.FC<ImageCardProps> = ({
             setClicked={setIsClicked}
             title={title}
             path={content}
-            date={fullDate}
+            startDate={fullStartDate}
+            endDate={fullEndDate!}
             startTime={startTime}
             endTime={endTime!}
             location={location!}

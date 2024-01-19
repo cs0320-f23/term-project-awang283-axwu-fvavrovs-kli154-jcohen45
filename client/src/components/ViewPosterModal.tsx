@@ -18,7 +18,8 @@ interface viewProps {
   setClicked: React.Dispatch<React.SetStateAction<boolean>>;
   title: string;
   path: string;
-  date: string;
+  startDate: string;
+  endDate: string;
   startTime: string;
   endTime: string;
   location: string;
@@ -34,7 +35,8 @@ export default function ViewPosterModal({
   setClicked,
   title,
   path,
-  date,
+  startDate,
+  endDate,
   startTime,
   endTime,
   location,
@@ -44,7 +46,6 @@ export default function ViewPosterModal({
   recurs,
   id,
 }: viewProps) {
-  const [weekday, month, day] = date.split(" ");
   const [name, setName] = useState<string>("");
   const [picture, setPicture] = useState<string>("");
   const [userId] = useRecoilState(profileState);
@@ -233,8 +234,11 @@ export default function ViewPosterModal({
                   <div className="info-row">
                     <div className="field-name">When</div>
                     <div id="field-text">
-                      {weekday + ", " + month + " " + day + ", " + startTime}
-                      {endTime && "-" + endTime}
+                      {startDate + ", " + startTime}
+                      {endDate &&
+                        (endDate !== startDate
+                          ? "-" + endDate + ", " + endTime
+                          : endTime && "-" + endTime)}
                     </div>
                   </div>
                   {recurs && (
