@@ -358,7 +358,7 @@ export default function Profile() {
                 </div>
               </div>
               <div id="field-data">
-                {Array.from(interests).map((interest, indx) => (
+                {Array.from(profile.interests).map((interest, indx) => (
                   <div className={classNameTag(indx)} key={indx}>
                     {interest}
                   </div>
@@ -390,7 +390,7 @@ export default function Profile() {
                 />
               </div>
               <div className="info-rows">
-                <div className="field-name">Likes</div>
+                <div className="field-name">Liked</div>
                 <div id="field-data">{likeCount}</div>
               </div>
               <div className="info-rows">
