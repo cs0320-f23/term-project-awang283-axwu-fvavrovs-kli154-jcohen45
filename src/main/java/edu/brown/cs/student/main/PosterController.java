@@ -62,7 +62,7 @@ public class PosterController {
   }
 
   /**
-   * Sends a GET request for all upcoming posters (start date in the future)
+   * Sends a GET request for all upcoming posters sorted by most recent data created
    *
    * @return all posters (JSONified)
    */
@@ -93,7 +93,7 @@ public class PosterController {
     return this.userService
         .getUserById(userId)
         .thenApply(user -> user.getData().getInterests())
-        .thenApply(interests -> this.posterService.sortByRelevance(interests))
+        .thenApply(this.posterService::sortByRelevance)
         .join()
         .thenApply(ResponseEntity::ok)
         .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
