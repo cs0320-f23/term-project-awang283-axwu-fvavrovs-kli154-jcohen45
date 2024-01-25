@@ -12,6 +12,7 @@ import {
   Box,
   IconButton,
   Input,
+  Button,
 } from "@chakra-ui/react";
 import Masonry from "masonry-layout";
 import { IPoster } from "./Happenings";
@@ -27,9 +28,11 @@ import CalendarModal from "./CalendarModal";
 import InterestsModal from "./InterestsModal";
 import axios from "axios";
 import { ProfileImageCard } from "./ProfileImageCard";
+import EditProfileModal from "./EditProfileModal";
 
 export default function Profile() {
   const [profile, setProfile] = useRecoilState(profileState);
+  const [localProfile, setLocalProfile] = useState<any>({});
   const [likeCount, setLikeCount] = useState<number>(0);
   const [createdCount, setCreatedCount] = useState<number>(0);
   const [createdPosters, setCreatedPosters] = useState<IPoster[]>([]);
@@ -97,12 +100,9 @@ export default function Profile() {
         );
         if (postersResp.ok) {
           const posterData = await postersResp.json();
-          // console.log("poster data");
-          // console.log(posterData.data);
           newCreatedPosters.push(posterData.data);
         }
       }
-      console.log(newCreatedPosters);
       setCreatedPosters(newCreatedPosters);
     }
   };
@@ -117,7 +117,6 @@ export default function Profile() {
   };
 
   const handleTabChange = () => {
-    console.log("tab changed!");
     // Explicitly trigger Masonry layout update when the tab becomes visible
     imagesLoaded(`.saved-grid`, function () {
       new Masonry(`.saved-grid`, {
@@ -211,6 +210,7 @@ export default function Profile() {
 
       // Set the user profile in state
       setProfile(updatedUser);
+      setLocalProfile({});
       localStorage.setItem("userProfile", JSON.stringify(updatedUser));
 
       setEditingMode(false);
@@ -239,6 +239,7 @@ export default function Profile() {
       <div className="profile">
         {editingMode ? (
           <>
+            {/* <EditProfileModal onClose={() => setEditingMode(false)} /> */}
             <div
               className="pfp-pic"
               style={{
@@ -309,7 +310,7 @@ export default function Profile() {
                 src="/check.svg"
                 alt=""
               />
-
+              {/* add x that calls setProfile(localProfile) and sets editing mode to false */}
               <img
                 style={{
                   color: "white",
@@ -375,19 +376,25 @@ export default function Profile() {
               </h1>
               <p>{profile.email}</p>
               <div className="icons">
-                <img
-                  className="profile-icons"
-                  onClick={() => setEditingMode(true)}
-                  src="/pencil-svgrepo-com.svg"
-                  alt=""
-                />
-
-                <img
-                  className="profile-icons"
+                <Button
+                  className="edit-button"
+                  onClick={() => {
+                    setEditingMode(true);
+                    setLocalProfile(profile);
+                  }}
+                >
+                  Edit Profile
+                </Button>
+                <Button
+                  className="calendar-button"
                   onClick={() => setCalOpen(true)}
-                  src="/calendar-day-svgrepo-com.svg"
-                  alt=""
-                />
+                >
+                  <img
+                    className="calendar-icon"
+                    src="/calendar-day-svgrepo-com.svg"
+                    alt=""
+                  />
+                </Button>
               </div>
               <div className="info-rows">
                 <div className="field-name">Liked</div>
@@ -400,7 +407,7 @@ export default function Profile() {
               <div className="info-rows">
                 <div className="field-name">Interests</div>
               </div>
-              <div id="field-tags">
+              <div id="profile-interests">
                 {Array.from(interests).map((interest, index) => (
                   <div className={classNameTag(index)} key={index}>
                     {interest}
@@ -466,6 +473,7 @@ export default function Profile() {
                     tags={poster.tags}
                     recurs={poster.isRecurring!}
                     id={poster.id}
+                    isCreated={false}
                   />
                 </Box>
               ))}
@@ -486,6 +494,7 @@ export default function Profile() {
                     tags={poster.tags}
                     recurs={poster.isRecurring!}
                     id={poster.id}
+                    isCreated={true}
                   />
                 </Box>
               ))}

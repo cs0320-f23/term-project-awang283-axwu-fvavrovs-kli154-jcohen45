@@ -26,7 +26,7 @@ const scrollToBottom = () => {
     top:
       document.documentElement.scrollHeight -
       document.documentElement.clientHeight -
-      40,
+      50,
     behavior: "smooth",
   });
 };
@@ -182,7 +182,7 @@ export default function Home() {
             </Box>
           </div>
           <div className="tags">
-            <span className="tag-text">Suggested tags:</span>{" "}
+            <span className="tag-text">Suggested Tags:</span>{" "}
             <div className="tag-holder">
               <div className="magenta-tag">Free Food</div>
               <div className="green-tag">Party</div>

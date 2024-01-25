@@ -17,6 +17,7 @@ interface ImageCardProps {
   tags?: Set<string>;
   recurs: string;
   id: string;
+  isCreated: boolean;
 }
 
 export const ProfileImageCard: React.FC<ImageCardProps> = ({
@@ -30,6 +31,7 @@ export const ProfileImageCard: React.FC<ImageCardProps> = ({
   tags,
   recurs,
   id,
+  isCreated,
 }) => {
   const listMonths = [
     "January",
@@ -61,8 +63,12 @@ export const ProfileImageCard: React.FC<ImageCardProps> = ({
   const monthName =
     listMonths[new Date(JSON.stringify(startDate[1])).getMonth()];
   const month = monthName.substring(0, 3);
-  const fullDate = `${monthName} ${startDate[2]}, ${startDate[0]}`;
-  const weekday = listWeekdays[new Date(fullDate).getDay()];
+  const fullStartDate = `${monthName} ${startDate[2]}, ${startDate[0]}`;
+  let fullEndDate = null;
+  if (endDate) {
+    fullEndDate = `${monthName} ${endDate[2]}, ${endDate[0]}`;
+  }
+  const weekday = listWeekdays[new Date(fullStartDate).getDay()];
   const [userId] = useRecoilState(profileState);
   const [isClicked, setIsClicked] = useState<boolean>(false);
   const [refresh, setRefresh] = useRecoilState<boolean>(refreshState);
@@ -108,7 +114,7 @@ export const ProfileImageCard: React.FC<ImageCardProps> = ({
   const onClickHeart = async (event) => {
     // stops the click event from propagating to its parent
     event.stopPropagation();
-    const heartIcon = document.querySelector(`.heart-icon-hap`);
+    const heartIcon = document.querySelector(`.heart-icon-prof`);
     if (heartIcon) {
       //if alredy clicked, un fill, un save
       if (isClicked) {
@@ -185,6 +191,8 @@ export const ProfileImageCard: React.FC<ImageCardProps> = ({
     }
     if (date[3] > 12) {
       return date[3] - 12 + ":" + minutes + " PM";
+    } else if (date[3] === 0) {
+      return "12:" + minutes + " AM";
     } else {
       return date[3] + ":" + minutes + " AM";
     }
@@ -208,43 +216,50 @@ export const ProfileImageCard: React.FC<ImageCardProps> = ({
             className="poster-image"
           />
         </div>
-        <div className="image-overlay">
-          <div className="top-info">
-            <div className="month-date">
-              <p id="month">{month}</p>
-              <p id="day">{day}</p>
+        <div className="profile-overlay">
+          <div className="profile-top-info">
+            <div className="profile-month-date">
+              <p id="profile-month">{month}</p>
+              <p id="profile-day">{day}</p>
             </div>
-            <div className="weekday-time">
-              <p id="weekday">{weekday}</p>
-              <p id="time">
+            <div className="profile-weekday-time">
+              <p id="profile-weekday">{weekday}</p>
+              <p id="profile-time">
                 {startTime}
                 {endTime && "-" + endTime}
               </p>
             </div>
             {userId && (
               <div
-                className={`heart-icon-hap ${isClicked ? "clicked" : ""}`}
-                id={id}
-                onClick={(event) => onClickHeart(event)}
-                style={{
-                  display: "flex",
-                  width: "8%",
-                  height: "8%",
-                  borderRadius: "10%",
-                  padding: "1%",
-                  boxSizing: "content-box",
-                  backgroundSize: "contain",
-                  backgroundRepeat: "no-repeat",
-                  left: "85%",
-                  top: "3%",
-                }}
-              ></div>
+                className="icons"
+                style={{ display: "flex", flexDirection: "column" }}
+              >
+                <div
+                  className={`heart-icon-prof ${isClicked ? "clicked" : ""}`}
+                  id={id}
+                  onClick={(event) => onClickHeart(event)}
+                  style={{
+                    width: "1.8vw",
+                    height: "1.8vw",
+                    boxSizing: "content-box",
+                    backgroundSize: "contain",
+                    backgroundRepeat: "no-repeat",
+                  }}
+                ></div>
+                <div
+                  className="edit-icon"
+                  style={{
+                    width: "2.5vw",
+                    height: "2.5vw",
+                    boxSizing: "content-box",
+                    backgroundSize: "contain",
+                    backgroundRepeat: "no-repeat",
+                  }}
+                ></div>
+              </div>
             )}
           </div>
-
-          <div className="title-location">
-            <p id="title">{title}</p>
-          </div>
+          <p id="profile-title">{title}</p>
         </div>
         {modalOpen === "viewImage" && (
           <ViewPosterModal
@@ -252,7 +267,8 @@ export const ProfileImageCard: React.FC<ImageCardProps> = ({
             setClicked={setIsClicked}
             title={title}
             path={content}
-            date={fullDate}
+            startDate={fullStartDate}
+            endDate={fullEndDate!}
             startTime={startTime}
             endTime={endTime!}
             location={location!}

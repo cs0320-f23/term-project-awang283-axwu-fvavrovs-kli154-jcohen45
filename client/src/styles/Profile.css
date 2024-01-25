@@ -15,12 +15,13 @@
   gap: 1.5vh;
   box-shadow: var(--modal-shadow);
   background-color: white;
-  top: 10vh;
+  top: 11vh;
   position: sticky;
-  height: 87vh;
+  height: 85vh;
   width: 25vw;
   border-radius: 30px;
   padding: 1.5vw;
+  overflow-y: scroll;
 }
 
 .profile-picture {
@@ -42,8 +43,38 @@
   gap: 1vw;
 }
 
-.profile-icons {
-  width: 40px;
+.edit-button {
+  padding: 8px 18px !important;
+  background-color: var(--dark-purple100) !important;
+  border-radius: 12px !important;
+  color: white !important;
+}
+
+.calendar-button {
+  padding: 6px !important;
+  background-color: var(--dark-purple100) !important;
+  border-radius: 12px !important;
+}
+
+.calendar-icon {
+  stroke: white;
+  width: 26px;
+}
+
+.edit-button:hover,
+.calendar-button:hover {
+  background-color: var(--dark-purple70) !important;
+  transition: 0.3s;
+  transform: scale(1.07) !important;
+}
+
+#profile-interests {
+  width: 100%;
+  transform: translate(-2%, -7%);
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: start;
+  align-items: start;
 }
 
 .profile-posters {

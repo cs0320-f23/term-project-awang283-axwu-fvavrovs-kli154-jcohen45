@@ -16,7 +16,12 @@ import { Search2Icon, TriangleUpIcon } from "@chakra-ui/icons";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useRecoilState } from "recoil";
-import { searchResultsState, searchState, tagsState } from "./atoms/atoms";
+import {
+  profileState,
+  searchResultsState,
+  searchState,
+  tagsState,
+} from "./atoms/atoms";
 import { classNameTag, fetchTags, scrollToTop } from "../functions/fetch";
 import Masonry from "masonry-layout";
 import imagesLoaded from "imagesloaded";
@@ -71,6 +76,23 @@ export async function getNewestPosters() {
   }
 }
 
+async function getRelevantPosters(id: string) {
+  try {
+    const url = "http://localhost:8080/posters/relevant?userId=" + id;
+    const res = await axios.get<IPoster[]>(url);
+    return Promise.resolve(res.data);
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      console.log(error.response.data.message);
+      console.log(error);
+      return Promise.resolve(`Error in fetch: ${error.response.data.message}`);
+    } else {
+      console.log("Network error or other issue:", error.message);
+      return Promise.resolve("Error in fetch: Network error or other issue");
+    }
+  }
+}
+
 export default function Happenings() {
   const [sortPosters, setSortPosters] = useState<string>("soonest");
   const [searchInput, setSearchInput] = useRecoilState(searchState);
@@ -79,6 +101,7 @@ export default function Happenings() {
   const [allTags, setAllTags] = useState<string[]>([]); //all tags in database
   const [tags, setTags] = useRecoilState<Set<string>>(tagsState); //list of tags user clicked
   const [isLoading, setIsLoading] = useState(true);
+  const [profile] = useRecoilState(profileState);
   const gridRef = useRef(null);
 
   useEffect(() => {
@@ -108,6 +131,11 @@ export default function Happenings() {
         setSearchResults(data);
         setIsLoading(false);
       });
+    } else if (sortPosters === "relevance") {
+      getRelevantPosters(profile.id).then((data) => {
+        setSearchResults(data);
+        setIsLoading(false);
+      });
     } else {
       // if user selects soonest or sort, which should sort by soonest by default
       getPosters().then((data) => {
@@ -118,6 +146,7 @@ export default function Happenings() {
   }, [sortPosters]);
 
   useEffect(() => {
+    console.log(searchResults);
     if (gridRef.current) {
       imagesLoaded(gridRef.current, function () {
         // console.log("all images are loaded");
@@ -278,7 +307,7 @@ export default function Happenings() {
             </div>
           </div>
 
-          <Box w="8.1vw">
+          <Box w="9.5vw">
             <Select
               marginLeft="1vw"
               className="sort-select"
@@ -293,6 +322,7 @@ export default function Happenings() {
             >
               <option value="soonest">Soonest</option>
               <option value="newest">Newest</option>
+              <option value="relevance">Relevance</option>
             </Select>
           </Box>
         </div>

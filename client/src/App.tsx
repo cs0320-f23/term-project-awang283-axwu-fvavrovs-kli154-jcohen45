@@ -16,7 +16,11 @@ import {
 import axios from "axios";
 import { createUser } from "./functions/fetch";
 import Profile from "./components/Profile";
-import { modalOpenState, profileState } from "./components/atoms/atoms";
+import {
+  modalOpenState,
+  profileState,
+  searchResultsState,
+} from "./components/atoms/atoms";
 import { useRecoilState } from "recoil";
 import InterestsModal from "./components/InterestsModal";
 

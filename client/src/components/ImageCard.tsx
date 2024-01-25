@@ -5,6 +5,7 @@ import "../styles/ImageCard.css";
 import "../styles/Modal.css";
 import axios from "axios";
 import ViewPosterModal from "./ViewPosterModal";
+import { IPoster } from "./Happenings";
 
 interface ImageCardProps {
   title: string;
@@ -61,8 +62,12 @@ export const ImageCard: React.FC<ImageCardProps> = ({
   const monthName =
     listMonths[new Date(JSON.stringify(startDate[1])).getMonth()];
   const month = monthName.substring(0, 3);
-  const fullDate = `${monthName} ${startDate[2]}, ${startDate[0]}`;
-  const weekday = listWeekdays[new Date(fullDate).getDay()];
+  const fullStartDate = `${monthName} ${startDate[2]}, ${startDate[0]}`;
+  let fullEndDate = null;
+  if (endDate) {
+    fullEndDate = `${monthName} ${endDate[2]}, ${endDate[0]}`;
+  }
+  const weekday = listWeekdays[new Date(fullStartDate).getDay()];
   const [userId] = useRecoilState(profileState);
   const [isClicked, setIsClicked] = useState<boolean>(false);
   const [refresh, setRefresh] = useRecoilState<boolean>(refreshState);
@@ -185,6 +190,8 @@ export const ImageCard: React.FC<ImageCardProps> = ({
     }
     if (date[3] > 12) {
       return date[3] - 12 + ":" + minutes + " PM";
+    } else if (date[3] === 0) {
+      return "12:" + minutes + " AM";
     } else {
       return date[3] + ":" + minutes + " AM";
     }
@@ -229,7 +236,6 @@ export const ImageCard: React.FC<ImageCardProps> = ({
                 style={{
                   width: "2.5vw",
                   height: "2.5vw",
-                  borderRadius: "10%",
                   boxSizing: "content-box",
                   backgroundSize: "contain",
                   backgroundRepeat: "no-repeat",
@@ -249,7 +255,8 @@ export const ImageCard: React.FC<ImageCardProps> = ({
             setClicked={setIsClicked}
             title={title}
             path={content}
-            date={fullDate}
+            startDate={fullStartDate}
+            endDate={fullEndDate!}
             startTime={startTime}
             endTime={endTime!}
             location={location!}
