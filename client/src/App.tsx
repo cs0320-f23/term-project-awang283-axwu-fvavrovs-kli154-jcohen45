@@ -6,7 +6,15 @@ import Happenings from "./components/Happenings";
 import Archive from "./components/Archive";
 import About from "./components/About";
 import "./styles/App.css";
-import { Button } from "@chakra-ui/react";
+import {
+  Button,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
+} from "@chakra-ui/react";
 import CreateImageModal from "./components/CreateImageModal";
 import {
   CredentialResponse,
@@ -92,6 +100,8 @@ export default function App() {
                 localStorage.getItem("userProfileInitial")!
               );
               setProfile(userInfo); //set prof to google state
+              console.log("profile set to user info");
+              console.log(userInfo);
               setIsLoading(false);
               setInterestsState(true); //open interests modal
             }
@@ -116,6 +126,7 @@ export default function App() {
         const userProfileString = localStorage.getItem("userProfile");
         const userProfile = JSON.parse(userProfileString!);
         const userId = userProfile.id;
+        console.log(userId);
         if (userId) {
           await findUser(userId);
         }
@@ -233,12 +244,35 @@ export default function App() {
         </footer>
       </article>
       {interestsState && (
+        <Modal isOpen={true} onClose={() => setInterestsState(false)}>
+          <div className="modal-font">
+            <ModalOverlay />
+            <ModalContent>
+              <ModalCloseButton
+                className="close-button"
+                onClick={() => setInterestsState(false)}
+              />
+              <ModalHeader className="modal-header">
+                Select Up to 5 Interests
+              </ModalHeader>
+              <ModalBody>
+                <InterestsModal
+                  createUser={createUser}
+                  page={false}
+                  onClose={() => setInterestsState(false)}
+                />
+              </ModalBody>
+            </ModalContent>
+          </div>
+        </Modal>
+      )}
+      {/* {interestsState && (
         <InterestsModal
           createUser={createUser}
           page={false}
           onClose={() => false}
         />
-      )}
+      )} */}
     </>
   );
 }

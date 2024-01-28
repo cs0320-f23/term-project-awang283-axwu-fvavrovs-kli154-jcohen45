@@ -7,6 +7,7 @@ import {
   ModalCloseButton,
   ModalContent,
   ModalHeader,
+  ModalOverlay,
   Select,
 } from "@chakra-ui/react";
 import "../styles/Happenings.css";
@@ -299,6 +300,7 @@ export default function Happenings() {
                 width: " 10%",
                 position: "relative",
                 top: "20%",
+                whiteSpace: "nowrap",
               }}
               onClick={getAllResults}
             >
@@ -329,6 +331,7 @@ export default function Happenings() {
         <div className="modal-font">
           {showTags && (
             <Modal isOpen={true} onClose={() => setShowTags(false)}>
+              <ModalOverlay className="modal-overlay" />
               <ModalBody className="modal-body">
                 <ModalContent className="tag-modal-content">
                   <ModalHeader className="modal-header">
@@ -385,7 +388,6 @@ export default function Happenings() {
             </Modal>
           )}
         </div>
-        {/* <div>All results</div> */}
         <div className="grid" ref={gridRef}>
           {searchInput !== "" && searchResults.length === 0 && (
             <h1 className="none">No results to display for this search term</h1>

@@ -220,30 +220,6 @@ export default function CreateImageModal() {
     }
   };
 
-  // function fetchPosterData(id: string) {
-  //   console.log("made it here!");
-  //   makeInterval(id);
-  //   if (!intervalID) {
-  //     const intId = setInterval(() => {
-  //       makeInterval(id);
-  //     }, 1000);
-  //     setIntervalID(intId);
-  //     console.log(intId);
-  //   }
-  // }
-
-  // async function makeInterval(id: string) {
-  //   if (!poster.title) {
-  //     const posterData = await setCVFields(id);
-  //     if (posterData.title) {
-  //       // Poster.title is defined, clear the interval
-  //       console.log(intervalID);
-  //       clearInterval(intervalID);
-  //       console.log("cleared interval");
-  //     }
-  //   }
-  // }
-
   const onSaveSelectTags = () => {
     setShowTags(true);
   };
@@ -294,7 +270,6 @@ export default function CreateImageModal() {
                 onClick={onClose}
                 style={{ backgroundColor: "var(--dark-purple100)" }}
               />
-
               <ModalBody className="modal-body">
                 <div className="create-div">
                   {posterSrc ? (

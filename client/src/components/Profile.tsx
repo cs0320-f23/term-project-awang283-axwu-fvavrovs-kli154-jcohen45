@@ -72,6 +72,11 @@ export default function Profile() {
         gutter: 11,
       });
     });
+    // setProfile({
+    //   ...profile,
+    //   ["savedPosters"]: savedPosters,
+    //   ["createdPosters"]: createdPosters,
+    // });
   }, [createdPosters, savedPosters]);
 
   const getUserLikes = async () => {
@@ -237,185 +242,60 @@ export default function Profile() {
       )}
       {calOpen && <CalendarModal onClose={() => setCalOpen(false)} />}
       <div className="profile">
-        {editingMode ? (
+        {editingMode && (
+          <EditProfileModal
+            savedPosters={savedPosters}
+            createdPosters={createdPosters}
+            onClose={() => setEditingMode(false)}
+          />
+        )}
+        {profile && (
           <>
-            {/* <EditProfileModal onClose={() => setEditingMode(false)} /> */}
-            <div
-              className="pfp-pic"
-              style={{
-                width: "40%",
-                marginTop: "10%",
-              }}
-            >
-              <label
-                htmlFor="profile-upload"
-                className="upload-pfp"
-                style={{
-                  width: "40%",
-                  position: "absolute",
-                  height: "24.5%",
-                  backgroundColor: "gray",
-                  opacity: ".85",
-                  justifyContent: "space-around",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  color: "white",
+            <img className="profile-picture" src={profile.picture} alt="" />
+            <h1 className="name" style={{ marginTop: "1vh" }}>
+              {profile.name}
+            </h1>
+            <p>{profile.email}</p>
+            <div className="icons">
+              <Button
+                className="edit-button"
+                onClick={() => {
+                  setEditingMode(true);
+                  setLocalProfile(profile);
                 }}
               >
-                <p>Upload</p>
-              </label>
-              <Input
-                type="file"
-                onChange={(ev) => handleProfilePictureUpload(ev.target)}
-                id="profile-upload"
-                accept="image/png, image/jpeg, image/jpg"
-                display="none"
-                style={{
-                  width: "100%",
-                  position: "absolute",
-                  borderRadius: "50% !important",
-                }}
-              ></Input>
-              <img
-                src={profile.picture}
-                alt=""
-                style={{ width: "100%", borderRadius: "50%" }}
-              />
-            </div>
-
-            <Input
-              placeholder={profile.name}
-              value={profile.name}
-              onChange={(ev) => updateValue("name", ev.target.value)}
-              style={{ margin: "5%" }}
-            ></Input>
-
-            <p>{profile.email}</p>
-            <div
-              className="icons"
-              style={{
-                alignContent: "center",
-                width: "20%",
-                display: "flex",
-                justifyContent: "space-around",
-              }}
-            >
-              <img
-                style={{
-                  color: "white",
-                  backgroundColor: "white",
-                  width: "60%",
-                }}
-                onClick={updateProfile}
-                src="/check.svg"
-                alt=""
-              />
-              {/* add x that calls setProfile(localProfile) and sets editing mode to false */}
-              <img
-                style={{
-                  color: "white",
-                  backgroundColor: "white",
-                  width: "60%",
-                }}
+                Edit Profile
+              </Button>
+              <Button
+                className="calendar-button"
                 onClick={() => setCalOpen(true)}
-                src="/calendar-day-svgrepo-com.svg"
-                alt=""
-              />
+              >
+                <img
+                  className="calendar-icon"
+                  src="/calendar-day-svgrepo-com.svg"
+                  alt=""
+                />
+              </Button>
             </div>
-            <div
-              className="view-info"
-              style={{
-                fontFamily: "'quicksand', sans-serif",
-                width: "90%",
-                marginLeft: "1.5vw",
-                marginTop: "0vw",
-              }}
-            >
-              <div className="info-rows">
-                <div className="field-name" style={{ width: "20%" }}>
-                  Likes
+            <div className="info-rows">
+              <div className="field-name">Likes</div>
+              <div id="field-data">{likeCount}</div>
+            </div>
+            <div className="info-rows">
+              <div className="field-name">Created</div>
+              <div id="field-data">{createdCount}</div>
+            </div>
+            <div className="info-rows">
+              <div className="field-name">Interests</div>
+            </div>
+            <div id="profile-interests">
+              {Array.from(interests).map((interest, index) => (
+                <div className={classNameTag(index)} key={index}>
+                  {interest}
                 </div>
-                <div id="field-data">{likeCount}</div>
-              </div>
-              <div className="info-rows">
-                <div className="field-name" style={{ width: "30%" }}>
-                  Created
-                </div>
-                <div id="field-data">{createdCount}</div>
-              </div>
-              <div className="info-rows">
-                <div className="field-name" style={{ width: "35%" }}>
-                  Interests
-                </div>
-                <div
-                  id="field-data"
-                  style={{ display: "flex", justifyContent: "end" }}
-                >
-                  <img
-                    style={{ width: "15%" }}
-                    src="/pencil-svgrepo-com.svg"
-                    onClick={() => setInterestsState(true)}
-                  />
-                </div>
-              </div>
-              <div id="field-data">
-                {Array.from(interests).map((interest, indx) => (
-                  <div className={classNameTag(indx)} key={indx}>
-                    {interest}
-                  </div>
-                ))}
-              </div>
+              ))}
             </div>
           </>
-        ) : (
-          profile && (
-            <>
-              <img className="profile-picture" src={profile.picture} alt="" />
-              <h1 className="name" style={{ marginTop: "1vh" }}>
-                {profile.name}
-              </h1>
-              <p>{profile.email}</p>
-              <div className="icons">
-                <Button
-                  className="edit-button"
-                  onClick={() => {
-                    setEditingMode(true);
-                    setLocalProfile(profile);
-                  }}
-                >
-                  Edit Profile
-                </Button>
-                <Button
-                  className="calendar-button"
-                  onClick={() => setCalOpen(true)}
-                >
-                  <img
-                    className="calendar-icon"
-                    src="/calendar-day-svgrepo-com.svg"
-                    alt=""
-                  />
-                </Button>
-              </div>
-              <div className="info-rows">
-                <div className="field-name">Likes</div>
-                <div id="field-data">{likeCount}</div>
-              </div>
-              <div className="info-rows">
-                <div className="field-name">Created</div>
-                <div id="field-data">{createdCount}</div>
-              </div>
-              <div className="info-rows">
-                <div className="field-name">Interests</div>
-              </div>
-              <div id="profile-interests">
-                {Array.from(interests).map((interest, index) => (
-                  <div className={classNameTag(index)} key={index}>
-                    {interest}
-                  </div>
-                ))}
-              </div>
-            </>
-          )
         )}
       </div>
       {interestsState && (

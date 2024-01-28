@@ -20,16 +20,24 @@
 .modal-header {
   display: flex;
   justify-content: space-around;
+  font-family: "quicksand", sans-serif !important;
+  color: #3f315e !important;
+  transform: translateY(-5%);
+  font-size: 5vh !important;
+}
+
+/* .modal-header {
+  display: flex;
+  justify-content: space-around;
   font-family: "pacifico", sans-serif !important;
   color: #3f315e !important;
   transform: translateY(-15%);
   font-size: 6vh !important;
-}
+} */
 
 .modal-content {
-  box-shadow: var(--modal-shadow);
-  min-width: 70%;
-  min-height: 90%;
+  min-width: 1005px;
+  min-height: 650px;
   margin: auto !important;
   border-radius: 25px !important;
   font-family: "quicksand", sans-serif;
@@ -64,6 +72,56 @@
 
 .loading-gif {
   width: 14vw;
+}
+
+.pfp-pic-div {
+  min-width: 45%;
+  display: flex;
+  justify-content: center;
+}
+
+.upload-pfp {
+  width: 350px;
+  height: 350px;
+  position: absolute;
+  background: rgba(63, 49, 94, 0.5);
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 2vw;
+  line-height: 2.5vw;
+}
+
+.profile-pic {
+  width: 350px;
+  height: 350px;
+  border-radius: 50%;
+}
+
+.pfp-info-div {
+  width: 55%;
+  font-family: "quicksand", sans-serif;
+  font-weight: 500;
+  padding-left: 14px;
+  padding-right: 1.75vw;
+  display: flex;
+  flex-flow: column;
+  font-size: 16px;
+  margin-bottom: 1vh;
+  gap: 2vh;
+  overflow-y: auto;
+}
+
+.select-interests-div {
+  max-height: 53.5%;
+}
+
+.interests-div {
+  transform: translateX(-1%);
+  height: 380px;
+  overflow-y: scroll;
 }
 
 .create-div {
@@ -115,6 +173,7 @@
   font-weight: 500;
   width: 50%;
   padding: 0vw 1.5vw 0vw 0vw;
+  overflow-y: scroll;
 }
 
 .tags-div {
@@ -128,10 +187,7 @@
 .input-fields {
   display: flex;
   flex-flow: column;
-  height: 100%;
-  /* max-height: 74vh !important; */
   font-size: 16px;
-  /* overflow-y: scroll; */
   margin-bottom: 1vh;
 }
 
@@ -185,7 +241,7 @@ input::placeholder {
   color: transparent;
   display: flex;
   justify-content: space-between;
-  margin: 2vw 0vw 1vw;
+  margin: 24px 0 16px;
 }
 
 .final-upload-button {
@@ -198,8 +254,6 @@ input::placeholder {
 }
 
 .upload-button {
-  display: inline-flex;
-  align-items: center;
   color: white !important;
   border-radius: 12px !important;
   box-shadow: var(--tag-shadow) !important;

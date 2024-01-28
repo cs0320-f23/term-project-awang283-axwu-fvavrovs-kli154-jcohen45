@@ -93,7 +93,7 @@ export const ProfileImageCard: React.FC<ImageCardProps> = ({
   useEffect(() => {
     if (userId) {
       fetchSaved(userId, id);
-      console.log("refresh");
+      // console.log("refresh");
     }
   }, [refresh, userId, isClicked]);
 
@@ -206,7 +206,7 @@ export const ProfileImageCard: React.FC<ImageCardProps> = ({
   return (
     <>
       <div className="profile-card" onClick={handleViewPoster} id={id}>
-        <div className="card-backing">
+        <div className="profile-card-backing">
           <img
             src={content}
             alt={title}

@@ -12,26 +12,30 @@
   display: flex;
   flex-flow: column;
   align-items: center;
-  gap: 1.5vh;
+  gap: 12px;
   box-shadow: var(--modal-shadow);
   background-color: white;
   top: 11vh;
   position: sticky;
+  min-height: 660px;
   height: 85vh;
-  width: 25vw;
+  min-width: 365px;
+  max-width: 365px;
   border-radius: 30px;
-  padding: 1.5vw;
+  padding: 28px;
   overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 .profile-picture {
   border-radius: 100px;
-  width: 11vw;
+  width: 180px;
 }
 
 .name {
-  transform: translateY(-20%);
+  transform: translateY(-15px);
   line-height: 45px;
+  word-break: break-all;
 }
 
 .icons {
