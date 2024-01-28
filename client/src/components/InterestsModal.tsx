@@ -1,12 +1,4 @@
-import {
-  Button,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
-} from "@chakra-ui/react";
+import { Button } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { IUser, classNameTag, fetchTags } from "../functions/fetch";
 import { profileState } from "./atoms/atoms";
@@ -24,7 +16,7 @@ export default function InterestsModal({
   const [allTags, setAllTags] = useState<string[]>([]);
   const [tags, setTags] = useState<Set<string>>(new Set());
   const [profile, setProfile] = useRecoilState(profileState);
-  const [refresh, setRefresh] = useState<boolean>(false);
+  const [refresh] = useState<boolean>(false);
   const [localProfile, setLocalProfile] = useState<any>({});
 
   useEffect(() => {

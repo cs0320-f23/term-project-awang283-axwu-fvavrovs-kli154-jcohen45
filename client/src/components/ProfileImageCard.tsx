@@ -233,8 +233,8 @@ export const ProfileImageCard: React.FC<ImageCardProps> = ({
                 id={id}
                 onClick={(event) => onClickHeart(event)}
                 style={{
-                  width: "1.8vw",
-                  height: "1.8vw",
+                  width: "28px",
+                  height: "28px",
                   boxSizing: "content-box",
                   backgroundSize: "contain",
                   backgroundRepeat: "no-repeat",

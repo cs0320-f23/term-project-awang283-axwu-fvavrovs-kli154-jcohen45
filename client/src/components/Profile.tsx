@@ -11,28 +11,20 @@ import {
   TabPanel,
   Box,
   IconButton,
-  Input,
   Button,
 } from "@chakra-ui/react";
 import Masonry from "masonry-layout";
 import { IPoster } from "./Happenings";
 import imagesLoaded from "imagesloaded";
 import { TriangleUpIcon } from "@chakra-ui/icons";
-import {
-  IUser,
-  classNameTag,
-  createUser,
-  scrollToTop,
-} from "../functions/fetch";
+import { classNameTag, createUser, scrollToTop } from "../functions/fetch";
 import CalendarModal from "./CalendarModal";
 import InterestsModal from "./InterestsModal";
-import axios from "axios";
 import { ProfileImageCard } from "./ProfileImageCard";
 import EditProfileModal from "./EditProfileModal";
 
 export default function Profile() {
-  const [profile, setProfile] = useRecoilState(profileState);
-  const [localProfile, setLocalProfile] = useState<any>({});
+  const [profile] = useRecoilState(profileState);
   const [likeCount, setLikeCount] = useState<number>(0);
   const [createdCount, setCreatedCount] = useState<number>(0);
   const [createdPosters, setCreatedPosters] = useState<IPoster[]>([]);
@@ -72,11 +64,6 @@ export default function Profile() {
         gutter: 11,
       });
     });
-    // setProfile({
-    //   ...profile,
-    //   ["savedPosters"]: savedPosters,
-    //   ["createdPosters"]: createdPosters,
-    // });
   }, [createdPosters, savedPosters]);
 
   const getUserLikes = async () => {
@@ -139,100 +126,6 @@ export default function Profile() {
     });
   };
 
-  //takes in a file and returns an imgur link
-  const createImgurLink = async (file: File | string) => {
-    const config = {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    };
-
-    try {
-      const url = "http://localhost:8080/posters/uploadToImgur";
-
-      const formData = new FormData();
-      console.log(file);
-      formData.append("content", file);
-      const res = await axios.post(url, formData, config);
-
-      return Promise.resolve(res.data.data);
-    } catch (error) {
-      setIsLoading(false);
-      if (axios.isAxiosError(error) && error.response) {
-        console.log(error.response.data.message);
-        console.log(error);
-        return Promise.resolve(
-          `Error in fetch: ${error.response.data.message}`
-        );
-      } else {
-        return Promise.resolve("Error in fetch: Network error or other issue");
-      }
-    }
-  };
-
-  const handleProfilePictureUpload = async (
-    target: EventTarget & HTMLInputElement
-  ) => {
-    if (target.files) {
-      const file = target.files[0]; //getting the file object
-      const output = await createImgurLink(file);
-      setProfile({ ...profile, picture: output });
-    }
-  };
-
-  const updateValue = (property, value) => {
-    if (value && typeof value === "string") {
-      setProfile({ ...profile, [property]: value });
-    } else if (value instanceof Set) {
-      setProfile({ [property]: Array.from(value) });
-    }
-  };
-
-  async function updateProfile(): Promise<void> {
-    //update profile in database put req
-    try {
-      const updatedUser: IUser = {
-        id: profile.id,
-        name: profile.name,
-        email: profile.email,
-        picture: profile.picture,
-        interests: profile.interests,
-        createdPosters: createdPosters,
-        savedPosters: savedPosters,
-      };
-
-      // console.log("inside createUser", updatedUser);
-      //add to database
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      };
-      const url = "http://localhost:8080/users/update/" + profile.id;
-
-      const res = await axios.put(url, updatedUser, config);
-
-      // Set the user profile in state
-      setProfile(updatedUser);
-      setLocalProfile({});
-      localStorage.setItem("userProfile", JSON.stringify(updatedUser));
-
-      setEditingMode(false);
-      return Promise.resolve(res.data.data);
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.response) {
-        console.error(
-          Promise.resolve(`Error in fetch: ${error.response.data.message}`)
-        );
-      } else {
-        console.error(
-          Promise.resolve("Error in fetch: Network error or other issue")
-        );
-      }
-    }
-  }
-
   return (
     <main className="user-page">
       {isLoading && (
@@ -261,7 +154,6 @@ export default function Profile() {
                 className="edit-button"
                 onClick={() => {
                   setEditingMode(true);
-                  setLocalProfile(profile);
                 }}
               >
                 Edit Profile

@@ -266,13 +266,6 @@ export default function App() {
           </div>
         </Modal>
       )}
-      {/* {interestsState && (
-        <InterestsModal
-          createUser={createUser}
-          page={false}
-          onClose={() => false}
-        />
-      )} */}
     </>
   );
 }

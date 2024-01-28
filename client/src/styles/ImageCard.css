@@ -103,7 +103,7 @@
 .heart-icon-prof {
   background-image: url("heart.svg");
   position: absolute;
-  right: 1.6vw;
+  right: 20px;
 }
 
 .image-card {
