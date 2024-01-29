@@ -1,5 +1,6 @@
 package edu.brown.cs.student.main.user;
 
+import edu.brown.cs.student.main.types.Draft;
 import edu.brown.cs.student.main.types.Poster;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,6 +16,7 @@ public class User {
   private String picture;
   private Set<Poster> createdPosters; // Assuming a user can have multiple posters
   private Set<Poster> savedPosters;
+  private Set<Poster> drafts;
   private HashSet<String> interests;
 
   /** a no argument constructor so that Jackson can deserialize the json */
@@ -23,6 +25,7 @@ public class User {
     this.createdPosters = new HashSet<>();
     this.savedPosters = new HashSet<>();
     this.interests = new HashSet<>();
+    this.drafts = new HashSet<>();
   }
   // Getters and Setters
   public String getId() {
@@ -79,5 +82,12 @@ public class User {
 
   public void setInterests(HashSet<String> selectedInterests) {
     this.interests = selectedInterests;
+  }
+  public Set<Poster> getDrafts(){
+    return this.drafts;
+  }
+
+  public void setDrafts(Set<Poster> drafts){
+    this.drafts = drafts;
   }
 }

@@ -24,7 +24,6 @@ public class DraftController {
     private final DraftService draftService; // instance of the class that does all the dirty work
     private final ImgurService imgurService;
     private final UserService userService;
-    private DraftService posterService;
 
     public DraftController(
             DraftService draftService, ImgurService imgurService, UserService userService) {
@@ -64,7 +63,7 @@ public class DraftController {
         poster.setContent(content.getContent());
         this.draftService.createDraft(poster, userId);
         return CompletableFuture.completedFuture(
-                new ServiceResponse<Draft>(poster, "created new poster using existing link"));
+                new ServiceResponse<Draft>(poster, "created new draft using existing link"));
     }
 
     @PostMapping(value = "/uploadToImgur")
@@ -88,9 +87,9 @@ public class DraftController {
         Draft poster = new Draft();
         ServiceResponse<String> imgurResponse = imgurService.uploadToImgur(content);
         poster.setContent(imgurResponse.getData());
-        this.posterService.createDraft(poster, userId);
+        this.draftService.createDraft(poster, userId);
         return CompletableFuture.completedFuture(
-                new ServiceResponse<Draft>(poster, "uploaded to imgur"));
+                new ServiceResponse<Draft>(poster, "created new draft using imgur"));
     }
 
     /**
@@ -183,13 +182,13 @@ public class DraftController {
     @PutMapping("/update/{id}")
     public CompletableFuture<ResponseEntity<ServiceResponse<Draft>>> updatePoster(
             @PathVariable String id, @RequestBody Draft updatedPoster) {
-        return posterService
+        return draftService
                 .getDraftById(id)
                 .thenCompose(
                         existingPoster -> {
                             if (existingPoster.getData() != null) {
                                 updatedPoster.setID(id); // Ensure ID consistency
-                                return posterService.updateDraft(updatedPoster);
+                                return draftService.updateDraft(updatedPoster);
                             } else {
                                 return CompletableFuture.completedFuture(
                                         new ServiceResponse<>("Poster with id " + id + " not found"));

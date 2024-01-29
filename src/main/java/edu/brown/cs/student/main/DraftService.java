@@ -57,7 +57,7 @@ public class DraftService {
         ServiceResponse<Draft> response;
         // Associate the poster with the user
         CompletableFuture<ServiceResponse<User>> associateResponse =
-                userService.associatePosterWithUser(userID, poster);
+                userService.associatePosterWithUser(userID, poster, true);
 
         try {
             associateResponse.get(); // Wait for the completion of the asynchronous task
@@ -155,7 +155,7 @@ public class DraftService {
 
         if (posterToDelete.isPresent()) {
             draftRepository.deleteById(id);
-            return CompletableFuture.completedFuture(new ServiceResponse<>("Poster deleted"));
+            return CompletableFuture.completedFuture(new ServiceResponse<>("Draft with ID " + id + " has been removed from the drafts collection"));
         } else {
             return CompletableFuture.completedFuture(new ServiceResponse<>("Poster not found"));
         }

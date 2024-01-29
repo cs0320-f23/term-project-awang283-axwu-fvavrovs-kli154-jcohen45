@@ -99,7 +99,7 @@ public class UserService {
 
   @Async
   public CompletableFuture<ServiceResponse<User>> associatePosterWithUser(
-      String userId, Poster poster) {
+      String userId, Poster poster, boolean isDraft) {
     // Find the user by ID
     System.out.println("reached associatePosterWithUser function");
     return userRepository
@@ -109,7 +109,13 @@ public class UserService {
               // Set the user ID in the poster
               poster.setUserId(userId);
               // Add the poster to the user's list of posters
-              user.getCreatedPosters().add(poster);
+                if (isDraft){
+                    user.getDrafts().add(poster);
+                }
+                else{
+                    user.getCreatedPosters().add(poster);
+                }
+
               // Save the updated user
               System.out.println("Trying to save");
               userRepository.save(user);
