@@ -8,6 +8,7 @@ import {
   ModalCloseButton,
   ModalContent,
   ModalHeader,
+  ModalOverlay,
 } from "@chakra-ui/react";
 import { Search2Icon, TriangleDownIcon } from "@chakra-ui/icons";
 import "../styles/Home.css";
@@ -123,6 +124,7 @@ export default function Home() {
               </Button>
               {showTags && (
                 <Modal isOpen={true} onClose={() => setShowTags(false)}>
+                  <ModalOverlay className="modal-overlay" />
                   <ModalBody className="modal-body">
                     <ModalContent className="tag-modal-content">
                       <ModalHeader className="modal-header">

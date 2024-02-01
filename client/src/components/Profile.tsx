@@ -333,7 +333,7 @@ export default function Profile() {
             >
               <div className="info-rows">
                 <div className="field-name" style={{ width: "20%" }}>
-                  Liked
+                  Likes
                 </div>
                 <div id="field-data">{likeCount}</div>
               </div>
@@ -359,7 +359,7 @@ export default function Profile() {
                 </div>
               </div>
               <div id="field-data">
-                {Array.from(profile.interests).map((interest, indx) => (
+                {Array.from(interests).map((interest, indx) => (
                   <div className={classNameTag(indx)} key={indx}>
                     {interest}
                   </div>
@@ -397,7 +397,7 @@ export default function Profile() {
                 </Button>
               </div>
               <div className="info-rows">
-                <div className="field-name">Liked</div>
+                <div className="field-name">Likes</div>
                 <div id="field-data">{likeCount}</div>
               </div>
               <div className="info-rows">
@@ -473,7 +473,7 @@ export default function Profile() {
                     tags={poster.tags}
                     recurs={poster.isRecurring!}
                     id={poster.id}
-                    isCreated={false}
+                    created={false}
                   />
                 </Box>
               ))}
@@ -494,7 +494,7 @@ export default function Profile() {
                     tags={poster.tags}
                     recurs={poster.isRecurring!}
                     id={poster.id}
-                    isCreated={true}
+                    created={true}
                   />
                 </Box>
               ))}

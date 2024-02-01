@@ -94,7 +94,7 @@ export const ImageCard: React.FC<ImageCardProps> = ({
   useEffect(() => {
     if (userId) {
       fetchSaved(userId, id);
-      console.log("refresh");
+      // console.log("refresh");
     }
   }, [refresh, userId, isClicked]);
 
@@ -234,8 +234,8 @@ export const ImageCard: React.FC<ImageCardProps> = ({
                 id={id}
                 onClick={(event) => onClickHeart(event)}
                 style={{
-                  width: "2.5vw",
-                  height: "2.5vw",
+                  width: "36px",
+                  height: "36px",
                   boxSizing: "content-box",
                   backgroundSize: "contain",
                   backgroundRepeat: "no-repeat",
@@ -246,7 +246,7 @@ export const ImageCard: React.FC<ImageCardProps> = ({
 
           <div className="title-location">
             <p id="title">{title}</p>
-            <p id="location">{location}</p>
+            <div id="location">{location}</div>
           </div>
         </div>
         {modalOpen === "viewImage" && (
