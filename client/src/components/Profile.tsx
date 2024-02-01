@@ -353,7 +353,7 @@ export default function Profile() {
                 >
                   <img
                     style={{ width: "15%" }}
-                    src="/pencil-svgrepo-com.svg"
+                    src="/edit.svg"
                     onClick={() => setInterestsState(true)}
                   />
                 </div>

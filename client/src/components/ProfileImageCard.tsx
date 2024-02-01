@@ -6,6 +6,7 @@ import "../styles/Modal.css";
 import axios from "axios";
 import ViewPosterModal from "./ViewPosterModal";
 import PopupModal from "./PopupModal";
+import CreateImageModal from "./CreateImageModal";
 
 interface ImageCardProps {
   title: string;
@@ -232,11 +233,17 @@ export const ProfileImageCard: React.FC<ImageCardProps> = ({
     setModalOpen("popup");
   };
 
+  const onClickEdit = (e) => {
+    e.stopPropagation();
+    setModalOpen("edit");
+  };
+
   return (
     <>
       {modalOpen == "popup" && (
         <PopupModal posterID={id} onTab={true} onCloseModal={onClickView} />
       )}
+      {modalOpen == "edit" && <CreateImageModal />}
       <div className="profile-card" onClick={handleViewPoster} id={id}>
         <div className="card-backing">
           <img
@@ -270,6 +277,8 @@ export const ProfileImageCard: React.FC<ImageCardProps> = ({
                     position: "relative",
                     left: "1vw",
                     height: "50%",
+                    justifyContent: "right",
+                    width: "fit-content",
                   }}
                 >
                   <div
@@ -282,6 +291,8 @@ export const ProfileImageCard: React.FC<ImageCardProps> = ({
                       boxSizing: "content-box",
                       backgroundSize: "contain",
                       backgroundRepeat: "no-repeat",
+                      position: "relative",
+                      left: ".2vw",
                     }}
                   ></div>
 
@@ -295,8 +306,9 @@ export const ProfileImageCard: React.FC<ImageCardProps> = ({
                           boxSizing: "content-box",
                           backgroundSize: "contain",
                           backgroundRepeat: "no-repeat",
+                          position: "relative",
                         }}
-                        onClick={(e) => console.log(e)}
+                        onClick={(e) => onClickEdit(e)}
                       ></div>
                       <div
                         className="close-icon"
@@ -306,6 +318,7 @@ export const ProfileImageCard: React.FC<ImageCardProps> = ({
                           boxSizing: "content-box",
                           backgroundSize: "contain",
                           backgroundRepeat: "no-repeat",
+                          position: "relative",
                         }}
                         onClick={(e) => onDelete(e)}
                       ></div>
