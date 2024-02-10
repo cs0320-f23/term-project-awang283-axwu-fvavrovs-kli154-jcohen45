@@ -91,6 +91,19 @@ h1 {
   font-weight: 550;
 }
 
+.all-results {
+  font-size: 18px !important;
+  padding: 20px 22px 10px !important;
+  background-color: transparent !important;
+  color: var(--dark-purple100) !important;
+}
+
+.all-results:hover {
+  color: var(--dark-purple70) !important;
+  transition: 0.3s;
+  transform: none !important;
+}
+
 .sort-select {
   color: var(--dark-purple100);
   font-family: "quicksand", sans-serif;
