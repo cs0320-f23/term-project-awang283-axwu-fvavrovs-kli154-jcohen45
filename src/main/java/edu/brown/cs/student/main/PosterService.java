@@ -39,6 +39,7 @@ public class PosterService {
     // Associate the poster with the user
     CompletableFuture<ServiceResponse<User>> associateResponse =
         userService.associatePosterWithUser(userID, poster, false);
+        userService.removeFromDrafts(userID, poster);
 
     try {
       associateResponse.get(); // Wait for the completion of the asynchronous task
