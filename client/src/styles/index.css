@@ -21,6 +21,7 @@ body {
 
   --dark-purple100: rgba(63, 49, 94, 1);
   --dark-purple70: rgba(121, 111, 142, 1);
+  --dark-purple30: #c6c1cf;
   --drop-shadow: 0px 4px 10px 5px rgba(63, 49, 94, 0.25);
   --modal-shadow: 0px 3px 10px 4px rgba(63, 49, 94, 0.15);
   --light-blue: rgba(202, 226, 255, 1);

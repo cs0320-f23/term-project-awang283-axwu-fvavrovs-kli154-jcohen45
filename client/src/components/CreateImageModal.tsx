@@ -44,7 +44,7 @@ export default function CreateImageModal() {
   const [posterId, setPosterId] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [modalOpen, setModalOpen] = useRecoilState<string>(modalOpenState);
-  // const [intervalID, setIntervalID] = useState<number>();
+  const [popModalOpen, setPopModalOpen] = useState<string>("");
   const [profile] = useRecoilState(profileState);
 
   useEffect(() => {
@@ -139,7 +139,6 @@ export default function CreateImageModal() {
           "http://localhost:8080/posters/create/fromlink?userId=" + profile.id;
         const formData = new FormData();
         formData.append("content", inputElement.value);
-        // formData.append("userId", profile.id);
         setIsLoading(true);
         const res = await axios.post(url, formData, config);
         setPosterSrc(inputElement.value);
@@ -232,7 +231,7 @@ export default function CreateImageModal() {
     //if any field is filled out
     if (Object.keys(poster).length > 2) {
       //popup u sure u wanna del this?
-      setModalOpen("popup");
+      setPopModalOpen("popup");
     } else {
       setModalOpen("");
     }
@@ -240,7 +239,7 @@ export default function CreateImageModal() {
 
   useEffect(() => {
     const popup = () => {
-      if (modalOpen === "popup" && Object.keys(poster).length > 2) {
+      if (popModalOpen === "popup" && Object.keys(poster).length > 2) {
         return <PopupModal posterID={posterId} setPosterSrc={setPosterSrc} />;
       }
     };
@@ -249,7 +248,7 @@ export default function CreateImageModal() {
 
   return (
     <>
-      {modalOpen === "popup" && Object.keys(poster).length > 2 && (
+      {popModalOpen === "popup" && Object.keys(poster).length > 2 && (
         <PopupModal posterID={posterId} setPosterSrc={setPosterSrc} />
       )}
       {modalOpen == "createImage" && (

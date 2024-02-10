@@ -6,16 +6,23 @@ import {
   ModalOverlay,
 } from "@chakra-ui/react";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
-import { modalOpenState, posterState, profileState } from "./atoms/atoms";
+import {
+  modalOpenState,
+  posterSrcState,
+  posterState,
+  profileState,
+} from "./atoms/atoms";
 import axios from "axios";
 
-export default function PopupModal({ posterID, setPosterSrc }) {
+export default function PopupModal({ posterID, onTab, onCloseModal }) {
   const profile = useRecoilValue(profileState);
   const setPoster = useSetRecoilState(posterState);
   const [, setModalOpen] = useRecoilState<string>(modalOpenState);
+  const [, setPosterSrc] = useRecoilState(posterSrcState);
 
   //user wants to delete draft
   const onYes = async () => {
+    // console.log("yes");
     //if poster state has ID
     if (posterID != null && posterID != "" && posterID != " ") {
       //yes? delete from database(posterID, userID)
@@ -40,6 +47,7 @@ export default function PopupModal({ posterID, setPosterSrc }) {
 
         //goes to whatever page user was on (no more modal)
         setModalOpen("");
+        onCloseModal();
 
         //need to give enough time for the poster to be created + id to exist
         return Promise.resolve(res.data.data);
@@ -66,8 +74,16 @@ export default function PopupModal({ posterID, setPosterSrc }) {
 
   //user does not want to delete draft
   const onNo = () => {
-    //go back to create image
-    setModalOpen("createImage");
+    // setModalOpen("");
+    //take in a value if on popuptab instead of location
+    if (onTab) {
+      // console.log(location);
+      onCloseModal();
+      // navigate("/profile");
+    } else {
+      //go back to create image
+      setModalOpen("createImage");
+    }
   };
 
   return (

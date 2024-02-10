@@ -1,10 +1,17 @@
 import { useRecoilState } from "recoil";
-import { profileState, refreshState } from "./atoms/atoms";
+import {
+  modalOpenState,
+  posterState,
+  profileState,
+  refreshState,
+} from "./atoms/atoms";
 import { useCallback, useEffect, useState } from "react";
 import "../styles/ImageCard.css";
 import "../styles/Modal.css";
 import axios from "axios";
 import ViewPosterModal from "./ViewPosterModal";
+import PopupModal from "./PopupModal";
+import CreateImageModal from "./CreateImageModal";
 
 interface ImageCardProps {
   title: string;
@@ -17,6 +24,7 @@ interface ImageCardProps {
   tags?: Set<string>;
   recurs: string;
   id: string;
+  created: boolean;
 }
 
 export const ProfileImageCard: React.FC<ImageCardProps> = ({
@@ -30,6 +38,7 @@ export const ProfileImageCard: React.FC<ImageCardProps> = ({
   tags,
   recurs,
   id,
+  created,
 }) => {
   const listMonths = [
     "January",
@@ -55,6 +64,7 @@ export const ProfileImageCard: React.FC<ImageCardProps> = ({
     "Saturday",
   ];
   const [modalOpen, setModalOpen] = useState<string>("");
+  const [, setEditModal] = useRecoilState(modalOpenState);
   const handleViewPoster = useCallback(() => {
     setModalOpen("viewImage");
   }, []);
@@ -70,6 +80,8 @@ export const ProfileImageCard: React.FC<ImageCardProps> = ({
   const [userId] = useRecoilState(profileState);
   const [isClicked, setIsClicked] = useState<boolean>(false);
   const [refresh, setRefresh] = useRecoilState<boolean>(refreshState);
+  const [profile, setProfile] = useRecoilState(profileState);
+  const [poster, setPoster] = useRecoilState(posterState);
 
   const fetchSaved = async (profile: { id: string }, posterId: string) => {
     try {
@@ -89,11 +101,43 @@ export const ProfileImageCard: React.FC<ImageCardProps> = ({
       console.error(error);
     }
   };
+  const getUserCreated = async () => {
+    const createdResp = await fetch(
+      "http://localhost:8080/users/createdPosters/" + profile.id
+    );
+    if (createdResp.ok) {
+      const created = await createdResp.json();
+      //get each poster given id then set created
+      const newCreatedPosters = [];
+      for (const poster of created.data) {
+        const postersResp = await fetch(
+          "http://localhost:8080/posters/" + poster.id
+        );
+        if (postersResp.ok) {
+          const posterData = await postersResp.json();
+          newCreatedPosters.push(posterData.data);
+        }
+      }
+      setProfile({ ...profile, createdPosters: newCreatedPosters });
+    }
+  };
 
   useEffect(() => {
     if (userId) {
       fetchSaved(userId, id);
-      // console.log("refresh");
+      // setPoster({
+      //   title: title,
+      //   content: content,
+      //   startDate: startDate, //fix this later
+      //   endDate: endDate,
+      //   location: location,
+      //   link: link,
+      //   description: description,
+      //   tags: tags,
+      //   recurs: recurs,
+      //   id: id,
+      //   created: created,
+      // });
     }
   }, [refresh, userId, isClicked]);
 
@@ -104,9 +148,9 @@ export const ProfileImageCard: React.FC<ImageCardProps> = ({
   };
 
   const onClickView = async () => {
-    console.log("on close");
     setModalOpen("");
     await fetchSavedOnClose();
+    await getUserCreated();
   };
 
   const onClickHeart = async (event) => {
@@ -203,8 +247,24 @@ export const ProfileImageCard: React.FC<ImageCardProps> = ({
   }
   const day = startDate[2];
 
+  const onDelete = async (event) => {
+    //open popup modal
+    event.stopPropagation();
+    setModalOpen("popup");
+  };
+
+  const onClickEdit = (e) => {
+    e.stopPropagation();
+    setEditModal("createImage");
+    //set poster state to poster associated w the porfile image card
+  };
+
   return (
     <>
+      {modalOpen == "popup" && (
+        <PopupModal posterID={id} onTab={true} onCloseModal={onClickView} />
+      )}
+      {modalOpen == "createImage" && <CreateImageModal />}
       <div className="profile-card" onClick={handleViewPoster} id={id}>
         <div className="profile-card-backing">
           <img
@@ -228,18 +288,49 @@ export const ProfileImageCard: React.FC<ImageCardProps> = ({
               </p>
             </div>
             {userId && (
-              <div
-                className={`heart-icon-prof ${isClicked ? "clicked" : ""}`}
-                id={id}
-                onClick={(event) => onClickHeart(event)}
-                style={{
-                  width: "28px",
-                  height: "28px",
-                  boxSizing: "content-box",
-                  backgroundSize: "contain",
-                  backgroundRepeat: "no-repeat",
-                }}
-              ></div>
+              <>
+                <div className="modal-icons">
+                  <div
+                    className={`heart-icon-prof ${isClicked ? "clicked" : ""}`}
+                    id={id}
+                    onClick={(event) => onClickHeart(event)}
+                    style={{
+                      width: "26px",
+                      height: "26px",
+                      boxSizing: "content-box",
+                      backgroundSize: "contain",
+                      backgroundRepeat: "no-repeat",
+                    }}
+                  ></div>
+
+                  {created && (
+                    <>
+                      <div
+                        className="edit-icon"
+                        style={{
+                          width: "30px",
+                          height: "30px",
+                          boxSizing: "content-box",
+                          backgroundSize: "contain",
+                          backgroundRepeat: "no-repeat",
+                        }}
+                        onClick={(e) => onClickEdit(e)}
+                      ></div>
+                      <div
+                        className="close-icon"
+                        style={{
+                          width: "30px",
+                          height: "30px",
+                          boxSizing: "content-box",
+                          backgroundSize: "contain",
+                          backgroundRepeat: "no-repeat",
+                        }}
+                        onClick={(e) => onDelete(e)}
+                      ></div>
+                    </>
+                  )}
+                </div>
+              </>
             )}
           </div>
           <p id="profile-title">{title}</p>

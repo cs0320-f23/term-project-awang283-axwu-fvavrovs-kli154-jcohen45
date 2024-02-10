@@ -38,7 +38,10 @@ export default function InterestsModal({
     };
 
     fetchAllTags();
-  }, [refresh]);
+    if (profile.interests) {
+      setTags(new Set(profile.interests));
+    }
+  }, []);
 
   useEffect(() => {
     console.log(profile);
@@ -59,6 +62,7 @@ export default function InterestsModal({
 
   const onClick = (tag: string) => {
     // if in tags list, take out
+    console.log(tags);
     setTags((prevTags) => {
       // using functional form of setTags so that onClick is updating the actual latest state of tags; otherwise always a step behind
       const updatedTags = new Set(prevTags); // Create a new set from the previous tags
@@ -86,8 +90,9 @@ export default function InterestsModal({
     if (userProfile) {
       // Set the user profile in state
       setProfile(updatedProfile);
-      localStorage.setItem("userProfile", JSON.stringify(updatedProfile));
-      console.log(profile);
+      localStorage.setItem("userProfile", updatedProfile.id);
+      // console.log(profile);
+      //setRefresh(!refresh);
     }
     //if on home page = false
     if (!page) {

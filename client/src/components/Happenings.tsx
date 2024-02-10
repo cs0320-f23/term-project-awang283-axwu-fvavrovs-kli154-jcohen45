@@ -147,6 +147,7 @@ export default function Happenings() {
   }, [sortPosters]);
 
   useEffect(() => {
+    console.log(searchResults);
     if (gridRef.current) {
       imagesLoaded(gridRef.current, function () {
         // console.log("all images are loaded");
