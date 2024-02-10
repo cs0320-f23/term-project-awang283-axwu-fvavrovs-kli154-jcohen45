@@ -245,6 +245,7 @@ export default function Profile() {
                     tags={poster.tags}
                     recurs={poster.isRecurring!}
                     id={poster.id}
+                    created={false}
                   />
                 </Box>
               ))}
@@ -265,6 +266,7 @@ export default function Profile() {
                     tags={poster.tags}
                     recurs={poster.isRecurring!}
                     id={poster.id}
+                    created={true}
                   />
                 </Box>
               ))}

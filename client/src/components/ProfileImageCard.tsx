@@ -1,5 +1,10 @@
 import { useRecoilState } from "recoil";
-import { profileState, refreshState } from "./atoms/atoms";
+import {
+  modalOpenState,
+  posterState,
+  profileState,
+  refreshState,
+} from "./atoms/atoms";
 import { useCallback, useEffect, useState } from "react";
 import "../styles/ImageCard.css";
 import "../styles/Modal.css";
@@ -59,6 +64,7 @@ export const ProfileImageCard: React.FC<ImageCardProps> = ({
     "Saturday",
   ];
   const [modalOpen, setModalOpen] = useState<string>("");
+  const [, setEditModal] = useRecoilState(modalOpenState);
   const handleViewPoster = useCallback(() => {
     setModalOpen("viewImage");
   }, []);
@@ -75,6 +81,7 @@ export const ProfileImageCard: React.FC<ImageCardProps> = ({
   const [isClicked, setIsClicked] = useState<boolean>(false);
   const [refresh, setRefresh] = useRecoilState<boolean>(refreshState);
   const [profile, setProfile] = useRecoilState(profileState);
+  const [poster, setPoster] = useRecoilState(posterState);
 
   const fetchSaved = async (profile: { id: string }, posterId: string) => {
     try {
@@ -118,6 +125,19 @@ export const ProfileImageCard: React.FC<ImageCardProps> = ({
   useEffect(() => {
     if (userId) {
       fetchSaved(userId, id);
+      // setPoster({
+      //   title: title,
+      //   content: content,
+      //   startDate: startDate, //fix this later
+      //   endDate: endDate,
+      //   location: location,
+      //   link: link,
+      //   description: description,
+      //   tags: tags,
+      //   recurs: recurs,
+      //   id: id,
+      //   created: created,
+      // });
     }
   }, [refresh, userId, isClicked]);
 
@@ -235,7 +255,8 @@ export const ProfileImageCard: React.FC<ImageCardProps> = ({
 
   const onClickEdit = (e) => {
     e.stopPropagation();
-    setModalOpen("edit");
+    setEditModal("createImage");
+    //set poster state to poster associated w the porfile image card
   };
 
   return (
@@ -243,7 +264,7 @@ export const ProfileImageCard: React.FC<ImageCardProps> = ({
       {modalOpen == "popup" && (
         <PopupModal posterID={id} onTab={true} onCloseModal={onClickView} />
       )}
-      {modalOpen == "edit" && <CreateImageModal />}
+      {modalOpen == "createImage" && <CreateImageModal />}
       <div className="profile-card" onClick={handleViewPoster} id={id}>
         <div className="card-backing">
           <img

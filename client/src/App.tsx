@@ -24,11 +24,7 @@ import {
 import axios from "axios";
 import { createUser } from "./functions/fetch";
 import Profile from "./components/Profile";
-import {
-  modalOpenState,
-  profileState,
-  searchResultsState,
-} from "./components/atoms/atoms";
+import { modalOpenState, profileState } from "./components/atoms/atoms";
 import { useRecoilState } from "recoil";
 import InterestsModal from "./components/InterestsModal";
 
@@ -130,7 +126,7 @@ export default function App() {
         const userProfileString = localStorage.getItem("userProfile");
         const userProfile = JSON.parse(userProfileString!);
         const userId = userProfile.id;
-        console.log(userId);
+        //console.log(userId);
         if (userId) {
           await findUser(userId);
         }

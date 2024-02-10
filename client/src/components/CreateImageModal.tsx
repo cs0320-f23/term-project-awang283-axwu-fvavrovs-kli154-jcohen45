@@ -44,6 +44,7 @@ export default function CreateImageModal() {
   const [posterId, setPosterId] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [modalOpen, setModalOpen] = useRecoilState<string>(modalOpenState);
+  const [popModalOpen, setPopModalOpen] = useState<string>("");
   // const [intervalID, setIntervalID] = useState<number>();
   const [profile] = useRecoilState(profileState);
 
@@ -232,7 +233,7 @@ export default function CreateImageModal() {
     //if any field is filled out
     if (Object.keys(poster).length > 2) {
       //popup u sure u wanna del this?
-      setModalOpen("popup");
+      setPopModalOpen("popup");
     } else {
       setModalOpen("");
     }
@@ -240,7 +241,7 @@ export default function CreateImageModal() {
 
   useEffect(() => {
     const popup = () => {
-      if (modalOpen === "popup" && Object.keys(poster).length > 2) {
+      if (popModalOpen === "popup" && Object.keys(poster).length > 2) {
         return <PopupModal posterID={posterId} setPosterSrc={setPosterSrc} />;
       }
     };
@@ -249,7 +250,7 @@ export default function CreateImageModal() {
 
   return (
     <>
-      {modalOpen === "popup" && Object.keys(poster).length > 2 && (
+      {popModalOpen === "popup" && Object.keys(poster).length > 2 && (
         <PopupModal posterID={posterId} setPosterSrc={setPosterSrc} />
       )}
       {modalOpen == "createImage" && (
