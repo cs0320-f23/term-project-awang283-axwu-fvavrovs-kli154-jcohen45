@@ -75,13 +75,11 @@ export default function PopupModal({ posterID, onTab, onCloseModal }) {
   //user does not want to delete draft
   const onNo = () => {
     // setModalOpen("");
-    //take in a value if on popuptab instead of location
+    // Take in a value if onPopupTab instead of location
     if (onTab) {
-      // console.log(location);
       onCloseModal();
-      // navigate("/profile");
     } else {
-      //go back to create image
+      // Go back to create image
       setModalOpen("createImage");
     }
   };
