@@ -231,29 +231,10 @@ export default function CreateImageModal() {
     //if any field is filled out
     if (Object.keys(poster).length > 2) {
       //popup u sure u wanna del this?
-      console.log(popModalOpen);
       setPopModalOpen("popup");
-    } else {
-      console.log("popup modal not open");
-      setModalOpen("");
     }
+    setModalOpen("");
   };
-
-  // useEffect(() => {
-  //   console.log("useEffect popUp state: " + popModalOpen);
-  //   const popup = () => {
-  //     if (popModalOpen === "popup" && Object.keys(poster).length > 2) {
-  //       return (
-  //         <PopupModal
-  //           posterID={posterId}
-  //           setPosterSrc={setPosterSrc}
-  //           onCloseModal={setPopModalOpen}
-  //         />
-  //       );
-  //     }
-  //   };
-  //   () => popup;
-  // }, [Object.keys(poster).length, modalOpen]);
 
   return (
     <>
