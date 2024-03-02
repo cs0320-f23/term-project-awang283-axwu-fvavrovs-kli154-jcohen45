@@ -5,7 +5,6 @@ import "../styles/ImageCard.css";
 import "../styles/Modal.css";
 import axios from "axios";
 import ViewPosterModal from "./ViewPosterModal";
-import { IPoster } from "./Happenings";
 
 interface ImageCardProps {
   title: string;

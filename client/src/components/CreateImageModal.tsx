@@ -45,7 +45,6 @@ export default function CreateImageModal() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [modalOpen, setModalOpen] = useRecoilState<string>(modalOpenState);
   const [popModalOpen, setPopModalOpen] = useState<string>("");
-  // const [intervalID, setIntervalID] = useState<number>();
   const [profile] = useRecoilState(profileState);
 
   useEffect(() => {
@@ -140,7 +139,6 @@ export default function CreateImageModal() {
           "http://localhost:8080/posters/create/fromlink?userId=" + profile.id;
         const formData = new FormData();
         formData.append("content", inputElement.value);
-        // formData.append("userId", profile.id);
         setIsLoading(true);
         const res = await axios.post(url, formData, config);
         setPosterSrc(inputElement.value);

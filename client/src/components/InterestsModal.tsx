@@ -180,7 +180,12 @@ export default function InterestsModal({
             <Button
               className="final-upload-button"
               onClick={updateProfile}
-              isDisabled={!profile.name || profile.name.length > 30}
+              isDisabled={
+                !profile.name ||
+                profile.name.length > 30 ||
+                tags.size < 1 ||
+                tags.size > 5
+              }
             >
               Save Changes
             </Button>

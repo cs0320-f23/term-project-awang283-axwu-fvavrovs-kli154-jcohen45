@@ -258,7 +258,11 @@ export default function Happenings() {
         style={{ height: "fit-content", minHeight: "87vh" }}
       >
         <div className="search-filter-fixed">
-          <div style={{ display: "flex" }}>
+          <div
+            style={{
+              display: "flex",
+            }}
+          >
             <div
               className="browse-search-bar"
               style={{ justifyContent: "space-between" }}
@@ -293,7 +297,10 @@ export default function Happenings() {
                 </Button>
               </Box>
             </div>
-            <div
+            <Button className="all-results" onClick={getAllResults}>
+              All Results
+            </Button>
+            {/* <div
               className="results"
               style={{
                 fontFamily: "'quicksand', sans-serif",
@@ -306,7 +313,7 @@ export default function Happenings() {
               onClick={getAllResults}
             >
               All Results
-            </div>
+            </div> */}
           </div>
 
           <Box w="9.5vw">

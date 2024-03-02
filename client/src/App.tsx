@@ -223,24 +223,30 @@ export default function App() {
           </Routes>
           {modalOpen && <CreateImageModal />}
         </main>
-        <footer
-          className="nav-link"
-          style={{
-            width: "90%",
-            position: "relative",
-            zIndex: "500",
-            marginTop: "5vh",
-            marginLeft: "2vw",
-            marginRight: "20vw",
-            height: "8vh",
-            fontFamily: "'quicksand', sans-serif",
-            display: "flex",
-            justifyContent: "space-between",
-            // backgroundColor: "rgba(202, 226, 255, .85)",
-          }}
-        >
-          <div className="left">email / feedback</div>
-          <div className="right">Made with love</div>
+        <footer className="footer">
+          <div className="row">
+            <p className="site-name">P@B</p>
+            <div className="foot-links">
+              <NavLink to="/home" className="foot-link">
+                Home
+              </NavLink>
+              <NavLink to="/happenings" className="foot-link">
+                Happenings
+              </NavLink>
+              <NavLink to="/archive" className="foot-link">
+                Archive
+              </NavLink>
+              <NavLink to="/about" className="foot-link">
+                About
+              </NavLink>
+            </div>
+          </div>
+          <div className="row">
+            <div className="foot-left">
+              Made with love by Jaclyn Cohen, Katie Li, Anna Wang, AJ Wu
+            </div>
+            <div className="foot-right">Feedback</div>
+          </div>
         </footer>
       </article>
       {interestsState && (

@@ -293,7 +293,7 @@ export const ProfileImageCard: React.FC<ImageCardProps> = ({
       )}
       {modalOpen == "createImage" && <CreateImageModal />}
       <div className="profile-card" onClick={handleViewPoster} id={id}>
-        <div className="card-backing">
+        <div className="profile-card-backing">
           <img
             src={content}
             alt={title}
@@ -316,31 +316,17 @@ export const ProfileImageCard: React.FC<ImageCardProps> = ({
             </div>
             {userId && (
               <>
-                <div
-                  className="icons"
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "0",
-                    position: "relative",
-                    left: "1vw",
-                    height: "50%",
-                    justifyContent: "right",
-                    width: "fit-content",
-                  }}
-                >
+                <div className="modal-icons">
                   <div
                     className={`heart-icon-prof ${isClicked ? "clicked" : ""}`}
                     id={id}
                     onClick={(event) => onClickHeart(event)}
                     style={{
-                      width: "1.8vw",
-                      height: "1.8vw",
+                      width: "26px",
+                      height: "26px",
                       boxSizing: "content-box",
                       backgroundSize: "contain",
                       backgroundRepeat: "no-repeat",
-                      position: "relative",
-                      left: ".2vw",
                     }}
                   ></div>
 
@@ -349,24 +335,22 @@ export const ProfileImageCard: React.FC<ImageCardProps> = ({
                       <div
                         className="edit-icon"
                         style={{
-                          width: "2.5vw",
-                          height: "2.5vw",
+                          width: "30px",
+                          height: "30px",
                           boxSizing: "content-box",
                           backgroundSize: "contain",
                           backgroundRepeat: "no-repeat",
-                          position: "relative",
                         }}
                         onClick={(e) => onClickEdit(e)}
                       ></div>
                       <div
                         className="close-icon"
                         style={{
-                          width: "2vw",
-                          height: "2vw",
+                          width: "30px",
+                          height: "30px",
                           boxSizing: "content-box",
                           backgroundSize: "contain",
                           backgroundRepeat: "no-repeat",
-                          position: "relative",
                         }}
                         onClick={(e) => onDelete(e)}
                       ></div>

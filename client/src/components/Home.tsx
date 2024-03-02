@@ -112,7 +112,7 @@ export default function Home() {
             <Box w="11.5vw" display="flex" justifyContent="right">
               <Button
                 className="browse-select"
-                fontSize="18px"
+                fontSize="22px"
                 width="8vw"
                 height="7vh"
                 color="white"
