@@ -224,29 +224,10 @@ export default function App() {
           {modalOpen && <CreateImageModal />}
         </main>
         <footer className="footer">
-          <div className="row">
-            <p className="site-name">P@B</p>
-            <div className="foot-links">
-              <NavLink to="/home" className="foot-link">
-                Home
-              </NavLink>
-              <NavLink to="/happenings" className="foot-link">
-                Happenings
-              </NavLink>
-              <NavLink to="/archive" className="foot-link">
-                Archive
-              </NavLink>
-              <NavLink to="/about" className="foot-link">
-                About
-              </NavLink>
-            </div>
+          <div className="foot-left">
+            Made with love by Jaclyn Cohen, Katie Li, Anna Wang, AJ Wu
           </div>
-          <div className="row">
-            <div className="foot-left">
-              Made with love by Jaclyn Cohen, Katie Li, Anna Wang, AJ Wu
-            </div>
-            <div className="foot-right">Feedback</div>
-          </div>
+          <div className="foot-right">Feedback</div>
         </footer>
       </article>
       {interestsState && (

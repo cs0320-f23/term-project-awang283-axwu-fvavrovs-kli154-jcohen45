@@ -82,7 +82,7 @@ export default function CreateImageModal() {
         callback();
       }
 
-      console.log(JSON.stringify(newPoster));
+      // console.log(JSON.stringify(newPoster));
       return newPoster;
     });
 
@@ -231,25 +231,38 @@ export default function CreateImageModal() {
     //if any field is filled out
     if (Object.keys(poster).length > 2) {
       //popup u sure u wanna del this?
+      console.log(popModalOpen);
       setPopModalOpen("popup");
     } else {
+      console.log("popup modal not open");
       setModalOpen("");
     }
   };
 
-  useEffect(() => {
-    const popup = () => {
-      if (popModalOpen === "popup" && Object.keys(poster).length > 2) {
-        return <PopupModal posterID={posterId} setPosterSrc={setPosterSrc} />;
-      }
-    };
-    () => popup;
-  }, [Object.keys(poster).length, modalOpen]);
+  // useEffect(() => {
+  //   console.log("useEffect popUp state: " + popModalOpen);
+  //   const popup = () => {
+  //     if (popModalOpen === "popup" && Object.keys(poster).length > 2) {
+  //       return (
+  //         <PopupModal
+  //           posterID={posterId}
+  //           setPosterSrc={setPosterSrc}
+  //           onCloseModal={setPopModalOpen}
+  //         />
+  //       );
+  //     }
+  //   };
+  //   () => popup;
+  // }, [Object.keys(poster).length, modalOpen]);
 
   return (
     <>
       {popModalOpen === "popup" && Object.keys(poster).length > 2 && (
-        <PopupModal posterID={posterId} setPosterSrc={setPosterSrc} />
+        <PopupModal
+          posterID={posterId}
+          setPosterSrc={setPosterSrc}
+          setPopModalOpen={setPopModalOpen}
+        />
       )}
       {modalOpen == "createImage" && (
         <Modal closeOnOverlayClick={false} isOpen={true} onClose={onClose}>
