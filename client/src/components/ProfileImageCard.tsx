@@ -1,6 +1,7 @@
 import { useRecoilState } from "recoil";
 import {
   modalOpenState,
+  posterSrcState,
   posterState,
   profileState,
   refreshState,
@@ -81,7 +82,8 @@ export const ProfileImageCard: React.FC<ImageCardProps> = ({
   const [isClicked, setIsClicked] = useState<boolean>(false);
   const [refresh, setRefresh] = useRecoilState<boolean>(refreshState);
   const [profile, setProfile] = useRecoilState(profileState);
-  const [poster, setPoster] = useRecoilState(posterState);
+  const [, setPoster] = useRecoilState(posterState);
+  const [, setPosterSrc] = useRecoilState(posterSrcState);
 
   const fetchSaved = async (profile: { id: string }, posterId: string) => {
     try {
@@ -125,19 +127,6 @@ export const ProfileImageCard: React.FC<ImageCardProps> = ({
   useEffect(() => {
     if (userId) {
       fetchSaved(userId, id);
-      // setPoster({
-      //   title: title,
-      //   content: content,
-      //   startDate: startDate, //fix this later
-      //   endDate: endDate,
-      //   location: location,
-      //   link: link,
-      //   description: description,
-      //   tags: tags,
-      //   recurs: recurs,
-      //   id: id,
-      //   created: created,
-      // });
     }
   }, [refresh, userId, isClicked]);
 
@@ -256,6 +245,44 @@ export const ProfileImageCard: React.FC<ImageCardProps> = ({
   const onClickEdit = (e) => {
     e.stopPropagation();
     setEditModal("createImage");
+    const newStartDate = [...startDate];
+    newStartDate[1] -= 1;
+    let newEndDate;
+    if (endDate) {
+      newEndDate = [...endDate];
+      newEndDate[1] -= 1;
+    }
+    setPoster({
+      title: title,
+      content: content,
+      startDate: JSON.stringify(
+        new Date(
+          newStartDate[0],
+          newStartDate[1],
+          newStartDate[2],
+          newStartDate[3],
+          newStartDate[4]
+        )
+      ),
+      endDate: newEndDate
+        ? JSON.stringify(
+            new Date(
+              newEndDate[0],
+              newEndDate[1],
+              newEndDate[2],
+              newEndDate[3],
+              newEndDate[4]
+            )
+          )
+        : " ",
+      location: location,
+      link: link,
+      description: description,
+      tags: tags,
+      isRecurring: recurs,
+      id: id,
+    });
+    setPosterSrc(content);
     //set poster state to poster associated w the porfile image card
   };
 
