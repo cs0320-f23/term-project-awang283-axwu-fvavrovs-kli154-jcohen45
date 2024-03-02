@@ -14,7 +14,12 @@ import {
 } from "./atoms/atoms";
 import axios from "axios";
 
-export default function PopupModal({ posterID, onTab, onCloseModal }) {
+export default function PopupModal({
+  posterID,
+  onTab,
+  onCloseModal,
+  setPopModalOpen,
+}) {
   const profile = useRecoilValue(profileState);
   const setPoster = useSetRecoilState(posterState);
   const [, setModalOpen] = useRecoilState<string>(modalOpenState);
@@ -82,6 +87,7 @@ export default function PopupModal({ posterID, onTab, onCloseModal }) {
       // navigate("/profile");
     } else {
       //go back to create image
+      setPopModalOpen("");
       setModalOpen("createImage");
     }
   };

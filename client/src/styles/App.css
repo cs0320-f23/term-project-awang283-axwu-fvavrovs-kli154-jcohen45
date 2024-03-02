@@ -151,38 +151,14 @@ main {
 
 .footer {
   width: 100vw;
-  padding: 6vh 4vw 9vh;
+  padding: 10vh 4vw 6vh;
   font-family: "quicksand", sans-serif;
-  display: flex;
-  flex-flow: column;
-  justify-content: space-between;
-  position: relative;
-  z-index: 100;
-}
-
-.row {
-  width: 100%;
   display: flex;
   flex-flow: row;
   justify-content: space-between;
-  margin: 1vh 0vw;
   align-items: end;
-}
-
-.foot-links {
-  display: flex;
-  gap: 36px;
-}
-
-.foot-link {
-  font-size: 16px;
-  font-weight: 900;
-}
-
-.foot-link:hover {
-  transition: 0.3s;
-  color: var(--dark-purple70);
-  transform: scale(1.05) !important;
+  position: relative;
+  z-index: 100;
 }
 
 .site-name {
