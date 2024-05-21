@@ -9,6 +9,7 @@ import axios from "axios";
 import Masonry from "masonry-layout";
 import imagesLoaded from "imagesloaded";
 import React from "react";
+import { IPoster } from "./Happenings";
 
 export default function Archive() {
   const [searchResults, setSearchResults] = useState<IPoster[]>([]);
@@ -54,7 +55,7 @@ export default function Archive() {
           `Error in fetch: ${error.response.data.message}`
         );
       } else {
-        console.log("Network error or other issue:", error.message);
+        console.log("Network error or other issue");
         return Promise.resolve("Error in fetch: Network error or other issue");
       }
     }
@@ -90,7 +91,7 @@ export default function Archive() {
       <main className="archive" style={{ height: "fit-content" }}>
         {Object.keys(posters)
           .reverse()
-          .map((year, index) => {
+          .map((year) => {
             return (
               <React.Fragment key={year}>
                 <h1 id="year">{year}</h1>

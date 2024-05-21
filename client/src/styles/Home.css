@@ -97,6 +97,8 @@
   display: flex;
   gap: 14px;
   justify-content: space-between;
+  max-width: 60vw;
+  overflow-x: scroll;
 }
 
 .magenta-tag,
