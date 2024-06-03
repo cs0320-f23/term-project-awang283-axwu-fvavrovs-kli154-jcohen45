@@ -34,6 +34,7 @@ export default function App() {
   const [profile, setProfile] = useRecoilState(profileState);
   const [interestsState, setInterestsState] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [hamburgerOpen, setHamburgerOpen] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const login = useGoogleLogin({
@@ -206,6 +207,62 @@ export default function App() {
                     >
                       Login
                     </Button>
+                  </div>
+                </>
+              )}
+            </div>
+            <NavLink to="/home" id="logo" className="invis">
+              P@B
+            </NavLink>
+            <div
+              className="hamburger-menu"
+              onMouseEnter={() => setHamburgerOpen(true)}
+              onMouseLeave={() => setHamburgerOpen(false)}
+            >
+              &#9776;
+              {hamburgerOpen && (
+                <>
+                  <div className="dropdown">
+                    <NavLink to="/happenings" className="nav-link">
+                      Happenings
+                    </NavLink>
+                    <NavLink to="/archive" className="nav-link">
+                      Archive
+                    </NavLink>
+                    <NavLink to="/about" className="nav-link">
+                      About
+                    </NavLink>
+                    {profile ? (
+                      <>
+                        <Button
+                          id="create"
+                          onClick={handleCreatePoster}
+                          backgroundColor={"var(--dark-purple100)"}
+                        >
+                          Create
+                        </Button>
+                        <div id="profile">
+                          <NavLink to="/profile" className="profile-link">
+                            {profile.name}
+                          </NavLink>
+                        </div>
+                        <Button id="logout" onClick={logOut} color={"white"}>
+                          Log Out
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <div className="g-signin2" data-onsuccess="onSignIn">
+                          <Button
+                            id="login"
+                            onClick={() => login()}
+                            style={{ backgroundColor: "var(--dark-purple100)" }}
+                          >
+                            Login
+                          </Button>
+                        </div>
+                      </>
+                    )}
                   </div>
                 </>
               )}
