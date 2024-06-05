@@ -149,9 +149,13 @@ main {
   /* padding-top: 50px; Adjust this value to provide space below the fixed header */
 }
 
+.profile-link:hover {
+color: white;
+}
+
 .footer {
   width: 100vw;
-  padding: 10vh 4vw 6vh;
+  padding: 6vh 3.1vw 6vh;
   font-family: "quicksand", sans-serif;
   display: flex;
   flex-flow: row;
@@ -172,12 +176,13 @@ main {
   color: var(--dark-purple70);
 }
 
-.hamburger-menu {
+.hamburger-menu, .hamburger-menu-outer {
   display: none;
   cursor: pointer;
   font-size: 1.5rem;
   margin-right: 1rem;
   color: var(--dark-purple100);
+ 
 }
 
 .invis {
@@ -191,13 +196,14 @@ main {
   width: 30vw;
   height: fit-content;
   position: absolute;
-  transform: translate(-25vw, 1vh);
+  transform: translate(-25vw, 2vh);
   border-radius: 20px;
   display: grid;
-  grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
   padding: 2vw;
   justify-content: center;
   font-family: "quicksand", sans-serif;
+  z-index: 101;
 }
 
 .dropdown > .nav-link:hover::after {
@@ -205,9 +211,17 @@ main {
 }
 
 @media (max-aspect-ratio: 1.1) {
+  .hamburger-menu-outer {
+    display: grid;
+    grid-template-columns: 2fr 1fr 2fr;
+    align-self: flex-start;
+    width: 100px;
+    justify-content: space-between;
+  }
   .hamburger-menu {
     display: block;
-    align-self: flex-start;
+    justify-self: flex-start;
+    width: 100%;
   }
   .left-links,
   .right-links {

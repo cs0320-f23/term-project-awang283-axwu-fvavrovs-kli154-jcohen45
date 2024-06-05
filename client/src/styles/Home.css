@@ -144,12 +144,16 @@ img {
 }
 
 .scroll-bottom {
-  position: fixed !important;
+  position: sticky !important;
   min-height: 3vw;
   width: 3vw;
   margin: 1.3vw;
   border-radius: 12px !important;
-  bottom: 0;
-  right: 0;
+  bottom: 5%;
+  left: 95%;
   z-index: 500;
+}
+
+.scroll-bottom:hover{
+  background-color: var(--dark-purple70) !important;
 }

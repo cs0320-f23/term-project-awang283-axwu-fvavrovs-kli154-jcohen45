@@ -48,6 +48,7 @@
   box-shadow: var(--modal-shadow);
   border-radius: 25px !important;
   min-height: 90%;
+  max-width: 55% !important;
   font-family: "quicksand", sans-serif;
 }
 

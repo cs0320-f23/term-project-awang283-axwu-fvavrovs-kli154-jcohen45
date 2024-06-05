@@ -127,6 +127,7 @@ export default function Profile() {
   };
 
   return (
+    <>
     <main className="user-page">
       {isLoading && (
         <div className="loading-screen">
@@ -274,14 +275,16 @@ export default function Profile() {
           </TabPanel>
         </TabPanels>
       </Tabs>
-      <IconButton
-        className="scroll-top"
-        color="white"
-        backgroundColor="var(--dark-purple100)"
-        icon={<TriangleUpIcon id="triangle-icon-up" />}
-        aria-label={"scrolls user to bottom of page"}
-        onClick={scrollToTop}
-      />
+      
     </main>
+    <IconButton
+    className="scroll-top"
+    color="white"
+    backgroundColor="var(--dark-purple100)"
+    icon={<TriangleUpIcon id="triangle-icon-up" />}
+    aria-label={"scrolls user to bottom of page"}
+    onClick={scrollToTop}
+  />
+  </>
   );
 }

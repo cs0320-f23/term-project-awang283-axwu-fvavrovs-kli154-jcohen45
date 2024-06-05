@@ -126,7 +126,7 @@ export default function Home() {
                 <Modal isOpen={true} onClose={() => setShowTags(false)}>
                   <ModalOverlay className="modal-overlay" />
                   <ModalBody className="modal-body">
-                    <ModalContent className="tag-modal-content">
+                    <ModalContent className="tag-modal-content" >
                       <ModalHeader className="modal-header">
                         Select Tags
                       </ModalHeader>
