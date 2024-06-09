@@ -137,7 +137,7 @@ public class UserService {
               // Add the poster to the user's list of posters
               for (Poster draft : user.getDrafts()) {
                 if (draft.getID().equals(poster.getID())) {
-                    user.getDrafts().remove(draft);
+                  user.getDrafts().remove(draft);
                   break;
                 }
               }
