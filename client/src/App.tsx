@@ -217,12 +217,18 @@ export default function App() {
             <div
               className="hamburger-menu"
               onMouseEnter={() => setHamburgerOpen(true)}
-              onMouseLeave={() => setHamburgerOpen(false)}
             >
-              &#9776;
+              <div className="hamburger-icon">
+                <div className="bar"></div>
+                <div className="bar"></div>
+                <div className="bar"></div>
+              </div>
               {hamburgerOpen && (
                 <>
-                  <div className="dropdown">
+                  <div
+                    className="dropdown"
+                    onMouseLeave={() => setHamburgerOpen(false)}
+                  >
                     <NavLink to="/happenings" className="nav-link">
                       Happenings
                     </NavLink>

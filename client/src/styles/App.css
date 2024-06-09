@@ -176,8 +176,24 @@ main {
   display: none;
   cursor: pointer;
   font-size: 1.5rem;
-  margin-right: 1rem;
+  /* margin-right: 1rem; */
   color: var(--dark-purple100);
+}
+
+.hamburger-icon {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 30px;
+  height: 25px;
+  cursor: pointer;
+}
+
+.bar {
+  width: 100%;
+  height: 4px;
+  background-color: var(--dark-purple100);
+  border-radius: 5px;
 }
 
 .invis {
