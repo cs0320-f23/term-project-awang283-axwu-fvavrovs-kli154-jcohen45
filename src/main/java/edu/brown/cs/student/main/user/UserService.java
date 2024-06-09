@@ -109,12 +109,11 @@ public class UserService {
               // Set the user ID in the poster
               poster.setUserId(userId);
               // Add the poster to the user's list of posters
-                if (isDraft){
-                    user.getDrafts().add(poster);
-                }
-                else{
-                    user.getCreatedPosters().add(poster);
-                }
+              if (isDraft) {
+                user.getDrafts().add(poster);
+              } else {
+                user.getCreatedPosters().add(poster);
+              }
 
               // Save the updated user
               System.out.println("Trying to save");
@@ -127,28 +126,27 @@ public class UserService {
         .orElse(CompletableFuture.completedFuture(new ServiceResponse<>("User not found")));
   }
 
-    @Async
-    public CompletableFuture<ServiceResponse<User>> removeFromDrafts(
-            String userId, Poster poster) {
-        // Find the user by ID
-        return userRepository
-                .findById(userId)
-                .map(
-                        user -> {
-                            // Set the user ID in the poster
-                            // Add the poster to the user's list of posters
-                            user.getDrafts().remove(poster);
+  @Async
+  public CompletableFuture<ServiceResponse<User>> removeFromDrafts(String userId, Poster poster) {
+    // Find the user by ID
+    return userRepository
+        .findById(userId)
+        .map(
+            user -> {
+              // Set the user ID in the poster
+              // Add the poster to the user's list of posters
+              user.getDrafts().remove(poster);
 
-                            // Save the updated user
-                            System.out.println("Trying to save");
-                            userRepository.save(user);
-                            // Create a response object
-                            System.out.println("Trying to return service response");
-                            return new ServiceResponse<>(user, "Poster associated with user");
-                        })
-                .map(CompletableFuture::completedFuture) // Remove this line
-                .orElse(CompletableFuture.completedFuture(new ServiceResponse<>("User not found")));
-    }
+              // Save the updated user
+              System.out.println("Trying to save");
+              userRepository.save(user);
+              // Create a response object
+              System.out.println("Trying to return service response");
+              return new ServiceResponse<>(user, "Poster associated with user");
+            })
+        .map(CompletableFuture::completedFuture) // Remove this line
+        .orElse(CompletableFuture.completedFuture(new ServiceResponse<>("User not found")));
+  }
 
   @Async
   public CompletableFuture<ServiceResponse<User>> savePoster(String userId, Poster poster) {

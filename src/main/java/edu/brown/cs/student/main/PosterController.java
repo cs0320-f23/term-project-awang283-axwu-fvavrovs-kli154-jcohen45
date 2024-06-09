@@ -25,7 +25,10 @@ public class PosterController {
   private final DraftService draftService;
 
   public PosterController(
-      PosterService posterService, ImgurService imgurService, UserService userService, DraftService draftService) {
+      PosterService posterService,
+      ImgurService imgurService,
+      UserService userService,
+      DraftService draftService) {
     this.posterService = posterService;
     this.imgurService = imgurService;
     this.userService = userService;
@@ -237,15 +240,15 @@ public class PosterController {
   }
 
   // TODO: have some error checking (on frontend) to display an error if the link is corrupted
-//  @PostMapping(value = "/create/fromlink")
-//  public CompletableFuture<ServiceResponse<Poster>> createFromLink(
-//      @RequestBody Content content, @RequestParam(required = false) String userId) {
-//    Poster poster = new Poster();
-//    poster.setContent(content.getContent());
-//    this.posterService.createPoster(poster, userId);
-//    return CompletableFuture.completedFuture(
-//        new ServiceResponse<Poster>(poster, "created new poster using existing link"));
-//  }
+  //  @PostMapping(value = "/create/fromlink")
+  //  public CompletableFuture<ServiceResponse<Poster>> createFromLink(
+  //      @RequestBody Content content, @RequestParam(required = false) String userId) {
+  //    Poster poster = new Poster();
+  //    poster.setContent(content.getContent());
+  //    this.posterService.createPoster(poster, userId);
+  //    return CompletableFuture.completedFuture(
+  //        new ServiceResponse<Poster>(poster, "created new poster using existing link"));
+  //  }
 
   @PostMapping(value = "/uploadToImgur")
   public CompletableFuture<ServiceResponse<String>> uploadToImgur(
@@ -262,16 +265,16 @@ public class PosterController {
    * @return a JSONified ServiceResponse instance that contains a "message" (string) field and a
    *     "data" (JSON) field that contains the data ofi the poster that was just created
    */
-//  @PostMapping(value = "/create/imgur")
-//  public CompletableFuture<ServiceResponse<Poster>> createImgurLink(
-//      @RequestBody MultipartFile content, @RequestParam(required = false) String userId) {
-//    Poster poster = new Poster();
-//    ServiceResponse<String> imgurResponse = imgurService.uploadToImgur(content);
-//    poster.setContent(imgurResponse.getData());
-//    this.posterService.createPoster(poster, userId);
-//    return CompletableFuture.completedFuture(
-//        new ServiceResponse<Poster>(poster, "uploaded to imgur"));
-//  }
+  //  @PostMapping(value = "/create/imgur")
+  //  public CompletableFuture<ServiceResponse<Poster>> createImgurLink(
+  //      @RequestBody MultipartFile content, @RequestParam(required = false) String userId) {
+  //    Poster poster = new Poster();
+  //    ServiceResponse<String> imgurResponse = imgurService.uploadToImgur(content);
+  //    poster.setContent(imgurResponse.getData());
+  //    this.posterService.createPoster(poster, userId);
+  //    return CompletableFuture.completedFuture(
+  //        new ServiceResponse<Poster>(poster, "uploaded to imgur"));
+  //  }
 
   /**
    * sends a POST request to the mapping /poster/create
@@ -368,8 +371,8 @@ public class PosterController {
         .thenCompose(
             existingPoster -> {
               if (existingPoster.getData() != null) {
-//                updatedPoster.setID(id); // Ensure ID consistency
-                return posterService.updatePoster(existingPoster.getData(),updatedPoster);
+                //                updatedPoster.setID(id); // Ensure ID consistency
+                return posterService.updatePoster(existingPoster.getData(), updatedPoster);
               } else {
                 return CompletableFuture.completedFuture(
                     new ServiceResponse<>("Poster with id " + id + " not found"));
@@ -381,29 +384,32 @@ public class PosterController {
 
   @PostMapping("/create/{draftId}")
   public CompletableFuture<ResponseEntity<ServiceResponse<String>>> createPoster(
-          @PathVariable String draftId) {
+      @PathVariable String draftId) {
     Poster poster = new Poster();
 
     return draftService
-            .getDraftById(draftId)
-            .thenCompose(
-                    existingDraft -> {
-                      if (existingDraft.getData() != null) {
-                        if (existingDraft.getData().getStartDate() == null){
-                          return CompletableFuture.completedFuture(
-                                  new ServiceResponse<>("Poster with id " + draftId + " cannot be created because it does not have a start date"));// also check if existingDraft.getData().getStartDate() is null
-                        }
-                        poster.setID(draftId); // Ensure ID consistency
-                        this.posterService.createPoster(poster, existingDraft.getData().getUserId());
-                        this.posterService.updatePoster(poster, existingDraft.getData());
-                        return this.draftService.deletePosterById(existingDraft.getData().getID());
-                      } else {
-                        return CompletableFuture.completedFuture(
-                                new ServiceResponse<>("Poster with id " + draftId + " not found"));
-                      }
-                    })
-            .thenApply(response -> ResponseEntity.ok(response))
-            .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+        .getDraftById(draftId)
+        .thenCompose(
+            existingDraft -> {
+              if (existingDraft.getData() != null) {
+                if (existingDraft.getData().getStartDate() == null) {
+                  return CompletableFuture.completedFuture(
+                      new ServiceResponse<>(
+                          "Poster with id "
+                              + draftId
+                              + " cannot be created because it does not have a start date")); // also check if existingDraft.getData().getStartDate() is null
+                }
+                poster.setID(draftId); // Ensure ID consistency
+                this.posterService.createPoster(poster, existingDraft.getData().getUserId());
+                this.posterService.updatePoster(poster, existingDraft.getData());
+                return this.draftService.deletePosterById(existingDraft.getData().getID());
+              } else {
+                return CompletableFuture.completedFuture(
+                    new ServiceResponse<>("Poster with id " + draftId + " not found"));
+              }
+            })
+        .thenApply(response -> ResponseEntity.ok(response))
+        .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
   }
 
   public CompletableFuture<List<Poster>> sortBySoonest(CompletableFuture<List<Poster>> myPosters) {

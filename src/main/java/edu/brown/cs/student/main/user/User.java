@@ -1,6 +1,5 @@
 package edu.brown.cs.student.main.user;
 
-import edu.brown.cs.student.main.types.Draft;
 import edu.brown.cs.student.main.types.Poster;
 import java.util.HashSet;
 import java.util.Set;
@@ -83,11 +82,12 @@ public class User {
   public void setInterests(HashSet<String> selectedInterests) {
     this.interests = selectedInterests;
   }
-  public Set<Poster> getDrafts(){
+
+  public Set<Poster> getDrafts() {
     return this.drafts;
   }
 
-  public void setDrafts(Set<Poster> drafts){
+  public void setDrafts(Set<Poster> drafts) {
     this.drafts = drafts;
   }
 }
