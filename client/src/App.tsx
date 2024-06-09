@@ -211,9 +211,15 @@ export default function App() {
                 </>
               )}
             </div>
+          
             <NavLink to="/home" id="logo" className="invis">
               P@B
             </NavLink>
+            <div className="hamburger-menu-outer">
+            <Button id="create" onClick={handleCreatePoster}
+              backgroundColor={"var(--dark-purple100)"}>
+                          + </Button>
+                          <div></div>
             <div
               className="hamburger-menu"
               onMouseEnter={() => setHamburgerOpen(true)}
@@ -240,13 +246,7 @@ export default function App() {
                     </NavLink>
                     {profile ? (
                       <>
-                        <Button
-                          id="create"
-                          onClick={handleCreatePoster}
-                          backgroundColor={"var(--dark-purple100)"}
-                        >
-                          Create
-                        </Button>
+                        
                         <div id="profile">
                           <NavLink to="/profile" className="profile-link">
                             {profile.name}
@@ -273,6 +273,9 @@ export default function App() {
                 </>
               )}
             </div>
+              
+              </div>
+           
           </nav>
         </header>
         <main style={{ height: "fit-content" }}>
@@ -288,9 +291,9 @@ export default function App() {
         </main>
         <footer className="footer">
           <div className="foot-left">
-            Made with love by Jaclyn Cohen, Katie Li, Anna Wang, AJ Wu
+            Made with love by the Posters@Brown team
           </div>
-          <div className="foot-right">Feedback</div>
+          <div className="foot-right"><a href="https://forms.gle/iNRs9GNxhDiGgfE5A" target="_blank">Feedback</a></div>
         </footer>
       </article>
       {interestsState && (

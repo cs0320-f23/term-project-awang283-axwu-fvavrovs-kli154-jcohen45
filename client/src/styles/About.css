@@ -171,3 +171,27 @@ main {
   fill: none;
   stroke-width: 2.5px;
 }
+
+
+@media (max-aspect-ratio: 1.1) {
+  .first-section, .third-section {
+   flex-flow: column; 
+  }
+
+  .first-section {
+    margin-top: 1vh;
+  }
+
+  .body-text {
+    margin-left: 5vw;
+  }
+
+  .body-text, .meet-team, .bios {
+    width: 100%;
+  }
+
+  .name-card {
+    width: 30vw;
+  }
+  
+}
