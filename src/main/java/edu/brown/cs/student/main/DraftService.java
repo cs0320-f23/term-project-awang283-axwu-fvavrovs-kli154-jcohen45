@@ -1,13 +1,9 @@
 package edu.brown.cs.student.main;
 
-import edu.brown.cs.student.main.ocr.OCRAsyncTask;
 import edu.brown.cs.student.main.responses.ServiceResponse;
 import edu.brown.cs.student.main.types.Draft;
 import edu.brown.cs.student.main.user.User;
 import edu.brown.cs.student.main.user.UserService;
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -68,14 +64,15 @@ public class DraftService {
       System.out.println("associateResponse.isCompletedExceptionally() == false");
       // Save the Poster object to the database
       try {
-        OCRAsyncTask task = new OCRAsyncTask();
-        HashMap suggestedFields =
-            task.sendPost("K85630038588957", true, poster.getContent(), "eng");
-        poster.setTitle((String) suggestedFields.get("title"));
-        poster.setDescription((String) suggestedFields.get("description"));
-        poster.setLink((String) suggestedFields.get("link"));
-        poster.setTags((HashSet<String>) suggestedFields.get("tags"));
-        poster.setStartDate((LocalDateTime) suggestedFields.get("startDate"));
+        // TODO: replace
+        //        OCRAsyncTask task = new OCRAsyncTask();
+        //        HashMap suggestedFields =
+        //            task.sendPost("K85630038588957", true, poster.getContent(), "eng");
+        //        poster.setTitle((String) suggestedFields.get("title"));
+        //        poster.setDescription((String) suggestedFields.get("description"));
+        //        poster.setLink((String) suggestedFields.get("link"));
+        //        poster.setTags((HashSet<String>) suggestedFields.get("tags"));
+        //        poster.setStartDate((LocalDateTime) suggestedFields.get("startDate"));
 
         //      suggestedFields.setID(poster.getID());
         //      this.updatePoster(suggestedFields);
@@ -148,10 +145,10 @@ public class DraftService {
   }
 
   @Async
-  public CompletableFuture<ServiceResponse<String>> deletePosterById(String id) {
-    Optional<Draft> posterToDelete = draftRepository.findById(id);
+  public CompletableFuture<ServiceResponse<String>> deleteDraftById(String id) {
+    Optional<Draft> draftToDelete = draftRepository.findById(id);
 
-    if (posterToDelete.isPresent()) {
+    if (draftToDelete.isPresent()) {
       draftRepository.deleteById(id);
       return CompletableFuture.completedFuture(
           new ServiceResponse<>(

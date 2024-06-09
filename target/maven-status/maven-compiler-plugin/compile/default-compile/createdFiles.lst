@@ -28,5 +28,6 @@ edu/brown/cs/student/main/SecurityConfig.class
 edu/brown/cs/student/main/App.class
 edu/brown/cs/student/main/user/UserController.class
 edu/brown/cs/student/main/MediaConverterConfiguration.class
+edu/brown/cs/student/main/imgur/ImgurService$1.class
 edu/brown/cs/student/main/types/PosterRepository.class
 edu/brown/cs/student/main/ocr/OCRParser.class

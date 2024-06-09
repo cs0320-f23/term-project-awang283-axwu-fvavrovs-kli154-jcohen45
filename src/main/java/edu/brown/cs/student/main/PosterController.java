@@ -402,7 +402,9 @@ public class PosterController {
                 poster.setID(draftId); // Ensure ID consistency
                 this.posterService.createPoster(poster, existingDraft.getData().getUserId());
                 this.posterService.updatePoster(poster, existingDraft.getData());
-                return this.draftService.deletePosterById(existingDraft.getData().getID());
+                this.userService.removeFromDrafts(
+                    existingDraft.getData().getUserId(), existingDraft.getData());
+                return this.draftService.deleteDraftById(existingDraft.getData().getID());
               } else {
                 return CompletableFuture.completedFuture(
                     new ServiceResponse<>("Poster with id " + draftId + " not found"));

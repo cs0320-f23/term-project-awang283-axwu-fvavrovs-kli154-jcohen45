@@ -1,6 +1,5 @@
 package edu.brown.cs.student.main;
 
-import edu.brown.cs.student.main.ocr.OCRAsyncTask;
 import edu.brown.cs.student.main.responses.ServiceResponse;
 import edu.brown.cs.student.main.types.Poster;
 import edu.brown.cs.student.main.types.PosterRepository;
@@ -52,14 +51,15 @@ public class PosterService {
       System.out.println("associateResponse.isCompletedExceptionally() == false");
       // Save the Poster object to the database
       try {
-        OCRAsyncTask task = new OCRAsyncTask();
-        HashMap suggestedFields =
-            task.sendPost("K85630038588957", true, poster.getContent(), "eng");
-        poster.setTitle((String) suggestedFields.get("title"));
-        poster.setDescription((String) suggestedFields.get("description"));
-        poster.setLink((String) suggestedFields.get("link"));
-        poster.setTags((HashSet<String>) suggestedFields.get("tags"));
-        poster.setStartDate((LocalDateTime) suggestedFields.get("startDate"));
+        // TODO: replace with different API
+        //        OCRAsyncTask task = new OCRAsyncTask();
+        //        HashMap suggestedFields =
+        //            task.sendPost("K85630038588957", true, poster.getContent(), "eng");
+        //        poster.setTitle((String) suggestedFields.get("title"));
+        //        poster.setDescription((String) suggestedFields.get("description"));
+        //        poster.setLink((String) suggestedFields.get("link"));
+        //        poster.setTags((HashSet<String>) suggestedFields.get("tags"));
+        //        poster.setStartDate((LocalDateTime) suggestedFields.get("startDate"));
 
         //      suggestedFields.setID(poster.getID());
         //      this.updatePoster(suggestedFields);

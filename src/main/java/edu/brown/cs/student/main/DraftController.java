@@ -4,6 +4,7 @@ import edu.brown.cs.student.main.imgur.ImgurService;
 import edu.brown.cs.student.main.responses.ServiceResponse;
 import edu.brown.cs.student.main.types.Draft;
 import edu.brown.cs.student.main.user.UserService;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -74,10 +75,13 @@ public class DraftController {
    */
   @PostMapping(value = "/draft/imgur")
   public CompletableFuture<ServiceResponse<Draft>> createImgurLink(
-      @RequestBody MultipartFile content, @RequestParam(required = false) String userId) {
+      @RequestBody MultipartFile content,
+      @RequestParam(required = true) String userId,
+      @RequestParam(required = false) String startDate) {
     Draft poster = new Draft();
     ServiceResponse<String> imgurResponse = imgurService.uploadToImgur(content);
     poster.setContent(imgurResponse.getData());
+    poster.setStartDate(LocalDateTime.parse(startDate));
     this.draftService.createDraft(poster, userId);
     return CompletableFuture.completedFuture(
         new ServiceResponse<Draft>(poster, "created new draft using imgur"));
