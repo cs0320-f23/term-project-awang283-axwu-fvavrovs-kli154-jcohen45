@@ -1,0 +1,106 @@
+.user-page {
+  height: 100%;
+  display: flex;
+  flex-flow: row;
+  gap: 2vw;
+  padding-top: 7vh;
+}
+
+.profile {
+  z-index: 2;
+  margin-left: 4vw;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  gap: 12px;
+  box-shadow: var(--modal-shadow);
+  background-color: white;
+  top: 11vh;
+  position: sticky;
+  min-height: 660px;
+  height: 85vh;
+  min-width: 365px;
+  max-width: 365px;
+  border-radius: 30px;
+  padding: 28px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.profile-picture {
+  border-radius: 100px;
+  width: 180px;
+}
+
+.name {
+  transform: translateY(-15px);
+  line-height: 45px;
+  word-break: break-all;
+}
+
+.icons {
+  display: flex;
+  flex-flow: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  gap: 1vw;
+}
+
+.edit-button {
+  padding: 8px 18px !important;
+  background-color: var(--dark-purple100) !important;
+  border-radius: 12px !important;
+  color: white !important;
+}
+
+.calendar-button {
+  padding: 6px !important;
+  background-color: var(--dark-purple100) !important;
+  border-radius: 12px !important;
+}
+
+.calendar-icon {
+  stroke: white;
+  width: 26px;
+}
+
+.edit-button:hover,
+.calendar-button:hover {
+  background-color: var(--dark-purple70) !important;
+  transition: 0.3s;
+  transform: scale(1.07) !important;
+}
+
+#profile-interests {
+  width: 100%;
+  transform: translate(-2%, -7%);
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: start;
+  align-items: start;
+}
+
+.profile-posters {
+  width: 70vw;
+  height: 100%;
+}
+
+.tabs-list {
+  background: rgba(249, 238, 255, 0.85);
+  padding: 1vh 1vw 1.5vh;
+  transform: translateY(-12%);
+  position: fixed;
+  z-index: 2;
+  width: 100%;
+}
+
+.profile-tabs {
+  font-size: 18px !important;
+  color: var(--dark-purple100) !important;
+}
+
+.saved-grid,
+.created-grid {
+  margin-top: 6.5vh;
+}

@@ -1,0 +1,252 @@
+.profile-card {
+  width: 290px;
+  position: relative;
+  margin-bottom: 24px;
+  display: flex;
+  flex-flow: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile-card-backing {
+  background-color: white;
+  width: 100%;
+  height: 100%;
+  flex: 0 0 auto;
+  padding: 12px;
+  border-radius: 20px;
+  box-shadow: var(--drop-shadow);
+}
+
+.profile-overlay {
+  position: absolute;
+  background-color: rgba(63, 49, 94, 0.7);
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  padding: 20px;
+  color: white;
+  font-family: "quicksand", sans-serif;
+  opacity: 0;
+  container-type: size;
+}
+
+.profile-top-info {
+  display: flex;
+  flex-flow: row;
+  gap: 12px;
+}
+
+.profile-month-date {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  min-width: 70px;
+  max-width: 70px;
+  min-height: 70px;
+  max-height: 70px;
+  color: var(--dark-purple100);
+  padding: 10px;
+  border-radius: 10px;
+}
+
+#profile-month {
+  font-family: "pacifico", sans-serif;
+  font-size: 32px;
+  transform: translateY(12%);
+}
+
+#profile-day {
+  font-family: "pacifico", sans-serif;
+  font-size: 32px;
+  transform: translateY(-36%);
+}
+
+.profile-weekday-time {
+  height: 100px;
+  display: flex;
+  flex-flow: column;
+  transform: translateY(6%);
+}
+
+#profile-weekday {
+  font-size: 22px;
+  align-items: center;
+}
+
+#profile-time {
+  font-size: 16px;
+  font-weight: 450;
+  align-items: center;
+  line-height: 16px;
+}
+
+#profile-title {
+  position: absolute;
+  bottom: 0;
+  margin-bottom: 20px;
+  margin-right: 20px;
+  font-size: 115%;
+  line-height: 3vh;
+}
+
+.heart-icon-prof.clicked {
+  background-image: url("heart_filled.svg");
+}
+
+.heart-icon-prof:hover {
+  background-image: url("heart_partial.svg");
+}
+
+.heart-icon-prof {
+  background-image: url("heart.svg");
+}
+
+.modal-icons {
+  position: absolute;
+  right: 20px;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+}
+
+.image-card {
+  width: 410px;
+  position: relative;
+  margin-bottom: 42px;
+  display: flex;
+  flex-flow: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.card-backing {
+  background-color: white;
+  width: 100%;
+  height: 100%;
+  flex: 0 0 auto;
+  padding: 12px;
+  border-radius: 20px;
+  box-shadow: var(--drop-shadow);
+}
+
+.image-overlay {
+  position: absolute;
+  background-color: rgba(63, 49, 94, 0.7);
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  padding: 24px;
+  color: white;
+  font-family: "quicksand", sans-serif;
+  opacity: 0;
+  container-type: size;
+}
+
+.image-overlay:hover,
+.profile-overlay:hover {
+  opacity: 1;
+  transition: 0.5s;
+}
+
+.top-info {
+  display: flex;
+  flex-flow: row;
+  gap: 16px;
+}
+
+.month-date {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  min-width: 100px;
+  max-width: 100px;
+  min-height: 100px;
+  max-height: 100px;
+  color: var(--dark-purple100);
+  padding: 16px;
+  border-radius: 15px;
+}
+
+#month {
+  font-family: "pacifico", sans-serif;
+  font-size: 48px;
+  transform: translateY(10%);
+}
+
+#day {
+  font-family: "pacifico", sans-serif;
+  font-size: 48px;
+  transform: translateY(-40%);
+}
+
+.weekday-time {
+  height: 100px;
+  display: flex;
+  flex-flow: column;
+  transform: translateY(7%);
+}
+
+#weekday {
+  font-size: 32px;
+  align-items: center;
+}
+
+#time {
+  font-size: 22px;
+  font-weight: 450;
+  align-items: center;
+}
+
+.title-location {
+  position: absolute;
+  bottom: 0;
+  margin-bottom: 20px;
+  margin-right: 24px;
+}
+
+#title {
+  font-size: 165%;
+  line-height: 30px;
+}
+
+#location {
+  font-size: 22px;
+  font-weight: 450;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+  overflow: hidden;
+  width: 360px;
+}
+
+.heart-icon-hap.clicked {
+  background-image: url("heart_filled.svg");
+}
+
+.heart-icon-hap:hover {
+  background-image: url("heart_partial.svg");
+}
+
+.heart-icon-hap {
+  background-image: url("heart.svg");
+  position: absolute;
+  right: 24px;
+}
+
+.edit-icon {
+  background-image: url("edit.svg");
+  position: relative;
+  /* right: 1.9vw; */
+}
+
+.close-icon {
+  background-image: url("x.svg");
+  position: relative;
+}
