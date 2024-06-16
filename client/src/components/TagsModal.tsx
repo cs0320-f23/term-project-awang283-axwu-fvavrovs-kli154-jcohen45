@@ -124,24 +124,24 @@ export default function TagsModal({
           "Content-Type": "application/json",
         },
       };
-      const url = "http://localhost:8080/posters/update/" + posterId;
-      const formData = new FormData();
+      const url = "http://localhost:8080/posters/create/" + posterId;
+      // const formData = new FormData();
       console.log(tags);
 
-      tags.forEach((tag) => {
-        formData.append("tags[]", tag);
-      });
+      // tags.forEach((tag) => {
+      //   formData.append("tags[]", tag);
+      // });
 
-      for (const key in newPoster) {
-        if (newPoster[key] && key !== "tags") {
-          const value = newPoster[key];
-          if (typeof value === "string") {
-            formData.append(key, value);
-          }
-        }
-      }
-      console.log(Array.from(formData));
-      const res = await axios.put(url, formData, config);
+      // for (const key in newPoster) {
+      //   if (newPoster[key] && key !== "tags") {
+      //     const value = newPoster[key];
+      //     if (typeof value === "string") {
+      //       formData.append(key, value);
+      //     }
+      //   }
+      // }
+      // console.log(Array.from(formData));
+      const res = await axios.put(url, config);
       setRefresh(!refresh);
       getPosters().then((data) => setSearchResults(data));
       setShowTags(false);

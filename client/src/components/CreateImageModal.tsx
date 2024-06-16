@@ -92,7 +92,7 @@ export default function CreateImageModal() {
   const setCVFields = async (id: string) => {
     setIsLoading(true);
     try {
-      const url = "http://localhost:8080/posters/" + id;
+      const url = "http://localhost:8080/drafts/" + id;
       const response = await fetch(url);
 
       if (!response.ok) {
@@ -135,10 +135,10 @@ export default function CreateImageModal() {
             "Content-Type": "application/json",
           },
         };
-        const url =
-          "http://localhost:8080/posters/create/fromlink?userId=" + profile.id;
+        const url = "http://localhost:8080/drafts/draft/fromlink";
         const formData = new FormData();
         formData.append("content", inputElement.value);
+        formData.append("userId", profile.id);
         setIsLoading(true);
         const res = await axios.post(url, formData, config);
         setPosterSrc(inputElement.value);
@@ -169,13 +169,15 @@ export default function CreateImageModal() {
     };
 
     try {
-      const url = "http://localhost:8080/posters/create/imgur";
+      const url = "http://localhost:8080/drafts/draft/imgur";
 
       const formData = new FormData();
       formData.append("content", file);
       formData.append("userId", profile.id);
+      formData.append("startDate", poster.startDate!);
       //console.log("Before axios request");
       setIsLoading(true);
+      console.log(formData);
       const res = await axios.post(url, formData, config);
       //console.log("After axios request");
       setPosterId(res.data.data.id);
