@@ -73,11 +73,10 @@ public class DraftService {
       try {
         // TODO: fix
         HashMap suggestedFields = task.sendPost(poster.getContent());
-        poster.setTitle((String) suggestedFields.get("title"));
-        poster.setDescription((String) suggestedFields.get("description"));
-        poster.setLink((String) suggestedFields.get("link"));
-        poster.setTags((HashSet<String>) suggestedFields.get("tags"));
-        poster.setStartDate((LocalDateTime) suggestedFields.get("startDate"));
+//        poster.setTitle((String) suggestedFields.get("title"));
+//        poster.setDescription((String) suggestedFields.get("description"));
+//        poster.setLink((String) suggestedFields.get("link"));
+//        poster.setTags((HashSet<String>) suggestedFields.get("tags"));
 
       } catch (Exception e) {
         System.err.println("Error reading text on image file: " + e.getMessage());
