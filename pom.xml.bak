@@ -7,9 +7,12 @@
   <version>1.0-SNAPSHOT</version>
 
   <properties>
+
+    <!-- Using the latest LTS version (17) -->
     <!-- Using the latest LTS version (17) -->
     <maven.compiler.source>17</maven.compiler.source>
     <maven.compiler.target>17</maven.compiler.target>
+    <spring.version>2.5.4</spring.version>
 
     <!-- Defines UTF-8 encoding -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -20,6 +23,41 @@
     <!-- Spotless -->
     <spotless.version>2.22.8</spotless.version>
   </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-gcp-dependencies</artifactId>
+        <version>1.2.8.RELEASE</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${spring.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <repositories>
+    <repository>
+      <id>spring-milestones</id>
+      <url>https://repo.spring.io/milestone</url>
+    </repository>
+    <repository>
+      <id>spring-releases</id>
+      <url>https://repo.spring.io/release</url>
+    </repository>
+    <repository>
+      <id>maven-central</id>
+      <url>https://repo.maven.apache.org/maven2</url>
+    </repository>
+  </repositories>
+
 
   <dependencies>
     <dependency>
@@ -36,6 +74,10 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-security</artifactId>
       <version>3.1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-gcp-starter-vision</artifactId>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.dataformat</groupId>
@@ -211,4 +253,3 @@
     </plugins>
   </build>
 </project>
-
