@@ -124,6 +124,8 @@ export default function TagsModal({
           "Content-Type": "application/json",
         },
       };
+      console.log("printing draft id");
+      console.log(posterId);
       const url = "http://localhost:8080/posters/create/" + posterId;
       // const formData = new FormData();
       console.log(tags);

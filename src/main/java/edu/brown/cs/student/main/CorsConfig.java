@@ -47,6 +47,18 @@ public class CorsConfig {
             .allowedMethods("GET", "POST", "PUT", "DELETE")
             .allowedHeaders("*") // Allow any headers
             .allowCredentials(true);
+        registry
+            .addMapping("/posters/create/{id}")
+            .allowedOrigins("http://localhost:5173")
+            .allowedMethods("POST", "PUT")
+            .allowedHeaders("*")
+            .allowCredentials(true);
+        registry.addMapping("/**")
+            .allowedOrigins("http://localhost:5173")
+            .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
+            .allowedHeaders("*")
+            .allowCredentials(true)
+            .maxAge(3600);
       }
     };
   }

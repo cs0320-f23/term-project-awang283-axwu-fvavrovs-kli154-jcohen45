@@ -135,12 +135,16 @@ export default function CreateImageModal() {
             "Content-Type": "application/json",
           },
         };
-        const url = "http://localhost:8080/drafts/draft/fromlink";
-        const formData = new FormData();
-        formData.append("content", inputElement.value);
-        formData.append("userId", profile.id);
+        const url =
+          "http://localhost:8080/drafts/draft/fromlink?userId=" +
+          profile.id +
+          "?startDate=" +
+          poster.startDate!;
+        const requestBody = {
+          content: inputElement.value,
+        };
         setIsLoading(true);
-        const res = await axios.post(url, formData, config);
+        const res = await axios.post(url, requestBody, config);
         setPosterSrc(inputElement.value);
         console.log(res.data.data);
         setPosterId(res.data.data.id);
