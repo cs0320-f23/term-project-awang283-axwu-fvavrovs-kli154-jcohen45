@@ -3,6 +3,7 @@ package edu.brown.cs.student.main.ocr;
 import java.util.HashMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gcp.vision.CloudVisionTemplate;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +17,10 @@ public class OCRAsyncTask {
     System.out.println("start of send post");
 
     OCRParser parser = new OCRParser();
+    Resource resource = this.resourceLoader.getResource(imageUrl);
+    System.out.println("resource " + resource);
     String textFromImage =
-        this.cloudVisionTemplate.extractTextFromImage(this.resourceLoader.getResource(imageUrl));
+        this.cloudVisionTemplate.extractTextFromImage(resource);
 
     System.out.println("Result: " + ("Text from image: " + textFromImage));
 
