@@ -143,7 +143,7 @@ export default function TagsModal({
       //   }
       // }
       // console.log(Array.from(formData));
-      const res = await axios.put(url, config);
+      const res = await axios.post(url, config);
       setRefresh(!refresh);
       getPosters().then((data) => setSearchResults(data));
       setShowTags(false);

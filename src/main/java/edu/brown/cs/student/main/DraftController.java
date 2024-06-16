@@ -56,6 +56,7 @@ public class DraftController {
     Draft poster = new Draft();
     poster.setContent(content.getContent());
     poster.setStartDate(LocalDateTime.parse(startDate));
+    System.out.println("Start date: " + startDate);
     this.draftService.createDraft(poster, userId);
     return CompletableFuture.completedFuture(
         new ServiceResponse<Draft>(poster, "created new draft using existing link"));
