@@ -138,7 +138,7 @@ export default function CreateImageModal() {
         const url =
           "http://localhost:8080/drafts/draft/fromlink?userId=" +
           profile.id +
-          "?startDate=" +
+          "&startDate=" +
           poster.startDate!;
         const requestBody = {
           content: inputElement.value,

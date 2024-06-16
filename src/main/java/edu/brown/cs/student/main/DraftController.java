@@ -50,9 +50,12 @@ public class DraftController {
   // TODO: have some error checking (on frontend) to display an error if the link is corrupted
   @PostMapping(value = "/draft/fromlink")
   public CompletableFuture<ServiceResponse<Draft>> createFromLink(
-      @RequestBody Content content, @RequestParam(required = false) String userId) {
+      @RequestBody Content content,
+      @RequestParam(required = true) String userId,
+      @RequestParam(required = true) String startDate) {
     Draft poster = new Draft();
     poster.setContent(content.getContent());
+    poster.setStartDate(LocalDateTime.parse(startDate));
     this.draftService.createDraft(poster, userId);
     return CompletableFuture.completedFuture(
         new ServiceResponse<Draft>(poster, "created new draft using existing link"));
@@ -77,7 +80,7 @@ public class DraftController {
   public CompletableFuture<ServiceResponse<Draft>> createImgurLink(
       @RequestBody MultipartFile content,
       @RequestParam(required = true) String userId,
-      @RequestParam(required = false) String startDate) {
+      @RequestParam(required = true) String startDate) {
     Draft poster = new Draft();
     ServiceResponse<String> imgurResponse = imgurService.uploadToImgur(content);
     poster.setContent(imgurResponse.getData());

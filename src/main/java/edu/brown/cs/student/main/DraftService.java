@@ -1,9 +1,13 @@
 package edu.brown.cs.student.main;
 
+import edu.brown.cs.student.main.ocr.OCRAsyncTask;
 import edu.brown.cs.student.main.responses.ServiceResponse;
 import edu.brown.cs.student.main.types.Draft;
 import edu.brown.cs.student.main.user.User;
 import edu.brown.cs.student.main.user.UserService;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -18,6 +22,9 @@ public class DraftService {
   private final DraftRepository draftRepository;
 
   private final UserService userService;
+
+  @Autowired
+  private OCRAsyncTask task;
 
   @Autowired
   public DraftService(DraftRepository draftRepository, UserService userService) {
@@ -65,13 +72,12 @@ public class DraftService {
       // Save the Poster object to the database
       try {
         // TODO: fix
-        //        OCRAsyncTask task = new OCRAsyncTask();
-        //        HashMap suggestedFields = task.sendPost(poster.getContent());
-        //        poster.setTitle((String) suggestedFields.get("title"));
-        //        poster.setDescription((String) suggestedFields.get("description"));
-        //        poster.setLink((String) suggestedFields.get("link"));
-        //        poster.setTags((HashSet<String>) suggestedFields.get("tags"));
-        //        poster.setStartDate((LocalDateTime) suggestedFields.get("startDate"));
+        HashMap suggestedFields = task.sendPost(poster.getContent());
+        poster.setTitle((String) suggestedFields.get("title"));
+        poster.setDescription((String) suggestedFields.get("description"));
+        poster.setLink((String) suggestedFields.get("link"));
+        poster.setTags((HashSet<String>) suggestedFields.get("tags"));
+        poster.setStartDate((LocalDateTime) suggestedFields.get("startDate"));
 
       } catch (Exception e) {
         System.err.println("Error reading text on image file: " + e.getMessage());
