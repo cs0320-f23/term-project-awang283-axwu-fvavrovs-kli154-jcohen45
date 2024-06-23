@@ -1,6 +1,8 @@
 package edu.brown.cs.student.main.ocr;
 
 import java.util.HashMap;
+import java.util.HashSet;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gcp.vision.CloudVisionTemplate;
 import org.springframework.core.io.Resource;
@@ -16,14 +18,15 @@ public class OCRAsyncTask {
   public HashMap sendPost(String imageUrl) throws Exception {
     System.out.println("start of send post");
 
-    OCRParser parser = new OCRParser();
+    GCVParser parser = new GCVParser();
     Resource resource = this.resourceLoader.getResource(imageUrl);
     System.out.println("resource " + resource);
     String textFromImage =
         this.cloudVisionTemplate.extractTextFromImage(resource);
 
     System.out.println("Result: " + ("Text from image: " + textFromImage));
+    HashMap suggestedFields = parser.parseResult(textFromImage);
 
-    return new HashMap();
+    return suggestedFields;
   }
 }

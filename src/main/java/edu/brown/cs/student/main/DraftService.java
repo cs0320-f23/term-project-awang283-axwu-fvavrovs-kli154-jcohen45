@@ -71,12 +71,11 @@ public class DraftService {
       System.out.println("associateResponse.isCompletedExceptionally() == false");
       // Save the Poster object to the database
       try {
-        // TODO: fix
         HashMap suggestedFields = task.sendPost(poster.getContent());
-//        poster.setTitle((String) suggestedFields.get("title"));
-//        poster.setDescription((String) suggestedFields.get("description"));
-//        poster.setLink((String) suggestedFields.get("link"));
-//        poster.setTags((HashSet<String>) suggestedFields.get("tags"));
+        poster.setTitle((String) suggestedFields.get("title"));
+        poster.setDescription((String) suggestedFields.get("description"));
+        poster.setLink((String) suggestedFields.get("link"));
+        poster.setTags((HashSet<String>) suggestedFields.get("tags"));
 
       } catch (Exception e) {
         System.err.println("Error reading text on image file: " + e.getMessage());
