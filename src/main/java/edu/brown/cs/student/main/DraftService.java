@@ -72,7 +72,11 @@ public class DraftService {
       // Save the Poster object to the database
       try {
         HashMap suggestedFields = task.sendPost(poster.getContent());
-        poster.setTitle((String) suggestedFields.get("title"));
+        if (suggestedFields.get("title") == null){
+          poster.setTitle("Untitled");
+        }else{
+          poster.setTitle((String) suggestedFields.get("title"));
+        }
         poster.setDescription((String) suggestedFields.get("description"));
         poster.setLink((String) suggestedFields.get("link"));
         poster.setTags((HashSet<String>) suggestedFields.get("tags"));
