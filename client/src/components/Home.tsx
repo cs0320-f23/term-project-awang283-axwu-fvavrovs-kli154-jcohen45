@@ -126,7 +126,7 @@ export default function Home() {
                 <Modal isOpen={true} onClose={() => setShowTags(false)}>
                   <ModalOverlay className="modal-overlay" />
                   <ModalBody className="modal-body">
-                    <ModalContent className="tag-modal-content" >
+                    <ModalContent className="tag-modal-content">
                       <ModalHeader className="modal-header">
                         Select Tags
                       </ModalHeader>
@@ -182,14 +182,6 @@ export default function Home() {
                 </Modal>
               )}
             </Box>
-          </div>
-          <div className="tags">
-            <span className="tag-text">Suggested Tags:</span>{" "}
-            <div className="tag-holder">
-              <div className="magenta-tag">Free Food</div>
-              <div className="green-tag">Party</div>
-              <div className="blue-tag">Outdoor</div>
-            </div>
           </div>
         </div>
         <div className="happenings">
