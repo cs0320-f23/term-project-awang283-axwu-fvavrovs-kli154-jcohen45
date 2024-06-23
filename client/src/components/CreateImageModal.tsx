@@ -247,8 +247,10 @@ export default function CreateImageModal() {
       {popModalOpen === "popup" && Object.keys(poster).length > 2 && (
         <PopupModal
           posterID={posterId}
-          setPosterSrc={setPosterSrc}
+          // setPosterSrc={setPosterSrc}
           setPopModalOpen={setPopModalOpen}
+          onTab={undefined}
+          onCloseModal={undefined}
         />
       )}
       {modalOpen == "createImage" && (
