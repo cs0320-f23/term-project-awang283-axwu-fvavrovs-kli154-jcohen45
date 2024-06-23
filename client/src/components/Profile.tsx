@@ -128,6 +128,7 @@ export default function Profile() {
         }
       }
       setDrafts(newDrafts);
+      console.log(drafts);
     }
   };
 

@@ -15,7 +15,7 @@ import PopupModal from "./PopupModal";
 import CreateImageModal from "./CreateImageModal";
 
 interface ImageCardProps {
-  title: string;
+  title?: string;
   content: string;
   startDate: number[];
   endDate?: number[];
