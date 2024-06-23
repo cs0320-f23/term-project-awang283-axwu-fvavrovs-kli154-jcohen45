@@ -128,7 +128,6 @@ export default function Profile() {
         }
       }
       setDrafts(newDrafts);
-      console.log(drafts);
     }
   };
 
@@ -298,6 +297,7 @@ export default function Profile() {
                       recurs={poster.isRecurring!}
                       id={poster.id}
                       created={false}
+                      draft={true}
                     />
                   </Box>
                 ))}
@@ -319,6 +319,7 @@ export default function Profile() {
                       recurs={poster.isRecurring!}
                       id={poster.id}
                       created={true}
+                      draft={true}
                     />
                   </Box>
                 ))}
@@ -340,6 +341,7 @@ export default function Profile() {
                       recurs={poster.isRecurring!}
                       id={poster.id}
                       created={true}
+                      draft={false}
                     />
                   </Box>
                 ))}

@@ -26,6 +26,7 @@ interface ImageCardProps {
   recurs: string;
   id: string;
   created: boolean;
+  draft: boolean;
 }
 
 export const ProfileImageCard: React.FC<ImageCardProps> = ({
@@ -40,6 +41,7 @@ export const ProfileImageCard: React.FC<ImageCardProps> = ({
   recurs,
   id,
   created,
+  draft,
 }) => {
   const listMonths = [
     "January",
@@ -317,19 +319,22 @@ export const ProfileImageCard: React.FC<ImageCardProps> = ({
             {userId && (
               <>
                 <div className="modal-icons">
-                  <div
-                    className={`heart-icon-prof ${isClicked ? "clicked" : ""}`}
-                    id={id}
-                    onClick={(event) => onClickHeart(event)}
-                    style={{
-                      width: "26px",
-                      height: "26px",
-                      boxSizing: "content-box",
-                      backgroundSize: "contain",
-                      backgroundRepeat: "no-repeat",
-                    }}
-                  ></div>
-
+                  {draft && (
+                    <div
+                      className={`heart-icon-prof ${
+                        isClicked ? "clicked" : ""
+                      }`}
+                      id={id}
+                      onClick={(event) => onClickHeart(event)}
+                      style={{
+                        width: "26px",
+                        height: "26px",
+                        boxSizing: "content-box",
+                        backgroundSize: "contain",
+                        backgroundRepeat: "no-repeat",
+                      }}
+                    ></div>
+                  )}
                   {created && (
                     <>
                       <div

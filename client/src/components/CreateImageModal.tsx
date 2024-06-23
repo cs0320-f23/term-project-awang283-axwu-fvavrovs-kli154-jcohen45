@@ -41,7 +41,7 @@ export default function CreateImageModal() {
   const [showTags, setShowTags] = useState<boolean>(false);
   const [posterSrc, setPosterSrc] = useRecoilState(posterSrcState);
   const [poster, setPoster] = useRecoilState<IPosterObject>(posterState);
-  const [posterId, setPosterId] = useState<string>("");
+  const [draftId, setDraftId] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [modalOpen, setModalOpen] = useRecoilState<string>(modalOpenState);
   const [popModalOpen, setPopModalOpen] = useState<string>("");
@@ -55,6 +55,7 @@ export default function CreateImageModal() {
     //defaults to current date at 11:59PM + ensures startDate will always be filled with some value
     const todayDateTime = yyyy + "-" + mm + "-" + dd + "T23:59";
     setPoster({ ...poster, startDate: todayDateTime, isRecurring: "NEVER" });
+    console.log(poster);
   }, []);
 
   const handleChange = (
@@ -147,7 +148,7 @@ export default function CreateImageModal() {
         const res = await axios.post(url, requestBody, config);
         setPosterSrc(inputElement.value);
         console.log(res.data.data);
-        setPosterId(res.data.data.id);
+        setDraftId(res.data.data.id);
         setCVFields(res.data.data.id);
         return Promise.resolve(res.data.data);
       } catch (error) {
@@ -184,7 +185,7 @@ export default function CreateImageModal() {
       console.log(formData);
       const res = await axios.post(url, formData, config);
       //console.log("After axios request");
-      setPosterId(res.data.data.id);
+      setDraftId(res.data.data.id);
 
       return Promise.resolve(res.data.data);
     } catch (error) {
@@ -226,6 +227,10 @@ export default function CreateImageModal() {
   };
 
   const onSaveSelectTags = () => {
+    if (!draftId) {
+      setDraftId(poster.id);
+    }
+    console.log(draftId);
     setShowTags(true);
   };
 
@@ -246,7 +251,7 @@ export default function CreateImageModal() {
     <>
       {popModalOpen === "popup" && Object.keys(poster).length > 2 && (
         <PopupModal
-          posterID={posterId}
+          posterID={draftId}
           setPosterSrc={setPosterSrc}
           setPopModalOpen={setPopModalOpen}
         />
@@ -288,7 +293,7 @@ export default function CreateImageModal() {
                     <TagsModal
                       onClose={onClose}
                       onBack={onBack}
-                      posterId={posterId}
+                      draftId={draftId}
                       setShowTags={setShowTags}
                     />
                   ) : (

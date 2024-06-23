@@ -16,14 +16,14 @@ import { IPosterObject } from "./CreateImageModal";
 interface tagsProps {
   onClose: () => void;
   onBack: () => void;
-  posterId: string;
+  draftId: string;
   setShowTags: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function TagsModal({
   onClose,
   onBack,
-  posterId,
+  draftId,
   setShowTags,
 }: tagsProps) {
   const [allTags, setAllTags] = useState<string[]>([]);
@@ -46,6 +46,7 @@ export default function TagsModal({
 
     fetchAllTags();
     selectSuggestedTags(poster.tags!);
+    console.log(poster);
   }, []);
 
   const handleChange = (
@@ -125,8 +126,8 @@ export default function TagsModal({
         },
       };
       console.log("printing draft id");
-      console.log(posterId);
-      const url = "http://localhost:8080/posters/create/" + posterId;
+      console.log(draftId);
+      const url = "http://localhost:8080/posters/create/" + draftId;
       // const formData = new FormData();
       console.log(tags);
 
