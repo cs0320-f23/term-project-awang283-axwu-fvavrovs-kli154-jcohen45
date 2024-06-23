@@ -28,6 +28,8 @@ export default function Profile() {
   const [likeCount, setLikeCount] = useState<number>(0);
   const [createdCount, setCreatedCount] = useState<number>(0);
   const [createdPosters, setCreatedPosters] = useState<IPoster[]>([]);
+  const [drafts, setDrafts] = useState<IPoster[]>([]);
+  const [draftsCount, setDraftsCount] = useState<number>(0);
   const [savedPosters, setSavedPosters] = useState<IPoster[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [interests, setInterests] = useState<Set<string>>(new Set());
@@ -44,6 +46,7 @@ export default function Profile() {
         await getUserCreated();
         await getUserLikes();
         await getUserInterests();
+        await getUserDrafts();
       };
       get().then(() => setIsLoading(false));
     }
@@ -64,7 +67,14 @@ export default function Profile() {
         gutter: 11,
       });
     });
-  }, [createdPosters, savedPosters]);
+    imagesLoaded(`.drafts-grid`, function () {
+      new Masonry(`.drafts-grid`, {
+        columnWidth: 34,
+        itemSelector: ".profile-card",
+        gutter: 11,
+      });
+    });
+  }, [createdPosters, savedPosters, drafts]);
 
   const getUserLikes = async () => {
     const likesResp = await fetch(
@@ -99,6 +109,28 @@ export default function Profile() {
     }
   };
 
+  const getUserDrafts = async () => {
+    const draftsres = await fetch(
+      "http://localhost:8080/users/drafts/" + profile.id
+    );
+    if (draftsres.ok) {
+      const drafts = await draftsres.json();
+      setDraftsCount(drafts.data.length);
+      //get each poster given id then set created
+      const newDrafts = [];
+      for (const poster of drafts.data) {
+        const postersResp = await fetch(
+          "http://localhost:8080/drafts/" + poster.id
+        );
+        if (postersResp.ok) {
+          const posterData = await postersResp.json();
+          newDrafts.push(posterData.data);
+        }
+      }
+      setDrafts(newDrafts);
+    }
+  };
+
   const getUserInterests = async () => {
     //find user by id
     const userResp = await fetch("http://localhost:8080/users/" + profile.id);
@@ -128,163 +160,201 @@ export default function Profile() {
 
   return (
     <>
-    <main className="user-page">
-      {isLoading && (
-        <div className="loading-screen">
-          <img className="loading-gif" src="/loading.gif" />
+      <main className="user-page">
+        {isLoading && (
+          <div className="loading-screen">
+            <img className="loading-gif" src="/loading.gif" />
+          </div>
+        )}
+        {calOpen && <CalendarModal onClose={() => setCalOpen(false)} />}
+        <div className="profile">
+          {editingMode && (
+            <EditProfileModal
+              savedPosters={savedPosters}
+              createdPosters={createdPosters}
+              onClose={() => setEditingMode(false)}
+            />
+          )}
+          {profile && (
+            <>
+              <img className="profile-picture" src={profile.picture} alt="" />
+              <h1 className="name" style={{ marginTop: "1vh" }}>
+                {profile.name}
+              </h1>
+              <p>{profile.email}</p>
+              <div className="icons">
+                <Button
+                  className="edit-button"
+                  onClick={() => {
+                    setEditingMode(true);
+                  }}
+                >
+                  Edit Profile
+                </Button>
+                <Button
+                  className="calendar-button"
+                  onClick={() => setCalOpen(true)}
+                >
+                  <img
+                    className="calendar-icon"
+                    src="/calendar-day-svgrepo-com.svg"
+                    alt=""
+                  />
+                </Button>
+              </div>
+              <div className="info-rows">
+                <div className="field-name">Likes</div>
+                <div id="field-data">{likeCount}</div>
+              </div>
+              <div className="info-rows">
+                <div className="field-name">Created</div>
+                <div id="field-data">{createdCount}</div>
+              </div>
+              <div className="info-rows">
+                <div className="field-name">Drafts</div>
+                <div id="field-data">{draftsCount}</div>
+              </div>
+              <div className="info-rows">
+                <div className="field-name">Interests</div>
+              </div>
+              <div id="profile-interests">
+                {Array.from(interests).map((interest, index) => (
+                  <div className={classNameTag(index)} key={index}>
+                    {interest}
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
         </div>
-      )}
-      {calOpen && <CalendarModal onClose={() => setCalOpen(false)} />}
-      <div className="profile">
-        {editingMode && (
-          <EditProfileModal
-            savedPosters={savedPosters}
-            createdPosters={createdPosters}
-            onClose={() => setEditingMode(false)}
+        {interestsState && (
+          <InterestsModal
+            createUser={createUser}
+            page={false}
+            onClose={() => setInterestsState(false)}
           />
         )}
-        {profile && (
-          <>
-            <img className="profile-picture" src={profile.picture} alt="" />
-            <h1 className="name" style={{ marginTop: "1vh" }}>
-              {profile.name}
-            </h1>
-            <p>{profile.email}</p>
-            <div className="icons">
-              <Button
-                className="edit-button"
-                onClick={() => {
-                  setEditingMode(true);
-                }}
-              >
-                Edit Profile
-              </Button>
-              <Button
-                className="calendar-button"
-                onClick={() => setCalOpen(true)}
-              >
-                <img
-                  className="calendar-icon"
-                  src="/calendar-day-svgrepo-com.svg"
-                  alt=""
-                />
-              </Button>
-            </div>
-            <div className="info-rows">
-              <div className="field-name">Likes</div>
-              <div id="field-data">{likeCount}</div>
-            </div>
-            <div className="info-rows">
-              <div className="field-name">Created</div>
-              <div id="field-data">{createdCount}</div>
-            </div>
-            <div className="info-rows">
-              <div className="field-name">Interests</div>
-            </div>
-            <div id="profile-interests">
-              {Array.from(interests).map((interest, index) => (
-                <div className={classNameTag(index)} key={index}>
-                  {interest}
-                </div>
-              ))}
-            </div>
-          </>
-        )}
-      </div>
-      {interestsState && (
-        <InterestsModal
-          createUser={createUser}
-          page={false}
-          onClose={() => setInterestsState(false)}
-        />
-      )}
-      <Tabs
-        variant="soft-rounded"
-        className="profile-posters"
-        onChange={handleTabChange}
-      >
-        <TabList className="tabs-list">
-          <Tab
-            backgroundColor={"transparent !important"}
-            className="profile-tabs"
-            style={{
-              marginRight: "1.5%",
-            }}
-            _selected={{
-              backgroundColor: "rgba(63, 49, 94, 1) !important",
-              color: "white !important",
-              boxShadow: "0px 1px 9px 0px rgba(63, 49, 94, 0.20)",
-            }}
-          >
-            Liked
-          </Tab>
-          <Tab
-            backgroundColor={"transparent !important"}
-            className="profile-tabs"
-            _selected={{
-              backgroundColor: "rgba(63, 49, 94, 1) !important",
-              color: "white !important",
-              boxShadow: "0px 1px 9px 0px rgba(63, 49, 94, 0.20)",
-            }}
-          >
-            Created
-          </Tab>
-        </TabList>
-        <TabPanels>
-          <TabPanel>
-            <div className="saved-grid">
-              {savedPosters.map((poster, index) => (
-                <Box key={index}>
-                  <ProfileImageCard
-                    title={poster.title!}
-                    content={poster.content!}
-                    startDate={poster.startDate!}
-                    endDate={poster.endDate!}
-                    location={poster.location}
-                    link={poster.link}
-                    description={poster.description}
-                    tags={poster.tags}
-                    recurs={poster.isRecurring!}
-                    id={poster.id}
-                    created={false}
-                  />
-                </Box>
-              ))}
-            </div>
-          </TabPanel>
-          <TabPanel>
-            <div className="created-grid">
-              {createdPosters.map((poster, index) => (
-                <Box key={index}>
-                  <ProfileImageCard
-                    title={poster.title!}
-                    content={poster.content!}
-                    startDate={poster.startDate!}
-                    endDate={poster.endDate!}
-                    location={poster.location}
-                    link={poster.link}
-                    description={poster.description}
-                    tags={poster.tags}
-                    recurs={poster.isRecurring!}
-                    id={poster.id}
-                    created={true}
-                  />
-                </Box>
-              ))}
-            </div>
-          </TabPanel>
-        </TabPanels>
-      </Tabs>
-      
-    </main>
-    <IconButton
-    className="scroll-top"
-    color="white"
-    backgroundColor="var(--dark-purple100)"
-    icon={<TriangleUpIcon id="triangle-icon-up" />}
-    aria-label={"scrolls user to bottom of page"}
-    onClick={scrollToTop}
-  />
-  </>
+        <Tabs
+          variant="soft-rounded"
+          className="profile-posters"
+          onChange={handleTabChange}
+        >
+          <TabList className="tabs-list">
+            <Tab
+              backgroundColor={"transparent !important"}
+              className="profile-tabs"
+              style={{
+                marginRight: "1.5%",
+              }}
+              _selected={{
+                backgroundColor: "rgba(63, 49, 94, 1) !important",
+                color: "white !important",
+                boxShadow: "0px 1px 9px 0px rgba(63, 49, 94, 0.20)",
+              }}
+            >
+              Liked
+            </Tab>
+            <Tab
+              backgroundColor={"transparent !important"}
+              className="profile-tabs"
+              _selected={{
+                backgroundColor: "rgba(63, 49, 94, 1) !important",
+                color: "white !important",
+                boxShadow: "0px 1px 9px 0px rgba(63, 49, 94, 0.20)",
+              }}
+              style={{
+                marginRight: "1.5%",
+              }}
+            >
+              Created
+            </Tab>
+            <Tab
+              backgroundColor={"transparent !important"}
+              className="profile-tabs"
+              _selected={{
+                backgroundColor: "rgba(63, 49, 94, 1) !important",
+                color: "white !important",
+                boxShadow: "0px 1px 9px 0px rgba(63, 49, 94, 0.20)",
+              }}
+            >
+              Drafts
+            </Tab>
+          </TabList>
+          <TabPanels>
+            <TabPanel>
+              <div className="saved-grid">
+                {savedPosters.map((poster, index) => (
+                  <Box key={index}>
+                    <ProfileImageCard
+                      title={poster.title!}
+                      content={poster.content!}
+                      startDate={poster.startDate!}
+                      endDate={poster.endDate!}
+                      location={poster.location}
+                      link={poster.link}
+                      description={poster.description}
+                      tags={poster.tags}
+                      recurs={poster.isRecurring!}
+                      id={poster.id}
+                      created={false}
+                    />
+                  </Box>
+                ))}
+              </div>
+            </TabPanel>
+            <TabPanel>
+              <div className="created-grid">
+                {createdPosters.map((poster, index) => (
+                  <Box key={index}>
+                    <ProfileImageCard
+                      title={poster.title!}
+                      content={poster.content!}
+                      startDate={poster.startDate!}
+                      endDate={poster.endDate!}
+                      location={poster.location}
+                      link={poster.link}
+                      description={poster.description}
+                      tags={poster.tags}
+                      recurs={poster.isRecurring!}
+                      id={poster.id}
+                      created={true}
+                    />
+                  </Box>
+                ))}
+              </div>
+            </TabPanel>
+            <TabPanel>
+              <div className="drafts-grid">
+                {drafts.map((poster, index) => (
+                  <Box key={index}>
+                    <ProfileImageCard
+                      title={poster.title ? poster.title : "No Title"}
+                      content={poster.content!}
+                      startDate={poster.startDate!}
+                      endDate={poster.endDate!}
+                      location={poster.location}
+                      link={poster.link}
+                      description={poster.description}
+                      tags={poster.tags}
+                      recurs={poster.isRecurring!}
+                      id={poster.id}
+                      created={true}
+                    />
+                  </Box>
+                ))}
+              </div>
+            </TabPanel>
+          </TabPanels>
+        </Tabs>
+      </main>
+      <IconButton
+        className="scroll-top"
+        color="white"
+        backgroundColor="var(--dark-purple100)"
+        icon={<TriangleUpIcon id="triangle-icon-up" />}
+        aria-label={"scrolls user to bottom of page"}
+        onClick={scrollToTop}
+      />
+    </>
   );
 }

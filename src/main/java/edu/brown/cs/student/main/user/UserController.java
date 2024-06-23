@@ -3,14 +3,15 @@ package edu.brown.cs.student.main.user;
 import edu.brown.cs.student.main.PosterService;
 import edu.brown.cs.student.main.responses.ServiceResponse;
 import edu.brown.cs.student.main.types.Poster;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping(value = "/users")
@@ -50,7 +51,24 @@ public class UserController {
         .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
   }
 
-  @GetMapping("/createdPosters/{id}")
+
+    @GetMapping("/drafts/{id}")
+    public CompletableFuture<ResponseEntity<ServiceResponse<Set<Poster>>>> getDrafts(
+            @PathVariable String id) {
+        return userService
+                .getUserById(id)
+                .thenCompose(
+                        userServiceResponse -> {
+                            Set<Poster> drafts = userServiceResponse.getData().getDrafts();
+                            ServiceResponse<Set<Poster>> serviceResponse =
+                                    new ServiceResponse<>(drafts, "Retrieved saved posters");
+                            return CompletableFuture.completedFuture(serviceResponse);
+                        })
+                .thenApply(response -> ResponseEntity.ok(response))
+                .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+    }
+
+    @GetMapping("/createdPosters/{id}")
   public CompletableFuture<ResponseEntity<ServiceResponse<Set<Poster>>>> getCreatedPosters(
       @PathVariable String id) {
     return userService

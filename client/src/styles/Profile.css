@@ -101,6 +101,7 @@
 }
 
 .saved-grid,
-.created-grid {
+.created-grid,
+.drafts-grid {
   margin-top: 6.5vh;
 }

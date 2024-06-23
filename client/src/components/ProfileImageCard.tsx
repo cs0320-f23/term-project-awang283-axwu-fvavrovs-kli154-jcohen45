@@ -360,9 +360,9 @@ export const ProfileImageCard: React.FC<ImageCardProps> = ({
               </>
             )}
           </div>
-          <p id="profile-title">{title}</p>
+          {title && <p id="profile-title">{title}</p>}
         </div>
-        {modalOpen === "viewImage" && (
+        {modalOpen === "viewImage" && title && (
           <ViewPosterModal
             onClose={() => onClickView()}
             setClicked={setIsClicked}
