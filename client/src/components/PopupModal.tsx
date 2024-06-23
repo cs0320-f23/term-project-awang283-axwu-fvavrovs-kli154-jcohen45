@@ -14,16 +14,53 @@ import {
 } from "./atoms/atoms";
 import axios from "axios";
 
+interface popupProps {
+  posterID: string;
+  onTab: boolean | undefined;
+  onCloseModal?: () => Promise<void> | undefined;
+  setPopModalOpen: React.Dispatch<React.SetStateAction<string>>;
+}
+
 export default function PopupModal({
   posterID,
   onTab,
   onCloseModal,
   setPopModalOpen,
-}) {
+}: popupProps) {
   const profile = useRecoilValue(profileState);
   const setPoster = useSetRecoilState(posterState);
   const [, setModalOpen] = useRecoilState<string>(modalOpenState);
   const [, setPosterSrc] = useRecoilState(posterSrcState);
+
+  const getPoster = async () => {
+    try {
+      const url = "http://localhost:8080/posters/" + posterID;
+      const res = await fetch(url);
+      // console.log(res);
+      if (res.ok) {
+        const posterData = await res.json();
+        if (posterData.message != "Poster not found") {
+          return "poster";
+        } else {
+          try {
+            const url = "http://localhost:8080/drafts/" + posterID;
+            const res = await fetch(url);
+            // console.log(res);
+            if (res.ok) {
+              const posterData = await res.json();
+              if (posterData.message != "Poster not found") {
+                return "draft";
+              }
+            }
+          } catch (error) {
+            return JSON.stringify(error);
+          }
+        }
+      }
+    } catch (error) {
+      return JSON.stringify(error);
+    }
+  };
 
   //user wants to delete draft
   const onYes = async () => {
@@ -31,40 +68,76 @@ export default function PopupModal({
     //if poster state has ID
     if (posterID != null && posterID != "" && posterID != " ") {
       //yes? delete from database(posterID, userID)
-      try {
-        //add to database
-        const config = {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        };
-        const url =
-          "http://localhost:8080/posters/delete/" +
-          posterID +
-          "?userId=" +
-          profile.id;
+      const isPoster = await getPoster();
+      if (isPoster == "poster") {
+        try {
+          //add to database
+          const config = {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          };
+          const url =
+            "http://localhost:8080/posters/delete/" +
+            posterID +
+            "?userId=" +
+            profile.id;
 
-        const res = await axios.delete(url, config);
+          const res = await axios.delete(url, config);
 
-        //sets global state to nothing (no more draft)
-        setPoster({});
-        setPosterSrc("");
+          //sets global state to nothing (no more draft)
+          setPoster({});
+          setPosterSrc("");
 
-        //goes to whatever page user was on (no more modal)
-        setModalOpen("");
-        onCloseModal();
+          //goes to whatever page user was on (no more modal)
+          setModalOpen("");
+          onCloseModal();
 
-        //need to give enough time for the poster to be created + id to exist
-        return Promise.resolve(res.data.data);
-      } catch (error) {
-        if (axios.isAxiosError(error) && error.response) {
-          return Promise.resolve(
-            `Error in fetch: ${error.response.data.message}`
-          );
-        } else {
-          return Promise.resolve(
-            "Error in fetch: Network error or other issue"
-          );
+          //need to give enough time for the poster to be created + id to exist
+          return Promise.resolve(res.data.data);
+        } catch (error) {
+          if (axios.isAxiosError(error) && error.response) {
+            return Promise.resolve(
+              `Error in fetch: ${error.response.data.message}`
+            );
+          } else {
+            return Promise.resolve(
+              "Error in fetch: Network error or other issue"
+            );
+          }
+        }
+      } else if (isPoster == "draft") {
+        try {
+          //add to database
+          const config = {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          };
+          const url = "http://localhost:8080/drafts/delete/" + posterID;
+
+          const res = await axios.delete(url, config);
+
+          //sets global state to nothing (no more draft)
+          setPoster({});
+          setPosterSrc("");
+
+          //goes to whatever page user was on (no more modal)
+          setModalOpen("");
+          onCloseModal();
+
+          //need to give enough time for the poster to be created + id to exist
+          return Promise.resolve(res.data.data);
+        } catch (error) {
+          if (axios.isAxiosError(error) && error.response) {
+            return Promise.resolve(
+              `Error in fetch: ${error.response.data.message}`
+            );
+          } else {
+            return Promise.resolve(
+              "Error in fetch: Network error or other issue"
+            );
+          }
         }
       }
     }

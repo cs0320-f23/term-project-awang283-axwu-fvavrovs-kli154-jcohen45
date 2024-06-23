@@ -5,7 +5,6 @@ import edu.brown.cs.student.main.responses.ServiceResponse;
 import edu.brown.cs.student.main.types.Draft;
 import edu.brown.cs.student.main.user.UserService;
 import java.time.LocalDateTime;
-import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import org.springframework.http.HttpStatus;
@@ -56,6 +55,7 @@ public class DraftController {
     Draft poster = new Draft();
     poster.setContent(content.getContent());
     poster.setStartDate(LocalDateTime.parse(startDate));
+    poster.setUserId(userId);
     System.out.println("Start date: " + startDate);
     this.draftService.createDraft(poster, userId);
     return CompletableFuture.completedFuture(
@@ -86,6 +86,7 @@ public class DraftController {
     ServiceResponse<String> imgurResponse = imgurService.uploadToImgur(content);
     poster.setContent(imgurResponse.getData());
     poster.setStartDate(LocalDateTime.parse(startDate));
+    poster.setUserId(userId);
     this.draftService.createDraft(poster, userId);
     return CompletableFuture.completedFuture(
         new ServiceResponse<Draft>(poster, "created new draft using imgur"));
@@ -109,79 +110,35 @@ public class DraftController {
    *
    * @param id the id (string) of the poster to be deleted
    * @return a JSONified ServiceResponse instance that contains a "message" (string) field and a
-   *     "data" (JSON) field that contains the data of the poster that was just deleted
+   * "data" (JSON) field that contains the data of the poster that was just deleted
    */
-  //    @DeleteMapping("/delete/{id}")
-  //    public CompletableFuture<ResponseEntity<ServiceResponse<Object>>> deletePoster(
-  //            @PathVariable String id, @RequestParam(required = false) String userId) {
-  //        return posterService
-  //                .getDraftById(id)
-  //                .thenCompose(
-  //                        existingPoster -> {
-  //                            if (existingPoster.getData().getID().equals(id)
-  //                                    && existingPoster.getData().getUserId().equals(userId)) {
-  //                                // remove from user's createdposters
-  //                                userService
-  //                                        .getUserById(userId)
-  //                                        .thenCompose(
-  //                                                user -> {
-  //                                                    if (user.getData() != null) {
-  //                                                        Set<Draft> userPosters =
-  // user.getData().getCreatedPosters();
-  //                                                        userPosters.removeIf(poster ->
-  // poster.getID().equals(id));
-  //
-  // user.getData().setCreatedPosters(userPosters);
-  //                                                        // Update the user entity in the
-  // database
-  //                                                        return userService
-  //                                                                .updateUser(user.getData())
-  //                                                                .thenApply(
-  //                                                                        updatedUser -> {
-  //
-  // System.out.println(updatedUser);
-  //                                                                            if
-  // (updatedUser.getData() != null) {
-  //                                                                                return new
-  // ServiceResponse<>(
-  //                                                                                        "Poster
-  // with id "
-  //
-  // + id
-  //
-  // + " removed from user's created posters");
-  //                                                                            } else {
-  //                                                                                return new
-  // ServiceResponse<>(
-  //                                                                                        "Failed
-  // to remove poster from user's created posters");
-  //                                                                            }
-  //                                                                        });
-  //                                                    } else {
-  //                                                        return
-  // CompletableFuture.completedFuture(
-  //                                                                new ServiceResponse<>(
-  //                                                                        "Poster with id "
-  //                                                                                + id
-  //                                                                                + " not removed
-  // from users created posters"));
-  //                                                    }
-  //                                                });
-  //                                return posterService
-  //                                        .deletePosterById(id)
-  //                                        .thenApply(
-  //                                                deleted -> new ServiceResponse<>("Poster with id
-  // " + id + " deleted"));
-  //                            } else {
-  //                                return CompletableFuture.completedFuture(
-  //                                        new ServiceResponse<>("Poster with id " + id + " not
-  // found"));
-  //                            }
-  //                        })
-  //                .thenApply(response -> ResponseEntity.ok(response))
-  //                .exceptionally(ex ->
-  // ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
-  //    }
+      @DeleteMapping("/delete/{id}")
+      public CompletableFuture<ResponseEntity<ServiceResponse<String>>> deletePoster(
+              @PathVariable String id) {
+        return draftService
+                .getDraftById(id)
+                .thenCompose(
+                        existingDraft -> {
+                          if (existingDraft.getData() != null) {
+                            if (existingDraft.getData().getStartDate() == null) {
+                              return CompletableFuture.completedFuture(
+                                      new ServiceResponse<>(
+                                              "Poster with id "
+                                                      + id
+                                                      + " cannot be created because it does not have a start date")); // also check if existingDraft.getData().getStartDate() is null
+                            }
+
+                            this.userService.removeFromDrafts(
+                                    existingDraft.getData().getUserId(), existingDraft.getData());
+                            return this.draftService.deleteDraftById(existingDraft.getData().getID());
+                          } else {
+                            return CompletableFuture.completedFuture(
+                                    new ServiceResponse<>("Draft with id " + id + " not found"));
+                          }
+                        })
+                .thenApply(response -> ResponseEntity.ok(response))
+                .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+      }
 
   /**
    * sends a PUT request to update an existing poster. When integrated with the frontend, usage of

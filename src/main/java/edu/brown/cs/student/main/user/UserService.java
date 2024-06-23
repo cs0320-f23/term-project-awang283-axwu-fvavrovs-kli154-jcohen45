@@ -147,12 +147,8 @@ public class UserService {
 
               System.out.println("Trying to save");
               this.updateUser(user);
-              for (Poster draft : userRepository.findById(userId).get().getDrafts()) {
-                System.out.println("Draft in user's mongo field: " + draft.getID());
-              }
-              for (Poster draft : user.getDrafts()) {
-                System.out.println("Draft in user's hashset: " + draft.getID());
-              }
+
+
               // Create a response object
               System.out.println("Trying to return service response");
               return new ServiceResponse<>(user, "Poster associated with user");
