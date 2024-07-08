@@ -18,6 +18,7 @@ interface tagsProps {
   onBack: () => void;
   draftId: string;
   setShowTags: React.Dispatch<React.SetStateAction<boolean>>;
+  updatePoster: (poster: IPosterObject) => Promise<unknown>;
 }
 
 export default function TagsModal({
@@ -25,6 +26,7 @@ export default function TagsModal({
   onBack,
   draftId,
   setShowTags,
+  updatePoster,
 }: tagsProps) {
   const [allTags, setAllTags] = useState<string[]>([]);
   const [tags, setTags] = useState<Set<string>>(new Set());
@@ -115,6 +117,7 @@ export default function TagsModal({
   const createPoster = async () => {
     //add list to poster obj w handlechange
     const newPoster = handleChange(tags, "tags", () => {});
+    // updatePoster(newPoster);
 
     // console.log(JSON.stringify(newPoster) + " new poster");
     //call put endpoint
@@ -129,6 +132,7 @@ export default function TagsModal({
       console.log(draftId);
       const url = "http://localhost:8080/posters/create/" + draftId;
       // const formData = new FormData();
+      console.log("tags: ");
       console.log(tags);
 
       // tags.forEach((tag) => {
@@ -145,6 +149,8 @@ export default function TagsModal({
       // }
       // console.log(Array.from(formData));
       const res = await axios.post(url, config);
+      console.log("user");
+      console.log(res.data.data);
       setRefresh(!refresh);
       getPosters().then((data) => setSearchResults(data));
       setShowTags(false);
