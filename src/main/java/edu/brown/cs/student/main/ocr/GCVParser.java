@@ -34,16 +34,6 @@ public class GCVParser {
         suggestedFields.put("startDate", defaultStart);
         return suggestedFields;
     }
-
-//    public HashMap deserialize(String json) throws JsonProcessingException {
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        OCRResult ocrResult = objectMapper.readValue(json, OCRResult.class);
-//
-//        List<ParsedResult> parsedResults = ocrResult.getParsedResults();
-//
-//        return this.parseResult(parsedResults);
-//    }
-
     /**
      * Determines title based on the largest text (height variable)
      *
