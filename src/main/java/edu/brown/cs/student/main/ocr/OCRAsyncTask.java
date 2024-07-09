@@ -53,15 +53,15 @@ public class OCRAsyncTask {
         // important stuff after here
 
         if (!res.getTextAnnotationsList().isEmpty()){ // this if statement will only be true if text was detected
-          String textFromImage = res.getTextAnnotationsList().get(0).getDescription();
-          System.out.println(res.getTextAnnotationsList().get(0).getDescription());
-          HashMap suggestedFields = parser.parseResult(textFromImage);
+          List<EntityAnnotation> toParse = res.getTextAnnotationsList();
+//          System.out.println("Look at this bitch" + res.getTextAnnotationsList().get(0).getDescription());
+          HashMap suggestedFields = parser.parseResult(toParse);
 
           // Print detected text and its bounding polygon; the one at index 0 is just the whole thing
-          for (EntityAnnotation annotation : res.getTextAnnotationsList()) {
-            System.out.println("Text: %s%n" + annotation.getDescription());
-            System.out.println("Position : %s%n" + annotation.getBoundingPoly());
-          }
+//          for (EntityAnnotation annotation : res.getTextAnnotationsList()) {
+////            System.out.println("Text: %s%n" + annotation.getDescription());
+////            System.out.println("Position : %s%n" + annotation.getBoundingPoly());
+//          }
 
           return suggestedFields;
         }
