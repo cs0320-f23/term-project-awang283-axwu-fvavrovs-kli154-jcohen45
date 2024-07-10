@@ -16,17 +16,10 @@ import axios from "axios";
 
 interface popupProps {
   posterID: string;
-  onTab: boolean | undefined;
-  onCloseModal?: () => Promise<void> | undefined;
-  setPopModalOpen: React.Dispatch<React.SetStateAction<string>>;
+  onCloseModal: () => void | (() => Promise<void>);
 }
 
-export default function PopupModal({
-  posterID,
-  onTab,
-  onCloseModal,
-  setPopModalOpen,
-}: popupProps) {
+export default function PopupModal({ posterID, onCloseModal }: popupProps) {
   const profile = useRecoilValue(profileState);
   const setPoster = useSetRecoilState(posterState);
   const [, setModalOpen] = useRecoilState<string>(modalOpenState);
@@ -153,14 +146,9 @@ export default function PopupModal({
   //user does not want to delete draft
   const onNo = () => {
     // setModalOpen("");
-    // Take in a value if onPopupTab instead of location
-    if (onTab) {
-      onCloseModal();
-    } else {
-      // Go back to create image
-      setPopModalOpen("");
-      setModalOpen("createImage");
-    }
+    // TODO send a put req to save the draft
+    // close the modal and return to the page -
+    onCloseModal();
   };
 
   return (

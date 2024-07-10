@@ -142,6 +142,7 @@ export const ProfileImageCard: React.FC<ImageCardProps> = ({
     setModalOpen("");
     await fetchSavedOnClose();
     await getUserCreated();
+    // TODO drafts
   };
 
   const onClickHeart = async (event) => {
@@ -291,7 +292,7 @@ export const ProfileImageCard: React.FC<ImageCardProps> = ({
   return (
     <>
       {modalOpen == "popup" && (
-        <PopupModal posterID={id} onTab={true} onCloseModal={onClickView} />
+        <PopupModal posterID={id} onCloseModal={onClickView} />
       )}
       {modalOpen == "createImage" && <CreateImageModal />}
       <div className="profile-card" onClick={handleViewPoster} id={id}>

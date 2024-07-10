@@ -55,7 +55,7 @@ export default function CreateImageModal() {
     //defaults to current date at 11:59PM + ensures startDate will always be filled with some value
     const todayDateTime = yyyy + "-" + mm + "-" + dd + "T23:59";
     setPoster({ ...poster, startDate: todayDateTime, isRecurring: "NEVER" });
-    console.log(poster);
+    // console.log(poster);
   }, []);
 
   const handleChange = (
@@ -147,7 +147,7 @@ export default function CreateImageModal() {
         setIsLoading(true);
         const res = await axios.post(url, requestBody, config);
         setPosterSrc(inputElement.value);
-        console.log(res.data.data);
+        // console.log(res.data.data);
         setDraftId(res.data.data.id);
         setCVFields(res.data.data.id);
         return Promise.resolve(res.data.data);
@@ -182,7 +182,7 @@ export default function CreateImageModal() {
       formData.append("startDate", poster.startDate!);
       //console.log("Before axios request");
       setIsLoading(true);
-      console.log(formData);
+      // console.log(formData);
       const res = await axios.post(url, formData, config);
       //console.log("After axios request");
       setDraftId(res.data.data.id);
@@ -203,7 +203,7 @@ export default function CreateImageModal() {
   };
 
   const handlePosterUpload = async (target: EventTarget & HTMLInputElement) => {
-    console.log("called poster upload");
+    // console.log("called poster upload");
     if (target.files) {
       const file = target.files[0]; //getting the file object
 
@@ -230,7 +230,35 @@ export default function CreateImageModal() {
     if (!draftId) {
       setDraftId(poster.id);
     }
+    // console.log(poster);
+    // grab info in blanks, send PUT
+    updatePoster(poster);
     setShowTags(true);
+  };
+
+  // updates a draft with new info when a user clicks to tags or presses X
+  const updatePoster = async (poster: IPosterObject) => {
+    console.log(poster);
+    try {
+      // changing this to draftID broke creating things ???? but poster.id is undefined :/
+      const url = "http://localhost:8080/drafts/update/" + poster.id;
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      const response = await axios.put(url, poster, config);
+      console.log(response);
+      return Promise.resolve(response.data.data);
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        return Promise.resolve(
+          `Error in fetch: ${error.response.data.message}`
+        );
+      } else {
+        return Promise.resolve("Error in fetch: Network error or other issue");
+      }
+    }
   };
 
   const onBack = () => {
@@ -239,8 +267,11 @@ export default function CreateImageModal() {
 
   const onClose = () => {
     //if any field is filled out
+    updatePoster(poster);
+    // console.log(poster);
     if (Object.keys(poster).length > 2) {
       //popup u sure u wanna del this?
+      // console.log("hi"); prints but modal doesnt popup. now that we have drafts this is kinda ok? but it would be nice to have save to draft / delete button
       setPopModalOpen("popup");
     }
     setModalOpen("");
@@ -249,12 +280,7 @@ export default function CreateImageModal() {
   return (
     <>
       {popModalOpen === "popup" && Object.keys(poster).length > 2 && (
-        <PopupModal
-          posterID={draftId}
-          // setPosterSrc={setPosterSrc}
-          setPopModalOpen={setPopModalOpen}
-          onTab={undefined}
-        />
+        <PopupModal posterID={draftId} onCloseModal={() => setModalOpen("")} />
       )}
       {modalOpen == "createImage" && (
         <Modal closeOnOverlayClick={false} isOpen={true} onClose={onClose}>
@@ -295,6 +321,7 @@ export default function CreateImageModal() {
                       onBack={onBack}
                       draftId={draftId}
                       setShowTags={setShowTags}
+                      updatePoster={updatePoster}
                     />
                   ) : (
                     <div className="input-fields">

@@ -2,18 +2,20 @@ package edu.brown.cs.student.main.ocr;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.cloud.vision.v1.EntityAnnotation;
 import edu.brown.cs.student.main.BMSearch;
 import edu.brown.cs.student.main.Tags;
+
+import javax.swing.text.html.parser.Entity;
 import java.time.LocalDateTime;
 import java.util.*;
 
 public class GCVParser {
 
-    public HashMap parseResult(String result) {
-        String[] splitString = result.split("\n");
-        String title = splitString[0];
-        String description = result;
-        String[] words = result.split(" ");
+    public HashMap parseResult(List<EntityAnnotation> result) {
+        String title = this.extractTitle(result);
+        String description = result.get(0).getDescription().replace("\n", " ");
+        String[] words = description.split(" ");
         String link = this.extractLink(words);
         HashSet<String> tags = this.extractTags(words);
 
@@ -32,45 +34,42 @@ public class GCVParser {
         suggestedFields.put("startDate", defaultStart);
         return suggestedFields;
     }
-
-//    public HashMap deserialize(String json) throws JsonProcessingException {
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        OCRResult ocrResult = objectMapper.readValue(json, OCRResult.class);
-//
-//        List<ParsedResult> parsedResults = ocrResult.getParsedResults();
-//
-//        return this.parseResult(parsedResults);
-//    }
-
     /**
      * Determines title based on the largest text (height variable)
      *
      * @param lines
      * @return
      */
-    private String extractTitle(List<Line> lines) {
+    private String extractTitle(List<EntityAnnotation> lines) {
         String title = "";
         double max = -1;
         int maxIndex = 0;
         // finds the tallest word
-        for (int i = 0; i < lines.size(); i++) {
-            if (lines.get(i).getMaxHeight() > max) {
-                max = lines.get(i).getMaxHeight();
+        for (int i = 1; i < lines.size(); i++) {
+            int height = this.getHeight(lines.get(i));
+            if (height > max) {
+                max = height;
                 maxIndex = i;
             }
         }
 
         // also finds words of similar heights bc sometimes the parsing isn't exact but they're visually
         // the same
-        for (Line line : lines) {
-            double compHeight = line.getMaxHeight();
+        for (int i = 1; i < lines.size(); i++) {
+            double compHeight = this.getHeight(lines.get(i));
             double percentDiff = Math.abs((max - compHeight) / compHeight);
-            if (percentDiff < 0.4) {
-                title += line.getLineText() + " ";
+            if (percentDiff < 0.6) {
+                title += lines.get(i).getDescription() + " ";
             }
         }
 
         return title;
+    }
+
+    private int getHeight(EntityAnnotation line){
+        int top = line.getBoundingPoly().getVertices(0).getY();
+        int bottom = line.getBoundingPoly().getVertices(3).getY();
+        return bottom - top;
     }
 
     private String extractLink(String[] words) {

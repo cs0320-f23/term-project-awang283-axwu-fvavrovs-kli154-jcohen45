@@ -105,7 +105,7 @@ export default function Profile() {
           newCreatedPosters.push(posterData.data);
         }
       }
-      console.log(newCreatedPosters);
+      // console.log(newCreatedPosters);
       setCreatedPosters(newCreatedPosters);
     }
   };
@@ -129,7 +129,7 @@ export default function Profile() {
         }
       }
       setDrafts(newDrafts);
-      console.log(newDrafts);
+      // console.log(newDrafts);
     }
   };
 
