@@ -230,7 +230,6 @@ export default function CreateImageModal() {
     if (!draftId) {
       setDraftId(poster.id);
     }
-    console.log(draftId);
     setShowTags(true);
   };
 

@@ -47,6 +47,7 @@ export default function TagsModal({
     fetchAllTags();
     selectSuggestedTags(poster.tags!);
     console.log(poster);
+    console.log(draftId);
   }, []);
 
   const handleChange = (
