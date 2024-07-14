@@ -14,7 +14,7 @@ import ViewPosterModal from "./ViewPosterModal";
 import PopupModal from "./PopupModal";
 import CreateImageModal from "./CreateImageModal";
 
-interface ImageCardProps {
+interface ProfileImageCardProps {
   title?: string;
   content: string;
   startDate: number[];
@@ -26,10 +26,10 @@ interface ImageCardProps {
   recurs: string;
   id: string;
   created: boolean;
-  draft: boolean;
+  isDraft: boolean;
 }
 
-export const ProfileImageCard: React.FC<ImageCardProps> = ({
+export const ProfileImageCard: React.FC<ProfileImageCardProps> = ({
   title,
   content,
   startDate,
@@ -41,7 +41,7 @@ export const ProfileImageCard: React.FC<ImageCardProps> = ({
   recurs,
   id,
   created,
-  draft,
+  isDraft,
 }) => {
   const listMonths = [
     "January",
@@ -320,7 +320,7 @@ export const ProfileImageCard: React.FC<ImageCardProps> = ({
             {userId && (
               <>
                 <div className="modal-icons">
-                  {draft && (
+                  {!isDraft && (
                     <div
                       className={`heart-icon-prof ${
                         isClicked ? "clicked" : ""
@@ -384,6 +384,7 @@ export const ProfileImageCard: React.FC<ImageCardProps> = ({
             tags={tags!}
             recurs={recurs}
             id={id}
+            isDraft={true}
           />
         )}
       </div>

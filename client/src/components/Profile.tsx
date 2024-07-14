@@ -299,7 +299,7 @@ export default function Profile() {
                       recurs={poster.isRecurring!}
                       id={poster.id}
                       created={false}
-                      draft={true}
+                      isDraft={false}
                     />
                   </Box>
                 ))}
@@ -321,7 +321,7 @@ export default function Profile() {
                       recurs={poster.isRecurring!}
                       id={poster.id}
                       created={true}
-                      draft={true}
+                      isDraft={false}
                     />
                   </Box>
                 ))}
@@ -343,7 +343,7 @@ export default function Profile() {
                       recurs={poster.isRecurring!}
                       id={poster.id}
                       created={true}
-                      draft={false}
+                      isDraft={true}
                     />
                   </Box>
                 ))}

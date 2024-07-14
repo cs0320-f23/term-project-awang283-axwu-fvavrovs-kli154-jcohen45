@@ -28,6 +28,7 @@ interface viewProps {
   tags: Set<string>;
   recurs: string;
   id: string;
+  isDraft: boolean;
 }
 
 export default function ViewPosterModal({
@@ -45,6 +46,7 @@ export default function ViewPosterModal({
   tags,
   recurs,
   id,
+  isDraft,
 }: viewProps) {
   const [name, setName] = useState<string>("");
   const [picture, setPicture] = useState<string>("");
@@ -189,7 +191,7 @@ export default function ViewPosterModal({
             <ModalBody className="modal-body" flexDirection={"row"}>
               <Box className="view-image" overflowY={"scroll"} id={id}>
                 <img src={path} />
-                {userId && (
+                {userId && !isDraft && (
                   <div
                     className="heart-icon"
                     onClick={onClick}

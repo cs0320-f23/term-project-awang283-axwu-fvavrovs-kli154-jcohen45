@@ -49,7 +49,6 @@ export default function TagsModal({
     fetchAllTags();
     selectSuggestedTags(poster.tags!);
     console.log(poster);
-    console.log(draftId);
   }, []);
 
   const handleChange = (
@@ -131,7 +130,12 @@ export default function TagsModal({
       };
       console.log("printing draft id");
       console.log(draftId);
-      const url = "http://localhost:8080/posters/create/" + draftId;
+      let url;
+      if (draftId) {
+        url = "http://localhost:8080/posters/create/" + draftId;
+      } else {
+        url = "http://localhost:8080/posters/create/" + poster.id;
+      }
       // const formData = new FormData();
       console.log("tags: ");
       console.log(tags);

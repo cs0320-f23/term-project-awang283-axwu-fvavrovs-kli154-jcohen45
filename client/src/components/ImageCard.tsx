@@ -264,6 +264,7 @@ export const ImageCard: React.FC<ImageCardProps> = ({
             tags={tags!}
             recurs={recurs}
             id={id}
+            isDraft={false}
           />
         )}
       </div>
