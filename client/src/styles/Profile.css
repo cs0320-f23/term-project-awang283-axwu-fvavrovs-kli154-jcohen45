@@ -28,8 +28,9 @@
 }
 
 .profile-picture {
-  border-radius: 100px;
+  border-radius: 50%;
   width: 180px;
+  height: 180px;
 }
 
 .name {

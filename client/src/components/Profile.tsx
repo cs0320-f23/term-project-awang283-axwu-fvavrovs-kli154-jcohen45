@@ -179,7 +179,14 @@ export default function Profile() {
           )}
           {profile && (
             <>
-              <img className="profile-picture" src={profile.picture} alt="" />
+              <div className="profile-picture">
+                <img
+                  src={profile.picture}
+                  alt=""
+                  className="profile-picture"
+                  style={{ objectFit: "cover" }}
+                />
+              </div>
               <h1 className="name" style={{ marginTop: "1vh" }}>
                 {profile.name}
               </h1>

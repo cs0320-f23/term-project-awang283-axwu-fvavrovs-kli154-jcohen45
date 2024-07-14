@@ -215,14 +215,25 @@ export default function ViewPosterModal({
                       }}
                     >
                       {picture && (
-                        <img
-                          className="field-name"
+                        <div
                           style={{
-                            width: "8%",
+                            width: "50px",
+                            height: "50px",
                             marginRight: "3%",
+                            overflow: "hidden",
+                            borderRadius: "50%",
                           }}
-                          src={picture}
-                        />
+                        >
+                          <img
+                            className="field-name"
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              objectFit: "cover",
+                            }}
+                            src={picture}
+                          />
+                        </div>
                       )}
                       {name && (
                         <div id="field-text" style={{ paddingTop: "1%" }}>
