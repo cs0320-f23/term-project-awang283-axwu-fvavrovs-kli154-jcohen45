@@ -186,8 +186,8 @@ export default function CreateImageModal() {
       setIsLoading(true);
       // console.log(formData);
       const res = await axios.post(url, formData, config);
-      //console.log("After axios request");
-      // setDraftId(res.data.data.id);
+      console.log("After axios request");
+      console.log(res.data.data.id);
       setDraftId(res.data.data.id);
       console.log("id from upload");
       console.log(draftId);
@@ -223,10 +223,11 @@ export default function CreateImageModal() {
       }
 
       const output = await createImgurLink(file);
-      // fetchPosterData(output.id);
-      console.log("output.id is: " + output.id);
+
       setCVFields(output.id);
-      setPoster({ ...poster, content: output.content });
+      setPoster({ ...poster, content: output.content, id: output.id });
+      // console.log(poster);
+      console.log("output.id is: " + output.id);
     }
   };
 
