@@ -184,7 +184,8 @@ export default function CreateImageModal() {
       setIsLoading(true);
       // console.log(formData);
       const res = await axios.post(url, formData, config);
-      //console.log("After axios request");
+      console.log("After axios request");
+      console.log(res.data.data.id);
       setDraftId(res.data.data.id);
 
       return Promise.resolve(res.data.data);
@@ -219,10 +220,11 @@ export default function CreateImageModal() {
       }
 
       const output = await createImgurLink(file);
-      // fetchPosterData(output.id);
-      console.log("output.id is: " + output.id);
+
       setCVFields(output.id);
-      setPoster({ ...poster, content: output.content });
+      setPoster({ ...poster, content: output.content, id: output.id });
+      // console.log(poster);
+      console.log("output.id is: " + output.id);
     }
   };
 
@@ -242,6 +244,7 @@ export default function CreateImageModal() {
     console.log(poster);
     try {
       // changing this to draftID broke creating things ???? but poster.id is undefined :/
+      console.log(poster.id);
       const url = "http://localhost:8080/drafts/update/" + poster.id;
       const config = {
         headers: {

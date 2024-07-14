@@ -39,7 +39,7 @@ export default function TagsModal({
     const fetchAllTags = async () => {
       try {
         const tagsData = await fetchTags();
-        console.log(tagsData);
+        // console.log(tagsData);
         setAllTags(tagsData);
       } catch (error) {
         console.error("Error fetching tags:", error);
@@ -48,7 +48,7 @@ export default function TagsModal({
 
     fetchAllTags();
     selectSuggestedTags(poster.tags!);
-    console.log(poster);
+    // console.log(poster);
   }, []);
 
   const handleChange = (
