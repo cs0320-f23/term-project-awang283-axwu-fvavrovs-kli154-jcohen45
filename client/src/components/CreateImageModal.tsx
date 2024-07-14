@@ -149,6 +149,8 @@ export default function CreateImageModal() {
         setPosterSrc(inputElement.value);
         // console.log(res.data.data);
         setDraftId(res.data.data.id);
+        console.log("id from link");
+        console.log(draftId);
         setCVFields(res.data.data.id);
         return Promise.resolve(res.data.data);
       } catch (error) {
@@ -185,8 +187,10 @@ export default function CreateImageModal() {
       // console.log(formData);
       const res = await axios.post(url, formData, config);
       //console.log("After axios request");
+      // setDraftId(res.data.data.id);
       setDraftId(res.data.data.id);
-
+      console.log("id from upload");
+      console.log(draftId);
       return Promise.resolve(res.data.data);
     } catch (error) {
       setIsLoading(false);
@@ -227,21 +231,22 @@ export default function CreateImageModal() {
   };
 
   const onSaveSelectTags = () => {
-    if (!draftId) {
-      setDraftId(poster.id);
-    }
     // console.log(poster);
     // grab info in blanks, send PUT
-    updatePoster(poster);
+    console.log("printing id");
+    console.log(draftId);
+    updatePoster(poster, draftId);
+    console.log("calling from save select tags function");
+    console.log(poster);
     setShowTags(true);
   };
 
   // updates a draft with new info when a user clicks to tags or presses X
-  const updatePoster = async (poster: IPosterObject) => {
+  const updatePoster = async (poster: IPosterObject, id: string) => {
     console.log(poster);
     try {
       // changing this to draftID broke creating things ???? but poster.id is undefined :/
-      const url = "http://localhost:8080/drafts/update/" + poster.id;
+      const url = "http://localhost:8080/drafts/update/" + id;
       const config = {
         headers: {
           "Content-Type": "application/json",
@@ -267,7 +272,7 @@ export default function CreateImageModal() {
 
   const onClose = () => {
     //if any field is filled out
-    updatePoster(poster);
+    updatePoster(poster, draftId);
     // console.log(poster);
     if (Object.keys(poster).length > 2) {
       //popup u sure u wanna del this?
