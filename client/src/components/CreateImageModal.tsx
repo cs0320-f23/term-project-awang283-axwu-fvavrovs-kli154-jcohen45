@@ -382,6 +382,7 @@ export default function CreateImageModal() {
                           onChange={(ev) =>
                             handleChange(ev.target.value, "title")
                           }
+                          // maxLength={25}
                         ></Input>
                       </div>
                       <div className="location-div">

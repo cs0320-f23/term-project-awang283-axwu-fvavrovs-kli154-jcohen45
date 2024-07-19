@@ -190,7 +190,9 @@ export default function App() {
                   </Button>
                   <div id="profile">
                     <NavLink to="/profile" className="profile-link">
-                      {profile.name}
+                      {profile.name.length > 25
+                        ? profile.name.slice(0, 25) + "..."
+                        : profile.name}
                     </NavLink>
                   </div>
                   <Button id="logout" onClick={logOut} color={"white"}>
@@ -211,71 +213,74 @@ export default function App() {
                 </>
               )}
             </div>
-          
+
             <NavLink to="/home" id="logo" className="invis">
               P@B
             </NavLink>
             <div className="hamburger-menu-outer">
-            <Button id="create" onClick={handleCreatePoster}
-              backgroundColor={"var(--dark-purple100)"}>
-                          + </Button>
-                          <div></div>
-            <div
-              className="hamburger-menu"
-              onMouseEnter={() => setHamburgerOpen(true)}
-            >
-              <div className="hamburger-icon">
-                <div className="bar"></div>
-                <div className="bar"></div>
-                <div className="bar"></div>
-              </div>
-              {hamburgerOpen && (
-                <>
-                  <div
-                    className="dropdown"
-                    onMouseLeave={() => setHamburgerOpen(false)}
-                  >
-                    <NavLink to="/happenings" className="nav-link">
-                      Happenings
-                    </NavLink>
-                    <NavLink to="/archive" className="nav-link">
-                      Archive
-                    </NavLink>
-                    <NavLink to="/about" className="nav-link">
-                      About
-                    </NavLink>
-                    {profile ? (
-                      <>
-                        
-                        <div id="profile">
-                          <NavLink to="/profile" className="profile-link">
-                            {profile.name}
-                          </NavLink>
-                        </div>
-                        <Button id="logout" onClick={logOut} color={"white"}>
-                          Log Out
-                        </Button>
-                      </>
-                    ) : (
-                      <>
-                        <div className="g-signin2" data-onsuccess="onSignIn">
-                          <Button
-                            id="login"
-                            onClick={() => login()}
-                            style={{ backgroundColor: "var(--dark-purple100)" }}
-                          >
-                            Login
+              <Button
+                id="create"
+                onClick={handleCreatePoster}
+                backgroundColor={"var(--dark-purple100)"}
+              >
+                +{" "}
+              </Button>
+              <div></div>
+              <div
+                className="hamburger-menu"
+                onMouseEnter={() => setHamburgerOpen(true)}
+              >
+                <div className="hamburger-icon">
+                  <div className="bar"></div>
+                  <div className="bar"></div>
+                  <div className="bar"></div>
+                </div>
+                {hamburgerOpen && (
+                  <>
+                    <div
+                      className="dropdown"
+                      onMouseLeave={() => setHamburgerOpen(false)}
+                    >
+                      <NavLink to="/happenings" className="nav-link">
+                        Happenings
+                      </NavLink>
+                      <NavLink to="/archive" className="nav-link">
+                        Archive
+                      </NavLink>
+                      <NavLink to="/about" className="nav-link">
+                        About
+                      </NavLink>
+                      {profile ? (
+                        <>
+                          <div id="profile">
+                            <NavLink to="/profile" className="profile-link">
+                              {profile.name}
+                            </NavLink>
+                          </div>
+                          <Button id="logout" onClick={logOut} color={"white"}>
+                            Log Out
                           </Button>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                </>
-              )}
-            </div>
-              
+                        </>
+                      ) : (
+                        <>
+                          <div className="g-signin2" data-onsuccess="onSignIn">
+                            <Button
+                              id="login"
+                              onClick={() => login()}
+                              style={{
+                                backgroundColor: "var(--dark-purple100)",
+                              }}
+                            >
+                              Login
+                            </Button>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </>
+                )}
               </div>
-           
+            </div>
           </nav>
         </header>
         <main style={{ height: "fit-content" }}>
@@ -293,7 +298,11 @@ export default function App() {
           <div className="foot-left">
             Made with love by the Posters@Brown team
           </div>
-          <div className="foot-right"><a href="https://forms.gle/iNRs9GNxhDiGgfE5A" target="_blank">Feedback</a></div>
+          <div className="foot-right">
+            <a href="https://forms.gle/iNRs9GNxhDiGgfE5A" target="_blank">
+              Feedback
+            </a>
+          </div>
         </footer>
       </article>
       {interestsState && (

@@ -12,6 +12,7 @@ import {
 import { useRecoilState } from "recoil";
 import { getPosters } from "./Happenings";
 import { IPosterObject } from "./CreateImageModal";
+import ErrorPopup from "./ErrorPopup";
 
 interface tagsProps {
   onClose: () => void;
@@ -34,6 +35,8 @@ export default function TagsModal({
   const [poster, setPoster] = useRecoilState<IPosterObject>(posterState);
   const [, setPosterSrc] = useRecoilState(posterSrcState);
   const [refresh, setRefresh] = useRecoilState(refreshState);
+  const [disabled, setDisabled] = useState<boolean>(false);
+  const [errorPopup, setErrorPopup] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchAllTags = async () => {
@@ -115,6 +118,7 @@ export default function TagsModal({
 
   //on hit create button
   const createPoster = async () => {
+    setDisabled(true);
     //add list to poster obj w handlechange
     const newPoster = handleChange(tags, "tags", () => {});
     // updatePoster(newPoster);
@@ -136,22 +140,22 @@ export default function TagsModal({
       } else {
         url = "http://localhost:8080/posters/create/" + poster.id;
       }
-      // const formData = new FormData();
+      const formData = new FormData();
       console.log("tags: ");
       console.log(tags);
 
-      // tags.forEach((tag) => {
-      //   formData.append("tags[]", tag);
-      // });
+      tags.forEach((tag) => {
+        formData.append("tags[]", tag);
+      });
 
-      // for (const key in newPoster) {
-      //   if (newPoster[key] && key !== "tags") {
-      //     const value = newPoster[key];
-      //     if (typeof value === "string") {
-      //       formData.append(key, value);
-      //     }
-      //   }
-      // }
+      for (const key in newPoster) {
+        if (newPoster[key] && key !== "tags") {
+          const value = newPoster[key];
+          if (typeof value === "string") {
+            formData.append(key, value);
+          }
+        }
+      }
       // console.log(Array.from(formData));
       const res = await axios.post(url, config);
       console.log("user");
@@ -165,6 +169,7 @@ export default function TagsModal({
       onClose();
       return Promise.resolve(res.data.data);
     } catch (error) {
+      setErrorPopup(true);
       if (axios.isAxiosError(error) && error.response) {
         return Promise.resolve(
           `Error in fetch: ${error.response.data.message}`
@@ -177,6 +182,7 @@ export default function TagsModal({
 
   return (
     <>
+      {errorPopup && <ErrorPopup />}
       <div className="tags-container">
         <div className="tags-div">
           {allTags.map((tag, index) => {
@@ -204,6 +210,7 @@ export default function TagsModal({
             style={{ backgroundColor: "var(--dark-purple100)" }}
             className="final-upload-button"
             onClick={createPoster}
+            disabled={disabled}
           >
             Create Poster
           </Button>
