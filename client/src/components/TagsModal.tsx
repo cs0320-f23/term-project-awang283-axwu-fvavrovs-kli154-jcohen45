@@ -182,7 +182,7 @@ export default function TagsModal({
 
   return (
     <>
-      {errorPopup && <ErrorPopup />}
+      {errorPopup && <ErrorPopup setClose={setErrorPopup} />}
       <div className="tags-container">
         <div className="tags-div">
           {allTags.map((tag, index) => {
