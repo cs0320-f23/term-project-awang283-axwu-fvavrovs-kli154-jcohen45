@@ -6,7 +6,7 @@ import {
   profileState,
   refreshState,
 } from "./atoms/atoms";
-import { useCallback, useEffect, useState } from "react";
+import { MouseEvent, useCallback, useEffect, useState } from "react";
 import "../styles/ImageCard.css";
 import "../styles/Modal.css";
 import axios from "axios";
@@ -239,13 +239,15 @@ export const ProfileImageCard: React.FC<ProfileImageCardProps> = ({
   }
   const day = startDate[2];
 
-  const onDelete = async (event) => {
+  const onDelete = async (
+    event: MouseEvent<HTMLDivElement, globalThis.MouseEvent>
+  ) => {
     //open popup modal
     event.stopPropagation();
     setModalOpen("popup");
   };
 
-  const onClickEdit = (e) => {
+  const onClickEdit = (e: MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
     setEditModal("createImage");
     const newStartDate = [...startDate];
@@ -373,7 +375,7 @@ export const ProfileImageCard: React.FC<ProfileImageCardProps> = ({
             onClose={() => onClickView()}
             setClicked={setIsClicked}
             title={title}
-            path={content}
+            content={content}
             startDate={fullStartDate}
             endDate={fullEndDate!}
             startTime={startTime}
@@ -384,6 +386,7 @@ export const ProfileImageCard: React.FC<ProfileImageCardProps> = ({
             tags={tags!}
             recurs={recurs}
             id={id}
+            created={created}
             isDraft={true}
           />
         )}

@@ -253,7 +253,7 @@ export const ImageCard: React.FC<ImageCardProps> = ({
             onClose={() => onClickView()}
             setClicked={setIsClicked}
             title={title}
-            path={content}
+            content={content}
             startDate={fullStartDate}
             endDate={fullEndDate!}
             startTime={startTime}
@@ -264,6 +264,7 @@ export const ImageCard: React.FC<ImageCardProps> = ({
             tags={tags!}
             recurs={recurs}
             id={id}
+            created={false}
             isDraft={false}
           />
         )}
