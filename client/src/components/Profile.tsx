@@ -158,6 +158,13 @@ export default function Profile() {
         gutter: 11,
       });
     });
+    imagesLoaded(`.drafts-grid`, function () {
+      new Masonry(`.drafts-grid`, {
+        columnWidth: 34,
+        itemSelector: ".profile-card",
+        gutter: 11,
+      });
+    });
   };
 
   return (
@@ -188,7 +195,9 @@ export default function Profile() {
                 />
               </div>
               <h1 className="name" style={{ marginTop: "1vh" }}>
-                {profile.name}
+                {profile.name.length > 25
+                  ? profile.name.slice(0, 25) + "..."
+                  : profile.name}
               </h1>
               <p>{profile.email}</p>
               <div className="icons">

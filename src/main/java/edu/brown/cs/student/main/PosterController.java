@@ -405,7 +405,8 @@ public class PosterController {
                 this.userService.removeFromDrafts(
                     existingDraft.getData().getUserId(), existingDraft.getData());
                 return this.draftService.deleteDraftById(existingDraft.getData().getID());
-              } else {
+              }
+              else {
                 return CompletableFuture.completedFuture(
                     new ServiceResponse<>("Poster with id " + draftId + " not found"));
               }

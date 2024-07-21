@@ -38,13 +38,15 @@ public class PosterService {
     // Associate the poster with the user
     CompletableFuture<ServiceResponse<User>> associateResponse =
         userService.associatePosterWithUser(userID, poster, false);
-    userService.removeFromDrafts(userID, poster);
 
     try {
-      associateResponse.get(); // Wait for the completion of the asynchronous task
+      associateResponse.get(); // Wait for the completion of associate to avoid race condition
     } catch (InterruptedException | ExecutionException e) {
       System.err.println("Error: " + e.getMessage());
     }
+    userService.removeFromDrafts(userID, poster);
+
+
 
     if (!associateResponse.isCompletedExceptionally()) {
       System.out.println(associateResponse);

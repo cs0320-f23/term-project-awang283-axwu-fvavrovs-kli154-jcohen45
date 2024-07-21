@@ -244,7 +244,9 @@ export const ImageCard: React.FC<ImageCardProps> = ({
           </div>
 
           <div className="title-location">
-            <p id="title">{title}</p>
+            <p id="title">
+              {title.length > 50 ? title.slice(0, 50) + "..." : title}
+            </p>
             <div id="location">{location}</div>
           </div>
         </div>
