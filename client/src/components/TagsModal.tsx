@@ -37,6 +37,7 @@ export default function TagsModal({
   const [refresh, setRefresh] = useRecoilState(refreshState);
   const [disabled, setDisabled] = useState<boolean>(false);
   const [errorPopup, setErrorPopup] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchAllTags = async () => {
@@ -118,6 +119,7 @@ export default function TagsModal({
 
   //on hit create button
   const createPoster = async () => {
+    setIsLoading(true);
     setDisabled(true);
     //add list to poster obj w handlechange
     const newPoster = handleChange(tags, "tags", () => {});
@@ -166,6 +168,7 @@ export default function TagsModal({
       setPosterSrc("");
       //reset global poster state when we no longer need access to the draft
       setPoster({});
+      setIsLoading(false);
       onClose();
       return Promise.resolve(res.data.data);
     } catch (error) {
@@ -182,6 +185,11 @@ export default function TagsModal({
 
   return (
     <>
+      {isLoading && (
+        <div className="loading-screen">
+          <img className="loading-gif" src="/loading.gif" />
+        </div>
+      )}
       {errorPopup && <ErrorPopup setClose={setErrorPopup} />}
       <div className="tags-container">
         <div className="tags-div">
