@@ -144,10 +144,10 @@ export default function Happenings() {
         setIsLoading(false);
       });
     }
-  }, [sortPosters]);
+  }, [profile.id, setSearchResults, sortPosters]);
 
   useEffect(() => {
-    console.log(searchResults);
+    // console.log(searchResults);
     if (gridRef.current) {
       imagesLoaded(gridRef.current, function () {
         // console.log("all images are loaded");

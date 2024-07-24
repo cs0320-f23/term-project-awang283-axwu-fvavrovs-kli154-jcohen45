@@ -19,7 +19,7 @@ interface tagsProps {
   onBack: () => void;
   draftId: string;
   setShowTags: React.Dispatch<React.SetStateAction<boolean>>;
-  updatePoster: (poster: IPosterObject) => Promise<unknown>;
+  updatePoster: (poster: IPosterObject, id: string) => Promise<unknown>;
 }
 
 export default function TagsModal({
@@ -43,7 +43,6 @@ export default function TagsModal({
     const fetchAllTags = async () => {
       try {
         const tagsData = await fetchTags();
-        // console.log(tagsData);
         setAllTags(tagsData);
       } catch (error) {
         console.error("Error fetching tags:", error);
@@ -52,121 +51,96 @@ export default function TagsModal({
 
     fetchAllTags();
     selectSuggestedTags(poster.tags!);
-    console.log(poster);
-  }, []);
+  }, [poster]);
+
+  useEffect(() => {
+    console.log("Poster updated:", poster);
+  }, [poster]);
 
   const handleChange = (
     value: string[] | string | Set<string>,
     property: keyof IPosterObject,
     callback?: () => void
   ) => {
-    // using functional form of setPoster so that it updates using the current stored state in poster
     setPoster((prevPoster) => {
-      let updatedValue: {
-        [x: string]: string[] | Set<string> | string;
-      };
-      if (value instanceof Set) {
-        updatedValue = { [property]: Array.from(value) };
-      } else {
-        updatedValue = { [property]: value };
-      }
-
-      const newPoster = {
-        ...prevPoster,
-        ...updatedValue,
-      };
+      const updatedValue =
+        value instanceof Set
+          ? { [property]: Array.from(value) }
+          : { [property]: value };
+      const newPoster = { ...prevPoster, ...updatedValue };
 
       if (callback) {
         callback();
       }
 
-      console.log(JSON.stringify(newPoster));
+      console.log("Updated Poster in handleChange:", newPoster);
       return newPoster;
     });
-
-    return poster;
   };
 
   function selectSuggestedTags(currTags: Set<string>) {
-    //using functional form of setTags so that all suggested tags by cv api are actually selected upon mounting
     setTags((prevTags) => {
-      const updatedTags = new Set(prevTags); // Create a new set from the previous tags
-
-      for (const tag of currTags) {
-        updatedTags.add(tag); // Add each tag from currTags to the updated set
-      }
-
+      const updatedTags = new Set(prevTags);
+      currTags.forEach((tag) => updatedTags.add(tag));
       return updatedTags;
     });
   }
 
   const onClick = (tag: string) => {
-    // if in tags list, take out
     setTags((prevTags) => {
-      // using functional form of setTags so that onClick is updating the actual latest state of tags; otherwise always a step behind
-      const updatedTags = new Set(prevTags); // Create a new set from the previous tags
-
+      const updatedTags = new Set(prevTags);
       if (updatedTags.has(tag)) {
-        updatedTags.delete(tag); // If the tag exists, remove it from the set
+        updatedTags.delete(tag);
       } else {
-        updatedTags.add(tag); // If the tag doesn't exist, add it to the set
+        updatedTags.add(tag);
       }
-
-      console.log(updatedTags);
-      return updatedTags; // Return the updated set
+      return updatedTags;
     });
   };
 
-  //on hit create button
   const createPoster = async () => {
     setIsLoading(true);
     setDisabled(true);
-    //add list to poster obj w handlechange
-    const newPoster = handleChange(tags, "tags", () => {});
-    // updatePoster(newPoster);
 
-    // console.log(JSON.stringify(newPoster) + " new poster");
-    //call put endpoint
+    const updatedPoster = {
+      ...poster,
+      tags: Array.from(tags),
+    };
+
+    setPoster(updatedPoster);
+
+    await updatePoster(updatedPoster, draftId);
+
     try {
-      //add to database
       const config = {
         headers: {
           "Content-Type": "application/json",
         },
       };
-      console.log("printing draft id");
-      console.log(draftId);
-      let url;
-      if (draftId) {
-        url = "http://localhost:8080/posters/create/" + draftId;
-      } else {
-        url = "http://localhost:8080/posters/create/" + poster.id;
-      }
+
+      let url = draftId
+        ? `http://localhost:8080/posters/create/${draftId}`
+        : `http://localhost:8080/posters/create/${poster.id}`;
       const formData = new FormData();
-      console.log("tags: ");
-      console.log(tags);
 
       tags.forEach((tag) => {
         formData.append("tags[]", tag);
       });
 
-      for (const key in newPoster) {
-        if (newPoster[key] && key !== "tags") {
-          const value = newPoster[key];
+      for (const key in updatedPoster) {
+        if (updatedPoster[key] && key !== "tags") {
+          const value = updatedPoster[key];
           if (typeof value === "string") {
             formData.append(key, value);
           }
         }
       }
-      // console.log(Array.from(formData));
-      const res = await axios.post(url, config);
-      console.log("user");
-      console.log(res.data.data);
+
+      const res = await axios.post(url, formData, config);
       setRefresh(!refresh);
       getPosters().then((data) => setSearchResults(data));
       setShowTags(false);
       setPosterSrc("");
-      //reset global poster state when we no longer need access to the draft
       setPoster({});
       setIsLoading(false);
       onClose();
@@ -198,7 +172,6 @@ export default function TagsModal({
             const tagClass = isSelected
               ? "selected-tag" + " " + classNameTag(index)
               : classNameTag(index);
-
             return (
               <div key={tag} className={tagClass} onClick={() => onClick(tag)}>
                 {tag}
