@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Draft extends Poster {
   public Draft() {
     super();
+    this.setIsDraft(true);
   }
 
   public Draft(String title, String description) {
