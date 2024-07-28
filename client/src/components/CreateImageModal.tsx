@@ -244,7 +244,7 @@ export default function CreateImageModal() {
 
   // updates a draft with new info when a user clicks to tags or presses X
   const updatePoster = async (poster: IPosterObject, id: string) => {
-    console.log(poster);
+    console.log("2. the poster again: " + JSON.stringify(poster));
     try {
       // changing this to draftID broke creating things ???? but poster.id is undefined :/
       const url = "http://localhost:8080/drafts/update/" + id;
@@ -254,7 +254,7 @@ export default function CreateImageModal() {
         },
       };
       const response = await axios.put(url, poster, config);
-      console.log(response);
+      console.log("3. the response: " + JSON.stringify(response));
       return Promise.resolve(response.data.data);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
