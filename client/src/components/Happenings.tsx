@@ -50,8 +50,8 @@ export async function getPosters() {
     return Promise.resolve(res.data);
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
-      console.log(error.response.data.message);
-      console.log(error);
+      // console.log(error.response.data.message);
+      // console.log(error);
       return Promise.resolve(`Error in fetch: ${error.response.data.message}`);
     } else {
       console.log("Network error or other issue:", error.message);
@@ -213,7 +213,7 @@ export default function Happenings() {
         }
 
         const results: IPoster[] = await response.json();
-        console.log(results);
+        // console.log(results);
         setSearchResults(results);
         setIsLoading(false);
       } catch (error) {
