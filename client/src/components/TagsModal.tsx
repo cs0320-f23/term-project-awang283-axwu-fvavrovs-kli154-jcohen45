@@ -108,8 +108,12 @@ export default function TagsModal({
     };
 
     setPoster(updatedPoster);
+    console.log(updatedPoster.id);
+    console.log(draftId);
+    await updatePoster(updatedPoster, updatedPoster.id);
 
-    await updatePoster(updatedPoster, draftId);
+    console.log("updated poster");
+    console.log(updatedPoster);
 
     try {
       const config = {
@@ -117,10 +121,10 @@ export default function TagsModal({
           "Content-Type": "application/json",
         },
       };
-
-      let url = draftId
+      console.log(draftId);
+      const url = draftId
         ? `http://localhost:8080/posters/create/${draftId}`
-        : `http://localhost:8080/posters/create/${poster.id}`;
+        : `http://localhost:8080/posters/create/${updatedPoster.id}`;
       const formData = new FormData();
 
       tags.forEach((tag) => {
@@ -135,7 +139,6 @@ export default function TagsModal({
           }
         }
       }
-
       const res = await axios.post(url, formData, config);
       setRefresh(!refresh);
       getPosters().then((data) => setSearchResults(data));

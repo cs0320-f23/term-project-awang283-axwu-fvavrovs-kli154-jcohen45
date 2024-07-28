@@ -34,7 +34,7 @@ export interface IPosterObject {
   isRecurring?: string;
   link?: string;
   description?: string;
-  tags?: Set<string>;
+  tags?: Set<string> | string[];
 }
 
 export default function CreateImageModal() {
@@ -149,8 +149,8 @@ export default function CreateImageModal() {
         setPosterSrc(inputElement.value);
         // console.log(res.data.data);
         setDraftId(res.data.data.id);
-        console.log("id from link");
-        console.log(draftId);
+        // console.log("id from link");
+        // console.log(draftId);
         setCVFields(res.data.data.id);
         return Promise.resolve(res.data.data);
       } catch (error) {
@@ -186,17 +186,17 @@ export default function CreateImageModal() {
       setIsLoading(true);
       // console.log(formData);
       const res = await axios.post(url, formData, config);
-      console.log("After axios request");
-      console.log(res.data.data.id);
+      // console.log("After axios request");
+      // console.log(res.data.data.id);
       setDraftId(res.data.data.id);
-      console.log("id from upload");
-      console.log(draftId);
+      // console.log("id from upload");
+      // console.log(draftId);
       return Promise.resolve(res.data.data);
     } catch (error) {
       setIsLoading(false);
       if (axios.isAxiosError(error) && error.response) {
-        console.log(error.response.data.message);
-        console.log(error);
+        console.error(error.response.data.message);
+        console.error(error);
         return Promise.resolve(
           `Error in fetch: ${error.response.data.message}`
         );
@@ -227,24 +227,24 @@ export default function CreateImageModal() {
       setCVFields(output.id);
       setPoster({ ...poster, content: output.content, id: output.id });
       // console.log(poster);
-      console.log("output.id is: " + output.id);
+      // console.log("output.id is: " + output.id);
     }
   };
 
   const onSaveSelectTags = () => {
     // console.log(poster);
     // grab info in blanks, send PUT
-    console.log("printing id");
-    console.log(draftId);
-    updatePoster(poster, draftId);
-    console.log("calling from save select tags function");
-    console.log(poster);
+    // console.log("printing id");
+    // console.log(draftId);
+    updatePoster(poster, draftId ? draftId : poster.id);
+    // console.log("calling from save select tags function");
+    // console.log(poster);
     setShowTags(true);
   };
 
   // updates a draft with new info when a user clicks to tags or presses X
   const updatePoster = async (poster: IPosterObject, id: string) => {
-    console.log("2. the poster again: " + JSON.stringify(poster));
+    console.log(id);
     try {
       // changing this to draftID broke creating things ???? but poster.id is undefined :/
       const url = "http://localhost:8080/drafts/update/" + id;
@@ -253,8 +253,8 @@ export default function CreateImageModal() {
           "Content-Type": "application/json",
         },
       };
+      // console.log(id);
       const response = await axios.put(url, poster, config);
-      console.log("3. the response: " + JSON.stringify(response));
       return Promise.resolve(response.data.data);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -277,15 +277,16 @@ export default function CreateImageModal() {
     // console.log(poster);
     if (Object.keys(poster).length > 2) {
       //popup u sure u wanna del this?
-      // console.log("hi"); prints but modal doesnt popup. now that we have drafts this is kinda ok? but it would be nice to have save to draft / delete button
-      setPopModalOpen("popup");
+      console.log("hi");
+      //  prints but modal doesnt popup. now that we have drafts this is kinda ok? but it would be nice to have save to draft / delete button
+      setModalOpen("popup");
     }
     setModalOpen("");
   };
 
   return (
     <>
-      {popModalOpen === "popup" && Object.keys(poster).length > 2 && (
+      {modalOpen === "popup" && (
         <PopupModal posterID={draftId} onCloseModal={() => setModalOpen("")} />
       )}
       {modalOpen == "createImage" && (
