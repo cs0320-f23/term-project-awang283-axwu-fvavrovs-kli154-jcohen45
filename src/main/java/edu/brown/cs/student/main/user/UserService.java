@@ -263,4 +263,8 @@ public class UserService {
         .map(CompletableFuture::completedFuture) // Remove this line
         .orElse(CompletableFuture.completedFuture(new ServiceResponse<>("User not found")));
   }
+
+  public void saveRepository(User user){
+      userRepository.save(user);
+  }
 }

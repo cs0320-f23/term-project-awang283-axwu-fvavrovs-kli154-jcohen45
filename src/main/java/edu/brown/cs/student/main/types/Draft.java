@@ -13,9 +13,11 @@ public class Draft extends Poster {
 
   public Draft(String title, String description) {
     super(title, description);
+    this.setIsDraft(true);
   }
 
   public Draft(String title, String description, HashSet<String> tags) {
     super(title, description, tags);
+    this.setIsDraft(true);
   }
 }
