@@ -7,19 +7,26 @@ import {
   ModalOverlay,
 } from "@chakra-ui/react";
 import "../styles/Modal.css";
-import { useEffect, useState } from "react";
+import { MouseEvent, useEffect, useState } from "react";
 import axios from "axios";
 import { useRecoilState } from "recoil";
-import { profileState, refreshState } from "./atoms/atoms";
+import {
+  modalOpenState,
+  posterSrcState,
+  posterState,
+  profileState,
+  refreshState,
+} from "./atoms/atoms";
 import { classNameTag } from "../functions/fetch";
+import PopupModal from "./PopupModal";
 
 interface viewProps {
   onClose: () => void;
   setClicked: React.Dispatch<React.SetStateAction<boolean>>;
   title: string;
-  path: string;
-  startDate: string;
-  endDate: string;
+  content: string;
+  startDate: number[];
+  endDate?: number[];
   startTime: string;
   endTime: string;
   location: string;
@@ -28,6 +35,7 @@ interface viewProps {
   tags: Set<string>;
   recurs: string;
   id: string;
+  created: boolean;
   isDraft: boolean;
 }
 
@@ -35,7 +43,7 @@ export default function ViewPosterModal({
   onClose,
   setClicked,
   title,
-  path,
+  content,
   startDate,
   endDate,
   startTime,
@@ -46,21 +54,33 @@ export default function ViewPosterModal({
   tags,
   recurs,
   id,
+  created,
   isDraft,
 }: viewProps) {
   const [name, setName] = useState<string>("");
   const [picture, setPicture] = useState<string>("");
-  const [userId] = useRecoilState(profileState);
+  const [profile] = useRecoilState(profileState);
   const [refresh, setRefresh] = useRecoilState(refreshState);
+  const [modalOpen, setModalOpen] = useState<string>("");
+  const [, setEditModal] = useRecoilState(modalOpenState);
+  const [, setPoster] = useRecoilState(posterState);
+  const [, setPosterSrc] = useRecoilState(posterSrcState);
+  const [popModalOpen, setPopModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    if (userId) {
+    console.log("popup modal is: " + popModalOpen);
+  }, [popModalOpen]);
+
+  useEffect(() => {
+    if (profile) {
       getUser();
+      console.log("name: " + name);
+      console.log("picture: " + picture);
       const fetchSaved = async () => {
         try {
           //fetch savedposters
           const savedPosters = await fetch(
-            "http://localhost:8080/users/savedPosters/" + userId.id
+            "http://localhost:8080/users/savedPosters/" + profile.id
           );
           //if poster in saved , set class to clicked
           if (savedPosters.ok) {
@@ -68,6 +88,7 @@ export default function ViewPosterModal({
             //compare id passed in to each poster in set
             posterSet.data.forEach((poster: { id: string }) => {
               if (poster.id === id) {
+                console.log("made it here");
                 document.querySelector(".heart-icon")!.classList.add("clicked");
               }
             });
@@ -83,15 +104,22 @@ export default function ViewPosterModal({
   const getUser = async () => {
     //use poster id to get user id
     try {
-      const posterRes = await fetch("http://localhost:8080/posters/" + id);
+      let posterRes;
+      if (isDraft) {
+        posterRes = await fetch("http://localhost:8080/drafts/" + id);
+      } else {
+        posterRes = await fetch("http://localhost:8080/posters/" + id);
+      }
       if (posterRes.ok) {
         const poster = await posterRes.json();
+        console.log(poster);
         if (poster.data.userId) {
           const userRes = await fetch(
             "http://localhost:8080/users/" + poster.data.userId
           );
           if (userRes.ok) {
             const user = await userRes.json();
+
             setName(user.data.name);
             setPicture(user.data.picture);
           }
@@ -122,7 +150,7 @@ export default function ViewPosterModal({
             "http://localhost:8080/users/unsavePoster?posterId=" +
             id +
             "&userId=" +
-            userId.id;
+            profile.id;
 
           const res = await axios.put(url, null, config);
           setRefresh(!refresh);
@@ -154,7 +182,7 @@ export default function ViewPosterModal({
             "http://localhost:8080/users/savePoster?posterId=" +
             id +
             "&userId=" +
-            userId.id;
+            profile.id;
 
           const res = await axios.put(url, null, config);
           console.log(res.data.data);
@@ -174,8 +202,70 @@ export default function ViewPosterModal({
     }
   };
 
+  const onDelete = async (
+    event: MouseEvent<HTMLDivElement, MouseEvent<Element, MouseEvent>>
+  ) => {
+    //open popup modal
+    event.stopPropagation();
+    setPopModalOpen(true);
+  };
+
+  const onClickEdit = (
+    e: MouseEvent<HTMLDivElement, globalThis.MouseEvent>
+  ) => {
+    e.stopPropagation();
+    setEditModal("createImage");
+    const newStartDate = [...startDate];
+    newStartDate[1] -= 1;
+    let newEndDate;
+    if (endDate) {
+      newEndDate = [...endDate];
+      newEndDate[1] -= 1;
+    }
+    setPoster({
+      title: title,
+      content: content,
+      startDate: JSON.stringify(
+        new Date(
+          newStartDate[0],
+          newStartDate[1],
+          newStartDate[2],
+          newStartDate[3],
+          newStartDate[4]
+        )
+      ),
+      endDate: newEndDate
+        ? JSON.stringify(
+            new Date(
+              newEndDate[0],
+              newEndDate[1],
+              newEndDate[2],
+              newEndDate[3],
+              newEndDate[4]
+            )
+          )
+        : " ",
+      location: location,
+      link: link,
+      description: description,
+      tags: tags,
+      isRecurring: recurs,
+      id: id,
+    });
+    setPosterSrc(content);
+    //set poster state to poster associated w the porfile image card
+  };
+
   return (
     <>
+      {popModalOpen && (
+        <PopupModal
+          posterId={id}
+          onCloseModal={onClose}
+          setPopModalOpen={setPopModalOpen}
+          showDraft={false}
+        />
+      )}
       <Modal isOpen={true} onClose={() => onClose}>
         <div className="modal-font">
           <ModalOverlay className="modal-overlay" />
@@ -190,19 +280,51 @@ export default function ViewPosterModal({
             <ModalCloseButton className="close-button" onClick={onClose} />
             <ModalBody className="modal-body" flexDirection={"row"}>
               <Box className="view-image" overflowY={"scroll"} id={id}>
-                <img src={path} />
-                {userId && !isDraft && (
-                  <div
-                    className="heart-icon"
-                    onClick={onClick}
-                    style={{
-                      width: "2.5vw",
-                      height: "2.5vw",
-                      boxSizing: "content-box",
-                      backgroundSize: "contain",
-                      backgroundRepeat: "no-repeat",
-                    }}
-                  ></div>
+                <img src={content} />
+                {profile && (
+                  <>
+                    <div className="view-modal-icons">
+                      {!isDraft && (
+                        <div
+                          className="heart-icon"
+                          onClick={onClick}
+                          style={{
+                            width: "2.5vw",
+                            height: "2.5vw",
+                            boxSizing: "content-box",
+                            backgroundSize: "contain",
+                            backgroundRepeat: "no-repeat",
+                          }}
+                        ></div>
+                      )}
+                      {created && (
+                        <>
+                          <div
+                            className="edit-icon"
+                            style={{
+                              width: "2.5vw",
+                              height: "2.5vw",
+                              boxSizing: "content-box",
+                              backgroundSize: "contain",
+                              backgroundRepeat: "no-repeat",
+                            }}
+                            onClick={(e) => onClickEdit(e)}
+                          ></div>
+                          <div
+                            className="close-icon"
+                            style={{
+                              width: "2.5vw",
+                              height: "2.5vw",
+                              boxSizing: "content-box",
+                              backgroundSize: "contain",
+                              backgroundRepeat: "no-repeat",
+                            }}
+                            onClick={(e) => onDelete(e)}
+                          ></div>
+                        </>
+                      )}
+                    </div>
+                  </>
                 )}
               </Box>
               <div className="view-info">
@@ -217,25 +339,14 @@ export default function ViewPosterModal({
                       }}
                     >
                       {picture && (
-                        <div
+                        <img
+                          className="field-name"
                           style={{
-                            width: "50px",
-                            height: "50px",
+                            width: "8%",
                             marginRight: "3%",
-                            overflow: "hidden",
-                            borderRadius: "50%",
                           }}
-                        >
-                          <img
-                            className="field-name"
-                            style={{
-                              width: "100%",
-                              height: "100%",
-                              objectFit: "cover",
-                            }}
-                            src={picture}
-                          />
-                        </div>
+                          src={picture}
+                        />
                       )}
                       {name && (
                         <div id="field-text" style={{ paddingTop: "1%" }}>

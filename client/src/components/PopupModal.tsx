@@ -3,6 +3,7 @@ import {
   Modal,
   ModalBody,
   ModalContent,
+  ModalHeader,
   ModalOverlay,
 } from "@chakra-ui/react";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
@@ -11,23 +12,37 @@ import {
   posterSrcState,
   posterState,
   profileState,
+  refreshState,
 } from "./atoms/atoms";
 import axios from "axios";
+import { Dispatch, SetStateAction, useEffect } from "react";
 
 interface popupProps {
-  posterID: string;
+  posterId: string;
   onCloseModal: () => void | (() => Promise<void>);
+  setPopModalOpen: Dispatch<SetStateAction<boolean>>;
+  showDraft: boolean;
 }
 
-export default function PopupModal({ posterID, onCloseModal }: popupProps) {
+export default function PopupModal({
+  posterId,
+  onCloseModal,
+  setPopModalOpen,
+  showDraft,
+}: popupProps) {
   const profile = useRecoilValue(profileState);
   const setPoster = useSetRecoilState(posterState);
   const [, setModalOpen] = useRecoilState<string>(modalOpenState);
   const [, setPosterSrc] = useRecoilState(posterSrcState);
+  const [refresh, setRefresh] = useRecoilState(refreshState);
+
+  useEffect(() => {
+    console.log("id: " + posterId);
+  }, []);
 
   const getPoster = async () => {
     try {
-      const url = "http://localhost:8080/posters/" + posterID;
+      const url = "http://localhost:8080/posters/" + posterId;
       const res = await fetch(url);
       // console.log(res);
       if (res.ok) {
@@ -36,7 +51,7 @@ export default function PopupModal({ posterID, onCloseModal }: popupProps) {
           return "poster";
         } else {
           try {
-            const url = "http://localhost:8080/drafts/" + posterID;
+            const url = "http://localhost:8080/drafts/" + posterId;
             const res = await fetch(url);
             // console.log(res);
             if (res.ok) {
@@ -56,10 +71,10 @@ export default function PopupModal({ posterID, onCloseModal }: popupProps) {
   };
 
   //user wants to delete draft
-  const onYes = async () => {
+  const onDelete = async () => {
     // console.log("yes");
     //if poster state has ID
-    if (posterID != null && posterID != "" && posterID != " ") {
+    if (posterId != null && posterId != "" && posterId != " ") {
       //yes? delete from database(posterID, userID)
       const isPoster = await getPoster();
       if (isPoster == "poster") {
@@ -72,7 +87,7 @@ export default function PopupModal({ posterID, onCloseModal }: popupProps) {
           };
           const url =
             "http://localhost:8080/posters/delete/" +
-            posterID +
+            posterId +
             "?userId=" +
             profile.id;
 
@@ -107,7 +122,7 @@ export default function PopupModal({ posterID, onCloseModal }: popupProps) {
               "Content-Type": "application/json",
             },
           };
-          const url = "http://localhost:8080/drafts/delete/" + posterID;
+          const url = "http://localhost:8080/drafts/delete/" + posterId;
 
           const res = await axios.delete(url, config);
 
@@ -116,6 +131,7 @@ export default function PopupModal({ posterID, onCloseModal }: popupProps) {
           setPosterSrc("");
 
           //goes to whatever page user was on (no more modal)
+          setPopModalOpen(false);
           setModalOpen("");
           onCloseModal();
 
@@ -136,56 +152,47 @@ export default function PopupModal({ posterID, onCloseModal }: popupProps) {
     }
     //if no image was ever uploaded:
     //sets global state to nothing (no more draft)
+    setPopModalOpen(false);
+    setModalOpen("");
     setPoster({});
     setPosterSrc("");
+  };
 
-    //goes to whatever page user was on (no more modal)
+  //user wants to save as draft
+  //updatePoster has already been called at this point, so close popup, close create, clear fields
+  const onDraft = () => {
+    setPopModalOpen(false);
     setModalOpen("");
+    setPoster({});
+    setPosterSrc("");
+    setRefresh(!refresh);
   };
 
   //user does not want to delete draft
-  const onNo = () => {
-    // setModalOpen("");
-    // TODO send a put req to save the draft
-    // close the modal and return to the page -
-    onCloseModal();
+  const onCancel = () => {
+    setPopModalOpen(false);
   };
 
   return (
     <Modal isOpen={true} onClose={() => false}>
       <ModalOverlay className="modal-overlay" />
-      <ModalContent className="modal-content" maxH={"5vh"}>
-        <ModalBody maxHeight={"50%"} maxH={"5vh"}>
-          <div
-            className="popup-content"
-            style={{ display: "flex", flexDirection: "column", height: "100%" }}
-          >
-            <h1> Are you sure you want to delete this poster?</h1>
-            <div
-              className="buttons"
-              style={{
-                display: "flex",
-                justifyContent: "space-evenly",
-                marginTop: "5%",
-              }}
-            >
-              <Button
-                onClick={() => onYes()}
-                backgroundColor={"var(--dark-purple100"}
-                color={"white"}
-                width={"40%"}
-              >
-                Yes
+      <ModalContent className="pop-modal-content">
+        <ModalHeader className="pop-modal-header">
+          Are you sure you want to delete this poster?
+        </ModalHeader>
+        <ModalBody className="pop-modal-body">
+          <div className="pop-buttons">
+            <Button onClick={() => onDelete()} className="pop-button">
+              Delete
+            </Button>
+            {showDraft && (
+              <Button onClick={() => onDraft()} className="pop-button">
+                Save Draft
               </Button>
-              <Button
-                onClick={() => onNo()}
-                backgroundColor={"var(--dark-purple100"}
-                color={"white"}
-                width={"40%"}
-              >
-                No
-              </Button>
-            </div>
+            )}
+            <Button onClick={() => onCancel()} className="pop-button">
+              Cancel
+            </Button>
           </div>
         </ModalBody>
       </ModalContent>

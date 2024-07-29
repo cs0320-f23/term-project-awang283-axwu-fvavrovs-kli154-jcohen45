@@ -38,6 +38,7 @@ public class Poster {
   private String isRecurring;
   private User user;
   private UserService userService;
+  private boolean isDraft;
 
   // @JsonPropertyOrder({"id", "title", "description"})
 
@@ -54,6 +55,7 @@ public class Poster {
     this.startDate = null;
     this.endDate = null;
     this.userId = "";
+    this.isDraft = false;
     //    this.isRecurring = Recurrence.NEVER;
     //    this.location = location;
     //    this.link = link;
@@ -258,5 +260,22 @@ public class Poster {
 
   public void setUserId(String userId) {
     this.userId = userId;
+  }
+
+  public boolean getIsDraft() {
+    return this.isDraft;
+  }
+
+  public void setIsDraft(boolean isDraft) {
+    this.isDraft = isDraft;
+  }
+
+  @Override
+  public boolean equals(Object object){
+    if (object instanceof Poster){
+      Poster other = (Poster) object;
+      if (other.getID().equals(this.getID())) return true;
+    }
+    return false;
   }
 }

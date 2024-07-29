@@ -6,7 +6,7 @@ import {
   profileState,
   refreshState,
 } from "./atoms/atoms";
-import { useCallback, useEffect, useState } from "react";
+import { MouseEvent, useCallback, useEffect, useState } from "react";
 import "../styles/ImageCard.css";
 import "../styles/Modal.css";
 import axios from "axios";
@@ -86,6 +86,11 @@ export const ProfileImageCard: React.FC<ProfileImageCardProps> = ({
   const [profile, setProfile] = useRecoilState(profileState);
   const [, setPoster] = useRecoilState(posterState);
   const [, setPosterSrc] = useRecoilState(posterSrcState);
+  const [popModalOpen, setPopModalOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    console.log("popup modal is: " + popModalOpen);
+  }, [popModalOpen]);
 
   const fetchSaved = async (profile: { id: string }, posterId: string) => {
     try {
@@ -142,13 +147,12 @@ export const ProfileImageCard: React.FC<ProfileImageCardProps> = ({
     setModalOpen("");
     await fetchSavedOnClose();
     await getUserCreated();
-    // TODO drafts
   };
 
   const onClickHeart = async (event) => {
     // stops the click event from propagating to its parent
     event.stopPropagation();
-    const heartIcon = document.querySelector(`.heart-icon-prof`);
+    const heartIcon = document.querySelector(`.heart-icon`);
     if (heartIcon) {
       //if alredy clicked, un fill, un save
       if (isClicked) {
@@ -239,13 +243,15 @@ export const ProfileImageCard: React.FC<ProfileImageCardProps> = ({
   }
   const day = startDate[2];
 
-  const onDelete = async (event) => {
+  const onDelete = async (
+    event: MouseEvent<HTMLDivElement, globalThis.MouseEvent>
+  ) => {
     //open popup modal
     event.stopPropagation();
-    setModalOpen("popup");
+    setPopModalOpen(true);
   };
 
-  const onClickEdit = (e) => {
+  const onClickEdit = (e: MouseEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
     setEditModal("createImage");
     const newStartDate = [...startDate];
@@ -291,8 +297,13 @@ export const ProfileImageCard: React.FC<ProfileImageCardProps> = ({
 
   return (
     <>
-      {modalOpen == "popup" && (
-        <PopupModal posterID={id} onCloseModal={onClickView} />
+      {popModalOpen && (
+        <PopupModal
+          posterId={id}
+          onCloseModal={onClickView}
+          setPopModalOpen={setPopModalOpen}
+          showDraft={false}
+        />
       )}
       {modalOpen == "createImage" && <CreateImageModal />}
       <div className="profile-card" onClick={handleViewPoster} id={id}>
@@ -322,9 +333,7 @@ export const ProfileImageCard: React.FC<ProfileImageCardProps> = ({
                 <div className="modal-icons">
                   {!isDraft && (
                     <div
-                      className={`heart-icon-prof ${
-                        isClicked ? "clicked" : ""
-                      }`}
+                      className={`heart-icon ${isClicked ? "clicked" : ""}`}
                       id={id}
                       onClick={(event) => onClickHeart(event)}
                       style={{
@@ -373,7 +382,7 @@ export const ProfileImageCard: React.FC<ProfileImageCardProps> = ({
             onClose={() => onClickView()}
             setClicked={setIsClicked}
             title={title}
-            path={content}
+            content={content}
             startDate={fullStartDate}
             endDate={fullEndDate!}
             startTime={startTime}
@@ -384,7 +393,8 @@ export const ProfileImageCard: React.FC<ProfileImageCardProps> = ({
             tags={tags!}
             recurs={recurs}
             id={id}
-            isDraft={true}
+            created={created}
+            isDraft={isDraft}
           />
         )}
       </div>
