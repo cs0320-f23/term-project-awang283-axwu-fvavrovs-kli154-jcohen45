@@ -3,6 +3,7 @@ package edu.brown.cs.student.main;
 import edu.brown.cs.student.main.imgur.ImgurService;
 import edu.brown.cs.student.main.responses.ServiceResponse;
 import edu.brown.cs.student.main.types.Poster;
+import edu.brown.cs.student.main.user.User;
 import edu.brown.cs.student.main.user.UserService;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -287,6 +288,41 @@ public class PosterController {
   @DeleteMapping("/delete")
   public void deleteAll() {
     posterService.deleteAll();
+  }
+
+
+  /**
+   * FOR DEVELOPERS TO CALL VIA POSTMAN ONLY. DO NOT CALL IN CODE
+   * @param userId
+   */
+  @DeleteMapping("/deleteInvalidPosters/{userId}")
+  public void deleteInvalidPosters(@PathVariable String userId) {
+    CompletableFuture<List<Poster>> futurePosters = posterService.getPosters();
+    List<Poster> allPosters = futurePosters.join();
+    CompletableFuture<ServiceResponse<User>> futureUser = this.userService.getUserById(userId);
+    User user = futureUser.join().getData();
+
+    for (Poster poster : allPosters){
+      if (poster.getUserId().equals(user.getId()) && !user.getCreatedPosters().contains(poster)){
+        posterService.deletePosterById(poster.getID());
+      }
+    }
+
+    List<Poster> toDelete = new ArrayList<>();
+    for (Poster poster : user.getCreatedPosters()){
+      CompletableFuture<ServiceResponse<Poster>> futureResponse = posterService.getPosterById(poster.getID());
+      ServiceResponse<Poster> response = futureResponse.join();
+      if (response.getData() == null){
+        toDelete.add(poster);
+      }
+    }
+
+    for (int i = 0; i < toDelete.size(); i++){
+      user.getCreatedPosters().remove(toDelete.get(i));
+    }
+
+    userService.saveRepository(user);
+
   }
 
   /**
