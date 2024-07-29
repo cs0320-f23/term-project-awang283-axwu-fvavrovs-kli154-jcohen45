@@ -28,12 +28,12 @@
 
 .pop-modal-header {
   display: flex;
-  width: 90%;
+  width: 80%;
   justify-content: center;
   text-align: center;
-  font-size: 36px !important;
+  font-size: 32px !important;
   color: #3f315e !important;
-  transform: translateY(30%);
+  transform: translateY(40%);
 }
 
 .modal-content {
@@ -48,8 +48,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 600px;
-  min-height: 400px;
+  min-width: 520px;
+  min-height: 320px;
   border-radius: 25px !important;
   margin: auto !important;
   font-family: "quicksand", sans-serif;
@@ -84,7 +84,8 @@
   display: flex;
   justify-content: center;
   flex-flow: row nowrap;
-  gap: 16px;
+  gap: 24px;
+  transform: translateY(-20%);
 }
 
 .pop-button {
