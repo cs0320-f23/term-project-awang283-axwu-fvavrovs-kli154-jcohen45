@@ -50,8 +50,8 @@ export async function getPosters() {
     return Promise.resolve(res.data);
   } catch (error) {
     if (axios.isAxiosError(error) && error.response) {
-      // console.log(error.response.data.message);
-      // console.log(error);
+      console.log(error.response.data.message);
+      console.log(error);
       return Promise.resolve(`Error in fetch: ${error.response.data.message}`);
     } else {
       console.log("Network error or other issue:", error.message);
@@ -126,6 +126,7 @@ export default function Happenings() {
   }, []);
 
   useEffect(() => {
+    // console.log(profile);
     setIsLoading(true);
     if (sortPosters === "newest") {
       getNewestPosters().then((data) => {
@@ -139,12 +140,15 @@ export default function Happenings() {
       });
     } else {
       // if user selects soonest or sort, which should sort by soonest by default
+
       getPosters().then((data) => {
+        console.log("data");
+        console.log(data);
         setSearchResults(data);
         setIsLoading(false);
       });
     }
-  }, [profile.id, setSearchResults, sortPosters]);
+  }, [profile, setSearchResults, sortPosters]);
 
   useEffect(() => {
     // console.log(searchResults);
