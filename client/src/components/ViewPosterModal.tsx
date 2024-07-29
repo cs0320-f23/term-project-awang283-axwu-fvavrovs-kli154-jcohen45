@@ -18,6 +18,7 @@ import {
   refreshState,
 } from "./atoms/atoms";
 import { classNameTag } from "../functions/fetch";
+import PopupModal from "./PopupModal";
 
 interface viewProps {
   onClose: () => void;
@@ -58,21 +59,28 @@ export default function ViewPosterModal({
 }: viewProps) {
   const [name, setName] = useState<string>("");
   const [picture, setPicture] = useState<string>("");
-  const [userId] = useRecoilState(profileState);
+  const [profile] = useRecoilState(profileState);
   const [refresh, setRefresh] = useRecoilState(refreshState);
-  const [, setModalOpen] = useState<string>("");
+  const [modalOpen, setModalOpen] = useState<string>("");
   const [, setEditModal] = useRecoilState(modalOpenState);
   const [, setPoster] = useRecoilState(posterState);
   const [, setPosterSrc] = useRecoilState(posterSrcState);
+  const [popModalOpen, setPopModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    if (userId) {
+    console.log("popup modal is: " + popModalOpen);
+  }, [popModalOpen]);
+
+  useEffect(() => {
+    if (profile) {
       getUser();
+      console.log("name: " + name);
+      console.log("picture: " + picture);
       const fetchSaved = async () => {
         try {
           //fetch savedposters
           const savedPosters = await fetch(
-            "http://localhost:8080/users/savedPosters/" + userId.id
+            "http://localhost:8080/users/savedPosters/" + profile.id
           );
           //if poster in saved , set class to clicked
           if (savedPosters.ok) {
@@ -80,6 +88,7 @@ export default function ViewPosterModal({
             //compare id passed in to each poster in set
             posterSet.data.forEach((poster: { id: string }) => {
               if (poster.id === id) {
+                console.log("made it here");
                 document.querySelector(".heart-icon")!.classList.add("clicked");
               }
             });
@@ -95,15 +104,22 @@ export default function ViewPosterModal({
   const getUser = async () => {
     //use poster id to get user id
     try {
-      const posterRes = await fetch("http://localhost:8080/posters/" + id);
+      let posterRes;
+      if (isDraft) {
+        posterRes = await fetch("http://localhost:8080/drafts/" + id);
+      } else {
+        posterRes = await fetch("http://localhost:8080/posters/" + id);
+      }
       if (posterRes.ok) {
         const poster = await posterRes.json();
+        console.log(poster);
         if (poster.data.userId) {
           const userRes = await fetch(
             "http://localhost:8080/users/" + poster.data.userId
           );
           if (userRes.ok) {
             const user = await userRes.json();
+
             setName(user.data.name);
             setPicture(user.data.picture);
           }
@@ -134,7 +150,7 @@ export default function ViewPosterModal({
             "http://localhost:8080/users/unsavePoster?posterId=" +
             id +
             "&userId=" +
-            userId.id;
+            profile.id;
 
           const res = await axios.put(url, null, config);
           setRefresh(!refresh);
@@ -166,7 +182,7 @@ export default function ViewPosterModal({
             "http://localhost:8080/users/savePoster?posterId=" +
             id +
             "&userId=" +
-            userId.id;
+            profile.id;
 
           const res = await axios.put(url, null, config);
           console.log(res.data.data);
@@ -186,10 +202,12 @@ export default function ViewPosterModal({
     }
   };
 
-  const onDelete = async (event: MouseEvent<HTMLDivElement, MouseEvent>) => {
+  const onDelete = async (
+    event: MouseEvent<HTMLDivElement, MouseEvent<Element, MouseEvent>>
+  ) => {
     //open popup modal
     event.stopPropagation();
-    setModalOpen("popup");
+    setPopModalOpen(true);
   };
 
   const onClickEdit = (
@@ -240,6 +258,14 @@ export default function ViewPosterModal({
 
   return (
     <>
+      {popModalOpen && (
+        <PopupModal
+          posterId={id}
+          onCloseModal={onClose}
+          setPopModalOpen={setPopModalOpen}
+          showDraft={false}
+        />
+      )}
       <Modal isOpen={true} onClose={() => onClose}>
         <div className="modal-font">
           <ModalOverlay className="modal-overlay" />
@@ -255,9 +281,9 @@ export default function ViewPosterModal({
             <ModalBody className="modal-body" flexDirection={"row"}>
               <Box className="view-image" overflowY={"scroll"} id={id}>
                 <img src={content} />
-                {userId && (
+                {profile && (
                   <>
-                    <div className="modal-icons">
+                    <div className="view-modal-icons">
                       {!isDraft && (
                         <div
                           className="heart-icon"
@@ -276,8 +302,8 @@ export default function ViewPosterModal({
                           <div
                             className="edit-icon"
                             style={{
-                              width: "30px",
-                              height: "30px",
+                              width: "2.5vw",
+                              height: "2.5vw",
                               boxSizing: "content-box",
                               backgroundSize: "contain",
                               backgroundRepeat: "no-repeat",
@@ -287,8 +313,8 @@ export default function ViewPosterModal({
                           <div
                             className="close-icon"
                             style={{
-                              width: "30px",
-                              height: "30px",
+                              width: "2.5vw",
+                              height: "2.5vw",
                               boxSizing: "content-box",
                               backgroundSize: "contain",
                               backgroundRepeat: "no-repeat",

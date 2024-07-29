@@ -144,7 +144,7 @@ export default function Happenings() {
         setIsLoading(false);
       });
     }
-  }, [profile.id, setSearchResults, sortPosters]);
+  }, [profile, setSearchResults, sortPosters]);
 
   useEffect(() => {
     // console.log(searchResults);

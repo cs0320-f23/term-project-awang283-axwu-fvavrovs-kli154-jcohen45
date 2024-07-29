@@ -26,20 +26,32 @@
   font-size: 5vh !important;
 }
 
-/* .modal-header {
+.pop-modal-header {
   display: flex;
-  justify-content: space-around;
-  font-family: "pacifico", sans-serif !important;
+  width: 90%;
+  justify-content: center;
+  text-align: center;
+  font-size: 36px !important;
   color: #3f315e !important;
-  transform: translateY(-15%);
-  font-size: 6vh !important;
-} */
+  transform: translateY(30%);
+}
 
 .modal-content {
   min-width: 1005px;
   min-height: 650px;
   margin: auto !important;
   border-radius: 25px !important;
+  font-family: "quicksand", sans-serif;
+}
+
+.pop-modal-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 600px;
+  min-height: 400px;
+  border-radius: 25px !important;
+  margin: auto !important;
   font-family: "quicksand", sans-serif;
 }
 
@@ -56,6 +68,32 @@
   display: flex;
   color: var(--dark-purple100);
   padding: 0vw !important;
+}
+
+.pop-modal-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+
+.pop-buttons {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-flow: row nowrap;
+  gap: 16px;
+}
+
+.pop-button {
+  border-radius: 12px !important;
+  color: white !important;
+  background-color: var(--dark-purple100) !important;
+  padding: 15px 18px !important;
+  margin: 0px;
+  box-shadow: var(--tag-shadow);
 }
 
 .loading-screen {
@@ -143,19 +181,27 @@
   align-items: start;
 }
 
+.view-modal-icons {
+  position: absolute;
+  margin-top: 1.2vw;
+  margin-right: 1.1vw;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+}
+
+.heart-icon {
+  background-image: url("heart.svg");
+}
+
 .heart-icon.clicked {
   background-image: url("heart_filled.svg");
 }
 
 .heart-icon:hover {
   background-image: url("heart_partial.svg");
-}
-
-.heart-icon {
-  background-image: url("heart.svg");
-  position: absolute;
-  margin-top: 1.2vw;
-  margin-right: 1.1vw;
 }
 
 .image-container {

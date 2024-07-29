@@ -112,7 +112,7 @@ export const ImageCard: React.FC<ImageCardProps> = ({
   const onClickHeart = async (event) => {
     // stops the click event from propagating to its parent
     event.stopPropagation();
-    const heartIcon = document.querySelector(`.heart-icon-hap`);
+    const heartIcon = document.querySelector(`.heart-icon`);
     if (heartIcon) {
       //if alredy clicked, un fill, un save
       if (isClicked) {
@@ -229,12 +229,14 @@ export const ImageCard: React.FC<ImageCardProps> = ({
             </div>
             {userId && (
               <div
-                className={`heart-icon-hap ${isClicked ? "clicked" : ""}`}
+                className={`heart-icon ${isClicked ? "clicked" : ""}`}
                 id={id}
                 onClick={(event) => onClickHeart(event)}
                 style={{
                   width: "36px",
                   height: "36px",
+                  position: "absolute",
+                  right: "24px",
                   boxSizing: "content-box",
                   backgroundSize: "contain",
                   backgroundRepeat: "no-repeat",

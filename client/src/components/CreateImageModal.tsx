@@ -20,6 +20,7 @@ import {
   posterSrcState,
   posterState,
   profileState,
+  refreshState,
 } from "./atoms/atoms";
 import { useRecoilState } from "recoil";
 import PopupModal from "./PopupModal";
@@ -44,8 +45,9 @@ export default function CreateImageModal() {
   const [draftId, setDraftId] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [modalOpen, setModalOpen] = useRecoilState<string>(modalOpenState);
-  const [popModalOpen, setPopModalOpen] = useState<string>("");
+  const [popModalOpen, setPopModalOpen] = useState<boolean>(false);
   const [profile] = useRecoilState(profileState);
+  const [refresh, setRefresh] = useRecoilState(refreshState);
 
   useEffect(() => {
     const today = new Date();
@@ -239,6 +241,7 @@ export default function CreateImageModal() {
     updatePoster(poster, draftId);
     console.log("calling from save select tags function");
     console.log(poster);
+    setRefresh(!refresh);
     setShowTags(true);
   };
 
@@ -275,18 +278,28 @@ export default function CreateImageModal() {
     //if any field is filled out
     updatePoster(poster, draftId);
     // console.log(poster);
-    if (Object.keys(poster).length > 2) {
+    if (poster.startDate && poster.title && poster.content) {
+      console.log(draftId);
       //popup u sure u wanna del this?
       // console.log("hi"); prints but modal doesnt popup. now that we have drafts this is kinda ok? but it would be nice to have save to draft / delete button
-      setPopModalOpen("popup");
+      setPopModalOpen(true);
+      // console.log(popModalOpen);
+    } else {
+      setPoster({});
+      setPosterSrc("");
+      setModalOpen("");
     }
-    setModalOpen("");
   };
 
   return (
     <>
-      {popModalOpen === "popup" && Object.keys(poster).length > 2 && (
-        <PopupModal posterID={draftId} onCloseModal={() => setModalOpen("")} />
+      {popModalOpen && poster.startDate && poster.title && poster.content && (
+        <PopupModal
+          posterId={draftId}
+          onCloseModal={onClose}
+          setPopModalOpen={setPopModalOpen}
+          showDraft={true}
+        />
       )}
       {modalOpen == "createImage" && (
         <Modal closeOnOverlayClick={false} isOpen={true} onClose={onClose}>
