@@ -84,7 +84,7 @@ export default function Profile() {
       const likes = await likesResp.json();
       setSavedPosters(likes.data);
       setLikeCount(likes.data.length);
-      console.log(likes.data);
+      // console.log(likes.data);
     }
   };
 
@@ -106,7 +106,7 @@ export default function Profile() {
           newCreatedPosters.push(posterData.data);
         }
       }
-      console.log(newCreatedPosters);
+      // console.log(newCreatedPosters);
       setCreatedPosters(newCreatedPosters);
     }
   };
@@ -130,7 +130,7 @@ export default function Profile() {
         }
       }
       setDrafts(newDrafts);
-      console.log(newDrafts);
+      // console.log(newDrafts);
     }
   };
 

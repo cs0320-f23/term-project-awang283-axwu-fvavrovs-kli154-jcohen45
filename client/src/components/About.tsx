@@ -18,18 +18,19 @@ export default function About() {
             </div>
             <div className="body-text">
               <p>
-                Posters at Brown started out as a silly little idea to create an
-                archive of tons of physical posters of student events, organize
-                them, and then donate them to the Hay, solely because we thought
-                it might be interesting to see how student ideas, values, and
-                aesthetics shift over time.
+                Posters @ Brown started out as an archival project to collect
+                physical posters of student events, organize them, and then
+                donate them to the Hay, to see how student ideas, values, and
+                aesthetics shift and develop over time. But as the collection
+                grew, we slowly realized that we wouldn't be able to do it
+                entirely on our own.
               </p>
               <p>
-                Now, Posters at Brown functions as a hub for all student hosted
-                events at Brown, from club meetings to dances and more. It aims
-                to use the medium of posters to turn physical advertisement into
-                an easy way for students to find all the events they've ever
-                wanted to go to, but would've missed out on otherwise.
+                That's why now Posters @ Brown functions as a hub for all
+                student hosted events at Brown, from club meetings to dances and
+                more. It aims to turn the medium of posters into an easy way for
+                students to find all the events they've ever wanted to go to,
+                but never would've known about otherwise.
               </p>
             </div>
           </div>

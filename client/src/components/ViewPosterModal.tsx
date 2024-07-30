@@ -68,14 +68,14 @@ export default function ViewPosterModal({
   const [popModalOpen, setPopModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    console.log("popup modal is: " + popModalOpen);
+    // console.log("popup modal is: " + popModalOpen);
   }, [popModalOpen]);
 
   useEffect(() => {
     if (profile) {
       getUser();
-      console.log("name: " + name);
-      console.log("picture: " + picture);
+      // console.log("name: " + name);
+      // console.log("picture: " + picture);
       const fetchSaved = async () => {
         try {
           //fetch savedposters
@@ -88,7 +88,7 @@ export default function ViewPosterModal({
             //compare id passed in to each poster in set
             posterSet.data.forEach((poster: { id: string }) => {
               if (poster.id === id) {
-                console.log("made it here");
+                // console.log("made it here");
                 document.querySelector(".heart-icon")!.classList.add("clicked");
               }
             });
@@ -112,7 +112,7 @@ export default function ViewPosterModal({
       }
       if (posterRes.ok) {
         const poster = await posterRes.json();
-        console.log(poster);
+        // console.log(poster);
         if (poster.data.userId) {
           const userRes = await fetch(
             "http://localhost:8080/users/" + poster.data.userId
@@ -185,7 +185,7 @@ export default function ViewPosterModal({
             profile.id;
 
           const res = await axios.put(url, null, config);
-          console.log(res.data.data);
+          // console.log(res.data.data);
           return Promise.resolve(res.data.data);
         } catch (error) {
           if (axios.isAxiosError(error) && error.response) {

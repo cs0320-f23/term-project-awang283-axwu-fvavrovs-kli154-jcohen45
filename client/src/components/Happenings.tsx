@@ -40,7 +40,7 @@ export interface IPoster {
   tags?: Set<string>;
   id: string;
   createdAt: number[];
-  poster: boolean;
+  isDraft: boolean;
 }
 
 export async function getPosters() {
