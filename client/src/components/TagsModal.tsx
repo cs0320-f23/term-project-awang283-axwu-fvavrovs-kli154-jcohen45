@@ -225,7 +225,9 @@ export default function TagsModal({
         },
       };
       console.log(poster.id);
-      const url = `http://localhost:8080/posters/update/${poster.id}`;
+      const url = `http://localhost:8080/posters/update/${
+        draftId ? draftId : poster.id
+      }`;
       console.log(url);
       const formData = new FormData();
 

@@ -49,6 +49,7 @@ export default function CreateImageModal() {
   const [profile] = useRecoilState(profileState);
   const [refresh, setRefresh] = useRecoilState(refreshState);
   const [isDraft, setIsDraft] = useState<boolean>(false);
+  const [isContent, setIsContent] = useState<boolean>(false);
 
   useEffect(() => {
     const today = new Date();
@@ -57,8 +58,8 @@ export default function CreateImageModal() {
     const yyyy = today.getFullYear();
     //defaults to current date at 11:59PM + ensures startDate will always be filled with some value
     const todayDateTime = yyyy + "-" + mm + "-" + dd + "T23:59";
+    console.log(poster);
     setPoster({ ...poster, startDate: todayDateTime, isRecurring: "NEVER" });
-    // console.log(poster);
   }, []);
 
   const getPoster = async () => {
@@ -178,6 +179,7 @@ export default function CreateImageModal() {
 
     //setURL
     setPoster({ ...poster, content: inputElement.value });
+    setIsContent(true);
 
     if (!inputElement.value.includes("https://i.imgur.com")) {
       try {
@@ -265,11 +267,12 @@ export default function CreateImageModal() {
       }
 
       const output = await createImgurLink(file);
+      console.log("upload poster output");
+      console.log(output.content);
 
       setCVFields(output.id);
+      setIsContent(true);
       setPoster({ ...poster, content: output.content, id: output.id });
-      // console.log(poster);
-      // console.log("output.id is: " + output.id);
     }
   };
 
@@ -282,7 +285,11 @@ export default function CreateImageModal() {
   };
 
   // updates a draft with new info when a user clicks to tags or presses X
-  const updatePoster = async (poster: IPosterObject, id: string) => {
+  const updatePoster = async (
+    poster: IPosterObject,
+    id: string,
+    content?: string
+  ) => {
     console.log(id);
     try {
       const url = "http://localhost:8080/posters/update/" + id;
@@ -309,7 +316,7 @@ export default function CreateImageModal() {
   };
 
   const onClose = () => {
-    if (poster.startDate && poster.title && poster.content) {
+    if (poster.startDate && poster.title && isContent) {
       console.log(draftId);
       //popup u sure u wanna del this?
       setPopModalOpen(true);
@@ -320,7 +327,7 @@ export default function CreateImageModal() {
 
   return (
     <>
-      {popModalOpen && poster.startDate && poster.title && poster.content && (
+      {popModalOpen && poster.startDate && poster.title && isContent && (
         <PopupModal
           posterId={draftId}
           onCloseModal={onClose}

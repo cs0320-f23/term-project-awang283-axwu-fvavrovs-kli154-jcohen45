@@ -40,35 +40,35 @@ export default function PopupModal({
     console.log("id: " + posterId);
   }, []);
 
-  const getPoster = async () => {
-    try {
-      const url = "http://localhost:8080/posters/" + posterId;
-      const res = await fetch(url);
-      console.log(res);
-      if (res.ok) {
-        const posterData = await res.json();
-        if (posterData.message != "Poster not found") {
-          return "poster";
-        } else {
-          try {
-            const url = "http://localhost:8080/drafts/" + posterId;
-            const res = await fetch(url);
-            console.log(res);
-            if (res.ok) {
-              const posterData = await res.json();
-              if (posterData.message != "Poster not found") {
-                return "draft";
-              }
-            }
-          } catch (error) {
-            return JSON.stringify(error);
-          }
-        }
-      }
-    } catch (error) {
-      return JSON.stringify(error);
-    }
-  };
+  // const getPoster = async () => {
+  //   try {
+  //     const url = "http://localhost:8080/posters/" + posterId;
+  //     const res = await fetch(url);
+  //     console.log(res);
+  //     if (res.ok) {
+  //       const posterData = await res.json();
+  //       if (posterData.message != "Poster not found") {
+  //         return "poster";
+  //       } else {
+  //         try {
+  //           const url = "http://localhost:8080/drafts/" + posterId;
+  //           const res = await fetch(url);
+  //           console.log(res);
+  //           if (res.ok) {
+  //             const posterData = await res.json();
+  //             if (posterData.message != "Poster not found") {
+  //               return "draft";
+  //             }
+  //           }
+  //         } catch (error) {
+  //           return JSON.stringify(error);
+  //         }
+  //       }
+  //     }
+  //   } catch (error) {
+  //     return JSON.stringify(error);
+  //   }
+  // };
 
   //user wants to delete draft
   const onDelete = async () => {
@@ -76,77 +76,77 @@ export default function PopupModal({
     //if poster state has ID
     if (posterId != null && posterId != "" && posterId != " ") {
       //yes? delete from database(posterID, userID)
-      const isPoster = await getPoster();
-      if (isPoster == "poster") {
-        try {
-          //add to database
-          const config = {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          };
-          const url =
-            "http://localhost:8080/posters/delete/" +
-            posterId +
-            "?userId=" +
-            profile.id;
+      // const isPoster = await getPoster();
+      // if (isPoster == "poster") {
+      try {
+        //add to database
+        const config = {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        };
+        const url =
+          "http://localhost:8080/posters/delete/" +
+          posterId +
+          "?userId=" +
+          profile.id;
 
-          const res = await axios.delete(url, config);
+        const res = await axios.delete(url, config);
 
-          setPoster({});
-          setPosterSrc("");
+        setModalOpen("");
+        setPoster({});
+        setPosterSrc("");
+        setPopModalOpen(false);
+        setRefresh(!refresh);
 
-          //goes to whatever page user was on (no more modal)
-          setPopModalOpen(false);
-          onCloseModal();
-
-          //need to give enough time for the poster to be created + id to exist
-          return Promise.resolve(res.data.data);
-        } catch (error) {
-          if (axios.isAxiosError(error) && error.response) {
-            return Promise.resolve(
-              `Error in fetch: ${error.response.data.message}`
-            );
-          } else {
-            return Promise.resolve(
-              "Error in fetch: Network error or other issue"
-            );
-          }
-        }
-      } else if (isPoster == "draft") {
-        try {
-          //delete from database
-          const config = {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          };
-          const url = "http://localhost:8080/drafts/delete/" + posterId;
-
-          const res = await axios.delete(url, config);
-
-          //sets global state to nothing (no more draft)
-          setPoster({});
-          setPosterSrc("");
-
-          //goes to whatever page user was on (no more modal)
-          setPopModalOpen(false);
-          onCloseModal();
-
-          //need to give enough time for the poster to be created + id to exist
-          return Promise.resolve(res.data.data);
-        } catch (error) {
-          if (axios.isAxiosError(error) && error.response) {
-            return Promise.resolve(
-              `Error in fetch: ${error.response.data.message}`
-            );
-          } else {
-            return Promise.resolve(
-              "Error in fetch: Network error or other issue"
-            );
-          }
+        //need to give enough time for the poster to be created + id to exist
+        return Promise.resolve(res.data.data);
+      } catch (error) {
+        if (axios.isAxiosError(error) && error.response) {
+          return Promise.resolve(
+            `Error in fetch: ${error.response.data.message}`
+          );
+        } else {
+          return Promise.resolve(
+            "Error in fetch: Network error or other issue"
+          );
         }
       }
+      // }
+      // else if (isPoster == "draft") {
+      //   try {
+      //     //delete from database
+      //     const config = {
+      //       headers: {
+      //         "Content-Type": "application/json",
+      //       },
+      //     };
+      //     const url = "http://localhost:8080/drafts/delete/" + posterId;
+
+      //     const res = await axios.delete(url, config);
+
+      //     //sets global state to nothing (no more draft)
+      //     setPoster({});
+      //     setPosterSrc("");
+
+      //     //goes to whatever page user was on (no more modal)
+      //     setPopModalOpen(false);
+      //     onCloseModal();
+
+      //     //need to give enough time for the poster to be created + id to exist
+      //     return Promise.resolve(res.data.data);
+      // } catch (error) {
+      //   if (axios.isAxiosError(error) && error.response) {
+      //     return Promise.resolve(
+      //       `Error in fetch: ${error.response.data.message}`
+      //     );
+      //   } else {
+      //     return Promise.resolve(
+      //       "Error in fetch: Network error or other issue"
+      //     );
+      //   }
+      // }
+      // }
     }
   };
 
