@@ -19,17 +19,10 @@ import { Dispatch, SetStateAction, useEffect } from "react";
 
 interface popupProps {
   posterId: string;
-  onCloseModal: () => void | (() => Promise<void>);
   setPopModalOpen: Dispatch<SetStateAction<boolean>>;
-  showDraft: boolean;
 }
 
-export default function PopupModal({
-  posterId,
-  onCloseModal,
-  setPopModalOpen,
-  showDraft,
-}: popupProps) {
+export default function PopupModal({ posterId, setPopModalOpen }: popupProps) {
   const profile = useRecoilValue(profileState);
   const setPoster = useSetRecoilState(posterState);
   const [, setModalOpen] = useRecoilState<string>(modalOpenState);
@@ -150,14 +143,15 @@ export default function PopupModal({
     }
   };
 
-  //user wants to save as draft
-  //updatePoster has already been called at this point, so close popup, close create, clear fields
-  const onDraft = () => {
-    setModalOpen("");
-    setPoster({});
-    setPosterSrc("");
-    setRefresh(!refresh);
-  };
+  // //user wants to save as draft
+  // //updatePoster has already been called at this point, so close popup, close create, clear fields
+  // const onDraft = async () => {
+  //   // setModalOpen("");
+  //   // setPoster({});
+  //   // setPosterSrc("");
+  //   // setRefresh(!refresh);
+  //   await editPoster();
+  // };
 
   //user does not want to delete draft
   const onCancel = () => {
@@ -176,11 +170,11 @@ export default function PopupModal({
             <Button onClick={() => onDelete()} className="pop-button">
               Delete
             </Button>
-            {showDraft && (
+            {/* {showDraft && (
               <Button onClick={() => onDraft()} className="pop-button">
                 Save Draft
               </Button>
-            )}
+            )} */}
             <Button onClick={() => onCancel()} className="pop-button">
               Cancel
             </Button>

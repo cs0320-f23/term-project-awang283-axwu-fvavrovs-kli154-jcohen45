@@ -302,14 +302,13 @@ export default function TagsModal({
             <div>
               <Button
                 style={{
-                  backgroundColor: "var(--dark-purple70) !important",
                   marginRight: "1vw",
                 }}
-                className="final-upload-button"
+                className="secondary-button"
                 onClick={editPoster}
                 disabled={disabled}
               >
-                Save Draft
+                Save Draft & Exit
               </Button>
               <Button
                 style={{ backgroundColor: "var(--dark-purple100)" }}
@@ -329,7 +328,7 @@ export default function TagsModal({
               className="final-upload-button"
               onClick={editPoster}
             >
-              Edit Poster
+              Save Changes
             </Button>
           )}
         </div>

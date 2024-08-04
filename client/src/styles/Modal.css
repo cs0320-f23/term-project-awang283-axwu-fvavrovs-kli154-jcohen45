@@ -284,7 +284,8 @@ input::placeholder {
   padding-left: 0.75vw;
 }
 
-.save-button {
+.save-button,
+.secondary-button {
   border-radius: 12px !important;
   color: white !important;
   display: absolute;
@@ -294,11 +295,18 @@ input::placeholder {
   box-shadow: var(--tag-shadow);
 }
 
+.secondary-button {
+  background-color: var(--tagslight-magenta) !important;
+  color: var(--tagsdark-magenta) !important;
+}
+
 .save-div {
   color: transparent;
   display: flex;
-  flex-flow: row-reverse;
-  align-items: right;
+  flex-flow: row nowrap;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
 }
 
 .final-save-div {

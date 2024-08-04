@@ -285,11 +285,7 @@ export default function CreateImageModal() {
   };
 
   // updates a draft with new info when a user clicks to tags or presses X
-  const updatePoster = async (
-    poster: IPosterObject,
-    id: string,
-    content?: string
-  ) => {
+  const updatePoster = async (poster: IPosterObject, id: string) => {
     console.log(id);
     try {
       const url = "http://localhost:8080/posters/update/" + id;
@@ -316,7 +312,7 @@ export default function CreateImageModal() {
   };
 
   const onClose = () => {
-    if (poster.startDate && poster.title && isContent) {
+    if (poster.startDate && poster.title && (isContent || poster.content)) {
       console.log(draftId);
       //popup u sure u wanna del this?
       setPopModalOpen(true);
@@ -325,17 +321,28 @@ export default function CreateImageModal() {
     }
   };
 
+  const onDraft = async () => {
+    await updatePoster(poster, poster.id ? poster.id : draftId);
+    setModalOpen("");
+    setPoster({});
+    setPosterSrc("");
+    setRefresh(!refresh);
+  };
+
   return (
     <>
-      {popModalOpen && poster.startDate && poster.title && isContent && (
-        <PopupModal
-          posterId={draftId}
-          onCloseModal={onClose}
-          setPopModalOpen={setPopModalOpen}
-          showDraft={true}
-          updatePoster={updatePoster}
-        />
-      )}
+      {popModalOpen &&
+        poster.startDate &&
+        poster.title &&
+        (isContent || poster.content) && (
+          <PopupModal
+            posterId={draftId ? draftId : poster.id}
+            onCloseModal={onClose}
+            setPopModalOpen={setPopModalOpen}
+            showDraft={true}
+            updatePoster={updatePoster}
+          />
+        )}
       {modalOpen == "createImage" && (
         <Modal closeOnOverlayClick={false} isOpen={true} onClose={onClose}>
           <div className="modal-font">
@@ -513,21 +520,28 @@ export default function CreateImageModal() {
                         />
                       </div>
                       <div className="save-div">
-                        <div>
-                          <Button
-                            onClick={onSaveSelectTags}
-                            className={"save-button"}
-                            style={{
-                              backgroundColor: "var(--dark-purple100)",
-                              marginTop: "1vh",
-                            }}
-                            isDisabled={
-                              isLoading || !poster.title || !posterSrc
-                            }
-                          >
-                            Save and Select Tags
-                          </Button>
-                        </div>
+                        <Button
+                          className="secondary-button"
+                          style={{
+                            backgroundColor: "var(--dark-purple100)",
+                            marginTop: "1vh",
+                          }}
+                          onClick={onDraft}
+                          isDisabled={isLoading || !poster.title || !posterSrc}
+                        >
+                          {!poster.id ? "Save Draft & Exit" : "Save & Exit"}
+                        </Button>
+                        <Button
+                          onClick={onSaveSelectTags}
+                          className="save-button"
+                          style={{
+                            backgroundColor: "var(--dark-purple100)",
+                            marginTop: "1vh",
+                          }}
+                          isDisabled={isLoading || !poster.title || !posterSrc}
+                        >
+                          Continue
+                        </Button>
                       </div>
                     </div>
                   )}

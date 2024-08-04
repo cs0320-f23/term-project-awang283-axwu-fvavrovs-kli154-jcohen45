@@ -197,6 +197,7 @@
   bottom: 0;
   margin-bottom: 20px;
   margin-right: 24px;
+  width: 100%;
 }
 
 #title {
@@ -211,7 +212,8 @@
   text-overflow: ellipsis;
   display: block;
   overflow: hidden;
-  width: 360px;
+  width: 90%;
+  min-width: 376px;
 }
 
 .modal-icons {

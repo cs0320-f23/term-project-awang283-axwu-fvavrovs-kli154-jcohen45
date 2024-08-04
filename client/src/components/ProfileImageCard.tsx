@@ -408,7 +408,11 @@ export const ProfileImageCard: React.FC<ProfileImageCardProps> = ({
               </>
             )}
           </div>
-          {title && <p id="profile-title">{title}</p>}
+          {title && (
+            <p id="profile-title">
+              {title.length > 40 ? title.slice(0, 40) + "..." : title}
+            </p>
+          )}
         </div>
         {modalOpen === "viewImage" && title && (
           <ViewPosterModal
