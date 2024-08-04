@@ -223,6 +223,36 @@ export const ProfileImageCard: React.FC<ProfileImageCardProps> = ({
     }
   };
 
+  const getPoster = async () => {
+    try {
+      const url = "http://localhost:8080/posters/" + posterId;
+      const res = await fetch(url);
+      console.log(res);
+      if (res.ok) {
+        const posterData = await res.json();
+        if (posterData.message != "Poster not found") {
+          return "poster";
+        } else {
+          try {
+            const url = "http://localhost:8080/drafts/" + posterId;
+            const res = await fetch(url);
+            console.log(res);
+            if (res.ok) {
+              const posterData = await res.json();
+              if (posterData.message != "Poster not found") {
+                return "draft";
+              }
+            }
+          } catch (error) {
+            return JSON.stringify(error);
+          }
+        }
+      }
+    } catch (error) {
+      return JSON.stringify(error);
+    }
+  };
+
   // parses the date from the fetched poster object into format that can be displayed on image card
   function time(date: number[]) {
     let minutes = JSON.stringify(date[4]);
@@ -263,6 +293,7 @@ export const ProfileImageCard: React.FC<ProfileImageCardProps> = ({
       newEndDate = [...endDate];
       newEndDate[1] -= 1;
     }
+    //set poster state to poster associated w the porfile image card
     setPoster({
       title: title,
       content: content,
@@ -292,9 +323,9 @@ export const ProfileImageCard: React.FC<ProfileImageCardProps> = ({
       tags: tags,
       isRecurring: recurs,
       id: id,
+      isDraft: isDraft,
     });
     setPosterSrc(content);
-    //set poster state to poster associated w the porfile image card
   };
 
   return (

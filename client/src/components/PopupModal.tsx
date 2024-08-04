@@ -44,7 +44,7 @@ export default function PopupModal({
     try {
       const url = "http://localhost:8080/posters/" + posterId;
       const res = await fetch(url);
-      // console.log(res);
+      console.log(res);
       if (res.ok) {
         const posterData = await res.json();
         if (posterData.message != "Poster not found") {
@@ -53,7 +53,7 @@ export default function PopupModal({
           try {
             const url = "http://localhost:8080/drafts/" + posterId;
             const res = await fetch(url);
-            // console.log(res);
+            console.log(res);
             if (res.ok) {
               const posterData = await res.json();
               if (posterData.message != "Poster not found") {
@@ -115,7 +115,7 @@ export default function PopupModal({
         }
       } else if (isPoster == "draft") {
         try {
-          //add to database
+          //delete from database
           const config = {
             headers: {
               "Content-Type": "application/json",
@@ -153,7 +153,6 @@ export default function PopupModal({
   //user wants to save as draft
   //updatePoster has already been called at this point, so close popup, close create, clear fields
   const onDraft = () => {
-    setPopModalOpen(false);
     setModalOpen("");
     setPoster({});
     setPosterSrc("");

@@ -46,8 +46,6 @@ public class PosterService {
     }
     userService.removeFromDrafts(userID, poster);
 
-
-
     if (!associateResponse.isCompletedExceptionally()) {
       System.out.println(associateResponse);
       System.out.println("associateResponse.isCompletedExceptionally() == false");
@@ -148,7 +146,7 @@ public class PosterService {
   public CompletableFuture<ServiceResponse<Poster>> updatePoster(
       Poster existingPoster, Poster updatedPoster) {
     if (existingPoster != null) {
-      return this.getPosterById(updatedPoster.getID())
+      return this.getPosterById(existingPoster.getID())
           .thenApply(
               oldPosterResponse -> {
                 Poster oldPoster = oldPosterResponse.getData();
@@ -176,7 +174,7 @@ public class PosterService {
               });
     } else {
       return CompletableFuture.completedFuture(
-          new ServiceResponse<>("Failed to update poster - Invalid data"));
+          new ServiceResponse<>("Failed to update poster - existing poster with provided ID does not exist"));
     }
   }
 

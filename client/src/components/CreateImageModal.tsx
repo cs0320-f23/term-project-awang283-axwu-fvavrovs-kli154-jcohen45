@@ -36,6 +36,7 @@ export interface IPosterObject {
   link?: string;
   description?: string;
   tags?: Set<string> | string[];
+  isDraft?: boolean;
 }
 
 export default function CreateImageModal() {
@@ -56,6 +57,7 @@ export default function CreateImageModal() {
     const yyyy = today.getFullYear();
     //defaults to current date at 11:59PM + ensures startDate will always be filled with some value
     const todayDateTime = yyyy + "-" + mm + "-" + dd + "T23:59";
+    console.log(poster);
     setPoster({ ...poster, startDate: todayDateTime, isRecurring: "NEVER" });
     // console.log(poster);
   }, []);
@@ -218,7 +220,11 @@ export default function CreateImageModal() {
       const output = await createImgurLink(file);
 
       setCVFields(output.id);
-      setPoster({ ...poster, content: output.content, id: output.id });
+      setPoster({
+        ...poster,
+        content: output.content,
+        id: output.id,
+      });
       // console.log(poster);
       // console.log("output.id is: " + output.id);
     }
@@ -232,7 +238,7 @@ export default function CreateImageModal() {
 
   // updates a draft with new info when a user clicks to tags or presses X
   const updatePoster = async (poster: IPosterObject, id: string) => {
-    console.log(id);
+    // console.log(id);
     try {
       // changing this to draftID broke creating things ???? but poster.id is undefined :/
       const url = "http://localhost:8080/drafts/update/" + id;
@@ -264,7 +270,7 @@ export default function CreateImageModal() {
     updatePoster(poster, draftId);
     // console.log(poster);
     if (poster.startDate && poster.title && poster.content) {
-      console.log(draftId);
+      // console.log(draftId);
       //popup u sure u wanna del this?
       setPopModalOpen(true);
     } else {

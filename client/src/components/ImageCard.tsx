@@ -77,6 +77,7 @@ export const ImageCard: React.FC<ImageCardProps> = ({
       const savedPosters = await fetch(
         "http://localhost:8080/users/savedPosters/" + profile.id
       );
+      // console.log(savedPosters);
       //if poster in saved , set class to clicked
       if (savedPosters.ok) {
         const posterSet = await savedPosters.json();

@@ -296,7 +296,7 @@ export default function App() {
         </main>
         <footer className="footer">
           <div className="foot-left">
-            Made with love by the Posters@Brown team
+            Made with love by the Posters @ Brown team
           </div>
           <div className="foot-right">
             <a href="https://forms.gle/iNRs9GNxhDiGgfE5A" target="_blank">

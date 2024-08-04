@@ -1,14 +1,11 @@
 package edu.brown.cs.student.main.ocr;
 
+import com.google.cloud.vision.v1.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-
-import com.google.cloud.vision.v1.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gcp.vision.CloudVisionTemplate;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
@@ -24,15 +21,13 @@ public class OCRAsyncTask {
 
     List<AnnotateImageRequest> requests = new ArrayList<>();
 
-    //build image from url
-    Image img = Image.newBuilder().setSource(ImageSource.newBuilder().setImageUri(imageUrl)).build();
+    // build image from url
+    Image img =
+        Image.newBuilder().setSource(ImageSource.newBuilder().setImageUri(imageUrl)).build();
     Feature feat = Feature.newBuilder().setType(Feature.Type.TEXT_DETECTION).build();
 
     AnnotateImageRequest request =
-            AnnotateImageRequest.newBuilder()
-                    .addFeatures(feat)
-                    .setImage(img)
-                    .build();
+        AnnotateImageRequest.newBuilder().addFeatures(feat).setImage(img).build();
 
     requests.add(request);
 
@@ -49,24 +44,18 @@ public class OCRAsyncTask {
           return new HashMap<>();
         }
 
-
         // important stuff after here
 
-        if (!res.getTextAnnotationsList().isEmpty()){ // this if statement will only be true if text was detected
+        if (!res.getTextAnnotationsList()
+            .isEmpty()) { // this if statement will only be true if text was detected
           List<EntityAnnotation> toParse = res.getTextAnnotationsList();
           HashMap suggestedFields = parser.parseResult(toParse);
 
           return suggestedFields;
         }
-
-
-
-
       }
     }
 
     return new HashMap(); // to be replaced with suggested fields
   }
-
-
 }

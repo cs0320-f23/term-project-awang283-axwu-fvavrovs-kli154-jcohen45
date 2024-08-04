@@ -271,8 +271,8 @@ public class Poster {
   }
 
   @Override
-  public boolean equals(Object object){
-    if (object instanceof Poster){
+  public boolean equals(Object object) {
+    if (object instanceof Poster) {
       Poster other = (Poster) object;
       if (other.getID().equals(this.getID())) return true;
     }
