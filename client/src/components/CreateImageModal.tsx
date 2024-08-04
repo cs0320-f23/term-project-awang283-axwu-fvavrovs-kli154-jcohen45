@@ -62,32 +62,40 @@ export default function CreateImageModal() {
   }, []);
 
   const getPoster = async () => {
+    setIsLoading(true);
     // console.log(draftId);
     // console.log(poster.id);
     try {
-      const url =
-        "http://localhost:8080/posters/" + poster.id ? poster.id : draftId;
+      let id;
+      if (poster.id === undefined) {
+        id = draftId;
+      } else {
+        id = poster.id;
+      }
+      console.log(id);
+      const url = "http://localhost:8080/posters/" + id;
       const res = await fetch(url);
       console.log(res);
       if (res.ok) {
         const posterData = await res.json();
         console.log(posterData);
-        // posterdata doesnt print but res.ok does :(
         if (posterData.message != "Poster not found") {
-          setIsDraft(posterData.isDraft as boolean);
+          console.log(Boolean(posterData.data.isDraft));
+          setIsDraft(Boolean(posterData.data.isDraft));
           console.log("this is a poster");
+          setIsLoading(false);
           return "poster";
         } else {
           try {
             const url =
               "http://localhost:8080/drafts/" + draftId ? draftId : poster.id;
             const res = await fetch(url);
-            // console.log(res);
             if (res.ok) {
               const posterData = await res.json();
               if (posterData.message != "Poster not found") {
                 console.log("this is a draft");
                 setIsDraft(true);
+                setIsLoading(false);
                 return "draft";
               }
             }
@@ -97,7 +105,7 @@ export default function CreateImageModal() {
         }
       }
     } catch (error) {
-      return JSON.stringify(error);
+      return undefined;
     }
   };
 
@@ -190,10 +198,7 @@ export default function CreateImageModal() {
         setIsLoading(true);
         const res = await axios.post(url, requestBody, config);
         setPosterSrc(inputElement.value);
-        // console.log(res.data.data);
         setDraftId(res.data.data.id);
-        // console.log("id from link");
-        // console.log(draftId);
         setCVFields(res.data.data.id);
         return Promise.resolve(res.data.data);
       } catch (error) {
@@ -225,15 +230,9 @@ export default function CreateImageModal() {
       formData.append("content", file);
       formData.append("userId", profile.id);
       formData.append("startDate", poster.startDate!);
-      //console.log("Before axios request");
       setIsLoading(true);
-      // console.log(formData);
       const res = await axios.post(url, formData, config);
-      // console.log("After axios request");
-      // console.log(res.data.data.id);
       setDraftId(res.data.data.id);
-      // console.log("id from upload");
-      // console.log(draftId);
       return Promise.resolve(res.data.data);
     } catch (error) {
       setIsLoading(false);
@@ -279,23 +278,19 @@ export default function CreateImageModal() {
     await updatePoster(poster, poster.id ? poster.id : draftId);
     setRefresh(!refresh);
     setShowTags(true);
+    console.log(isDraft);
   };
 
   // updates a draft with new info when a user clicks to tags or presses X
   const updatePoster = async (poster: IPosterObject, id: string) => {
     console.log(id);
     try {
-      // changing this to draftID broke creating things ???? but poster.id is undefined :/
-
-      const url = isDraft
-        ? "http://localhost:8080/drafts/update/" + id
-        : "http://localhost:8080/posters/update/" + id;
+      const url = "http://localhost:8080/posters/update/" + id;
       const config = {
         headers: {
           "Content-Type": "application/json",
         },
       };
-      // console.log(id);
       const response = await axios.put(url, poster, config);
       return Promise.resolve(response.data.data);
     } catch (error) {
@@ -314,16 +309,11 @@ export default function CreateImageModal() {
   };
 
   const onClose = () => {
-    //if any field is filled out
-    // updatePoster(poster, draftId);
-    // console.log(poster);
     if (poster.startDate && poster.title && poster.content) {
       console.log(draftId);
       //popup u sure u wanna del this?
       setPopModalOpen(true);
     } else {
-      setPoster({});
-      setPosterSrc("");
       setModalOpen("");
     }
   };
@@ -379,6 +369,7 @@ export default function CreateImageModal() {
                       draftId={draftId}
                       setShowTags={setShowTags}
                       updatePoster={updatePoster}
+                      isDraft={isDraft}
                     />
                   ) : (
                     <div className="input-fields">
@@ -433,22 +424,18 @@ export default function CreateImageModal() {
                           onChange={(ev) =>
                             handleChange(ev.target.value, "title")
                           }
-                          // maxLength={25}
                         ></Input>
                       </div>
                       <div className="location-div">
-                        <div>
-                          <h3>Location</h3>
-                          <Input
-                            placeholder="Enter Location"
-                            width="23.4vw"
-                            value={poster.location}
-                            onChange={(ev) =>
-                              handleChange(ev.target.value, "location")
-                            }
-                          />
-                        </div>
-                        <div>
+                        <h3>Location</h3>
+                        <Input
+                          placeholder="Enter Location"
+                          value={poster.location}
+                          onChange={(ev) =>
+                            handleChange(ev.target.value, "location")
+                          }
+                        />
+                        {/* <div>
                           <h3>Repeats</h3>
                           <Select
                             placeholder="Repeats"
@@ -465,7 +452,7 @@ export default function CreateImageModal() {
                             <option value="WEEKLY">Weekly</option>
                             <option value="MONTHLY">Monthly</option>
                           </Select>
-                        </div>
+                        </div> */}
                       </div>
                       <div className="date-div">
                         <h3>Date</h3>
@@ -474,7 +461,7 @@ export default function CreateImageModal() {
                             id="date-time-input"
                             placeholder="Select Date and Time"
                             type="datetime-local"
-                            width="15.2vw"
+                            // width="15.2vw"
                             color="white"
                             value={poster.startDate}
                             onChange={(ev) =>
@@ -486,7 +473,7 @@ export default function CreateImageModal() {
                             id="date-time-input"
                             placeholder="Select Date and Time"
                             type="datetime-local"
-                            width="15.2vw"
+                            // width="15.2vw"
                             color="white"
                             value={poster.endDate}
                             onChange={(ev) =>

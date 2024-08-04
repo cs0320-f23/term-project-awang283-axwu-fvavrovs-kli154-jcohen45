@@ -4,12 +4,12 @@ body {
   font-weight: 700;
   font-style: normal;
   line-height: 1.5;
-  min-height: 100vh;
+  height: 100vh;
+  width: 100vw;
 
   color-scheme: light dark;
   color: var(--dark-purple100);
 
-  min-width: 100vw;
   /* max-height: 92vh; */
   /* top: 50px; */
   margin: 0 auto;
@@ -50,7 +50,6 @@ body {
   margin: 0;
   display: flex;
   place-items: center;
-  min-height: 100vh;
 }
 
 h1 {

@@ -1,5 +1,6 @@
 .profile-card {
-  width: 290px;
+  width: 30%;
+  min-width: 280px;
   position: relative;
   margin-bottom: 24px;
   display: flex;
@@ -16,6 +17,10 @@
   padding: 12px;
   border-radius: 20px;
   box-shadow: var(--drop-shadow);
+
+  img {
+    width: 100%;
+  }
 }
 
 .profile-overlay {
@@ -93,7 +98,8 @@
 }
 
 .image-card {
-  width: 410px;
+  width: 30%;
+  min-width: 400px;
   position: relative;
   margin-bottom: 42px;
   display: flex;
@@ -110,6 +116,10 @@
   padding: 12px;
   border-radius: 20px;
   box-shadow: var(--drop-shadow);
+
+  img {
+    width: 100%;
+  }
 }
 
 .image-overlay {

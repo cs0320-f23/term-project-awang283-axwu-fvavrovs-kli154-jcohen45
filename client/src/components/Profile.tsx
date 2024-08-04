@@ -262,9 +262,6 @@ export default function Profile() {
             <Tab
               backgroundColor={"transparent !important"}
               className="profile-tabs"
-              style={{
-                marginRight: "1.5%",
-              }}
               _selected={{
                 backgroundColor: "rgba(63, 49, 94, 1) !important",
                 color: "white !important",
@@ -280,9 +277,6 @@ export default function Profile() {
                 backgroundColor: "rgba(63, 49, 94, 1) !important",
                 color: "white !important",
                 boxShadow: "0px 1px 9px 0px rgba(63, 49, 94, 0.20)",
-              }}
-              style={{
-                marginRight: "1.5%",
               }}
             >
               Created

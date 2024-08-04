@@ -21,6 +21,7 @@ interface tagsProps {
   draftId: string;
   setShowTags: React.Dispatch<React.SetStateAction<boolean>>;
   updatePoster: (poster: IPosterObject, id: string) => Promise<unknown>;
+  isDraft: boolean;
 }
 
 export default function TagsModal({
@@ -29,6 +30,7 @@ export default function TagsModal({
   draftId,
   setShowTags,
   updatePoster,
+  isDraft,
 }: tagsProps) {
   const [allTags, setAllTags] = useState<string[]>([]);
   const [tags, setTags] = useState<Set<string>>(new Set());
@@ -39,7 +41,6 @@ export default function TagsModal({
   const [disabled, setDisabled] = useState<boolean>(false);
   const [errorPopup, setErrorPopup] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isDraft, setIsDraft] = useState<boolean>(false);
   const setModalOpen = useSetRecoilState(modalOpenState);
 
   useEffect(() => {
@@ -60,16 +61,19 @@ export default function TagsModal({
     console.log("Poster updated:", poster);
   }, [poster]);
 
-  // FIND OUT IF A POSTER IS A DRAFT ?
   useEffect(() => {
     const getPoster = async () => {
       console.log(draftId);
       console.log(poster.id);
       try {
-        console.log("is poster id undefined? " + poster.id !== undefined);
-        console.log("type of poster id " + poster.id);
-        const url =
-          "http://localhost:8080/posters/" + poster.id && typeof poster.id !== undefined ? poster.id : draftId;
+        let id;
+        if (poster.id === undefined) {
+          id = draftId;
+        } else {
+          id = poster.id;
+        }
+        console.log(id);
+        const url = "http://localhost:8080/posters/" + id;
         const res = await fetch(url);
         console.log(res);
         if (res.ok) {
@@ -77,7 +81,6 @@ export default function TagsModal({
           console.log("posterData: " + posterData);
           // posterdata doesnt print but res.ok does :(
           if (posterData.message != "Poster not found") {
-            setIsDraft(false);
             console.log("this is a poster");
             return "poster";
           } else {
@@ -90,7 +93,6 @@ export default function TagsModal({
                 const posterData = await res.json();
                 if (posterData.message != "Poster not found") {
                   console.log("this is a draft");
-                  setIsDraft(true);
                   return "draft";
                 }
               }
@@ -195,10 +197,10 @@ export default function TagsModal({
       setRefresh(!refresh);
       getPosters().then((data) => setSearchResults(data));
       setShowTags(false);
-      setPosterSrc("");
+      setModalOpen("");
       setPoster({});
+      setPosterSrc("");
       setIsLoading(false);
-      onClose();
       return Promise.resolve(res.data.data);
     } catch (error) {
       setErrorPopup(true);
@@ -210,18 +212,6 @@ export default function TagsModal({
         return Promise.resolve("Error in fetch: Network error or other issue");
       }
     }
-  };
-
-  const saveDraft = async () => {
-    const updatedPoster = {
-      ...poster,
-      tags: Array.from(tags),
-    };
-    console.log(updatedPoster);
-    await updatePoster(updatedPoster, draftId ? draftId : poster.id);
-    setPoster({});
-    setPosterSrc("");
-    setModalOpen(" ");
   };
 
   const editPoster = async () => {
@@ -236,15 +226,16 @@ export default function TagsModal({
       };
       console.log(poster.id);
       const url = `http://localhost:8080/posters/update/${poster.id}`;
+      console.log(url);
       const formData = new FormData();
 
       tags.forEach((tag) => {
         formData.append("tags[]", tag);
       });
 
-      for (const key in updatedPoster) {
-        if (updatedPoster[key] && key !== "tags") {
-          const value = updatedPoster[key];
+      for (const key in poster) {
+        if (poster[key] && key !== "tags") {
+          const value = poster[key];
           if (typeof value === "string") {
             formData.append(key, value);
           }
@@ -252,15 +243,18 @@ export default function TagsModal({
       }
 
       const res = await axios.put(url, formData, config);
+      console.log(res.data.data);
       setRefresh(!refresh);
       getPosters().then((data) => setSearchResults(data));
       setShowTags(false);
+      setModalOpen("");
       setPosterSrc("");
       setPoster({});
       setIsLoading(false);
-      onClose();
       return Promise.resolve(res.data.data);
     } catch (error) {
+      console.log("made it here!");
+      console.log(error);
       setErrorPopup(true);
       if (axios.isAxiosError(error) && error.response) {
         return Promise.resolve(
@@ -310,7 +304,7 @@ export default function TagsModal({
                   marginRight: "1vw",
                 }}
                 className="final-upload-button"
-                onClick={saveDraft}
+                onClick={editPoster}
                 disabled={disabled}
               >
                 Save Draft
@@ -330,6 +324,7 @@ export default function TagsModal({
                 backgroundColor: "var(--dark-purple100)",
                 color: "white !important",
               }}
+              className="final-upload-button"
               onClick={editPoster}
             >
               Edit Poster

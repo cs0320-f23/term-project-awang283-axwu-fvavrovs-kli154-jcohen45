@@ -1,8 +1,3 @@
-main {
-  position: relative;
-  top: 2vh;
-}
-
 #header {
   font-size: 10vh;
   transform: translate(-20%, -40%);
@@ -172,10 +167,10 @@ main {
   stroke-width: 2.5px;
 }
 
-
 @media (max-aspect-ratio: 1.1) {
-  .first-section, .third-section {
-   flex-flow: column; 
+  .first-section,
+  .third-section {
+    flex-flow: column;
   }
 
   .first-section {
@@ -186,12 +181,13 @@ main {
     margin-left: 5vw;
   }
 
-  .body-text, .meet-team, .bios {
+  .body-text,
+  .meet-team,
+  .bios {
     width: 100%;
   }
 
   .name-card {
     width: 30vw;
   }
-  
 }

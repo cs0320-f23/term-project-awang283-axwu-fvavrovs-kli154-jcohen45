@@ -257,10 +257,7 @@ export default function Happenings() {
           <img className="loading-gif" src="/loading.gif" />
         </div>
       )}
-      <main
-        className="happenings"
-        style={{ height: "fit-content", minHeight: "87vh" }}
-      >
+      <main className="happenings">
         <div className="search-filter-fixed">
           <div
             style={{
@@ -287,11 +284,10 @@ export default function Happenings() {
               />
               <Box w="10vw" display="flex" justifyContent="right">
                 <Button
-                  marginLeft="1vw"
-                  width="7vw"
+                  width="72px"
                   className="browse-select"
                   fontSize="18px"
-                  height="6vh"
+                  height="48px"
                   color="white"
                   alignItems="center"
                   border="none"
@@ -304,28 +300,14 @@ export default function Happenings() {
             <Button className="all-results" onClick={getAllResults}>
               All Results
             </Button>
-            {/* <div
-              className="results"
-              style={{
-                fontFamily: "'quicksand', sans-serif",
-                marginLeft: "2%",
-                width: " 10%",
-                position: "relative",
-                top: "20%",
-                whiteSpace: "nowrap",
-              }}
-              onClick={getAllResults}
-            >
-              All Results
-            </div> */}
           </div>
 
-          <Box w="9.5vw">
+          <Box w="140px">
             <Select
-              marginLeft="1vw"
               className="sort-select"
               fontSize="18px"
-              height="6vh"
+              height="48px"
+              width="140px"
               placeholder="Sort"
               alignItems="center"
               border="none"

@@ -109,12 +109,12 @@ export default function Home() {
               onChange={(ev) => setSearchInput(ev.target.value)}
               onKeyDown={(ev) => handleKeyPress(ev)}
             />{" "}
-            <Box w="11.5vw" display="flex" justifyContent="right">
+            <Box w="140px" display="flex" justifyContent="right">
               <Button
                 className="browse-select"
                 fontSize="20px"
-                width="8vw"
-                height="7vh"
+                width="140px"
+                height="56px"
                 color="white"
                 alignItems="center"
                 border="none"

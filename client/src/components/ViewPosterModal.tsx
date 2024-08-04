@@ -61,7 +61,6 @@ export default function ViewPosterModal({
   const [picture, setPicture] = useState<string>("");
   const [profile] = useRecoilState(profileState);
   const [refresh, setRefresh] = useRecoilState(refreshState);
-  const [modalOpen, setModalOpen] = useState<string>("");
   const [, setEditModal] = useRecoilState(modalOpenState);
   const [, setPoster] = useRecoilState(posterState);
   const [, setPosterSrc] = useRecoilState(posterSrcState);
@@ -74,8 +73,6 @@ export default function ViewPosterModal({
   useEffect(() => {
     if (profile) {
       getUser();
-      // console.log("name: " + name);
-      // console.log("picture: " + picture);
       const fetchSaved = async () => {
         try {
           //fetch savedposters
@@ -88,8 +85,9 @@ export default function ViewPosterModal({
             //compare id passed in to each poster in set
             posterSet.data.forEach((poster: { id: string }) => {
               if (poster.id === id) {
-                // console.log("made it here");
-                document.querySelector(".heart-icon")!.classList.add("clicked");
+                document
+                  .querySelector(".view-heart-icon")!
+                  .classList.add("clicked");
               }
             });
           }
@@ -131,7 +129,7 @@ export default function ViewPosterModal({
   };
 
   const onClick = async () => {
-    const heartIcon = document.querySelector(".heart-icon");
+    const heartIcon = document.querySelector(".view-heart-icon");
     if (heartIcon) {
       if (heartIcon.classList.contains("clicked")) {
         //if alredy clicked, un fill, un save
@@ -286,7 +284,7 @@ export default function ViewPosterModal({
                     <div className="view-modal-icons">
                       {!isDraft && (
                         <div
-                          className="heart-icon"
+                          className="view-heart-icon"
                           onClick={onClick}
                           style={{
                             width: "2.5vw",
@@ -382,7 +380,13 @@ export default function ViewPosterModal({
                     <div className="info-row">
                       <div className="field-name">Link</div>
                       <div id="field-text">
-                        <a href={link} id="poster-link" target="_blank">
+                        <a
+                          href={
+                            link.includes("http") ? link : "https://" + link
+                          }
+                          id="poster-link"
+                          target="_blank"
+                        >
                           {link}
                         </a>
                       </div>
