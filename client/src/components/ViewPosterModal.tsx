@@ -380,7 +380,13 @@ export default function ViewPosterModal({
                     <div className="info-row">
                       <div className="field-name">Link</div>
                       <div id="field-text">
-                        <a href={link} id="poster-link" target="_blank">
+                        <a
+                          href={
+                            link.includes("http") ? link : "https://" + link
+                          }
+                          id="poster-link"
+                          target="_blank"
+                        >
                           {link}
                         </a>
                       </div>
