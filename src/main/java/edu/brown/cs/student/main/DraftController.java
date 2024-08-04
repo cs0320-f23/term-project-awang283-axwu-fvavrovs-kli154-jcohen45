@@ -3,6 +3,7 @@ package edu.brown.cs.student.main;
 import edu.brown.cs.student.main.imgur.ImgurService;
 import edu.brown.cs.student.main.responses.ServiceResponse;
 import edu.brown.cs.student.main.types.Draft;
+import edu.brown.cs.student.main.types.Poster;
 import edu.brown.cs.student.main.user.UserService;
 import java.time.LocalDateTime;
 import java.util.concurrent.CompletableFuture;
@@ -38,7 +39,7 @@ public class DraftController {
    *     poster
    */
   @GetMapping("/{id}") // params like id should be enclosed in squiggly brackets
-  public CompletionStage<ResponseEntity<ServiceResponse<Draft>>> getPosterById(
+  public CompletionStage<ResponseEntity<ServiceResponse<Poster>>> getPosterById(
       @PathVariable String id) {
     return draftService
         .getDraftById(id)
@@ -110,35 +111,35 @@ public class DraftController {
    *
    * @param id the id (string) of the poster to be deleted
    * @return a JSONified ServiceResponse instance that contains a "message" (string) field and a
-   * "data" (JSON) field that contains the data of the poster that was just deleted
+   *     "data" (JSON) field that contains the data of the poster that was just deleted
    */
-      @DeleteMapping("/delete/{id}")
-      public CompletableFuture<ResponseEntity<ServiceResponse<String>>> deletePoster(
-              @PathVariable String id) {
-        return draftService
-                .getDraftById(id)
-                .thenCompose(
-                        existingDraft -> {
-                          if (existingDraft.getData() != null) {
-                            if (existingDraft.getData().getStartDate() == null) {
-                              return CompletableFuture.completedFuture(
-                                      new ServiceResponse<>(
-                                              "Poster with id "
-                                                      + id
-                                                      + " cannot be created because it does not have a start date")); // also check if existingDraft.getData().getStartDate() is null
-                            }
+  @DeleteMapping("/delete/{id}")
+  public CompletableFuture<ResponseEntity<ServiceResponse<String>>> deletePoster(
+      @PathVariable String id) {
+    return draftService
+        .getDraftById(id)
+        .thenCompose(
+            existingDraft -> {
+              if (existingDraft.getData() != null) {
+                if (existingDraft.getData().getStartDate() == null) {
+                  return CompletableFuture.completedFuture(
+                      new ServiceResponse<>(
+                          "Poster with id "
+                              + id
+                              + " cannot be created because it does not have a start date")); // also check if existingDraft.getData().getStartDate() is null
+                }
 
-                            this.userService.removeFromDrafts(
-                                    existingDraft.getData().getUserId(), existingDraft.getData());
-                            return this.draftService.deleteDraftById(existingDraft.getData().getID());
-                          } else {
-                            return CompletableFuture.completedFuture(
-                                    new ServiceResponse<>("Draft with id " + id + " not found"));
-                          }
-                        })
-                .thenApply(response -> ResponseEntity.ok(response))
-                .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
-      }
+                this.userService.removeFromDrafts(
+                    existingDraft.getData().getUserId(), existingDraft.getData());
+                return this.draftService.deleteDraftById(existingDraft.getData().getID());
+              } else {
+                return CompletableFuture.completedFuture(
+                    new ServiceResponse<>("Draft with id " + id + " not found"));
+              }
+            })
+        .thenApply(response -> ResponseEntity.ok(response))
+        .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+  }
 
   /**
    * sends a PUT request to update an existing poster. When integrated with the frontend, usage of
@@ -153,7 +154,7 @@ public class DraftController {
    *     a "data" (JSON) field that contains the data of the poster that was just deleted
    */
   @PutMapping("/update/{id}")
-  public CompletableFuture<ResponseEntity<ServiceResponse<Draft>>> updatePoster(
+  public CompletableFuture<ResponseEntity<ServiceResponse<Poster>>> updatePoster(
       @PathVariable String id, @RequestBody Draft updatedPoster) {
     return draftService
         .getDraftById(id)
@@ -161,7 +162,7 @@ public class DraftController {
             existingPoster -> {
               if (existingPoster.getData() != null) {
                 updatedPoster.setID(id); // Ensure ID consistency
-                return draftService.updateDraft(updatedPoster);
+                return draftService.updateDraft(existingPoster.getData(), updatedPoster);
               } else {
                 return CompletableFuture.completedFuture(
                     new ServiceResponse<>("Poster with id " + id + " not found"));

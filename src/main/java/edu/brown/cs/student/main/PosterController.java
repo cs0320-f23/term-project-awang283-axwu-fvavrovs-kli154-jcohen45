@@ -143,12 +143,20 @@ public class PosterController {
    *     poster
    */
   @GetMapping("/{id}") // params like id should be enclosed in squiggly brackets
-  public CompletableFuture<ResponseEntity<ServiceResponse<Poster>>> getPosterById(
-      @PathVariable String id) {
+  public CompletableFuture<ServiceResponse<Poster>> getPosterById(@PathVariable String id) {
     return posterService
         .getPosterById(id)
-        .thenApply(ResponseEntity::ok)
-        .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+        .thenCompose(
+            poster -> {
+              if (poster.getData() == null) {
+                // Poster not found, look at drafts
+                return draftService.getDraftById(id);
+              } else {
+                // Poster found, wrap it in a completed future
+                return CompletableFuture.completedFuture(poster);
+              }
+            })
+        .exceptionally(ex -> new ServiceResponse<>("Poster with id " + id + " not found"));
   }
 
   /**
@@ -290,9 +298,9 @@ public class PosterController {
     posterService.deleteAll();
   }
 
-
   /**
    * FOR DEVELOPERS TO CALL VIA POSTMAN ONLY. DO NOT CALL IN CODE
+   *
    * @param userId
    */
   @DeleteMapping("/deleteInvalidPosters/{userId}")
@@ -302,27 +310,27 @@ public class PosterController {
     CompletableFuture<ServiceResponse<User>> futureUser = this.userService.getUserById(userId);
     User user = futureUser.join().getData();
 
-    for (Poster poster : allPosters){
-      if (poster.getUserId().equals(user.getId()) && !user.getCreatedPosters().contains(poster)){
+    for (Poster poster : allPosters) {
+      if (poster.getUserId().equals(user.getId()) && !user.getCreatedPosters().contains(poster)) {
         posterService.deletePosterById(poster.getID());
       }
     }
 
     List<Poster> toDelete = new ArrayList<>();
-    for (Poster poster : user.getCreatedPosters()){
-      CompletableFuture<ServiceResponse<Poster>> futureResponse = posterService.getPosterById(poster.getID());
+    for (Poster poster : user.getCreatedPosters()) {
+      CompletableFuture<ServiceResponse<Poster>> futureResponse =
+          posterService.getPosterById(poster.getID());
       ServiceResponse<Poster> response = futureResponse.join();
-      if (response.getData() == null){
+      if (response.getData() == null) {
         toDelete.add(poster);
       }
     }
 
-    for (int i = 0; i < toDelete.size(); i++){
+    for (int i = 0; i < toDelete.size(); i++) {
       user.getCreatedPosters().remove(toDelete.get(i));
     }
 
     userService.saveRepository(user);
-
   }
 
   /**
@@ -402,6 +410,7 @@ public class PosterController {
   @PutMapping("/update/{id}")
   public CompletableFuture<ResponseEntity<ServiceResponse<Poster>>> updatePoster(
       @PathVariable String id, @RequestBody Poster updatedPoster) {
+    System.out.println("updated poster: " + updatedPoster);
     return posterService
         .getPosterById(id)
         .thenCompose(
@@ -410,8 +419,10 @@ public class PosterController {
                 //                updatedPoster.setID(id); // Ensure ID consistency
                 return posterService.updatePoster(existingPoster.getData(), updatedPoster);
               } else {
-                return CompletableFuture.completedFuture(
-                    new ServiceResponse<>("Poster with id " + id + " not found"));
+                return draftService.getDraftById(id).thenCompose(existingDraft -> {
+                  return draftService.updateDraft(existingDraft.getData(), updatedPoster);
+                });
+                
               }
             })
         .thenApply(response -> ResponseEntity.ok(response))
@@ -441,8 +452,7 @@ public class PosterController {
                 this.userService.removeFromDrafts(
                     existingDraft.getData().getUserId(), existingDraft.getData());
                 return this.draftService.deleteDraftById(existingDraft.getData().getID());
-              }
-              else {
+              } else {
                 return CompletableFuture.completedFuture(
                     new ServiceResponse<>("Poster with id " + draftId + " not found"));
               }

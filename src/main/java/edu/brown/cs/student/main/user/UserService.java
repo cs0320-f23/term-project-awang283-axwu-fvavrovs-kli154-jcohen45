@@ -70,15 +70,14 @@ public class UserService {
             () -> CompletableFuture.completedFuture(new ServiceResponse<>("User not found")));
   }
 
+  public CompletableFuture<ServiceResponse<User>> getUserPosters(String id) {
+    Optional<User> userOptional = userRepository.findById(id);
 
-    public CompletableFuture<ServiceResponse<User>> getUserPosters(String id) {
-        Optional<User> userOptional = userRepository.findById(id);
-
-        return userOptional
-                .map(user -> CompletableFuture.completedFuture(new ServiceResponse<>(user, "User found")))
-                .orElseGet(
-                        () -> CompletableFuture.completedFuture(new ServiceResponse<>("User not found")));
-    }
+    return userOptional
+        .map(user -> CompletableFuture.completedFuture(new ServiceResponse<>(user, "User found")))
+        .orElseGet(
+            () -> CompletableFuture.completedFuture(new ServiceResponse<>("User not found")));
+  }
 
   public CompletableFuture<List<User>> getAllUsers() {
     return CompletableFuture.completedFuture(userRepository.findAll());
@@ -121,17 +120,15 @@ public class UserService {
               // Add the poster to the user's list of posters
               if (isDraft) {
                 user.getDrafts().add(poster);
-              }
-              else {
+              } else {
                 user.getCreatedPosters().add(poster);
-                  System.out.println("attempted to add poster to user's hashset");
+                System.out.println("attempted to add poster to user's hashset");
               }
 
               // Save the updated user
               System.out.println("Trying to save");
 
               userRepository.save(user);
-
 
               // Create a response object
               System.out.println("Trying to return service response");
@@ -162,7 +159,6 @@ public class UserService {
 
               System.out.println("Trying to save");
               this.updateUser(user);
-
 
               // Create a response object
               System.out.println("Trying to return service response");
@@ -264,7 +260,7 @@ public class UserService {
         .orElse(CompletableFuture.completedFuture(new ServiceResponse<>("User not found")));
   }
 
-  public void saveRepository(User user){
-      userRepository.save(user);
+  public void saveRepository(User user) {
+    userRepository.save(user);
   }
 }

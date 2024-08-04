@@ -3,9 +3,9 @@ package edu.brown.cs.student.main;
 import edu.brown.cs.student.main.ocr.OCRAsyncTask;
 import edu.brown.cs.student.main.responses.ServiceResponse;
 import edu.brown.cs.student.main.types.Draft;
+import edu.brown.cs.student.main.types.Poster;
 import edu.brown.cs.student.main.user.User;
 import edu.brown.cs.student.main.user.UserService;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -23,8 +23,7 @@ public class DraftService {
 
   private final UserService userService;
 
-  @Autowired
-  private OCRAsyncTask task;
+  @Autowired private OCRAsyncTask task;
 
   @Autowired
   public DraftService(DraftRepository draftRepository, UserService userService) {
@@ -32,7 +31,7 @@ public class DraftService {
     this.userService = userService;
   }
 
-  public CompletableFuture<ServiceResponse<Draft>> getDraftById(String id) {
+  public CompletableFuture<ServiceResponse<Poster>> getDraftById(String id) {
     return this.getDrafts()
         .thenCompose(
             posters ->
@@ -42,11 +41,11 @@ public class DraftService {
                     .map(
                         poster ->
                             CompletableFuture.completedFuture(
-                                new ServiceResponse<Draft>(poster, "poster with id found")))
+                                new ServiceResponse<Poster>(poster, "poster found")))
                     .orElseGet(
                         () ->
                             CompletableFuture.completedFuture(
-                                new ServiceResponse<Draft>("Poster not found"))));
+                                new ServiceResponse<Poster>("Poster with id " + id + " not found"))));
   }
 
   @Async
@@ -72,9 +71,9 @@ public class DraftService {
       // Save the Poster object to the database
       try {
         HashMap suggestedFields = task.sendPost(poster.getContent());
-        if (suggestedFields.get("title") == null){
+        if (suggestedFields.get("title") == null) {
           poster.setTitle("Untitled");
-        }else{
+        } else {
           poster.setTitle((String) suggestedFields.get("title"));
         }
         poster.setDescription((String) suggestedFields.get("description"));
@@ -117,35 +116,37 @@ public class DraftService {
   }
 
   @Async
-  public CompletableFuture<ServiceResponse<Draft>> updateDraft(Draft updatedDraft) {
-    if (updatedDraft != null) {
-      return this.getDraftById(updatedDraft.getID())
-          .thenApply(
-              oldPosterResponse -> {
-                Draft oldPoster = oldPosterResponse.getData();
-                if (oldPoster != null) {
-                  if (updatedDraft.getStartDate() != null)
-                    oldPoster.setStartDate(updatedDraft.getStartDate());
-                  if (updatedDraft.getEndDate() != null)
-                    oldPoster.setEndDate(updatedDraft.getEndDate());
-                  oldPoster.setIsRecurring(updatedDraft.getIsRecurring());
-                  if (updatedDraft.getTitle() != null)
-                    oldPoster.setTitle((updatedDraft.getTitle()));
-                  if (updatedDraft.getDescription() != null)
-                    oldPoster.setDescription(updatedDraft.getDescription());
-                  if (updatedDraft.getLocation() != null)
-                    oldPoster.setLocation(updatedDraft.getLocation());
-                  if (updatedDraft.getLink() != null) oldPoster.setLink(updatedDraft.getLink());
-                  if (updatedDraft.getTags() != null) oldPoster.setTags(updatedDraft.getTags());
-                  draftRepository.save(oldPoster);
-                  return new ServiceResponse<>(oldPoster, "Poster updated");
-                } else {
-                  return new ServiceResponse<>("Failed to update poster - Poster not found");
-                }
-              });
+  public CompletableFuture<ServiceResponse<Poster>> updateDraft(Poster existingDraft, Poster updatedDraft) {
+    if (existingDraft != null) {
+      return this.getDraftById(existingDraft.getID())
+              .thenApply(
+                      oldPosterResponse -> {
+                        Draft oldPoster = (Draft) oldPosterResponse.getData();
+                        if (oldPoster != null) {
+                          if (updatedDraft.getStartDate() != null)
+                            oldPoster.setStartDate(updatedDraft.getStartDate());
+                          if (updatedDraft.getEndDate() != null)
+                            oldPoster.setEndDate(updatedDraft.getEndDate());
+                          if (updatedDraft.getContent() != null)
+                            oldPoster.setContent(updatedDraft.getContent());
+                          oldPoster.setIsRecurring(updatedDraft.getIsRecurring());
+                          if (updatedDraft.getTitle() != null)
+                            oldPoster.setTitle((updatedDraft.getTitle()));
+                          if (updatedDraft.getDescription() != null)
+                            oldPoster.setDescription(updatedDraft.getDescription());
+                          if (updatedDraft.getLocation() != null)
+                            oldPoster.setLocation(updatedDraft.getLocation());
+                          if (updatedDraft.getLink() != null) oldPoster.setLink(updatedDraft.getLink());
+                          if (updatedDraft.getTags() != null) oldPoster.setTags(updatedDraft.getTags());
+                          draftRepository.save(oldPoster);
+                          return new ServiceResponse<>(oldPoster, "Poster updated");
+                        } else {
+                          return new ServiceResponse<>("Failed to update poster - Poster not found");
+                        }
+                      });
     } else {
       return CompletableFuture.completedFuture(
-          new ServiceResponse<>("Failed to update poster - Invalid data"));
+              new ServiceResponse<>("Failed to update poster - existing draft with provided ID does not exist"));
     }
   }
 
