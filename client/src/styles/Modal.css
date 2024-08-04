@@ -1,10 +1,10 @@
-.location-div,
+/* .location-div,
 .location-recur-titles,
 .location-recur {
   display: flex;
   justify-content: space-between;
   gap: 2vw;
-}
+} */
 
 .date-div {
   display: flex;
@@ -420,6 +420,7 @@ input::placeholder {
   font-weight: 600;
   border-radius: 12px !important;
   box-shadow: var(--tag-shadow);
+  width: 100%;
 }
 
 #date-time-input:hover,
@@ -439,6 +440,7 @@ input::placeholder {
 }
 
 .input-text-input {
+  width: 100%;
   display: flex;
   flex-flow: row;
   gap: 1vw;

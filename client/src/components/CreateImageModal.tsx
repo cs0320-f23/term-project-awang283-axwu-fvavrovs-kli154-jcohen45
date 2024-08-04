@@ -424,22 +424,18 @@ export default function CreateImageModal() {
                           onChange={(ev) =>
                             handleChange(ev.target.value, "title")
                           }
-                          // maxLength={25}
                         ></Input>
                       </div>
                       <div className="location-div">
-                        <div>
-                          <h3>Location</h3>
-                          <Input
-                            placeholder="Enter Location"
-                            width="23.4vw"
-                            value={poster.location}
-                            onChange={(ev) =>
-                              handleChange(ev.target.value, "location")
-                            }
-                          />
-                        </div>
-                        <div>
+                        <h3>Location</h3>
+                        <Input
+                          placeholder="Enter Location"
+                          value={poster.location}
+                          onChange={(ev) =>
+                            handleChange(ev.target.value, "location")
+                          }
+                        />
+                        {/* <div>
                           <h3>Repeats</h3>
                           <Select
                             placeholder="Repeats"
@@ -456,7 +452,7 @@ export default function CreateImageModal() {
                             <option value="WEEKLY">Weekly</option>
                             <option value="MONTHLY">Monthly</option>
                           </Select>
-                        </div>
+                        </div> */}
                       </div>
                       <div className="date-div">
                         <h3>Date</h3>
@@ -465,7 +461,7 @@ export default function CreateImageModal() {
                             id="date-time-input"
                             placeholder="Select Date and Time"
                             type="datetime-local"
-                            width="15.2vw"
+                            // width="15.2vw"
                             color="white"
                             value={poster.startDate}
                             onChange={(ev) =>
@@ -477,7 +473,7 @@ export default function CreateImageModal() {
                             id="date-time-input"
                             placeholder="Select Date and Time"
                             type="datetime-local"
-                            width="15.2vw"
+                            // width="15.2vw"
                             color="white"
                             value={poster.endDate}
                             onChange={(ev) =>
