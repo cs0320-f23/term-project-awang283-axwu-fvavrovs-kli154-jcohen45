@@ -10,24 +10,27 @@ import {
   refreshState,
   searchResultsState,
 } from "./atoms/atoms";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { getPosters } from "./Happenings";
 import { IPosterObject } from "./CreateImageModal";
 import ErrorPopup from "./ErrorPopup";
 
 interface tagsProps {
-  // onClose: () => void;
+  onClose: () => void;
   onBack: () => void;
   draftId: string;
   setShowTags: React.Dispatch<React.SetStateAction<boolean>>;
   updatePoster: (poster: IPosterObject, id: string) => Promise<unknown>;
+  isDraft: boolean;
 }
 
 export default function TagsModal({
+  onClose,
   onBack,
   draftId,
   setShowTags,
   updatePoster,
+  isDraft,
 }: tagsProps) {
   const [allTags, setAllTags] = useState<string[]>([]);
   const [tags, setTags] = useState<Set<string>>(new Set());
@@ -38,7 +41,7 @@ export default function TagsModal({
   const [disabled, setDisabled] = useState<boolean>(false);
   const [errorPopup, setErrorPopup] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [, setModalOpen] = useRecoilState<string>(modalOpenState);
+  const setModalOpen = useSetRecoilState(modalOpenState);
 
   useEffect(() => {
     const fetchAllTags = async () => {
@@ -55,48 +58,55 @@ export default function TagsModal({
   }, [poster]);
 
   useEffect(() => {
-    // console.log("Poster updated:", poster);
+    console.log("Poster updated:", poster);
+  }, [poster]);
+
+  useEffect(() => {
     const getPoster = async () => {
+      console.log(draftId);
+      console.log(poster.id);
       try {
-        const url = draftId
-          ? "http://localhost:8080/posters/" + draftId
-          : "http://localhost:8080/posters/" + poster.id;
+        let id;
+        if (poster.id === undefined) {
+          id = draftId;
+        } else {
+          id = poster.id;
+        }
+        console.log(id);
+        const url = "http://localhost:8080/posters/" + id;
         const res = await fetch(url);
-        // console.log(res);
+        console.log(res);
         if (res.ok) {
           const posterData = await res.json();
+          console.log(posterData);
+          // posterdata doesnt print but res.ok does :(
           if (posterData.message != "Poster not found") {
-            return false;
+            console.log("this is a poster");
+            return "poster";
           } else {
             try {
-              const url = draftId
-                ? "http://localhost:8080/drafts/" + draftId
-                : "http://localhost:8080/drafts/" + poster.id;
+              const url =
+                "http://localhost:8080/drafts/" + draftId ? draftId : poster.id;
               const res = await fetch(url);
               // console.log(res);
               if (res.ok) {
                 const posterData = await res.json();
                 if (posterData.message != "Poster not found") {
-                  return true;
+                  console.log("this is a draft");
+                  return "draft";
                 }
               }
             } catch (error) {
-              JSON.stringify(error);
-              return undefined;
+              return JSON.stringify(error);
             }
           }
         }
       } catch (error) {
-        JSON.stringify(error);
-        return undefined;
+        return JSON.stringify(error);
       }
     };
-    const getIsDraft = async () => {
-      const isDraft = await getPoster();
-      setPoster({ ...poster, isDraft: isDraft });
-    };
-    getIsDraft();
-  }, [draftId, poster, setPoster]);
+    getPoster();
+  }, []);
 
   // const handleChange = (
   //   value: string[] | string | Set<string>,
@@ -148,18 +158,16 @@ export default function TagsModal({
       tags: Array.from(tags),
     };
 
-    // setPoster(updatedPoster);
-    // console.log("updated");
-    // console.log(updatedPoster);
-    // console.log(updatedPoster.id);
-    // console.log(draftId);
+    setPoster(updatedPoster);
+    console.log(updatedPoster.id);
+    console.log(draftId);
     await updatePoster(
       updatedPoster,
       updatedPoster.id ? updatedPoster.id : draftId
     );
 
-    // console.log("updated poster");
-    // console.log(res1);
+    console.log("updated poster");
+    console.log(updatedPoster);
 
     try {
       const config = {
@@ -167,15 +175,10 @@ export default function TagsModal({
           "Content-Type": "application/json",
         },
       };
-      // console.log(draftId);
-      const url =
-        !poster.isDraft && draftId
-          ? `http://localhost:8080/posters/update/${draftId}`
-          : !poster.isDraft
-          ? `http://localhost:8080/posters/update/${updatedPoster.id}`
-          : draftId
-          ? `http://localhost:8080/posters/create/${draftId}`
-          : `http://localhost:8080/posters/create/${updatedPoster.id}`;
+      console.log(draftId);
+      const url = draftId
+        ? `http://localhost:8080/posters/create/${draftId}`
+        : `http://localhost:8080/posters/create/${updatedPoster.id}`;
       const formData = new FormData();
 
       tags.forEach((tag) => {
@@ -190,10 +193,7 @@ export default function TagsModal({
           }
         }
       }
-      const res = !poster.isDraft
-        ? await axios.put(url, formData, config)
-        : await axios.post(url, formData, config);
-      // console.log(res);
+      const res = await axios.post(url, formData, config);
       setRefresh(!refresh);
       getPosters().then((data) => setSearchResults(data));
       setShowTags(false);
@@ -214,11 +214,56 @@ export default function TagsModal({
     }
   };
 
-  const saveDraft = () => {
-    updatePoster(poster, draftId ? draftId : poster.id);
-    setPoster({});
-    setPosterSrc("");
-    setModalOpen(" ");
+  const editPoster = async () => {
+    setIsLoading(true);
+    setDisabled(true);
+
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      console.log(poster.id);
+      const url = `http://localhost:8080/posters/update/${poster.id}`;
+      console.log(url);
+      const formData = new FormData();
+
+      tags.forEach((tag) => {
+        formData.append("tags[]", tag);
+      });
+
+      for (const key in poster) {
+        if (poster[key] && key !== "tags") {
+          const value = poster[key];
+          if (typeof value === "string") {
+            formData.append(key, value);
+          }
+        }
+      }
+
+      const res = await axios.put(url, formData, config);
+      console.log(res.data.data);
+      setRefresh(!refresh);
+      getPosters().then((data) => setSearchResults(data));
+      setShowTags(false);
+      setModalOpen("");
+      setPosterSrc("");
+      setPoster({});
+      setIsLoading(false);
+      return Promise.resolve(res.data.data);
+    } catch (error) {
+      console.log("made it here!");
+      console.log(error);
+      setErrorPopup(true);
+      if (axios.isAxiosError(error) && error.response) {
+        return Promise.resolve(
+          `Error in fetch: ${error.response.data.message}`
+        );
+      } else {
+        return Promise.resolve("Error in fetch: Network error or other issue");
+      }
+    }
   };
 
   return (
@@ -251,29 +296,40 @@ export default function TagsModal({
           >
             Back
           </Button>
-          <div>
-            {poster.isDraft && (
+          {isDraft ? (
+            <div>
               <Button
                 style={{
                   backgroundColor: "var(--dark-purple70) !important",
                   marginRight: "1vw",
                 }}
                 className="final-upload-button"
-                onClick={saveDraft}
+                onClick={editPoster}
                 disabled={disabled}
               >
                 Save Draft
               </Button>
-            )}
+              <Button
+                style={{ backgroundColor: "var(--dark-purple100)" }}
+                className="final-upload-button"
+                onClick={createPoster}
+                disabled={disabled}
+              >
+                Create Poster
+              </Button>
+            </div>
+          ) : (
             <Button
-              style={{ backgroundColor: "var(--dark-purple100)" }}
+              style={{
+                backgroundColor: "var(--dark-purple100)",
+                color: "white !important",
+              }}
               className="final-upload-button"
-              onClick={createPoster}
-              disabled={disabled}
+              onClick={editPoster}
             >
-              {poster.isDraft ? "Create Poster" : "Edit Poster"}
+              Edit Poster
             </Button>
-          </div>
+          )}
         </div>
       </div>
     </>

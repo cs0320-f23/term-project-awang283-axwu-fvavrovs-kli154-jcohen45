@@ -36,7 +36,6 @@ export interface IPosterObject {
   link?: string;
   description?: string;
   tags?: Set<string> | string[];
-  isDraft?: boolean;
 }
 
 export default function CreateImageModal() {
@@ -49,6 +48,7 @@ export default function CreateImageModal() {
   const [popModalOpen, setPopModalOpen] = useState<boolean>(false);
   const [profile] = useRecoilState(profileState);
   const [refresh, setRefresh] = useRecoilState(refreshState);
+  const [isDraft, setIsDraft] = useState<boolean>(false);
 
   useEffect(() => {
     const today = new Date();
@@ -57,10 +57,57 @@ export default function CreateImageModal() {
     const yyyy = today.getFullYear();
     //defaults to current date at 11:59PM + ensures startDate will always be filled with some value
     const todayDateTime = yyyy + "-" + mm + "-" + dd + "T23:59";
-    console.log(poster);
     setPoster({ ...poster, startDate: todayDateTime, isRecurring: "NEVER" });
     // console.log(poster);
   }, []);
+
+  const getPoster = async () => {
+    setIsLoading(true);
+    // console.log(draftId);
+    // console.log(poster.id);
+    try {
+      let id;
+      if (poster.id === undefined) {
+        id = draftId;
+      } else {
+        id = poster.id;
+      }
+      console.log(id);
+      const url = "http://localhost:8080/posters/" + id;
+      const res = await fetch(url);
+      console.log(res);
+      if (res.ok) {
+        const posterData = await res.json();
+        console.log(posterData);
+        if (posterData.message != "Poster not found") {
+          console.log(Boolean(posterData.data.isDraft));
+          setIsDraft(Boolean(posterData.data.isDraft));
+          console.log("this is a poster");
+          setIsLoading(false);
+          return "poster";
+        } else {
+          try {
+            const url =
+              "http://localhost:8080/drafts/" + draftId ? draftId : poster.id;
+            const res = await fetch(url);
+            if (res.ok) {
+              const posterData = await res.json();
+              if (posterData.message != "Poster not found") {
+                console.log("this is a draft");
+                setIsDraft(true);
+                setIsLoading(false);
+                return "draft";
+              }
+            }
+          } catch (error) {
+            return JSON.stringify(error);
+          }
+        }
+      }
+    } catch (error) {
+      return undefined;
+    }
+  };
 
   const handleChange = (
     value: string[] | string | Set<string>,
@@ -220,34 +267,30 @@ export default function CreateImageModal() {
       const output = await createImgurLink(file);
 
       setCVFields(output.id);
-      setPoster({
-        ...poster,
-        content: output.content,
-        id: output.id,
-      });
+      setPoster({ ...poster, content: output.content, id: output.id });
       // console.log(poster);
       // console.log("output.id is: " + output.id);
     }
   };
 
-  const onSaveSelectTags = () => {
-    updatePoster(poster, draftId);
+  const onSaveSelectTags = async () => {
+    await getPoster();
+    await updatePoster(poster, poster.id ? poster.id : draftId);
     setRefresh(!refresh);
     setShowTags(true);
+    console.log(isDraft);
   };
 
   // updates a draft with new info when a user clicks to tags or presses X
   const updatePoster = async (poster: IPosterObject, id: string) => {
-    // console.log(id);
+    console.log(id);
     try {
-      // changing this to draftID broke creating things ???? but poster.id is undefined :/
-      const url = "http://localhost:8080/drafts/update/" + id;
+      const url = "http://localhost:8080/posters/update/" + id;
       const config = {
         headers: {
           "Content-Type": "application/json",
         },
       };
-      // console.log(id);
       const response = await axios.put(url, poster, config);
       return Promise.resolve(response.data.data);
     } catch (error) {
@@ -266,11 +309,8 @@ export default function CreateImageModal() {
   };
 
   const onClose = () => {
-    //if any field is filled out
-    updatePoster(poster, draftId);
-    // console.log(poster);
     if (poster.startDate && poster.title && poster.content) {
-      // console.log(draftId);
+      console.log(draftId);
       //popup u sure u wanna del this?
       setPopModalOpen(true);
     } else {
@@ -286,6 +326,7 @@ export default function CreateImageModal() {
           onCloseModal={onClose}
           setPopModalOpen={setPopModalOpen}
           showDraft={true}
+          updatePoster={updatePoster}
         />
       )}
       {modalOpen == "createImage" && (
@@ -328,6 +369,7 @@ export default function CreateImageModal() {
                       draftId={draftId}
                       setShowTags={setShowTags}
                       updatePoster={updatePoster}
+                      isDraft={isDraft}
                     />
                   ) : (
                     <div className="input-fields">
