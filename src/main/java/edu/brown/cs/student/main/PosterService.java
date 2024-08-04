@@ -11,6 +11,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -48,24 +50,8 @@ public class PosterService {
 
     if (!associateResponse.isCompletedExceptionally()) {
       System.out.println(associateResponse);
-      System.out.println("associateResponse.isCompletedExceptionally() == false");
       // Save the Poster object to the database
-      try {
-        // TODO: replace with different API
-        //        OCRAsyncTask task = new OCRAsyncTask();
-        //        HashMap suggestedFields =
-        //            task.sendPost("K85630038588957", true, poster.getContent(), "eng");
-        //        poster.setTitle((String) suggestedFields.get("title"));
-        //        poster.setDescription((String) suggestedFields.get("description"));
-        //        poster.setLink((String) suggestedFields.get("link"));
-        //        poster.setTags((HashSet<String>) suggestedFields.get("tags"));
-        //        poster.setStartDate((LocalDateTime) suggestedFields.get("startDate"));
 
-        //      suggestedFields.setID(poster.getID());
-        //      this.updatePoster(suggestedFields);
-      } catch (Exception e) {
-        System.err.println("Error reading text on image file: " + e.getMessage());
-      }
 
       if (poster.isPoster()) {
         if (posterRepository
@@ -201,7 +187,7 @@ public class PosterService {
   }
 
   @Async
-  public CompletableFuture<ServiceResponse<String>> deletePosterById(String id) {
+  public CompletableFuture<ServiceResponse<String>> removePosterFromDatabase(String id) {
     Optional<Poster> posterToDelete = posterRepository.findById(id);
 
     if (posterToDelete.isPresent()) {
@@ -336,6 +322,55 @@ public class PosterService {
   @Async
   public void deleteAll() {
     this.posterRepository.deleteAll();
+  }
+
+  @Async
+  public CompletableFuture<ServiceResponse<String>> deleteById(String id, String userId, Poster posterToDelete){
+
+                      if (posterToDelete.getID().equals(id)
+                              && posterToDelete.getUserId().equals(userId)) {
+                        // remove from user's createdposters
+                        userService
+                                .getUserById(userId)
+                                .thenCompose(
+                                        user -> {
+                                          if (user.getData() != null) {
+                                            Set<Poster> userPosters = user.getData().getCreatedPosters();
+                                            userPosters.removeIf(poster -> poster.getID().equals(id));
+                                            user.getData().setCreatedPosters(userPosters);
+                                            // Update the user entity in the database
+                                            return userService
+                                                    .updateUser(user.getData())
+                                                    .thenApply(
+                                                            updatedUser -> {
+                                                              System.out.println(updatedUser);
+                                                              if (updatedUser.getData() != null) {
+                                                                return new ServiceResponse<>(
+                                                                        "Poster with id "
+                                                                                + id
+                                                                                + " removed from user's created posters");
+                                                              } else {
+                                                                return new ServiceResponse<>(
+                                                                        "Failed to remove poster from user's created posters");
+                                                              }
+                                                            });
+                                          } else {
+                                            return CompletableFuture.completedFuture(
+                                                    new ServiceResponse<>(
+                                                            "Poster with id "
+                                                                    + id
+                                                                    + " not removed from users created posters"));
+                                          }
+                                        });
+                        return this
+                                .removePosterFromDatabase(id)
+                                .thenApply(
+                                        deleted -> new ServiceResponse<>("Poster with id " + id + " deleted"));
+                      } else {
+                        return CompletableFuture.completedFuture(
+                                new ServiceResponse<>("Poster with id " + id + " not found"));
+                      }
+
   }
 
   private boolean containsAllTags(Poster poster, String[] tags) {

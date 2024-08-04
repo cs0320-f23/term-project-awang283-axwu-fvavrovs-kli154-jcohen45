@@ -131,7 +131,7 @@ public class DraftController {
 
                 this.userService.removeFromDrafts(
                     existingDraft.getData().getUserId(), existingDraft.getData());
-                return this.draftService.deleteDraftById(existingDraft.getData().getID());
+                return this.draftService.removeDraftFromDatabase(existingDraft.getData().getID());
               } else {
                 return CompletableFuture.completedFuture(
                     new ServiceResponse<>("Draft with id " + id + " not found"));

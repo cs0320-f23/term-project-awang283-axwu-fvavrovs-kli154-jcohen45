@@ -6,10 +6,8 @@ import edu.brown.cs.student.main.types.Draft;
 import edu.brown.cs.student.main.types.Poster;
 import edu.brown.cs.student.main.user.User;
 import edu.brown.cs.student.main.user.UserService;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -151,7 +149,7 @@ public class DraftService {
   }
 
   @Async
-  public CompletableFuture<ServiceResponse<String>> deleteDraftById(String id) {
+  public CompletableFuture<ServiceResponse<String>> removeDraftFromDatabase(String id) {
     Optional<Draft> draftToDelete = draftRepository.findById(id);
 
     if (draftToDelete.isPresent()) {
@@ -162,5 +160,54 @@ public class DraftService {
     } else {
       return CompletableFuture.completedFuture(new ServiceResponse<>("Poster not found"));
     }
+  }
+
+  @Async
+  public CompletableFuture<ServiceResponse<String>> deleteById(String id, String userId, Poster posterToDelete){
+
+    if (posterToDelete.getID().equals(id)
+            && posterToDelete.getUserId().equals(userId)) {
+      // remove from user's createdposters
+      userService
+              .getUserById(userId)
+              .thenCompose(
+                      user -> {
+                        if (user.getData() != null) {
+                          Set<Poster> userDrafts = user.getData().getDrafts();
+                          userDrafts.removeIf(poster -> poster.getID().equals(id));
+                          user.getData().setDrafts(userDrafts);
+                          // Update the user entity in the database
+                          return userService
+                                  .updateUser(user.getData())
+                                  .thenApply(
+                                          updatedUser -> {
+                                            System.out.println(updatedUser);
+                                            if (updatedUser.getData() != null) {
+                                              return new ServiceResponse<>(
+                                                      "Draft with id "
+                                                              + id
+                                                              + " removed from user's created drafts");
+                                            } else {
+                                              return new ServiceResponse<>(
+                                                      "Failed to remove draft from user's created drafts");
+                                            }
+                                          });
+                        } else {
+                          return CompletableFuture.completedFuture(
+                                  new ServiceResponse<>(
+                                          "Draft with id "
+                                                  + id
+                                                  + " not removed from users created drafts"));
+                        }
+                      });
+      return this
+              .removeDraftFromDatabase(id)
+              .thenApply(
+                      deleted -> new ServiceResponse<>("Draft with id " + id + " deleted"));
+    } else {
+      return CompletableFuture.completedFuture(
+              new ServiceResponse<>("Draft with id " + id + " not found"));
+    }
+
   }
 }

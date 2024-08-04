@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
+
+import org.checkerframework.checker.units.qual.C;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -304,15 +306,23 @@ public class PosterController {
    * @param userId
    */
   @DeleteMapping("/deleteInvalidPosters/{userId}")
-  public void deleteInvalidPosters(@PathVariable String userId) {
+  public ServiceResponse<String> deleteInvalidPosters(@PathVariable String userId) {
     CompletableFuture<List<Poster>> futurePosters = posterService.getPosters();
     List<Poster> allPosters = futurePosters.join();
     CompletableFuture<ServiceResponse<User>> futureUser = this.userService.getUserById(userId);
     User user = futureUser.join().getData();
+    if (user == null) return new ServiceResponse<>("User not found");
 
     for (Poster poster : allPosters) {
-      if (poster.getUserId().equals(user.getId()) && !user.getCreatedPosters().contains(poster)) {
-        posterService.deletePosterById(poster.getID());
+      boolean userHasPoster = false;
+      for (Poster p : user.getCreatedPosters()){
+        if (p.getID().equals(poster.getID())){
+          userHasPoster = true;
+          break;
+        }
+      }
+      if (poster.getUserId().equals(user.getId()) && !userHasPoster) {
+        posterService.removePosterFromDatabase(poster.getID());
       }
     }
 
@@ -331,6 +341,7 @@ public class PosterController {
     }
 
     userService.saveRepository(user);
+    return new ServiceResponse<>("Successfully deleted invalid posters");
   }
 
   /**
@@ -341,58 +352,21 @@ public class PosterController {
    *     "data" (JSON) field that contains the data of the poster that was just deleted
    */
   @DeleteMapping("/delete/{id}")
-  public CompletableFuture<ResponseEntity<ServiceResponse<Object>>> deletePoster(
-      @PathVariable String id, @RequestParam(required = false) String userId) {
-    return posterService
-        .getPosterById(id)
-        .thenCompose(
-            existingPoster -> {
-              if (existingPoster.getData().getID().equals(id)
-                  && existingPoster.getData().getUserId().equals(userId)) {
-                // remove from user's createdposters
-                userService
-                    .getUserById(userId)
-                    .thenCompose(
-                        user -> {
-                          if (user.getData() != null) {
-                            Set<Poster> userPosters = user.getData().getCreatedPosters();
-                            userPosters.removeIf(poster -> poster.getID().equals(id));
-                            user.getData().setCreatedPosters(userPosters);
-                            // Update the user entity in the database
-                            return userService
-                                .updateUser(user.getData())
-                                .thenApply(
-                                    updatedUser -> {
-                                      System.out.println(updatedUser);
-                                      if (updatedUser.getData() != null) {
-                                        return new ServiceResponse<>(
-                                            "Poster with id "
-                                                + id
-                                                + " removed from user's created posters");
-                                      } else {
-                                        return new ServiceResponse<>(
-                                            "Failed to remove poster from user's created posters");
-                                      }
-                                    });
-                          } else {
-                            return CompletableFuture.completedFuture(
-                                new ServiceResponse<>(
-                                    "Poster with id "
-                                        + id
-                                        + " not removed from users created posters"));
-                          }
-                        });
-                return posterService
-                    .deletePosterById(id)
-                    .thenApply(
-                        deleted -> new ServiceResponse<>("Poster with id " + id + " deleted"));
-              } else {
-                return CompletableFuture.completedFuture(
-                    new ServiceResponse<>("Poster with id " + id + " not found"));
-              }
-            })
-        .thenApply(response -> ResponseEntity.ok(response))
-        .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+  public CompletableFuture<ResponseEntity<ServiceResponse<String>>> deletePoster(
+      @PathVariable String id, @RequestParam(required = true) String userId) {
+    return this.posterService.getPosterById(id).thenCompose(existingPoster -> {
+      if (existingPoster.getData() == null){ // not found in poster collection
+        return this.draftService.getDraftById(id).thenCompose(existingDraft -> {
+          System.out.println("searched in drafts collection");
+          if (existingDraft.getData() == null)
+            return CompletableFuture.completedFuture(new ServiceResponse<>("No draft or poster with id " + id + " was found for user " + userId));
+          return this.draftService.deleteById(id, userId, existingDraft.getData());
+        });
+      }
+              System.out.println("did not search in drafts collection");
+      return this.posterService.deleteById(id, userId, existingPoster.getData());})
+    .thenApply(response -> ResponseEntity.ok(response))
+            .exceptionally(ex -> ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
   }
 
   /**
@@ -422,7 +396,7 @@ public class PosterController {
                 return draftService.getDraftById(id).thenCompose(existingDraft -> {
                   return draftService.updateDraft(existingDraft.getData(), updatedPoster);
                 });
-                
+
               }
             })
         .thenApply(response -> ResponseEntity.ok(response))
@@ -451,7 +425,7 @@ public class PosterController {
                 this.posterService.updatePoster(poster, existingDraft.getData());
                 this.userService.removeFromDrafts(
                     existingDraft.getData().getUserId(), existingDraft.getData());
-                return this.draftService.deleteDraftById(existingDraft.getData().getID());
+                return this.draftService.removeDraftFromDatabase(existingDraft.getData().getID());
               } else {
                 return CompletableFuture.completedFuture(
                     new ServiceResponse<>("Poster with id " + draftId + " not found"));

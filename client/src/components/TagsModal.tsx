@@ -63,16 +63,18 @@ export default function TagsModal({
   // FIND OUT IF A POSTER IS A DRAFT ?
   useEffect(() => {
     const getPoster = async () => {
-      // console.log(draftId);
-      // console.log(poster.id);
+      console.log(draftId);
+      console.log(poster.id);
       try {
+        console.log("is poster id undefined? " + poster.id !== undefined);
+        console.log("type of poster id " + poster.id);
         const url =
-          "http://localhost:8080/posters/" + poster.id ? poster.id : draftId;
+          "http://localhost:8080/posters/" + poster.id && typeof poster.id !== undefined ? poster.id : draftId;
         const res = await fetch(url);
         console.log(res);
         if (res.ok) {
           const posterData = await res.json();
-          console.log(posterData);
+          console.log("posterData: " + posterData);
           // posterdata doesnt print but res.ok does :(
           if (posterData.message != "Poster not found") {
             setIsDraft(false);
