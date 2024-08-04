@@ -180,6 +180,11 @@
   display: flex;
   justify-content: right;
   align-items: start;
+
+  img {
+    width: 100%;
+    height: 100%;
+  }
 }
 
 .view-modal-icons {
@@ -202,6 +207,18 @@
 }
 
 .heart-icon:hover {
+  background-image: url("heart_partial.svg");
+}
+
+.view-heart-icon {
+  background-image: url("heart.svg");
+}
+
+.view-heart-icon.clicked {
+  background-image: url("heart_filled.svg");
+}
+
+.view-heart-icon:hover {
   background-image: url("heart_partial.svg");
 }
 

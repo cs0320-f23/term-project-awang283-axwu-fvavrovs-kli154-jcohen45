@@ -1,7 +1,3 @@
-main {
-  width: 100%;
-}
-
 h1 {
   font-size: 6vh;
   margin-top: 4vh;
@@ -11,18 +7,18 @@ h1 {
 .happenings {
   display: flex;
   flex-flow: column;
+  width: 100%;
 }
 
 .search-filter-fixed {
-  top: 4%;
-  padding-right: 5.1vw;
-  padding-top: 1vh;
+  top: 80px;
+  padding-right: 4vw;
+  padding-top: 8px;
   display: flex;
   justify-content: space-between;
-  margin-top: 6vh;
   position: fixed;
   width: 100%;
-  height: 9vh;
+  height: 64px;
   z-index: 2;
   background: rgba(249, 238, 255, 0.85);
 }
@@ -31,11 +27,11 @@ h1 {
   margin-left: 4vw;
   align-items: center;
   display: flex;
-  width: 59.3vw;
+  width: 48vw;
   background-color: white;
   box-shadow: 0px 3px 10px 3px rgba(0, 0, 0, 0.15);
   border-radius: 15px;
-  height: 6vh;
+  height: 48px;
 }
 
 .browse-search-bar:hover {
@@ -112,7 +108,7 @@ h1 {
 }
 
 .grid {
-  margin-top: 16.5vh;
+  margin-top: 80px;
   margin-left: 4vw;
   z-index: 1;
 }

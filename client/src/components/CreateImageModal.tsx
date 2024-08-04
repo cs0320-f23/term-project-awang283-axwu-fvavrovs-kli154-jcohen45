@@ -149,10 +149,7 @@ export default function CreateImageModal() {
         setIsLoading(true);
         const res = await axios.post(url, requestBody, config);
         setPosterSrc(inputElement.value);
-        // console.log(res.data.data);
         setDraftId(res.data.data.id);
-        // console.log("id from link");
-        // console.log(draftId);
         setCVFields(res.data.data.id);
         return Promise.resolve(res.data.data);
       } catch (error) {
@@ -184,15 +181,9 @@ export default function CreateImageModal() {
       formData.append("content", file);
       formData.append("userId", profile.id);
       formData.append("startDate", poster.startDate!);
-      //console.log("Before axios request");
       setIsLoading(true);
-      // console.log(formData);
       const res = await axios.post(url, formData, config);
-      // console.log("After axios request");
-      // console.log(res.data.data.id);
       setDraftId(res.data.data.id);
-      // console.log("id from upload");
-      // console.log(draftId);
       return Promise.resolve(res.data.data);
     } catch (error) {
       setIsLoading(false);
@@ -277,8 +268,6 @@ export default function CreateImageModal() {
       //popup u sure u wanna del this?
       setPopModalOpen(true);
     } else {
-      setPoster({});
-      setPosterSrc("");
       setModalOpen("");
     }
   };

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { classNameTag, fetchTags } from "../functions/fetch";
 import {
+  modalOpenState,
   posterSrcState,
   posterState,
   refreshState,
@@ -38,6 +39,7 @@ export default function TagsModal({
   const [disabled, setDisabled] = useState<boolean>(false);
   const [errorPopup, setErrorPopup] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [, setModalOpen] = useRecoilState<string>(modalOpenState);
 
   useEffect(() => {
     const fetchAllTags = async () => {
@@ -143,10 +145,10 @@ export default function TagsModal({
       setRefresh(!refresh);
       getPosters().then((data) => setSearchResults(data));
       setShowTags(false);
-      setPosterSrc("");
+      setModalOpen("");
       setPoster({});
+      setPosterSrc("");
       setIsLoading(false);
-      onClose();
       return Promise.resolve(res.data.data);
     } catch (error) {
       setErrorPopup(true);

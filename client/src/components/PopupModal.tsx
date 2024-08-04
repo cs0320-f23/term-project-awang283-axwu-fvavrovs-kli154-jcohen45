@@ -93,12 +93,11 @@ export default function PopupModal({
 
           const res = await axios.delete(url, config);
 
-          //sets global state to nothing (no more draft)
           setPoster({});
           setPosterSrc("");
 
           //goes to whatever page user was on (no more modal)
-          setModalOpen("");
+          setPopModalOpen(false);
           onCloseModal();
 
           //need to give enough time for the poster to be created + id to exist
@@ -132,7 +131,6 @@ export default function PopupModal({
 
           //goes to whatever page user was on (no more modal)
           setPopModalOpen(false);
-          setModalOpen("");
           onCloseModal();
 
           //need to give enough time for the poster to be created + id to exist
@@ -150,12 +148,6 @@ export default function PopupModal({
         }
       }
     }
-    //if no image was ever uploaded:
-    //sets global state to nothing (no more draft)
-    setPopModalOpen(false);
-    setModalOpen("");
-    setPoster({});
-    setPosterSrc("");
   };
 
   //user wants to save as draft

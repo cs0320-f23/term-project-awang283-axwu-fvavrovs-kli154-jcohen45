@@ -102,7 +102,9 @@ export const ProfileImageCard: React.FC<ProfileImageCardProps> = ({
       if (savedPosters.ok) {
         const posterSet = await savedPosters.json();
         //if poster id passed in is among saved posts
-        const clicked = posterSet.data.some((poster) => poster.id === posterId);
+        const clicked = posterSet.data.some(
+          (poster: { id: string }) => poster.id === posterId
+        );
         //handles settles isClicked to false when necessary too
         setIsClicked(clicked);
       }
