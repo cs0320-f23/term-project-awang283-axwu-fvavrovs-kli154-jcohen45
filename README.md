@@ -10,7 +10,7 @@ While organizations tend to advertise events on social media, through Today@Brow
 ## Exterior resources (Applications, languages, APIs, documentations and other code) we have used within our project:
 
 ### Backend: 
-- Jave 
+- Java 
 - Spring Boot 
 - JUnit 
 - MongoDB
